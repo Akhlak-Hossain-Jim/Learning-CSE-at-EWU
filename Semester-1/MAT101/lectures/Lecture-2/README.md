@@ -91,12 +91,11 @@ y = |x| <br>
 
 > **The absolute value function f(x) = | x| is an example of a function that is defined piecewise in the sense that the formula for f changes, depending on the value of x.**
 
-<pre>
-⎧ 0,       x ≤ −1
+![piecewise function question type](./pieceWise-Definded-function-example.png)
 
-⎨ √1 − x2, −1 < x < 1
-⎩ x,       x ≥ 1
-</pre>
+> the graph will be: <br> > ![Piecewise-Defined function example graph](./pieceWise-Definded-function.png)<br>
+> according to questions 1st line `0, x<= -1` so, y will be 0 if `x<= -1` so we drew the blue line from -1 to the negative side of the `x axis`. In second line, $\sqrt{1-x^2}$, `-1 < x < 1` as we know the $\sqrt{1-x^2}$ is for half circle and the condition says that `x` is between `1`, and `-1` we drew the circle between `1 & -1` point with a radius of `1` from `y axis`. And lastly, `x, x=>1` so we can say it's the same equation of `y=x` and the condition is to start it from 1 so we drew the line on the right starting from `(1, 1)` point.
 
-> the graph will be: <br>
-> ![Piecewise-Defined function example graph](./pieceWise-Definded-function.png)
+## Homework
+
+Sir discussed about the `DOMAIN AND RANGE` a little bit. and asked us to do the examples (optional) as homework.
