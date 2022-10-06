@@ -98,5 +98,5 @@ y = |x| <br>
 ⎩ x,       x ≥ 1
 </pre>
 
-> the graph will be:
+> the graph will be: <br>
 > ![Piecewise-Defined function example graph](./pieceWise-Definded-function.png)
