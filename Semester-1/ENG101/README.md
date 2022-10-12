@@ -8,3 +8,5 @@
 ---
 
 - [Lecture 1, 03/10/2022](./Lectures/Lecture-1.md)
+- [Lecture 2, 10/10/2022](./Lectures/Lecture-2.md)
+- [Lecture 3, 12/10/2022](./Lectures/Lecture-3.md)
