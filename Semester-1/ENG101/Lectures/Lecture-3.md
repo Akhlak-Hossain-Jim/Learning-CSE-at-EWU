@@ -38,4 +38,8 @@ The paragraph has to start with the same sentence as topic sentence. Then have t
 
 > The difference between Narrative Paragraph and Descriptive paragraph is: We write `Descriptive paragraph` as an third person or observer but in `Narrative paragraph` we should write it as a first person, means It should be in our own opinion and our own feeling and will be in `past tense`.
 
+---
+
+> Then we wrote a paragraph on the `My first day at East West University` and mam gave us correction on the writings we have done. And for assignment purpose we should create a draft based on the correction mam gave.
+
 > **There will be a class test in next Wednesday (19 October 2022) on the Academic word List 1 (page: 60 to 69)**
