@@ -16,8 +16,8 @@ Practice Problem
 10. Write a program to convert temperature from Fahrenheit to Celsius. `C=(F-32)*5/9`
 11. Write a program to input total number of days and convert it into years, months, weeks, and days.
 12. Write a C program which can input an integer number indicating length (in centimeter scale) of a book and display length of that book in inch scale. `[1 inch = 2.54 centimeter]`
-13. Suppose you have two water containers – one is sphere shaped and another is cubic shaped. Write a C program which can input two integers indicating radius of a sphere-shaped container and length of each side of the cubic shaped container. Display volume of each object.
-14. Write a C program which can input running time of a movie by inputting two numbers mentioning hour and minute of that movie. Display what is the running time of that movie in minutes. Display running time in fractional hour format. As example, if input is 1 hour 15 minutes then one output is 75 minutes and another output is 1.25 hours.
-15. Write a C program which can input 4 integer numbers from the users and display the ratio between differences of first two numbers and last two numbers. As example, if input values are A, B, C, and D then find (A-B)/(C-D).
-16. Write a C program which can input four integer numbers that indicated 2 points in a 2D co-ordinate system. Display the distance between those two points.
-17. Write a C program which can input length of three sides of a triangle and display the area of the triangle.
+13. Suppose you have two water containers – one is sphere shaped and another is cubic shaped. Write a C program which can `input two integers indicating radius of a sphere-shaped container and length of each side of the cubic shaped container`. Display `volume` of each object.
+14. Write a C program which can `input running time of a movie` by `inputting two numbers mentioning hour and minute` of that movie. Display what is `the running time` of that movie in `minutes`. Display running time in `fractional hour format`. As example, `if input is 1 hour 15 minutes` then `one output is 75 minutes` and another `output is 1.25 hours`.
+15. Write a C program which can `input 4 integer numbers` from the users and `display the ratio between differences of first two numbers` and `last two numbers`. As example, `if input values are A, B, C, and D` then find `(A-B)/(C-D)`.
+16. Write a C program which can `input four integer numbers` that indicated `2 points in a 2D co-ordinate system`. Display the distance between those two points. Like we do in Maths `A(2, 3)`, `B(4, 2)` and distance is $\sqrt(y2-y1)^2 + (x2-x1)^2$
+17. Write a C program which can input length of `three sides` of `a triangle` and display `the area of the triangle`.
