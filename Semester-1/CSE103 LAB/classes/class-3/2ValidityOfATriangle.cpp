@@ -3,7 +3,7 @@
 int main()
 {
     int a, b, c;
-    printf("This program is to check whether the triangle is equilateral, isosceles or scalene triangle.\n");
+    printf("This program is to check whether the triangle is valid or not.\n");
     printf("Enter the first side of the triangle: ");
     scanf("%d", &a);
     printf("Enter the second side of the triangle: ");
