@@ -8,6 +8,6 @@ int main()
     printf("input breadth \n");
     scanf("%d", &b);
     a = l * b;
-    printf("This result is %d", a);
+    printf("This area is %d", a);
     return 0;
 }
