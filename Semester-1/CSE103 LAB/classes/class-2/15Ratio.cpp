@@ -12,7 +12,7 @@ int main()
     scanf("%d", &c);
     printf("Enter the fourth number: ");
     scanf("%d", &d);
-    ratio = (a - b) / (c - d);
+    ratio = (float)(a - b) / (c - d);
     printf("The ratio is: %f", ratio);
     return 0;
 }
