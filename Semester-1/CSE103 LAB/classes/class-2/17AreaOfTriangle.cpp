@@ -13,6 +13,6 @@ int main()
     scanf("%d", &c);
     semi = (a + b + c) / 2;
     area = sqrt(semi * (semi - a) * (semi - b) * (semi - c));
-    printf("Area of the triangle is: %f", area);
+    printf("Area of the triangle is: %lf", area);
     return 0;
 }
