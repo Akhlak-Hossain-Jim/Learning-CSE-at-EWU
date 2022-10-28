@@ -4,7 +4,7 @@ int main()
 {
     int BS;
     float GS, HRA, DA;
-    printf("This program is to output Gross salary.\n");
+    printf("This program is to output Gross salary from basic salary.\n");
     printf("Enter the basic salary: ");
     scanf("%d", &BS);
     if (BS <= 10000)

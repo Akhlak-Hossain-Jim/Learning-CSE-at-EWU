@@ -4,7 +4,7 @@ int main()
 {
     int income;
     float rate, tax;
-    printf("This program is to output calculated tax.\n");
+    printf("This program is to output calculated tax based on income.\n");
     printf("Enter the income: ");
     scanf("%d", &income);
     if (income <= 150000)
