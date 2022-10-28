@@ -3,6 +3,7 @@
 int main()
 {
     int sub1, sub2, sub3, sub4, sub5, total, average;
+    printf("This program is to calculate total and average of entered 5 subjects number.\n");
     printf("Enter the number of subject 1: ");
     scanf("%d", &sub1);
     printf("Enter the number of subject 2: ");

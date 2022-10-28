@@ -2,14 +2,15 @@
 
 int main()
 {
-    int radius, length, volumeL;
-    float volumeR;
-    printf("Input the radius: ");
+    int radius, length, volume_of_cube;
+    float volume_of_sphere;
+    printf("This program is to calculate the volume of a sphere and a cube.\n");
+    printf("Enter the radius: ");
     scanf("%d", &radius);
-    printf("Input the length: ");
+    printf("Enter the length: ");
     scanf("%d", &length);
-    volumeR = (4 * 3.14 * radius * radius * radius) / 3;
-    volumeL = length * length * length;
-    printf("Volume of sphere with a radius of %d unit is %f unit cube \nVolume of cube with a length of %d unit is %d unit cube", radius, volumeR, length, volumeL);
+    volume_of_sphere = (4 * 3.14 * radius * radius * radius) / 3;
+    volume_of_cube = length * length * length;
+    printf("Volume of the sphere with a radius of %d unit is %f unit cube.\nVolume of the cube with a length of %d unit is %d unit cube", radius, volume_of_sphere, length, volume_of_cube);
     return 0;
 }

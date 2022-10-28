@@ -4,6 +4,7 @@ int main()
 {
     int a, b, c, d;
     float ratio;
+    printf("This program is to calculate ratio from 4 numbers in '(A-B)/(C-D)' manner.\n");
     printf("Enter the first number: ");
     scanf("%d", &a);
     printf("Enter the second number: ");

@@ -4,7 +4,8 @@ int main()
 {
     int distance, meters, centimeters;
     float feet, inches;
-    printf("Input the number\n");
+    printf("This program is to convert Km to meters, feet, inches, centimeters.\n");
+    printf("Enter a Kilometer value: ");
     scanf("%d", &distance);
     meters = distance * 1000;
     feet = distance * 3280.84;

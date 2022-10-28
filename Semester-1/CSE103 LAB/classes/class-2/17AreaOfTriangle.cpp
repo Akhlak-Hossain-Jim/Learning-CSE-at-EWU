@@ -5,6 +5,7 @@ int main()
 {
     int a, b, c;
     double semi, area;
+    printf("This program is to calculate area of a triangle.\n");
     printf("Enter the first side: ");
     scanf("%d", &a);
     printf("Enter the second side: ");

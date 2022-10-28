@@ -3,10 +3,11 @@
 int main()
 {
     int minutes, hours, calculatedMin;
-    printf("Input the minutes\n");
+    printf("This program is to convert minutes to Hour and Minutes.\n");
+    printf("Enter minutes: ");
     scanf("%d", &minutes);
     hours = minutes / 60;
     calculatedMin = minutes % 60;
-    printf("%d minutes is equals to %dhour and %dminutes", minutes, hours, calculatedMin);
+    printf("%d minutes means: %dhour and %dminutes", minutes, hours, calculatedMin);
     return 0;
 }

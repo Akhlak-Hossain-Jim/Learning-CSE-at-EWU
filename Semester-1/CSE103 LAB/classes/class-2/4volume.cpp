@@ -2,14 +2,15 @@
 
 int main()
 {
-    int r, h;
-    float v;
+    int radius, height;
+    float volume;
     const float pi = 3.14;
-    printf("input the radius\n");
-    scanf("%d", &r);
-    printf("input the height\n");
-    scanf("%d", &h);
-    v = pi * r * r * h;
-    printf("The volume is %f", v);
+    printf("This program is to calculate Volume of a cylinder from radius and height.\n");
+    printf("Enter radius: ");
+    scanf("%d", &radius);
+    printf("Enter height: ");
+    scanf("%d", &height);
+    volume = pi * radius * radius * height;
+    printf("The volume is %f", volume);
     return 0;
 }

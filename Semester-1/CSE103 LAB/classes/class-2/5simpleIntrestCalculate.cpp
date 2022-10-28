@@ -2,15 +2,16 @@
 
 int main()
 {
-    int principle, rate, TIME;
+    int principal, rate, TIME;
     float interest;
-    printf("Input the principle\n");
-    scanf("%d", &principle);
-    printf("Input the rate\n");
+    printf("This program is to calculate simple interest from given principal, rate and time.\n");
+    printf("Enter the principal: ");
+    scanf("%d", &principal);
+    printf("Enter the rate: ");
     scanf("%d", &rate);
-    printf("Input the time\n");
+    printf("Enter the time: ");
     scanf("%d", &TIME);
-    interest = principle * rate * TIME / 100;
+    interest = principal * rate * TIME / 100;
     printf("The simple Interest is %f", interest);
     return 0;
 }

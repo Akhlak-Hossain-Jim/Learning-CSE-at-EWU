@@ -4,9 +4,10 @@ int main()
 {
     int cm;
     float inches;
-    printf("Input the length in cm: ");
+    printf("This program is to convert centimeters to Inches.\n");
+    printf("Enter the length in cm: ");
     scanf("%d", &cm);
     inches = cm / 2.54;
-    printf("%d sm means %finches", cm, inches);
+    printf("%d centimeters means %finches", cm, inches);
     return 0;
 }

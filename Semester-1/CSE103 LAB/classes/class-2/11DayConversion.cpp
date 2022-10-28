@@ -3,7 +3,8 @@
 int main()
 {
     int days, weeks, months, years, calculatedDays;
-    printf("Input the days\n");
+    printf("This program is to calculate years, months, weeks, and days form total number of days.\n");
+    printf("Enter total days: ");
     scanf("%d", &days);
     years = days / 365;
     calculatedDays = days % 365;

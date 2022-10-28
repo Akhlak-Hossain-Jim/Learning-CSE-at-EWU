@@ -3,7 +3,8 @@
 int main()
 {
     int number, square, cube;
-    printf("Input the number\n");
+    printf("This program is to calculate square and cube of number.\n");
+    printf("Enter the number: ");
     scanf("%d", &number);
     square = number * number;
     cube = number * number * number;

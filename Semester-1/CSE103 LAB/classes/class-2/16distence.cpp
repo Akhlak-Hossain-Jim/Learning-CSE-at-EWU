@@ -5,6 +5,7 @@ int main()
 {
     int x1, y1, x2, y2;
     double distance;
+    printf("This program is to calculate distance of 2 2D points.");
     printf("Enter the x1 point: ");
     scanf("%d", &x1);
     printf("Enter the y1 point: ");
