@@ -2,7 +2,7 @@
 
 int main()
 {
-    int n, age, child = 0, teens = 0, senior = 0;
+    int n, age, teens = 0;
     printf("This program is to find number of teens.\n");
     printf("Enter the number of peoples' age: ");
     scanf("%d", &n);
@@ -10,11 +10,7 @@ int main()
     {
         printf("Enter person %d's age: ", i + 1);
         scanf("%d", &age);
-        if (age > 12 && age < 19)
-        {
-            teens += 1;
-        }
-        else if (age > 12 && age < 19)
+        if (age > 12 && age < 20)
         {
             teens += 1;
         }
