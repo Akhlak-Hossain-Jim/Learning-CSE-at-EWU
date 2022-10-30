@@ -10,7 +10,7 @@ int main()
     {
         printf("Enter person %d's age: ", i);
         scanf("%d", &age);
-        if (age > 12 && age < 19)
+        if (age > 12 && age < 20)
         {
             teens += 1;
         }
