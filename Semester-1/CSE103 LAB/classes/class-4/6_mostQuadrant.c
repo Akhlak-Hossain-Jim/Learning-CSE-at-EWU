@@ -4,7 +4,7 @@ int main()
 {
     int n, x, y, first = 0, second = 0, third = 0, forth = 0, center = 0;
     printf("This program is to find most points falls in a quadrant of some 2D points.\n");
-    printf("Enter points to be compared: ");
+    printf("Enter total number of 2D points to compare: ");
     scanf("%d", &n);
     if (n > 0)
     {

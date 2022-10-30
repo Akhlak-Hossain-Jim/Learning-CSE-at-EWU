@@ -4,7 +4,7 @@ int main()
 {
     int n, age, teens = 0;
     printf("This program is to find number of teens.\n");
-    printf("Enter the number of peoples' age: ");
+    printf("Enter the number of peoples' age to compare: ");
     scanf("%d", &n);
     for (int i = 0; i < n; i++)
     {
