@@ -6,5 +6,6 @@
 ---
 
 - [Lab 1, 02/10/2022](./classes/class-1.md)
-- [Lab 2, 16/10/2022](./classes/class-2/README.md)
-- [Lab 3, 23/10/2022](./classes/class-3/README.md)
+- [Lab 2, 16/10/2022](./classes/class-2/)
+- [Lab 3, 23/10/2022](./classes/class-3/)
+- [Lab 4, 30/10/2022](./classes/class-4/)
