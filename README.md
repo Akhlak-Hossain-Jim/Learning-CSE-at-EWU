@@ -9,7 +9,7 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 
 ## Semester 1
 
-- [MAT101](/Semester-1/MAT101/README.md)
-- [ENG101](/Semester-1/ENG101/README.md)
-- [CSE103](/Semester-1/CSE103/README.md)
-- [CSE103 Lab](/Semester-1/CSE103%20LAB/README.md)
+- [MAT101](/Semester-1/MAT101/)
+- [ENG101](/Semester-1/ENG101/)
+- [CSE103](/Semester-1/CSE103/)
+- [CSE103 Lab](/Semester-1/CSE103%20LAB/)
