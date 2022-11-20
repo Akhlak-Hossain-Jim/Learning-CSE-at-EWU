@@ -22,7 +22,7 @@ int main()
         arr[index] = value;
         for (int i = index + 1; i < n; i++)
         {
-            store2 = arr[i + 1];
+            store2 = arr[i];
             arr[i] = store1;
             store1 = store2;
         }
