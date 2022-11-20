@@ -10,3 +10,4 @@
 - [Lab 3, 23/10/2022](./classes/class-3/)
 - [Lab 4, 30/10/2022](./classes/class-4/)
 - [Lab 5, 13/11/2022](./classes/class-5/)
+- [Lab 5, 20/11/2022](./classes/class-6/)
