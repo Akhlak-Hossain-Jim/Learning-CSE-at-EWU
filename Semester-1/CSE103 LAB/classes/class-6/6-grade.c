@@ -2,7 +2,7 @@
 
 int main()
 {
-    int results[7], grades[4] = {0, 0, 0, 0}, n, most = 0, index;
+    int results[100], grades[4] = {0, 0, 0, 0}, n, most = 0, index;
     char GRADE[4] = {'A', 'B', 'C', 'D'};
     printf("This program  can input some students marks and display which grades are achieved by most of the students (Grades are A, B, C, and D)\nEnter the array length: ");
     scanf("%d", &n);

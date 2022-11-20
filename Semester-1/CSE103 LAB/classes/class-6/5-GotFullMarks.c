@@ -2,7 +2,7 @@
 
 int main()
 {
-    int temps[7], n, state = 0;
+    int temps[100], n, state = 0;
     printf("This program  can input some students' marks and check whether any student got full marks. You may assume that exam's total mark is 30.\nEnter the array length: ");
     scanf("%d", &n);
     if (n < 101)
