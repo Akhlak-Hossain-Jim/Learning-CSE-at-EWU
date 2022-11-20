@@ -3,7 +3,7 @@
 int main()
 {
     int ages[100], n, teen = 0;
-    printf("This program can input some persons age into an array and display how many of them are older than average age of those persons.\nEnter the array length: ");
+    printf("This program can input some students' age of a particular class into an array and display number of teenager in that class.\nEnter the array length: ");
     scanf("%d", &n);
     if (n < 101)
     {
