@@ -24,9 +24,9 @@ void Perfect(int a)
             sum += i;
     }
     if (sum / 2 == a)
-        printf("The number is a Armstrong or perfect number.\n");
+        printf("The number is a perfect number.\n");
     else
-        printf("The number is not a Armstrong or perfect number.\n");
+        printf("The number is not a perfect number.\n");
 }
 
 int main()
