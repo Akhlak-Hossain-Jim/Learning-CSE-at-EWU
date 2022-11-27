@@ -2,19 +2,18 @@
 
 void Prime(int a)
 {
-    for (int i = 1; i < a / 2; i++)
+    int sp = 0;
+    for (int i = 2; i <= a / 2; i++)
     {
         if (a % i == 0)
         {
-            printf("The number is a prime number.\n");
-            break;
-        }
-        else
-        {
-            continue;
-            printf("The number is not a prime number.\n");
+            sp = 1;
         }
     }
+    if (sp == 0)
+        printf("The number is a prime number.\n");
+    else
+        printf("The number is not a prime number.\n");
 }
 void Perfect(int a)
 {
