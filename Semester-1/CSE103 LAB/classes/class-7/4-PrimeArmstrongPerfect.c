@@ -1,5 +1,20 @@
 #include <stdio.h>
 
+void Armstrong(int a)
+{
+    int originalNum = a, remainder, result = 0;
+    while (originalNum != 0)
+    {
+        remainder = originalNum % 10;
+        result += remainder * remainder * remainder;
+        originalNum /= 10;
+    }
+
+    if (result == a)
+        printf("The is an Armstrong number.\n");
+    else
+        printf("The is not an Armstrong number.\n");
+}
 void Prime(int a)
 {
     int sp = 0;
@@ -35,6 +50,7 @@ int main()
     printf("This program to check whether a number is prime, Armstrong or perfect number using functions.\nEnter the number: ");
     scanf("%d", &num1);
     Prime(num1);
+    Armstrong(num1);
     Perfect(num1);
     return 0;
 }
