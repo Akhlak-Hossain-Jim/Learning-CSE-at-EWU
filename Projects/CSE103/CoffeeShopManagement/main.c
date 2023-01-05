@@ -118,6 +118,24 @@ void updateQuantity(int *identifier)
     return;
 }
 
+void addItem()
+{
+    char str[20];
+    printf("\n\n\t\t\tEnter a unique valid integer item ID: ");
+    scanf("%d", &COFFEEs[menuLength].code);
+    printf("\t\t\tEnter the item name: ");
+    gets(str);
+    strcpy(COFFEEs[menuLength].name, str);
+    printf("\t\t\tEnter the item price: ");
+    scanf("%lf", &COFFEEs[menuLength].price);
+    printf("\t\t\tEnter the item available quantity: ");
+    scanf("%d", &COFFEEs[menuLength].inStock);
+    printf("\t\tCongrats Item successfully added.\n");
+    menuLength++;
+    printList();
+    return;
+}
+
 int main()
 {
     int identifier = 8, itemID, quantity;
@@ -146,10 +164,13 @@ int main()
                 itemID = staged;
             }
         }
-        else if (identifier == 4)
+        else if (identifier == 2)
         {
-            updateQuantity(&identifier);
+            addItem();
+            identifier = 8;
         }
+        else if (identifier == 4)
+            updateQuantity(&identifier);
         else if (identifier == 5)
         {
             printStat();
@@ -181,7 +202,7 @@ int main()
                     }
                     else
                     {
-                        printf("\t\tQuantity is not availabe.\n");
+                        printf("\t\tQuantity is not available.\n");
                         identifier = 8;
                     }
                     break;
