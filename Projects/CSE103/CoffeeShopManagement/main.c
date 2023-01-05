@@ -87,7 +87,7 @@ void printStat()
     }
     else
     {
-        printf(" \n\n\n\t\tNo items have sold yet.");
+        printf(" \n\n\n\t\tThere have been no sells yet.");
     }
     return;
 }
