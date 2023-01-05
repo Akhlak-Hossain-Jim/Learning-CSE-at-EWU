@@ -18,6 +18,7 @@ struct sold
 };
 
 int menuLength = 8;
+int soldLength = 0;
 
 struct menu COFFEEs[20] = {
     {101, "Americano  ", 120.4, 23},
@@ -29,6 +30,8 @@ struct menu COFFEEs[20] = {
     {107, "Cold Coffee", 103, 30},
     {108, "Affogato   ", 150, 10},
 };
+
+struct sold sellData[100];
 
 void info()
 {
@@ -46,6 +49,10 @@ void selectBasicOptionInfo()
 {
     printf("\n\n\n \t\tSelect an Option:\n");
     printf("%c\t\t\t1. Print Item list.\n", ' ');
+    printf("%c\t\t\t2. Add item to the menu.\n", ' ');
+    printf("%c\t\t\t3. Delete item to the menu.\n", ' ');
+    printf("%c\t\t\t4. Update quantity of an item.\n", ' ');
+    printf("%c\t\t\t5. View todays stat.\n", ' ');
     printf("%c\t\t\t9. Exit\n", ' ');
     return;
 }
@@ -58,6 +65,29 @@ void printList()
     {
         printf("\t\t| %d | %s\t| %.2lf\t| %d \t\t|\n", COFFEEs[i].code, COFFEEs[i].name, COFFEEs[i].price, COFFEEs[i].inStock);
         printf(" \t\t-------------------------------------------------\n");
+    }
+    return;
+}
+
+void printStat()
+{
+    double sum = 0;
+    if (soldLength > 0)
+    {
+        printf("\n\n");
+        printf("\t\t-------------------------------------------------\n\t\t| ID  | Name \t\t| Quantity \t| Amount |\n \t\t-------------------------------------------------\n");
+        for (int i = 0; i < soldLength; i++)
+        {
+            printf("\t\t| %d | %s\t| %.2lf\t| %d \t\t|\n", sellData[i].code, sellData[i].name, sellData[i].quantity, sellData[i].price);
+            printf(" \t\t-------------------------------------------------\n");
+            sum += sellData[i].price;
+        }
+        printf(" \n\n\n\t\tTotal Sold: $%.2lf\n", sum);
+        printf("\t\tPress 8 to go back to main menu: ");
+    }
+    else
+    {
+        printf(" \n\n\n\t\tNo items have sold yet.");
     }
     return;
 }
@@ -90,6 +120,11 @@ int main()
                 itemID = staged;
             }
         }
+        else if (identifier == 5)
+        {
+            printStat();
+            scanf("%d", &identifier);
+        }
         else if (identifier == 10)
         {
             int i, staged;
@@ -97,7 +132,7 @@ int main()
             {
                 if (COFFEEs[i].code == itemID && COFFEEs[i].inStock > 0)
                 {
-                    printf("\n\n\t\t %s withCode %d is Available(%d) at price: %.2lf\n\t\t\tEnter Quantity to confirm or 0 to cancel: ", COFFEEs[i].name, COFFEEs[i].code, COFFEEs[i].inStock, COFFEEs[i].price);
+                    printf("\n\n\t\t %s with Code %d is Available(%d) at price: %.2lf\n\t\t\tEnter Quantity to confirm or 0 to cancel: ", COFFEEs[i].name, COFFEEs[i].code, COFFEEs[i].inStock, COFFEEs[i].price);
                     scanf("%d", &staged);
                     if (staged == 0)
                         identifier = 8;
@@ -107,6 +142,11 @@ int main()
                         quantity = staged;
                         itemPrice = COFFEEs[i].price;
                         strcpy(itemName, COFFEEs[i].name);
+                        strcpy(sellData[soldLength].name, COFFEEs[i].name);
+                        sellData[soldLength].code = COFFEEs[i].code;
+                        sellData[soldLength].quantity = quantity;
+                        sellData[soldLength].price = COFFEEs[i].price * quantity;
+                        soldLength++;
                         identifier = 11;
                     }
                     else
@@ -126,7 +166,7 @@ int main()
         else if (identifier == 11)
         {
             printf("\n\n\t\t\t\tBill:\n");
-            printf("\t\tName    : %s\n\t\tQuantity: %d\n\t\tPrice   :  %.2lf\n\----------------------\n\t\tTotal   : %.2lf\n\n", itemName, quantity, itemPrice, quantity * itemPrice);
+            printf("\t\tName    : %s\n\t\tQuantity: %d\n\t\tPrice   :  %.2lf\n\t\t----------------------\n\t\tTotal   : %.2lf\n\n", itemName, quantity, itemPrice, quantity * itemPrice);
             identifier = 8;
         }
         else if (identifier == 8)
