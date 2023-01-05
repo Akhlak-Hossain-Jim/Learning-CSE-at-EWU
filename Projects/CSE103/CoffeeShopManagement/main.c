@@ -78,7 +78,7 @@ void printStat()
         printf("\t\t-------------------------------------------------\n\t\t| ID  | Name \t\t| Quantity \t| Amount |\n \t\t-------------------------------------------------\n");
         for (int i = 0; i < soldLength; i++)
         {
-            printf("\t\t| %d | %s\t| %.2lf\t| %d \t\t|\n", sellData[i].code, sellData[i].name, sellData[i].quantity, sellData[i].price);
+            printf("\t\t| %d | %s\t| %d\t| %.2lf \t\t|\n", sellData[i].code, sellData[i].name, sellData[i].quantity, sellData[i].price);
             printf(" \t\t-------------------------------------------------\n");
             sum += sellData[i].price;
         }
@@ -88,6 +88,32 @@ void printStat()
     else
     {
         printf(" \n\n\n\t\tThere have been no sells yet.");
+    }
+    return;
+}
+
+void updateQuantity(int *identifier)
+{
+    int id, quantity, i, staged;
+    printf("\n\n\t\tEnter a valid item ID: ");
+    scanf("%d", &id);
+    for (i = 0; i < menuLength; i++)
+    {
+        if (COFFEEs[i].code == id)
+        {
+            printf("\t\tEnter the quantity to increment by: ");
+            scanf("%d", &quantity);
+            COFFEEs[i].inStock += quantity;
+            printf("\t\tIncremented Successfully.....\n");
+            printList();
+            *identifier = 8;
+            break;
+        }
+    }
+    if (i == menuLength)
+    {
+        printf(" \t\tNo item found.");
+        updateQuantity(identifier);
     }
     return;
 }
@@ -119,6 +145,10 @@ int main()
                 identifier = 10;
                 itemID = staged;
             }
+        }
+        else if (identifier == 4)
+        {
+            updateQuantity(&identifier);
         }
         else if (identifier == 5)
         {
