@@ -92,6 +92,58 @@ void printStat()
     return;
 }
 
+void addItem()
+{
+    char str[20];
+    printf("\n\n\t\t\tEnter a unique valid integer item ID: ");
+    scanf("%d", &COFFEEs[menuLength].code);
+    printf("\t\t\tEnter the item name: ");
+    getchar();
+    gets(str);
+    strcpy(COFFEEs[menuLength].name, str);
+    printf("\t\t\tEnter the item price: ");
+    scanf("%lf", &COFFEEs[menuLength].price);
+    printf("\t\t\tEnter the item available quantity: ");
+    scanf("%d", &COFFEEs[menuLength].inStock);
+    printf("\t\tCongrats Item successfully added.\n");
+    menuLength++;
+    printList();
+    return;
+}
+
+void removeItem(int *identifier){
+    int id, index, i, staged;
+    printf("\n\n\t\tEnter a valid item ID to remove: ");
+    scanf("%d", &id);
+    for (i = 0; i < menuLength; i++)
+    {
+        if (COFFEEs[i].code == id)
+        {
+            printf("\t\tFound the item with ID: %d with name %s\n\t\t\tEnter 1 to confirm 0 to exit: ", COFFEEs[i].code, COFFEEs[i].name);
+            scanf("%d", &staged);
+            if (staged == 0){
+                *identifier = 8;
+            }
+            else if (staged == 1){
+                for (int j = i; j < menuLength;j++){
+                    COFFEEs[j].code=COFFEEs[j + 1].code;
+                    strcpy(COFFEEs[j].name, COFFEEs[j + 1].name);
+                    COFFEEs[j].price=COFFEEs[j + 1].price;
+                    COFFEEs[j].inStock=COFFEEs[j + 1].inStock;
+                }
+                menuLength--;
+                printList();
+            }
+            break;
+        }
+    }
+    if (i == menuLength)
+    {
+        printf(" \t\tNo item found.");
+    }
+    return;
+}
+
 void updateQuantity(int *identifier)
 {
     int id, quantity, i, staged;
@@ -118,24 +170,6 @@ void updateQuantity(int *identifier)
     return;
 }
 
-void addItem()
-{
-    char str[20];
-    printf("\n\n\t\t\tEnter a unique valid integer item ID: ");
-    scanf("%d", &COFFEEs[menuLength].code);
-    printf("\t\t\tEnter the item name: ");
-    gets(str);
-    strcpy(COFFEEs[menuLength].name, str);
-    printf("\t\t\tEnter the item price: ");
-    scanf("%lf", &COFFEEs[menuLength].price);
-    printf("\t\t\tEnter the item available quantity: ");
-    scanf("%d", &COFFEEs[menuLength].inStock);
-    printf("\t\tCongrats Item successfully added.\n");
-    menuLength++;
-    printList();
-    return;
-}
-
 int main()
 {
     int identifier = 8, itemID, quantity;
@@ -145,7 +179,6 @@ int main()
     selectBasicOptionInfo();
     printf("\n \t\tSelect: ");
     scanf("%d", &identifier);
-
     while (identifier)
     {
         if (identifier == 1)
@@ -169,11 +202,17 @@ int main()
             addItem();
             identifier = 8;
         }
+        else if (identifier == 3)
+        {
+            removeItem(&identifier);
+            identifier = 8;
+        }
         else if (identifier == 4)
             updateQuantity(&identifier);
         else if (identifier == 5)
         {
             printStat();
+            printf(" \n\n");
             scanf("%d", &identifier);
         }
         else if (identifier == 10)
@@ -216,7 +255,7 @@ int main()
         }
         else if (identifier == 11)
         {
-            printf("\n\n\t\t\t\tBill:\n");
+            printf("\n\n\t\t-----------Bill-----------\n\n");
             printf("\t\tName    : %s\n\t\tQuantity: %d\n\t\tPrice   :  %.2lf\n\t\t----------------------\n\t\tTotal   : %.2lf\n\n", itemName, quantity, itemPrice, quantity * itemPrice);
             identifier = 8;
         }
@@ -229,7 +268,7 @@ int main()
         }
         else if (identifier == 9)
         {
-            printf("Closing app.......");
+            printf("\n\n\n\t\t\tClosing app.......\n\n");
             break;
         }
     }
