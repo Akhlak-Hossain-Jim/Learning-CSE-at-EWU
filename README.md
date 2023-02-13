@@ -13,3 +13,10 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [ENG101](/Semester-1/ENG101/)
 - [CSE103](/Semester-1/CSE103/)
 - [CSE103 Lab](/Semester-1/CSE103%20LAB/)
+
+## Semester 2
+
+- [CSE106](/Semester-2/CSE106/)
+- [STA102](/Semester-2/STA102/)
+- [CHE109](/Semester-2/CHE109/)
+- [CHE109 Lab](/Semester-2/CHE109%20LAB/)
