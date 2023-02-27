@@ -26,7 +26,8 @@
    ![Table](./Images/A1Q4Table.png) 
    
    - a. What is the average miles per gallon for city driving? [1]
-   - b. On average, how much higher is the miles per gallon for highway driving as compared to city driving? [1] - c. What percentage of the cars use regular fuel? [1]
+   - b. On average, how much higher is the miles per gallon for highway driving as compared to city driving? [1] 
+   - c. What percentage of the cars use regular fuel? [1]
 
 5. Fill in the following table on number of hours slept in a study on 100 individuals:
 
