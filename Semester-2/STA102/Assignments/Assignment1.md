@@ -20,7 +20,7 @@
    - Where I plan to stay: (11 categories including hotel, apartment, relatives, camping)
    - Total days in Hawaii
      - What is the population being studied? [1]
-     - Comment on each of the four questions in terms of whether it will provide categorical or quantitative data.
+     - Comment on each of the four questions in terms of whether it will provide categorical or quantitative data. [4]
 
 4. Refer to the following table.
    ![Table](./Images/A1Q4Table.png) - a. What is the average miles per gallon for city driving? [1] - b. On average, how much higher is the miles per gallon for highway driving as compared to city driving? [1] - c. What percentage of the cars use regular fuel? [1]
