@@ -9,3 +9,5 @@
   - [Code](./Assignments/Assignment3-Code.js)
 - [Assignment 4](./Assignments/Assignment4.md)
   - [Solution](./Assignments/Assignment4-Solution.pdf)
+- [Assignment 5](./Assignments/Assignment5.md)
+  - [Solution](./Assignments/Assignment5-Solution.pdf)
