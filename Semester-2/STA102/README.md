@@ -12,4 +12,4 @@
 - [Assignment 5](./Assignments/Assignment5.md)
   - [Solution](./Assignments/Assignment5-Solution.pdf)
 - [Assignment 6](./Assignments/Assignment6.md)
-  - [Solution](./Assignments/Assignment5-Solution.pdf)
+  - [Solution](./Assignments/Assignment6-Solution.pdf)
