@@ -11,3 +11,5 @@
   - [Solution](./Assignments/Assignment4-Solution.pdf)
 - [Assignment 5](./Assignments/Assignment5.md)
   - [Solution](./Assignments/Assignment5-Solution.pdf)
+- [Assignment 6](./Assignments/Assignment6.md)
+  - [Solution](./Assignments/Assignment5-Solution.pdf)
