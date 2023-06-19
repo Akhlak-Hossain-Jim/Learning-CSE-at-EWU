@@ -23,7 +23,6 @@ class UniqueNumber {
                 set[j]=arr[i];
                 j++;
             }
-            i++;
         }
         System.out.print("Unique inputs: ");
         for(int el: set){
