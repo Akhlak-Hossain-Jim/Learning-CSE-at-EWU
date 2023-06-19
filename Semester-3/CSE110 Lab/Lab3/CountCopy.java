@@ -4,8 +4,7 @@ import java.util.Scanner;
 class CountCopy {
     public static void main(String[] args) {
         Scanner inp=new Scanner(System.in);
-        System.out.print("This program is counting repeted numbers.\nEnter the integers between 1 to 100: ");
-        int n=inp.nextInt();
+        System.out.print("This program is counting repeated numbers.\nEnter the integers between 1 to 100: ");
         int[] arr = new int[100];
         int[] set = new int[100];
         int i = 0;
