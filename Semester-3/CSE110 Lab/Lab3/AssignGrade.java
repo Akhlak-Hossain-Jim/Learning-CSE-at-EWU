@@ -1,4 +1,4 @@
-package assignGrade;
+package lab3;
 
 import java.util.Scanner;
 
