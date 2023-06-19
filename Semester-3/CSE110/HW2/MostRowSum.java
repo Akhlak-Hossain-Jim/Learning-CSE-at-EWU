@@ -1,15 +1,16 @@
-// package hw2;
+package hw2;
 
 import java.util.Scanner;
 
-class RandomShuffling{
+class MostRowSum{
     public static void main(String[] args){
         Scanner inp = new Scanner(System.in);
-        System.out.print("This program is randomly shuffling a 2D array.\nEnter row number: ");
+        System.out.print("This program is finding the row with largest sum of a 2D array.\nEnter row number: ");
         int r = inp.nextInt();
         System.out.print("Enter Column number: ");
         int c = inp.nextInt();
         int[][] arr= new int[r][c];
+        int[] row=new int[r];
         for(int i=0;i<r;i++){
             for(int j=0;j<c;j++){
                 System.out.print("Enter element for row "+(i+1)+" column "+(j+1)+" : ");
@@ -23,25 +24,21 @@ class RandomShuffling{
             }
             System.out.println("");
         }
-        for (int i=0;i<r;i++){
-            int a=(int)(Math.random()*r);
-            int[] b = arr[i];
-            arr[i]=arr[a];
-            arr[a]=b;
-            for(int j=0;j<c;j++){
-                int aa=(int)(Math.random()*c);
-                int bb = arr[i][j];
-                arr[i][j]=arr[i][aa];
-                arr[i][aa]=bb;
-            }
-        }
-        
-        System.out.println("The randomly shuffled 2D Array:");
         for(int i=0;i<r;i++){
+            int sumC=0;
             for(int j=0;j<c;j++){
-                System.out.print(arr[i][j]+"\t");
+                sumC+=arr[i][j];
             }
-            System.out.println("");
+            row[i]=sumC;
         }
+        int max=row[0];
+        int in = 0;
+        for(int i = 0;i<r;i++){
+            if(row[i]>max){
+                max=row[i];
+                in=i;
+            }
+        }
+        System.out.println("Row "+(in+1)+" has the largest sum, which is: "+row[in]);
     }
 }

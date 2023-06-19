@@ -1,11 +1,11 @@
-// package hw2;
+package hw2;
 
 import java.util.Scanner;
 
-class RandomShuffling{
+class AllSum{
     public static void main(String[] args){
         Scanner inp = new Scanner(System.in);
-        System.out.print("This program is randomly shuffling a 2D array.\nEnter row number: ");
+        System.out.print("This program is summing all elements of a 2D array.\nEnter row number: ");
         int r = inp.nextInt();
         System.out.print("Enter Column number: ");
         int c = inp.nextInt();
@@ -23,25 +23,14 @@ class RandomShuffling{
             }
             System.out.println("");
         }
-        for (int i=0;i<r;i++){
-            int a=(int)(Math.random()*r);
-            int[] b = arr[i];
-            arr[i]=arr[a];
-            arr[a]=b;
-            for(int j=0;j<c;j++){
-                int aa=(int)(Math.random()*c);
-                int bb = arr[i][j];
-                arr[i][j]=arr[i][aa];
-                arr[i][aa]=bb;
-            }
-        }
-        
-        System.out.println("The randomly shuffled 2D Array:");
+        int Sum = 0;
         for(int i=0;i<r;i++){
+            int sumC=0;
             for(int j=0;j<c;j++){
-                System.out.print(arr[i][j]+"\t");
+                sumC+=arr[i][j];
             }
-            System.out.println("");
+            Sum+=sumC;
         }
+        System.out.println("Sum of all elements is: "+Sum);
     }
 }
