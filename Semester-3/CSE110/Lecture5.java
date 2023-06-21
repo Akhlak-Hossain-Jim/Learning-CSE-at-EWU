@@ -19,11 +19,11 @@ class Circle{
         else
             System.out.println("Not Equal");
     }
-    void checkRadius(Circle c2){
+    boolean checkRadius(Circle c2){
         if(radius==c2.radius)
-            System.out.println("Equal");
+            return true;
         else
-            System.out.println("Not Equal");
+            return false;
     }
 }
 
@@ -45,7 +45,7 @@ class Lecture5{
         }
         c1.checkArea(c2[0]);
         checkArea(c1,c2[2]);
-        c1.checkRadius(c2[3]);
+        System.out.println(c1.checkRadius(c2[3]));
     }
     public static void checkArea(Circle c1, Circle c2){
         if(c1.area()==c2.area())
