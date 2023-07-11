@@ -1,7 +1,5 @@
 package lab5;
 
-
-
 import java.util.Scanner;
 
 class Icecream {
@@ -109,10 +107,5 @@ public class 0DefiningClass {
             IcecreamArray[i].setPrice(p);
             System.out.println(IcecreamArray[i].display());
         }
-        inp.nextLine();
-        System.out.print("Enter a company name to search with: ");
-        String name = inp.nextLine();
-        System.out.println(name);
-        searchByCompany(name);
     }
 }
