@@ -256,9 +256,9 @@ public class Relations {
         int ci = 0;
         int fi = 0;
 
-        int iShifter = 1;
+        int iShifter = 30;
         String InitialMenu = "1. Add\n2. Delete\n3. Update\n4. Print\n5. Search\n0. Exit";
-        while (iShifter == 1) {
+        while (iShifter != 0) {
             switch (iShifter) {
                 case 30:
                     System.out.println("Welcome to XYZ Application:\nChoose an option below to perform some task.\n"
@@ -281,6 +281,7 @@ public class Relations {
                             double cg = inp.nextDouble();
                             StudentList.add(si, new Student(id, name, cg));
                             si++;
+                            System.out.println("Student added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 2:
                             System.out.println("Add course information:\nEnter course name: ");
@@ -292,6 +293,7 @@ public class Relations {
                             double cr = inp.nextDouble();
                             CourseList.add(ci, new Course(cid, name, cr));
                             ci++;
+                            System.out.println("Course added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 3:
                             System.out.println("Add faculty information:\nEnter faculty name: ");
@@ -304,6 +306,7 @@ public class Relations {
                             String pos = inp.nextLine();
                             FacultyList.add(fi, new Faculty(id, name, pos));
                             fi++;
+                            System.out.println("Faculty added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                     }
                     iShifter = 30;
@@ -327,6 +330,8 @@ public class Relations {
                             }
                             if (can) {
                                 StudentList.remove(i);
+                                System.out.println(
+                                        "Student removed from the list successfully......\nGetting back to main menu\n\n\n\n");
                             }
                             break;
                         case 2:
@@ -344,6 +349,8 @@ public class Relations {
                             }
                             if (can) {
                                 CourseList.remove(i);
+                                System.out.println(
+                                        "Course removed from the list successfully......\nGetting back to main menu\n\n\n\n");
                             }
                         case 3:
                             System.out.println("Enter the faculty id you want to remove: ");
@@ -359,6 +366,8 @@ public class Relations {
                             }
                             if (can) {
                                 FacultyList.remove(i);
+                                System.out.println(
+                                        "Student removed from the list successfully......\nGetting back to main menu\n\n\n\n");
                             }
                             break;
                     }
@@ -849,6 +858,7 @@ public class Relations {
                     }
                     break;
                 case 0:
+                    System.out.println("Exiting the program.");
                     iShifter = 0;
                     break;
             }
