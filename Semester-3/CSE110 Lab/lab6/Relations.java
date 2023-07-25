@@ -258,7 +258,7 @@ public class Relations {
 
         int iShifter = 30;
         String InitialMenu = "1. Add\n2. Delete\n3. Update\n4. Print\n5. Search\n0. Exit";
-        while (iShifter != 0) {
+        while (iShifter != -1) {
             switch (iShifter) {
                 case 30:
                     System.out.println("Welcome to XYZ Application:\nChoose an option below to perform some task.\n"
@@ -299,9 +299,9 @@ public class Relations {
                             System.out.println("Add faculty information:\nEnter faculty name: ");
                             inp.nextLine();
                             name = inp.nextLine();
-                            System.out.println("Enter student ID: ");
+                            System.out.println("Enter faculty ID: ");
                             id = inp.nextInt();
-                            System.out.println("Enter student CGPA: ");
+                            System.out.println("Enter faculty position: ");
                             inp.nextLine();
                             String pos = inp.nextLine();
                             FacultyList.add(fi, new Faculty(id, name, pos));
@@ -858,8 +858,8 @@ public class Relations {
                     }
                     break;
                 case 0:
-                    System.out.println("Exiting the program.");
-                    iShifter = 0;
+                    System.out.println("Exiting the program........");
+                    iShifter = -1;
                     break;
             }
         }
