@@ -172,6 +172,20 @@ class Course {
         return faculty.display();
     }
 
+    public int getFacultyID() {
+        return faculty.getID();
+    }
+
+    public boolean studentExists(int id) {
+        boolean ex = false;
+        for (int i = 0; i < StudentList.size(); i++) {
+            if (StudentList.get(i).getID() == id) {
+                ex = true;
+                break;
+            }
+        }
+        return ex;
+    }
 }
 
 class Faculty {
@@ -841,16 +855,51 @@ public class Relations {
                             }
                             break;
                         case 4:
-
+                            System.out.print("Enter a course ID: ");
+                            inp.nextLine();
+                            String CID = inp.nextLine();
+                            System.out.print("Enter the student ID you want to check for: ");
+                            int SID = inp.nextInt();
+                            for (int i = 0; i < CourseList.size(); i++) {
+                                if (CourseList.get(i).getID() == CID && CourseList.get(i).studentExists(SID)) {
+                                    System.out.println(CID + " course is taken by the student with the ID of: " + SID);
+                                    break;
+                                }
+                            }
                             break;
                         case 5:
-
+                            System.out.print("Enter a course ID: ");
+                            inp.nextLine();
+                            String CoID = inp.nextLine();
+                            System.out.print("Enter the student ID you want to check for: ");
+                            int FID = inp.nextInt();
+                            for (int i = 0; i < CourseList.size(); i++) {
+                                if (CourseList.get(i).getID() == CoID && CourseList.get(i).getFacultyID() == FID) {
+                                    System.out
+                                            .println(CoID + " course is taught by the faculty with the ID of: " + FID);
+                                    break;
+                                }
+                            }
                             break;
                         case 6:
-
+                            System.out.print("Enter a student ID to see his/her courses: ");
+                            int sId = inp.nextInt();
+                            for (int i = 0; i < StudentList.size(); i++) {
+                                if (StudentList.get(i).getID() == sId) {
+                                    StudentList.get(i).printCourses();
+                                    break;
+                                }
+                            }
                             break;
                         case 7:
-
+                            System.out.print("Enter a student ID to see his/her courses: ");
+                            int fId = inp.nextInt();
+                            for (int i = 0; i < FacultyList.size(); i++) {
+                                if (FacultyList.get(i).getID() == fId) {
+                                    FacultyList.get(i).printCourses();
+                                    break;
+                                }
+                            }
                             break;
 
                         default:
