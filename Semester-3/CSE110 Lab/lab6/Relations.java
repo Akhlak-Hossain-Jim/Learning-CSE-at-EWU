@@ -65,6 +65,7 @@ class Student {
         }
         if (can) {
             CourseList.remove(i);
+            count--;
         }
     }
 
@@ -128,6 +129,7 @@ class Course {
         }
         if (can) {
             StudentList.remove(i);
+            nStudent--;
         }
     }
 
@@ -137,7 +139,7 @@ class Course {
     }
 
     public void dropFaculty() {
-        this.faculty = new Faculty();
+        this.faculty = null;
     }
 
     public void printStudentList() {
@@ -192,7 +194,8 @@ class Course {
 
 class Faculty {
     private int ID;
-    private String name, position;
+    private String name;
+    private String position;
     private ArrayList<Course> CourseList = new ArrayList<Course>();
     private int count = 0;
 
@@ -244,11 +247,13 @@ class Faculty {
         for (int j = 0; j < CourseList.size(); j++) {
             if (CourseList.get(j).getID().equals(id)) {
                 i = j;
+                can = true;
                 break;
             }
         }
         if (can) {
             CourseList.remove(i);
+            count--;
         }
     }
 
@@ -323,6 +328,8 @@ public class Relations {
                             fi++;
                             System.out.println("Faculty added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
+                        default:
+                            break;
                     }
                     iShifter = 30;
                     break;
@@ -347,6 +354,8 @@ public class Relations {
                                 StudentList.remove(i);
                                 System.out.println(
                                         "Student removed from the list successfully......\nGetting back to main menu\n\n\n\n");
+                            } else {
+                                System.out.println("No Student found with the ID of: '" + id + "' to remove.\n\n\n");
                             }
                             break;
                         case 2:
@@ -356,7 +365,7 @@ public class Relations {
                             can = false;
                             i = 0;
                             for (int j = 0; j < CourseList.size(); j++) {
-                                if (CourseList.get(j).getID() == cid) {
+                                if (CourseList.get(j).getID().equals(cid)) {
                                     i = j;
                                     can = true;
                                     break;
@@ -366,7 +375,10 @@ public class Relations {
                                 CourseList.remove(i);
                                 System.out.println(
                                         "Course removed from the list successfully......\nGetting back to main menu\n\n\n\n");
+                            } else {
+                                System.out.println("No Course found with the ID of: '" + cid + "' to remove.\n\n\n");
                             }
+                            break;
                         case 3:
                             System.out.print("Enter the faculty id you want to remove: ");
                             id = inp.nextInt();
@@ -382,8 +394,12 @@ public class Relations {
                             if (can) {
                                 FacultyList.remove(i);
                                 System.out.println(
-                                        "Student removed from the list successfully......\nGetting back to main menu\n\n\n\n");
+                                        "Faculty removed from the list successfully......\nGetting back to main menu\n\n\n\n");
+                            } else {
+                                System.out.println("No Faculty found with the ID of: '" + id + "' to remove.\n\n\n");
                             }
+                            break;
+                        default:
                             break;
                     }
                     iShifter = 30;
@@ -422,6 +438,7 @@ public class Relations {
                                             int sid = inp.nextInt();
                                             StudentList.get(i).setID(sid);
                                             System.out.println("ID successfully updated for: " + id);
+                                            break;
                                         }
                                     }
                                     break;
@@ -434,6 +451,7 @@ public class Relations {
                                             double cg = inp.nextDouble();
                                             StudentList.get(i).setCGPA(cg);
                                             System.out.println("CGPA successfully updated for: " + id);
+                                            break;
                                         }
                                     }
                                     break;
@@ -446,13 +464,14 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(i).getID() == caID) {
+                                                if (CourseList.get(j).getID().equals(caID)) {
                                                     StudentList.get(i).addCourse(CourseList.get(j));
                                                     CourseList.get(j).addStudent(StudentList.get(i));
                                                     System.out.println("Course successfully added for: " + id);
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -465,13 +484,14 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(i).getID() == caID) {
+                                                if (CourseList.get(j).getID().equals(caID)) {
                                                     StudentList.get(i).dropCourse(CourseList.get(j).getID());
                                                     CourseList.get(j).dropStudent(StudentList.get(i).getID());
                                                     System.out.println("Course successfully dropped for: " + id);
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -484,13 +504,13 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(j).getID() == caID) {
+                                                if (CourseList.get(j).getID().equals(caID)) {
                                                     System.out.print("Enter Student's new courseID to update with "
                                                             + caID + " : ");
                                                     inp.nextLine();
                                                     String cuID = inp.nextLine();
                                                     for (int k = 0; k < CourseList.size(); k++) {
-                                                        if (CourseList.get(k).getID() == cuID) {
+                                                        if (CourseList.get(k).getID().equals(cuID)) {
                                                             StudentList.get(i).updateCourse(cuID, CourseList.get(k));
                                                             CourseList.get(j).dropStudent(id);
                                                             CourseList.get(k).addStudent(StudentList.get(i));
@@ -502,8 +522,11 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
+                                    break;
+                                default:
                                     break;
                             }
                             break;
@@ -517,7 +540,7 @@ public class Relations {
                                     inp.nextLine();
                                     String id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Course's new Title:");
                                             inp.nextLine();
                                             String name = inp.nextLine();
@@ -532,7 +555,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Course's new Credit: ");
                                             double cr = inp.nextDouble();
                                             CourseList.get(i).setCredit(cr);
@@ -546,7 +569,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Course's new ID:");
                                             inp.nextLine();
                                             String cid = inp.nextLine();
@@ -561,7 +584,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Student's ID to add to the course:");
                                             int sid = inp.nextInt();
                                             for (int j = 0; j < StudentList.size(); j++) {
@@ -572,6 +595,7 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -580,7 +604,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Student's ID to drop from the course:");
                                             int sid = inp.nextInt();
                                             for (int j = 0; j < StudentList.size(); j++) {
@@ -591,6 +615,7 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -599,7 +624,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Faculty's ID to add to the course:");
                                             int sid = inp.nextInt();
                                             for (int j = 0; j < FacultyList.size(); j++) {
@@ -610,6 +635,7 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -618,7 +644,7 @@ public class Relations {
                                     inp.nextLine();
                                     id = inp.nextLine();
                                     for (int i = 0; i < CourseList.size(); i++) {
-                                        if (CourseList.get(i).getID() == id) {
+                                        if (CourseList.get(i).getID().equals(id)) {
                                             System.out.print("Enter Faculty's ID to drop from the course:");
                                             int sid = inp.nextInt();
                                             for (int j = 0; j < FacultyList.size(); j++) {
@@ -629,8 +655,11 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
+                                    break;
+                                default:
                                     break;
                             }
                             break;
@@ -689,7 +718,7 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(j).getID() == caID) {
+                                                if (CourseList.get(j).getID().equals(caID)) {
                                                     FacultyList.get(i).addCourse(CourseList.get(j));
                                                     CourseList.get(j).addFaculty(FacultyList.get(i));
                                                     System.out.println(
@@ -698,6 +727,7 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
@@ -710,7 +740,7 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(j).getID() == caID) {
+                                                if (CourseList.get(j).getID().equals(caID)) {
                                                     FacultyList.get(i).dropCourse(CourseList.get(j).getID());
                                                     CourseList.get(j).dropFaculty();
                                                     System.out.println(
@@ -719,10 +749,15 @@ public class Relations {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                     break;
+                                default:
+                                    break;
                             }
+                            break;
+                        default:
                             break;
                     }
                     iShifter = 30;
@@ -753,8 +788,7 @@ public class Relations {
                             for (int i = 0; i < StudentList.size(); i++) {
                                 if (StudentList.get(i).getID() == id) {
                                     System.out.println(StudentList.get(i).display());
-                                } else {
-                                    System.out.println("No Student with the id of " + id + " found");
+                                    break;
                                 }
                             }
                             break;
@@ -763,10 +797,9 @@ public class Relations {
                             inp.nextLine();
                             String cid = inp.nextLine();
                             for (int i = 0; i < CourseList.size(); i++) {
-                                if (CourseList.get(i).getID() == cid) {
+                                if (CourseList.get(i).getID().equals(cid)) {
                                     System.out.println(CourseList.get(i).display());
-                                } else {
-                                    System.out.println("No Course with the id of " + cid + " found");
+                                    break;
                                 }
                             }
                             break;
@@ -776,8 +809,7 @@ public class Relations {
                             for (int i = 0; i < FacultyList.size(); i++) {
                                 if (FacultyList.get(i).getID() == id) {
                                     System.out.println(FacultyList.get(i).display());
-                                } else {
-                                    System.out.println("No Faculty with the id of " + id + " found");
+                                    break;
                                 }
                             }
                             break;
@@ -789,8 +821,7 @@ public class Relations {
                                 if (CourseList.get(i).getID() == cid) {
                                     CourseList.get(i).printStudentList();
                                     System.out.println(CourseList.get(i).getFaculty());
-                                } else {
-                                    System.out.println("No Course with the id of " + cid + " found");
+                                    break;
                                 }
                             }
                             break;
@@ -800,10 +831,11 @@ public class Relations {
                             for (int i = 0; i < StudentList.size(); i++) {
                                 if (StudentList.get(i).getID() == id) {
                                     StudentList.get(i).printCourses();
-                                } else {
-                                    System.out.println("No Student with the id of " + id + " found");
+                                    break;
                                 }
                             }
+                            break;
+                        default:
                             break;
                     }
                     iShifter = 30;
@@ -825,7 +857,7 @@ public class Relations {
                                     break;
                                 }
                             }
-                            if (sFound) {
+                            if (!sFound) {
                                 System.out.println("No Student with the id of " + id + " found");
                             }
                             break;
@@ -835,7 +867,7 @@ public class Relations {
                             String cid = inp.nextLine();
                             boolean cFound = false;
                             for (int i = 0; i < CourseList.size(); i++) {
-                                if (CourseList.get(i).getID() == cid) {
+                                if (CourseList.get(i).getID().equals(cid)) {
                                     System.out.println(CourseList.get(i).display());
                                     CourseList.get(i).printStudentList();
                                     CourseList.get(i).getFaculty();
@@ -843,7 +875,7 @@ public class Relations {
                                     break;
                                 }
                             }
-                            if (cFound) {
+                            if (!cFound) {
                                 System.out.println("No Course with the id of " + cid + " found");
                             }
                             break;
@@ -859,7 +891,7 @@ public class Relations {
                                     break;
                                 }
                             }
-                            if (fFound) {
+                            if (!fFound) {
                                 System.out.println("No Faculty with the id of " + id + " found");
                             }
                             break;
@@ -870,7 +902,7 @@ public class Relations {
                             System.out.print("Enter the student ID you want to check for: ");
                             int SID = inp.nextInt();
                             for (int i = 0; i < CourseList.size(); i++) {
-                                if (CourseList.get(i).getID() == CID && CourseList.get(i).studentExists(SID)) {
+                                if (CourseList.get(i).getID().equals(CID) && CourseList.get(i).studentExists(SID)) {
                                     System.out.println(CID + " course is taken by the student with the ID of: " + SID);
                                     break;
                                 }
@@ -880,10 +912,10 @@ public class Relations {
                             System.out.print("Enter a course ID: ");
                             inp.nextLine();
                             String CoID = inp.nextLine();
-                            System.out.print("Enter the student ID you want to check for: ");
+                            System.out.print("Enter the faculty ID you want to check for: ");
                             int FID = inp.nextInt();
                             for (int i = 0; i < CourseList.size(); i++) {
-                                if (CourseList.get(i).getID() == CoID && CourseList.get(i).getFacultyID() == FID) {
+                                if (CourseList.get(i).getID().equals(CoID) && CourseList.get(i).getFacultyID() == FID) {
                                     System.out
                                             .println(CoID + " course is taught by the faculty with the ID of: " + FID);
                                     break;
@@ -891,7 +923,7 @@ public class Relations {
                             }
                             break;
                         case 6:
-                            System.out.print("Enter a student ID to see his/her courses: ");
+                            System.out.print("Enter a student ID to see their taken courses: ");
                             int sId = inp.nextInt();
                             for (int i = 0; i < StudentList.size(); i++) {
                                 if (StudentList.get(i).getID() == sId) {
@@ -901,7 +933,7 @@ public class Relations {
                             }
                             break;
                         case 7:
-                            System.out.print("Enter a student ID to see his/her courses: ");
+                            System.out.print("Enter a faculty ID to see their taught courses: ");
                             int fId = inp.nextInt();
                             for (int i = 0; i < FacultyList.size(); i++) {
                                 if (FacultyList.get(i).getID() == fId) {
@@ -918,6 +950,8 @@ public class Relations {
                 case 0:
                     System.out.println("Exiting the program........");
                     iShifter = -1;
+                    break;
+                default:
                     break;
             }
         }
