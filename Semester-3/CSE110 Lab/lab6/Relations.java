@@ -57,8 +57,9 @@ class Student {
         int i = 0;
         boolean can = false;
         for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID() == id) {
+            if (CourseList.get(j).getID().equals(id)) {
                 i = j;
+                can = true;
                 break;
             }
         }
@@ -71,8 +72,9 @@ class Student {
         int i = 0;
         boolean can = false;
         for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID() == id) {
+            if (CourseList.get(j).getID().equals(id)) {
                 i = j;
+                can = true;
                 break;
             }
         }
@@ -240,7 +242,7 @@ class Faculty {
         int i = 0;
         boolean can = false;
         for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID() == id) {
+            if (CourseList.get(j).getID().equals(id)) {
                 i = j;
                 break;
             }
@@ -271,51 +273,50 @@ public class Relations {
         int fi = 0;
 
         int iShifter = 30;
-        String InitialMenu = "1. Add\n2. Delete\n3. Update\n4. Print\n5. Search\n0. Exit";
         while (iShifter != -1) {
             switch (iShifter) {
                 case 30:
-                    System.out.println("Welcome to XYZ Application:\nChoose an option below to perform some task.\n"
-                            + InitialMenu + "\nEnter the option(Numerical): ");
+                    System.out.print("Welcome to XYZ Application:\nChoose an option below to perform some task.\n"
+                            + "1. Add\n2. Delete\n3. Update\n4. Print\n5. Search\n0. Exit\nEnter the option(Numerical): ");
                     int shifter = 0;
                     iShifter = inp.nextInt();
                     break;
                 case 1:
-                    System.out.println(
+                    System.out.print(
                             "Choose an option below to perform some task.\n1. Add a Student\n2. Add a Course\n3. Add a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
-                            System.out.println("Add student information:\nEnter name: ");
+                            System.out.print("Add student information:\nEnter name: ");
                             inp.nextLine();
                             String name = inp.nextLine();
-                            System.out.println("Enter student ID: ");
+                            System.out.print("Enter student ID: ");
                             int id = inp.nextInt();
-                            System.out.println("Enter student CGPA: ");
+                            System.out.print("Enter student CGPA: ");
                             double cg = inp.nextDouble();
                             StudentList.add(si, new Student(id, name, cg));
                             si++;
                             System.out.println("Student added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 2:
-                            System.out.println("Add course information:\nEnter course name: ");
+                            System.out.print("Add course information:\nEnter course name: ");
                             inp.nextLine();
                             name = inp.nextLine();
-                            System.out.println("Enter course ID: ");
+                            System.out.print("Enter course ID: ");
                             String cid = inp.nextLine();
-                            System.out.println("Enter course credit: ");
+                            System.out.print("Enter course credit: ");
                             double cr = inp.nextDouble();
                             CourseList.add(ci, new Course(cid, name, cr));
                             ci++;
                             System.out.println("Course added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 3:
-                            System.out.println("Add faculty information:\nEnter faculty name: ");
+                            System.out.print("Add faculty information:\nEnter faculty name: ");
                             inp.nextLine();
                             name = inp.nextLine();
-                            System.out.println("Enter faculty ID: ");
+                            System.out.print("Enter faculty ID: ");
                             id = inp.nextInt();
-                            System.out.println("Enter faculty position: ");
+                            System.out.print("Enter faculty position: ");
                             inp.nextLine();
                             String pos = inp.nextLine();
                             FacultyList.add(fi, new Faculty(id, name, pos));
@@ -326,12 +327,12 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 2:
-                    System.out.println(
+                    System.out.print(
                             "Choose an option below to perform some task.\n1. Delete a Student\n2. Delete a Course\n3. Delete a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
-                            System.out.println("Enter the student id you want to remove: ");
+                            System.out.print("Enter the student id you want to remove: ");
                             int id = inp.nextInt();
                             boolean can = false;
                             int i = 0;
@@ -349,7 +350,7 @@ public class Relations {
                             }
                             break;
                         case 2:
-                            System.out.println("Enter the course id you want to remove: ");
+                            System.out.print("Enter the course id you want to remove: ");
                             inp.nextLine();
                             String cid = inp.nextLine();
                             can = false;
@@ -367,7 +368,7 @@ public class Relations {
                                         "Course removed from the list successfully......\nGetting back to main menu\n\n\n\n");
                             }
                         case 3:
-                            System.out.println("Enter the faculty id you want to remove: ");
+                            System.out.print("Enter the faculty id you want to remove: ");
                             id = inp.nextInt();
                             can = false;
                             i = 0;
@@ -388,13 +389,13 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 3:
-                    System.out.println(
+                    System.out.print(
                             "Choose an option below to perform some task.\n1. Update a Student\n2. Update a Course\n3. Update a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     int upShifter = 0;
                     switch (shifter) {
                         case 1:
-                            System.out.println(
+                            System.out.print(
                                     "Update Student information:\n1. Update Student name\n2. Update Student ID\n3. Update Student CGPA\n4. Add a course\n5. Drop a course\n6. Update a course\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
@@ -447,6 +448,7 @@ public class Relations {
                                             for (int j = 0; j < CourseList.size(); j++) {
                                                 if (CourseList.get(i).getID() == caID) {
                                                     StudentList.get(i).addCourse(CourseList.get(j));
+                                                    CourseList.get(j).addStudent(StudentList.get(i));
                                                     System.out.println("Course successfully added for: " + id);
                                                     break;
                                                 }
@@ -465,6 +467,7 @@ public class Relations {
                                             for (int j = 0; j < CourseList.size(); j++) {
                                                 if (CourseList.get(i).getID() == caID) {
                                                     StudentList.get(i).dropCourse(CourseList.get(j).getID());
+                                                    CourseList.get(j).dropStudent(StudentList.get(i).getID());
                                                     System.out.println("Course successfully dropped for: " + id);
                                                     break;
                                                 }
@@ -481,7 +484,7 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(i).getID() == caID) {
+                                                if (CourseList.get(j).getID() == caID) {
                                                     System.out.print("Enter Student's new courseID to update with "
                                                             + caID + " : ");
                                                     inp.nextLine();
@@ -489,6 +492,8 @@ public class Relations {
                                                     for (int k = 0; k < CourseList.size(); k++) {
                                                         if (CourseList.get(k).getID() == cuID) {
                                                             StudentList.get(i).updateCourse(cuID, CourseList.get(k));
+                                                            CourseList.get(j).dropStudent(id);
+                                                            CourseList.get(k).addStudent(StudentList.get(i));
                                                             System.out
                                                                     .println("Course successfully updated for: " + id);
                                                             break;
@@ -503,7 +508,7 @@ public class Relations {
                             }
                             break;
                         case 2:
-                            System.out.println(
+                            System.out.print(
                                     "Update Course information:\n1. Update Course name\n2. Update Course credit\n3. Update Course ID\n4. Add a Student\n5. Drop a Student\n6. Add Faculty\n7. Drop Faculty\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
@@ -562,6 +567,7 @@ public class Relations {
                                             for (int j = 0; j < StudentList.size(); j++) {
                                                 if (StudentList.get(j).getID() == sid) {
                                                     CourseList.get(i).addStudent(StudentList.get(j));
+                                                    StudentList.get(j).addCourse(CourseList.get(i));
                                                     System.out.println("Student successfully added for: " + id);
                                                     break;
                                                 }
@@ -580,6 +586,7 @@ public class Relations {
                                             for (int j = 0; j < StudentList.size(); j++) {
                                                 if (StudentList.get(j).getID() == sid) {
                                                     CourseList.get(i).dropStudent(sid);
+                                                    StudentList.get(j).dropCourse(id);
                                                     System.out.println("Student successfully dropped from: " + id);
                                                     break;
                                                 }
@@ -628,7 +635,7 @@ public class Relations {
                             }
                             break;
                         case 3:
-                            System.out.println(
+                            System.out.print(
                                     "Update Faculty information:\n1. Update Faculty name\n2. Update Faculty ID\n3. Update Faculty Position\n4. Add a course\n5. Drop a course\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
@@ -682,8 +689,9 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(i).getID() == caID) {
+                                                if (CourseList.get(j).getID() == caID) {
                                                     FacultyList.get(i).addCourse(CourseList.get(j));
+                                                    CourseList.get(j).addFaculty(FacultyList.get(i));
                                                     System.out.println(
                                                             "Course successfully added to the faculty with ID of: "
                                                                     + id);
@@ -702,8 +710,9 @@ public class Relations {
                                             inp.nextLine();
                                             String caID = inp.nextLine();
                                             for (int j = 0; j < CourseList.size(); j++) {
-                                                if (CourseList.get(i).getID() == caID) {
+                                                if (CourseList.get(j).getID() == caID) {
                                                     FacultyList.get(i).dropCourse(CourseList.get(j).getID());
+                                                    CourseList.get(j).dropFaculty();
                                                     System.out.println(
                                                             "Course successfully dropped for the faculty with ID of: "
                                                                     + id);
@@ -719,7 +728,7 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 4:
-                    System.out.println(
+                    System.out.print(
                             "Choose an option below to perform some task.\n1. Print all students\n2. Print all course\n3. Print all faculties\n4. Print information of a student\n5. Print information of a course\n6. Print information of a faculty\n7. Print student list and faculty information of a course\n8. Print courses taken by a student\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
@@ -800,7 +809,7 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 5:
-                    System.out.println(
+                    System.out.print(
                             "Choose an option below to perform some task.\n1. Search a Student\n2. Search a Course\n3. Search a Faculty\n4. Search whether a student takes a course\n5. Search whether a faculty teaches a course\n6. Search courses taken by a student\n7. Search courses taught by a faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
