@@ -278,20 +278,25 @@ public class Relations {
         int fi = 0;
 
         int iShifter = 30;
+
+        System.out.println("\n\n\n\nWelcome to XYZ Application:");
         while (iShifter != -1) {
             switch (iShifter) {
                 case 30:
-                    System.out.print("Welcome to XYZ Application:\nChoose an option below to perform some task.\n"
+                    System.out.println("\n\n\n\n\n");
+                    System.out.print("Choose an option below to perform some task.\n"
                             + "1. Add\n2. Delete\n3. Update\n4. Print\n5. Search\n0. Exit\nEnter the option(Numerical): ");
                     int shifter = 0;
                     iShifter = inp.nextInt();
                     break;
                 case 1:
+                    System.out.println("\n\n\n\n\n");
                     System.out.print(
                             "Choose an option below to perform some task.\n1. Add a Student\n2. Add a Course\n3. Add a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Add student information:\nEnter name: ");
                             inp.nextLine();
                             String name = inp.nextLine();
@@ -304,6 +309,7 @@ public class Relations {
                             System.out.println("Student added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 2:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Add course information:\nEnter course name: ");
                             inp.nextLine();
                             name = inp.nextLine();
@@ -316,6 +322,7 @@ public class Relations {
                             System.out.println("Course added successfully......\nGetting back to main menu\n\n\n\n");
                             break;
                         case 3:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Add faculty information:\nEnter faculty name: ");
                             inp.nextLine();
                             name = inp.nextLine();
@@ -334,11 +341,13 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 2:
+                    System.out.println("\n\n\n\n\n");
                     System.out.print(
                             "Choose an option below to perform some task.\n1. Delete a Student\n2. Delete a Course\n3. Delete a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the student id you want to remove: ");
                             int id = inp.nextInt();
                             boolean can = false;
@@ -359,6 +368,7 @@ public class Relations {
                             }
                             break;
                         case 2:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the course id you want to remove: ");
                             inp.nextLine();
                             String cid = inp.nextLine();
@@ -380,6 +390,7 @@ public class Relations {
                             }
                             break;
                         case 3:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the faculty id you want to remove: ");
                             id = inp.nextInt();
                             can = false;
@@ -405,17 +416,20 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 3:
+                    System.out.println("\n\n\n\n\n");
                     System.out.print(
                             "Choose an option below to perform some task.\n1. Update a Student\n2. Update a Course\n3. Update a Faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     int upShifter = 0;
                     switch (shifter) {
                         case 1:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print(
                                     "Update Student information:\n1. Update Student name\n2. Update Student ID\n3. Update Student CGPA\n4. Add a course\n5. Drop a course\n6. Update a course\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
                                 case 1:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     int id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -430,6 +444,7 @@ public class Relations {
                                     }
                                     break;
                                 case 2:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -443,6 +458,7 @@ public class Relations {
                                     }
                                     break;
                                 case 3:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -456,6 +472,7 @@ public class Relations {
                                     }
                                     break;
                                 case 4:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -476,6 +493,7 @@ public class Relations {
                                     }
                                     break;
                                 case 5:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -496,6 +514,7 @@ public class Relations {
                                     }
                                     break;
                                 case 6:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Student ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < StudentList.size(); i++) {
@@ -531,11 +550,13 @@ public class Relations {
                             }
                             break;
                         case 2:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print(
                                     "Update Course information:\n1. Update Course name\n2. Update Course credit\n3. Update Course ID\n4. Add a Student\n5. Drop a Student\n6. Add Faculty\n7. Drop Faculty\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
                                 case 1:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     String id = inp.nextLine();
@@ -551,6 +572,7 @@ public class Relations {
                                     }
                                     break;
                                 case 2:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -565,6 +587,7 @@ public class Relations {
                                     }
                                     break;
                                 case 3:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -580,6 +603,7 @@ public class Relations {
                                     }
                                     break;
                                 case 4:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -600,6 +624,7 @@ public class Relations {
                                     }
                                     break;
                                 case 5:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -620,6 +645,7 @@ public class Relations {
                                     }
                                     break;
                                 case 6:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -640,6 +666,7 @@ public class Relations {
                                     }
                                     break;
                                 case 7:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Course ID to update:");
                                     inp.nextLine();
                                     id = inp.nextLine();
@@ -664,11 +691,13 @@ public class Relations {
                             }
                             break;
                         case 3:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print(
                                     "Update Faculty information:\n1. Update Faculty name\n2. Update Faculty ID\n3. Update Faculty Position\n4. Add a course\n5. Drop a course\nEnter the option(Numerical): ");
                             upShifter = inp.nextInt();
                             switch (upShifter) {
                                 case 1:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Faculty ID to update:");
                                     int id = inp.nextInt();
                                     for (int i = 0; i < FacultyList.size(); i++) {
@@ -683,6 +712,7 @@ public class Relations {
                                     }
                                     break;
                                 case 2:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Faculty ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < FacultyList.size(); i++) {
@@ -696,6 +726,7 @@ public class Relations {
                                     }
                                     break;
                                 case 3:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Faculty ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < FacultyList.size(); i++) {
@@ -710,6 +741,7 @@ public class Relations {
                                     }
                                     break;
                                 case 4:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Faculty ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < FacultyList.size(); i++) {
@@ -732,6 +764,7 @@ public class Relations {
                                     }
                                     break;
                                 case 5:
+                                    System.out.println("\n\n\n\n\n");
                                     System.out.print("Enter Faculty ID to update:");
                                     id = inp.nextInt();
                                     for (int i = 0; i < FacultyList.size(); i++) {
@@ -763,26 +796,31 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 4:
+                    System.out.println("\n\n\n\n\n");
                     System.out.print(
                             "Choose an option below to perform some task.\n1. Print all students\n2. Print all course\n3. Print all faculties\n4. Print information of a student\n5. Print information of a course\n6. Print information of a faculty\n7. Print student list and faculty information of a course\n8. Print courses taken by a student\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
+                            System.out.println("\n\n\n\n\n");
                             for (int i = 0; i < StudentList.size(); i++) {
                                 System.out.println(StudentList.get(i).display());
                             }
                             break;
                         case 2:
+                            System.out.println("\n\n\n\n\n");
                             for (int i = 0; i < CourseList.size(); i++) {
                                 System.out.println(CourseList.get(i).display());
                             }
                             break;
                         case 3:
+                            System.out.println("\n\n\n\n\n");
                             for (int i = 0; i < FacultyList.size(); i++) {
                                 System.out.println(FacultyList.get(i).display());
                             }
                             break;
                         case 4:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the student id to print: ");
                             int id = inp.nextInt();
                             for (int i = 0; i < StudentList.size(); i++) {
@@ -793,6 +831,7 @@ public class Relations {
                             }
                             break;
                         case 5:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the Course id to print: ");
                             inp.nextLine();
                             String cid = inp.nextLine();
@@ -804,6 +843,7 @@ public class Relations {
                             }
                             break;
                         case 6:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the Faculty id to print: ");
                             id = inp.nextInt();
                             for (int i = 0; i < FacultyList.size(); i++) {
@@ -814,11 +854,12 @@ public class Relations {
                             }
                             break;
                         case 7:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the Course id to print: ");
                             inp.nextLine();
                             cid = inp.nextLine();
                             for (int i = 0; i < CourseList.size(); i++) {
-                                if (CourseList.get(i).getID() == cid) {
+                                if (CourseList.get(i).getID().equals(cid)) {
                                     CourseList.get(i).printStudentList();
                                     System.out.println(CourseList.get(i).getFaculty());
                                     break;
@@ -826,6 +867,7 @@ public class Relations {
                             }
                             break;
                         case 8:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the student id to print: ");
                             id = inp.nextInt();
                             for (int i = 0; i < StudentList.size(); i++) {
@@ -841,11 +883,13 @@ public class Relations {
                     iShifter = 30;
                     break;
                 case 5:
+                    System.out.println("\n\n\n\n\n");
                     System.out.print(
                             "Choose an option below to perform some task.\n1. Search a Student\n2. Search a Course\n3. Search a Faculty\n4. Search whether a student takes a course\n5. Search whether a faculty teaches a course\n6. Search courses taken by a student\n7. Search courses taught by a faculty\nEnter the option(Numerical): ");
                     shifter = inp.nextInt();
                     switch (shifter) {
                         case 1:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the student id to Search: ");
                             int id = inp.nextInt();
                             boolean sFound = false;
@@ -862,6 +906,7 @@ public class Relations {
                             }
                             break;
                         case 2:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the course id to Search: ");
                             inp.nextLine();
                             String cid = inp.nextLine();
@@ -880,6 +925,7 @@ public class Relations {
                             }
                             break;
                         case 3:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter the Faculty id to Search: ");
                             id = inp.nextInt();
                             boolean fFound = false;
@@ -896,6 +942,7 @@ public class Relations {
                             }
                             break;
                         case 4:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter a course ID: ");
                             inp.nextLine();
                             String CID = inp.nextLine();
@@ -909,6 +956,7 @@ public class Relations {
                             }
                             break;
                         case 5:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter a course ID: ");
                             inp.nextLine();
                             String CoID = inp.nextLine();
@@ -923,6 +971,7 @@ public class Relations {
                             }
                             break;
                         case 6:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter a student ID to see their taken courses: ");
                             int sId = inp.nextInt();
                             for (int i = 0; i < StudentList.size(); i++) {
@@ -933,6 +982,7 @@ public class Relations {
                             }
                             break;
                         case 7:
+                            System.out.println("\n\n\n\n\n");
                             System.out.print("Enter a faculty ID to see their taught courses: ");
                             int fId = inp.nextInt();
                             for (int i = 0; i < FacultyList.size(); i++) {
@@ -948,10 +998,12 @@ public class Relations {
                     }
                     break;
                 case 0:
+                    System.out.println("\n\n\n\n\n");
                     System.out.println("Exiting the program........");
                     iShifter = -1;
                     break;
                 default:
+                    iShifter = 30;
                     break;
             }
         }
