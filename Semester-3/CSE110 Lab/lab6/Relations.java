@@ -49,38 +49,37 @@ class Student {
     }
 
     public void addCourse(Course c) {
-        CourseList.add(count, c);
-        count++;
+        CourseList.add(c);
+        this.count++;
+        System.out.println("Course successfully updated to the Student: " + this.ID);
     }
 
     public void dropCourse(String id) {
-        int i = 0;
         boolean can = false;
-        for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID().equals(id)) {
-                i = j;
+        for (int i = 0; i < CourseList.size(); i++) {
+            if (CourseList.get(i).getID().equals(id)) {
+                CourseList.remove(i);
                 can = true;
                 break;
             }
         }
         if (can) {
-            CourseList.remove(i);
-            count--;
+            System.out.println("Course successfully dropped from the student: " + this.ID);
+            this.count--;
         }
     }
 
     public void updateCourse(String id, Course c) {
-        int i = 0;
         boolean can = false;
-        for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID().equals(id)) {
-                i = j;
+        for (int i = 0; i < CourseList.size(); i++) {
+            if (CourseList.get(i).getID().equals(id)) {
+                CourseList.set(i, c);
                 can = true;
                 break;
             }
         }
         if (can) {
-            CourseList.set(i, c);
+            System.out.println("Course updated successfully.");
         }
     }
 
@@ -118,17 +117,16 @@ class Course {
     }
 
     public void dropStudent(int id) {
-        int i = 0;
         boolean can = false;
-        for (int j = 0; j < StudentList.size(); j++) {
-            if (StudentList.get(j).getID() == id) {
-                i = j;
+        for (int i = 0; i < StudentList.size(); i++) {
+            if (StudentList.get(i).getID() == id) {
+                StudentList.remove(i);
                 can = true;
                 break;
             }
         }
         if (can) {
-            StudentList.remove(i);
+            System.out.println("Student added successfully.");
             nStudent--;
         }
     }
@@ -245,17 +243,15 @@ class Faculty {
     }
 
     public void dropCourse(String id) {
-        int i = 0;
         boolean can = false;
-        for (int j = 0; j < CourseList.size(); j++) {
-            if (CourseList.get(j).getID().equals(id)) {
-                i = j;
+        for (int i = 0; i < CourseList.size(); i++) {
+            if (CourseList.get(i).getID().equals(id)) {
+                CourseList.remove(i);
                 can = true;
                 break;
             }
         }
         if (can) {
-            CourseList.remove(i);
             count--;
         }
     }
