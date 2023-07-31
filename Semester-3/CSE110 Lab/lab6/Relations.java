@@ -21,7 +21,7 @@ class Student {
     }
 
     public String display() {
-        return "Student Information:\nName: " + name + "\nID: " + ID + "\n CGPA: " + CGPA;
+        return "Student Information:\nName: " + name + "\nID: " + ID + "\nCGPA: " + CGPA;
     }
 
     public void setID(int id) {
@@ -109,7 +109,7 @@ class Course {
     }
 
     public String display() {
-        return "Course Information:\nCourse Title: " + title + "\nCourse Code: " + ID + "\n Course Credit: " + credit;
+        return "Course Information:\nCourse Title: " + title + "\nCourse Code: " + ID + "\nCourse Credit: " + credit;
     }
 
     public void addStudent(Student s) {
@@ -173,7 +173,10 @@ class Course {
     }
 
     public String getFaculty() {
-        return faculty.display();
+        if (faculty != null) {
+            return faculty.display();
+        } else
+            return "";
     }
 
     public int getFacultyID() {
@@ -996,6 +999,7 @@ public class Relations {
                         default:
                             break;
                     }
+                    iShifter = 30;
                     break;
                 case 0:
                     System.out.println("\n\n\n\n\n");
