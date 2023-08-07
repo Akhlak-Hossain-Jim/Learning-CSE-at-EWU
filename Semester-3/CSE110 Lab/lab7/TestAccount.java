@@ -144,6 +144,14 @@ class SavingAccount extends Account {
         return super.getBalance() * 3;
     }
 
+    public void withdraw(double amo) {
+        if (super.getBalance() * 3 >= amo && super.getBalance() >= amo) {
+            super.setBalance(super.getBalance() - amo);
+            System.out.println(amo + " successfully withdrawn from account: " + super.getID() + " new balance: "
+                    + super.getBalance() + ".");
+        }
+    }
+
     public String display() {
         return "Savings Account:\n" +
                 "\n\t\tAccount ID: " + super.getID() +
@@ -303,6 +311,7 @@ public class TestAccount {
                     shifter = 30;
                     break;
                 case 7:
+                    System.out.println("\n\n\n");
                     for (int i = 0; i < Accounts.size(); i++) {
                         System.out.println(Accounts.get(i).display());
                     }
