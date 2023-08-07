@@ -295,7 +295,7 @@ public class TestAccount {
                         if (Accounts.get(i).getID() == saIDw) {
                             System.out.print("Enter amount to withdraw: ");
                             double dbl = inp.nextDouble();
-                            Accounts.get(i).deposit(dbl);
+                            Accounts.get(i).withdraw(dbl);
                             cadCan = true;
                             System.out.println(
                                     "\n\nSuccessfully withdrawn amount " + dbl + " From Savings account: " + saIDw
