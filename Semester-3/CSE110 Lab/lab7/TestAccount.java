@@ -71,7 +71,7 @@ class Account {
     }
 
     public String display() {
-        return "Savings Account:\n" +
+        return "Account:\n" +
                 "\n\t\tAccount ID: " + this.getID() +
                 "\n\t\tDate Created: " + this.getDateCreated().getTime() +
                 "\n\t\tCurrent Balance: " + this.getBalance() +
@@ -152,7 +152,7 @@ class SavingAccount extends Account {
                 "\n\t\tAnnual Interest Rate: " + super.getAnnualInterestRate() +
                 "\n\t\tMonthly Interest Amount: " + super.getMonthlyInterestAmount() +
                 "\n\t\tCredit Card Number: " + this.getCardNumber() +
-                "\n\t\tCard Expiry Date: " + this.getExpireDate() +
+                "\n\t\tCard Expiry Date: " + this.getExpireDate().getTime() +
                 "\n\t\tCredit Balance: " + this.getCreditBalance();
     }
 }
@@ -168,6 +168,10 @@ public class TestAccount {
         int shifter = 30;
         while (shifter != -1) {
             switch (shifter) {
+                case 0:
+                    System.out.println("\n\nExiting the program....");
+                    shifter = -1;
+                    break;
                 case 1:
                     System.out.println("\n\n\n\n");
                     System.out.println("Creating a Checking Account, Enter below details:\n");
@@ -312,7 +316,8 @@ public class TestAccount {
                                     "\t\tPress (4) for Deposit to a Savings Account\n" +
                                     "\t\tPress (5) for Withdraw from a Checking Account\n" +
                                     "\t\tPress (6) for Withdraw from a Savings Account\n" +
-                                    "\t\tPress (7) for Display all Accounts\n\nChoose an option to continue: ");
+                                    "\t\tPress (7) for Display all Accounts\n" +
+                                    "\t\tPress (0) to exit the program.\n\nChoose an option to continue: ");
                     shifter = inp.nextInt();
                     break;
             }
