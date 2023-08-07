@@ -73,7 +73,7 @@ class Account {
     public String display() {
         return "Savings Account:\n" +
                 "\n\t\tAccount ID: " + this.getID() +
-                "\n\t\tDate Created: " + this.getDateCreated() +
+                "\n\t\tDate Created: " + this.getDateCreated().getTime() +
                 "\n\t\tCurrent Balance: " + this.getBalance() +
                 "\n\t\tAnnual Interest Rate: " + this.getAnnualInterestRate() +
                 "\n\t\tMonthly Interest Amount: " + this.getMonthlyInterestAmount() +
@@ -101,7 +101,8 @@ class CheckingAccount extends Account {
     }
 
     public String display() {
-        return "Checking Account:\n\n\t\tAccount ID: " + super.getID() + "\n\t\tDate Created: " + super.getDateCreated()
+        return "Checking Account:\n\n\t\tAccount ID: " + super.getID() + "\n\t\tDate Created: "
+                + super.getDateCreated().getTime()
                 + "\n\t\tCurrent Balance: " + super.getBalance() + "\n\t\tAnnual Interest Rate: "
                 + super.getAnnualInterestRate() + "\n\t\tMonthly Interest Amount: " + super.getMonthlyInterestAmount()
                 + "\n\t\tOverdraft Limit: " + limit;
@@ -146,7 +147,7 @@ class SavingAccount extends Account {
     public String display() {
         return "Savings Account:\n" +
                 "\n\t\tAccount ID: " + super.getID() +
-                "\n\t\tDate Created: " + super.getDateCreated() +
+                "\n\t\tDate Created: " + super.getDateCreated().getTime() +
                 "\n\t\tCurrent Balance: " + super.getBalance() +
                 "\n\t\tAnnual Interest Rate: " + super.getAnnualInterestRate() +
                 "\n\t\tMonthly Interest Amount: " + super.getMonthlyInterestAmount() +
@@ -299,7 +300,7 @@ public class TestAccount {
                     break;
                 case 7:
                     for (int i = 0; i < Accounts.size(); i++) {
-                        Accounts.get(i).display();
+                        System.out.println(Accounts.get(i).display());
                     }
                     shifter = 30;
                     break;
@@ -316,5 +317,6 @@ public class TestAccount {
                     break;
             }
         }
+        inp.close();
     }
 }
