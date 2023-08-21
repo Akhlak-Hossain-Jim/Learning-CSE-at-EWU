@@ -87,6 +87,7 @@ public class Calculation {
         } catch (NumberFormatException e) {
             System.out.print(e);
         }
+        System.out.print("Enter two space separated integer to perform subtraction: ");
         try {
             x = inp.nextInt();
             y = inp.nextInt();
@@ -95,6 +96,7 @@ public class Calculation {
         } catch (NumberFormatException e) {
             System.out.print(e);
         }
+        System.out.print("Enter two space separated integer to perform multiplication: ");
         try {
             x = inp.nextInt();
             y = inp.nextInt();
@@ -103,6 +105,7 @@ public class Calculation {
         } catch (NumberFormatException e) {
             System.out.print(e);
         }
+        System.out.print("Enter two space separated integer to perform division: ");
         try {
             x = inp.nextInt();
             y = inp.nextInt();
