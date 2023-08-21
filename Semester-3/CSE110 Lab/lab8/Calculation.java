@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 class Calculator {
     private int x;
     private int y;
@@ -74,13 +76,41 @@ class Calculator {
 
 public class Calculation {
     public static void main(String[] args) {
-        Calculator obj1 = new Calculator(2, 0);
-        Calculator obj2 = new Calculator(-2, 0);
-        Calculator obj3 = new Calculator(2, 3);
-        Calculator obj4 = new Calculator(2, 0);
-        System.out.println(obj1.Add());
-        System.out.println(obj2.Subtract());
-        System.out.println(obj3.Multiply());
-        System.out.println(obj4.Division());
+        Scanner inp = new Scanner(System.in);
+        int x, y;
+        System.out.print("Enter two space separated integer to perform addition: ");
+        try {
+            x = inp.nextInt();
+            y = inp.nextInt();
+            Calculator obj1 = new Calculator(x, y);
+            System.out.println(obj1.Add());
+        } catch (NumberFormatException e) {
+            System.out.print(e);
+        }
+        try {
+            x = inp.nextInt();
+            y = inp.nextInt();
+            Calculator obj2 = new Calculator(x, y);
+            System.out.println(obj2.Subtract());
+        } catch (NumberFormatException e) {
+            System.out.print(e);
+        }
+        try {
+            x = inp.nextInt();
+            y = inp.nextInt();
+            Calculator obj3 = new Calculator(x, y);
+            System.out.println(obj3.Multiply());
+        } catch (NumberFormatException e) {
+            System.out.print(e);
+        }
+        try {
+            x = inp.nextInt();
+            y = inp.nextInt();
+            Calculator obj4 = new Calculator(x, y);
+            System.out.println(obj4.Division());
+        } catch (NumberFormatException e) {
+            System.out.print(e);
+        }
+        inp.close();
     }
 }
