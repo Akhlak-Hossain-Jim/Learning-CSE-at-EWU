@@ -78,9 +78,9 @@ public class Calculation {
         Calculator obj2 = new Calculator(-2, 0);
         Calculator obj3 = new Calculator(2, 3);
         Calculator obj4 = new Calculator(2, 0);
-        obj1.Add();
-        obj2.Subtract();
-        obj3.Multiply();
-        obj4.Division();
+        System.out.println(obj1.Add());
+        System.out.println(obj2.Subtract());
+        System.out.println(obj3.Multiply());
+        System.out.println(obj4.Division());
     }
 }
