@@ -80,8 +80,8 @@ public class Calculation {
         int x, y;
         System.out.print("Enter two space separated integer to perform addition: ");
         try {
-            x = inp.nextInt();
-            y = inp.nextInt();
+            x = Integer.parseInt(inp.next());
+            y = Integer.parseInt(inp.next());
             Calculator obj1 = new Calculator(x, y);
             System.out.println(obj1.Add());
         } catch (NumberFormatException e) {
@@ -89,8 +89,8 @@ public class Calculation {
         }
         System.out.print("Enter two space separated integer to perform subtraction: ");
         try {
-            x = inp.nextInt();
-            y = inp.nextInt();
+            x = Integer.parseInt(inp.next());
+            y = Integer.parseInt(inp.next());
             Calculator obj2 = new Calculator(x, y);
             System.out.println(obj2.Subtract());
         } catch (NumberFormatException e) {
@@ -98,8 +98,8 @@ public class Calculation {
         }
         System.out.print("Enter two space separated integer to perform multiplication: ");
         try {
-            x = inp.nextInt();
-            y = inp.nextInt();
+            x = Integer.parseInt(inp.next());
+            y = Integer.parseInt(inp.next());
             Calculator obj3 = new Calculator(x, y);
             System.out.println(obj3.Multiply());
         } catch (NumberFormatException e) {
@@ -107,8 +107,8 @@ public class Calculation {
         }
         System.out.print("Enter two space separated integer to perform division: ");
         try {
-            x = inp.nextInt();
-            y = inp.nextInt();
+            x = Integer.parseInt(inp.next());
+            y = Integer.parseInt(inp.next());
             Calculator obj4 = new Calculator(x, y);
             System.out.println(obj4.Division());
         } catch (NumberFormatException e) {
