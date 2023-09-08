@@ -14,3 +14,5 @@
 - [Lab 6(2) - 31/07/2023](./lab6/)
 - [Lab 7 - 07/08/2023](./lab7/)
 - [Lab 8 - 21/08/2023](./lab8/)
+- [Lab Test - 28/08/2023](./LabTest/LabTest_aklhak.java)
+- [Lab 9 - 04/09/2023](./lab9/)
