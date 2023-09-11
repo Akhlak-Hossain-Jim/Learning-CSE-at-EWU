@@ -5,7 +5,7 @@ import java.util.Scanner;
 class Fraction {
     private int numerator, denominator;
 
-    Fraction sumO, subO, mulO, divO;
+    String sumO, subO, mulO, divO;
 
     public Fraction(int nu, int de) {
         this.numerator = nu;
@@ -33,25 +33,25 @@ class Fraction {
     }
 
     public void add(Fraction f) {
-        sumO = new Fraction((this.numerator * f.getDenominator()) + (f.getNumerator() * denominator),
-                (denominator * f.getDenominator()));
+        this.sumO = (this.numerator * f.getDenominator()) + (f.getNumerator() * denominator) + " / "
+                + (denominator * f.getDenominator());
     }
 
     public void sub(Fraction f) {
-        subO = new Fraction(((this.numerator * f.getDenominator()) - (f.getNumerator() * denominator)),
-                (denominator * f.getDenominator()));
+        this.subO = ((this.numerator * f.getDenominator()) - (f.getNumerator() * denominator)) + " / "
+                + (denominator * f.getDenominator());
     }
 
     public void multiplication(Fraction f) {
-        mulO = new Fraction(((this.numerator * f.getNumerator())), (denominator * f.getDenominator()));
+        this.mulO = ((this.numerator * f.getNumerator())) + " / " + (denominator * f.getDenominator());
     }
 
     public void division(Fraction f) {
-        divO = new Fraction(this.numerator * f.getDenominator(), (denominator * f.getNumerator()));
+        divO = ((this.numerator * f.getDenominator())) + " / " + (denominator * f.getNumerator());
     }
 }
 
-public class Fractionalization2 {
+public class Prob3 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("Enter the numerator for the 1st fraction: ");
@@ -68,15 +68,15 @@ public class Fractionalization2 {
         System.out.println(f2.display());
         System.out.println("Calculating Sum of 1st & 2nd fraction");
         f1.add(f2);
-        System.out.println(f1.sumO.display());
+        System.out.println(f1.sumO);
         System.out.println("Calculating Subtraction of 1st & 2nd fraction");
         f1.sub(f2);
-        System.out.println(f1.subO.display());
+        System.out.println(f1.subO);
         System.out.println("Calculating Multiplication of 1st & 2nd fraction");
         f1.multiplication(f2);
-        System.out.println(f1.mulO.display());
+        System.out.println(f1.mulO);
         System.out.println("Calculating Division of 1st & 2nd fraction");
         f1.division(f2);
-        System.out.println(f1.divO.display());
+        System.out.println(f1.divO);
     }
 }

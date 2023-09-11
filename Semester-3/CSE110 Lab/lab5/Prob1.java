@@ -7,44 +7,44 @@ class IceCream {
     private String iceCreamType, iceCreamCompany;
     private double iceCreamPrice;
 
-    public IceCream() {
+    IceCream() {
     }
 
-    public IceCream(String t, String c, double p) {
+    IceCream(String t, String c, double p) {
         iceCreamType = t;
         iceCreamCompany = c;
         iceCreamPrice = p;
     }
 
-    public void setType(String t) {
+    void setType(String t) {
         iceCreamType = t;
     }
 
-    public String getType() {
+    String getType() {
         return iceCreamType;
     }
 
-    public void setCompany(String c) {
+    void setCompany(String c) {
         iceCreamCompany = c;
     }
 
-    public String getCompany() {
+    String getCompany() {
         return iceCreamCompany;
     }
 
-    public void setPrice(double p) {
+    void setPrice(double p) {
         iceCreamPrice = p;
     }
 
-    public double getPrice() {
+    double getPrice() {
         return iceCreamPrice;
     }
 
-    public boolean equals(IceCream I) {
+    boolean equals(IceCream I) {
         return iceCreamPrice == I.getPrice();
     }
 
-    public int compareTo(IceCream I) {
+    int compareTo(IceCream I) {
         if (iceCreamPrice > I.getPrice()) {
             return 1;
         } else if (iceCreamPrice == I.getPrice()) {
@@ -54,13 +54,15 @@ class IceCream {
         }
     }
 
-    public String display() {
+    String display() {
         return "IceCream Type: " + iceCreamType + ", IceCream Company: " + iceCreamCompany + ", IceCream Pice: "
                 + iceCreamPrice;
     }
 }
 
-public class DefiningClass {
+public class Prob1 {
+
+    static IceCream[] IceCreamArray = new IceCream[5];
 
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
@@ -90,9 +92,6 @@ public class DefiningClass {
 
         System.out.println(I1.equals(I2));
         System.out.println(I1.compareTo(I2));
-
-        IceCream[] IceCreamArray = new IceCream[5];
-
         for (int i = 0; i < IceCreamArray.length; i++) {
             IceCreamArray[i] = new IceCream();
 
@@ -107,6 +106,19 @@ public class DefiningClass {
             IceCreamArray[i].setType(t);
             IceCreamArray[i].setPrice(p);
             System.out.println(IceCreamArray[i].display());
+        }
+        inp.nextLine();
+        System.out.print("Enter a company name to search with: ");
+        String name = inp.nextLine();
+        System.out.println(name);
+        searchByCompany(name);
+    }
+
+    static void searchByCompany(String name) {
+        for (int i = 0; i < IceCreamArray.length; i++) {
+            if (name.equals(IceCreamArray[i].getCompany())) {
+                System.out.println(IceCreamArray[i].display());
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ class Book {
     }
 }
 
-public class BookManipulation {
+public class Prob2 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("Enter the total number of book information you want to add: ");
