@@ -152,7 +152,7 @@ class SavingAccount extends Account {
     }
 }
 
-public class AbsTestAccount {
+public class Prob1_using_Abstract_Class {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
 
