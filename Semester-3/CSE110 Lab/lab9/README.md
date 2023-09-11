@@ -11,13 +11,13 @@ Lab Activities:
 
 **Lab Problem 1:**
 
-Write a program to create a file named Lab08_01.txt if it does not exist. Append new data to it if it
+Write a program to create a file named `Lab08_01.txt` if it does not exist. Append new data to it if it
 already exists. Write 100 integers created randomly into the file using text I/O. Integers are separated by
 a space.
 
 **Lab Problem 2:**
 
-Write a program to create a file named Lab08_02.dat if it does not exist. Append new data to it if it
+Write a program to create a file named `Lab08_02.dat` if it does not exist. Append new data to it if it
 already exists. Write 100 integers created randomly into the file using binary I/O. Integers are separated
 by a space.
 
