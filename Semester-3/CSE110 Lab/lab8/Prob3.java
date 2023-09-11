@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class RandomValue {
+public class Prob3 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         int[] arr = new int[100];

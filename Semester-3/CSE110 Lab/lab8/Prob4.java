@@ -69,7 +69,7 @@ class Triangle extends GeometricObject {
     }
 }
 
-public class GeoObj {
+public class Prob4 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("We are creating a triangle.\nEnter side a of the triangle: ");

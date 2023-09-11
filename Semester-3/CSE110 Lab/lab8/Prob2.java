@@ -6,10 +6,10 @@ class MyException extends Exception {
     }
 }
 
-class Product {
+class Prob2 {
     private int weight;
 
-    Product(int weight) {
+    Prob2(int weight) {
         this.weight = weight;
     }
 
@@ -20,7 +20,7 @@ class Product {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("Enter the product weight to check products validity: ");
-        Product obj = new Product(inp.nextInt());
+        Prob2 obj = new Prob2(inp.nextInt());
         try {
             obj.productCheck(obj.weight);
         } catch (Exception e) {
