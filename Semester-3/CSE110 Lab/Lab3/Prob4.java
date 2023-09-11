@@ -2,7 +2,7 @@ package Lab3;
 
 import java.util.Scanner;
 
-class UniqueNumber {
+class Prob4 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("This program is printing unique values.\nEnter 10 numbers: ");

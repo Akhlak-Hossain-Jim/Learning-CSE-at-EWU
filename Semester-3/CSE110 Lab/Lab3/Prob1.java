@@ -2,7 +2,7 @@ package Lab3;
 
 import java.util.Scanner;
 
-public class AssignGrade {
+public class Prob1 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("This program is assigning grade based on height marks.\nEnter the number of students: ");

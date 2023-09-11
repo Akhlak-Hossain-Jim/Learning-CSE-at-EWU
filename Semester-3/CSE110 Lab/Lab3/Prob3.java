@@ -2,7 +2,7 @@ package Lab3;
 
 import java.util.Scanner;
 
-class PalindromeNumber {
+class Prob3 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("This program is checking if input is Palindrome or not.\nEnter your input: ");

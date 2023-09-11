@@ -2,7 +2,7 @@ package Lab3;
 
 import java.util.Scanner;
 
-class CountCopy {
+class Prob2 {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
         System.out.print("This program is counting repeated numbers.\nEnter the integers between 1 to 100: ");

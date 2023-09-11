@@ -2,7 +2,7 @@ package Lab3;
 
 import java.util.Scanner;
 
-class RanBigSmall {
+class Prob5 {
     static void maximum(int[] arr) {
         int max = arr[0];
         int in = 0;
