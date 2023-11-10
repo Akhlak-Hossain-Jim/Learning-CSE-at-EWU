@@ -27,3 +27,10 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [CSE110 Lab](/Semester-3/CSE110%20Lab/)
 - [MAT102](/Semester-3/MAT102/)
 - [ENG102](/Semester-3/ENG102/)
+
+## Semester 4
+
+- [CSE200](/Semester-4/CSE200/)
+- [ECO101](/Semester-4/ECO101/)
+- [GEN226](/Semester-4/GEN226/)
+- [PHY109](/Semester-4/PHY109/)
