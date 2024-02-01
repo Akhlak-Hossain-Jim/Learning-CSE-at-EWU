@@ -100,10 +100,7 @@ void DynamicAssign(int length)
         cout << "Enter " << i + 1 << "th product Price: ";
         cin >> price;
         cout << endl;
-        Product *ref = new Product(id, name, brandName, type, quantity, price);
-        prodArr[i] = ref;
-        delete ref;
-        ref = NULL;
+        prodArr[i] = new Product(id, name, brandName, type, quantity, price);
     }
     for (int i = 0; i < length; i++)
     {
