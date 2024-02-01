@@ -34,3 +34,10 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [ECO101](/Semester-4/ECO101/)
 - [GEN226](/Semester-4/GEN226/)
 - [PHY109](/Semester-4/PHY109/)
+
+## Semester 5
+
+- [CSE207](/Semester-5/CSE207/)
+- [CSE209](/Semester-5/CSE209/)
+- [MAT104](/Semester-5/MAT104/)
+- [MAT205](/Semester-5/MAT205/)
