@@ -69,13 +69,13 @@ int main()
     }
     else if (n1 < n2)
     {
-        PrimeInRange *obj = new PrimeInRange(n1, n2);
+        obj = new PrimeInRange(n1, n2);
         obj->display();
         delete obj;
     }
     else if (n1 > n2)
     {
-        PrimeInRange *obj = new PrimeInRange(n2, n1);
+        obj = new PrimeInRange(n2, n1);
         obj->display();
         delete obj;
     }
