@@ -181,7 +181,6 @@ int main()
             cout << "\n\n\t\t\tPrevious:\t";
             sll->display();
             cout << "Performing Sorting operation..." << endl;
-            sll->removeFirst();
             cout << "\t\t\tNew     :\t";
             sll->sort();
             sll->display();

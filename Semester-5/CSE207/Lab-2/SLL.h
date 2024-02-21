@@ -238,17 +238,34 @@ public:
     {
         if (length > 0)
         {
-            SLL *sll = new SLL();
-            for (int i = length - 1; i >= 0; i--)
+            // SLL *sll = new SLL();
+            // for (int i = length - 1; i >= 0; i--)
+            // {
+            //     sll->add(this->get(i));
+            // }
+            // this->length = 0;
+            // this->head = NULL;
+            // for (int i = 0; i < sll->length; i++)
+            // {
+            //     int x = sll->get(i);
+            //     this->add(x);
+            // }
+            Node *oH = head, *nH;
+            Node *temp = head;
+            for (int i = 0; i < length; i++)
             {
-                sll->add(this->get(i));
-            }
-            this->length = 0;
-            this->head = NULL;
-            for (int i = 0; i < sll->length; i++)
-            {
-                int x = sll->get(i);
-                this->add(x);
+                Node *iItem = temp, *iPrev;
+                for (int j = i; j < length; j++)
+                {
+                    iPrev = iItem;
+                    iItem = iItem->ref;
+                }
+                Node *temp2 = ref;
+                temp2->ref = NULL;
+                iPrev = temp2;
+                iItem->ref = temp->ref;
+                temp = iItem;
+                temp = temp->ref;
             }
         }
         else
@@ -257,23 +274,47 @@ public:
 
     void sort()
     {
-        for (int i = 0; i < this->length - 1; i++)
+        if (length > 0)
         {
-            Node *current = this->head, *next = this->head->ref;
-            for (int j = 0; j < this->length - i - 1; j++)
+            for (int i = 0; i < this->length - 1; i++)
             {
-                if (current->item > next->item)
+                Node *current = this->head, *next = current->ref;
+                for (int j = 0; j < this->length - i - 1; j++)
                 {
-                    int tem = current->item;
-                    current->item = next->item;
-                    next->item = tem;
+                    if (current->item > next->item)
+                    {
+                        int tem = current->item;
+                        current->item = next->item;
+                        next->item = tem;
+                    }
+                    current = next;
+                    next = next->ref;
                 }
-                current = next;
-                next = next->ref;
+
+                // for (int j = 0; j < this->length - i - 1; j++)
+                // {
+                //     if (this->get(j) > this->get(j + 1))
+                //     {
+                //         int tem = this->get(j);
+                //         this->replace(j, this->get(j + 1));
+                //         this->replace(j + 1, tem);
+                //     }
+                // }
             }
         }
+        else
+            cerr << "Add some items first to perform sort";
     }
 
+    void replace(int index, int value)
+    {
+        Node *temp = this->head;
+        for (int i = 0; i <= index; i++)
+        {
+            temp = temp->ref;
+        }
+        temp->item = value;
+    }
     void display()
     {
         Node *temp = head;
