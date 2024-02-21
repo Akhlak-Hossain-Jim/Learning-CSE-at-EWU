@@ -204,10 +204,14 @@ public:
         {
             if (head != NULL && (position < length))
             {
-                if (position == 0)
+                if (length == 0)
                 {
                     head = NULL;
                     this->length--;
+                }
+                else if (position == 0)
+                {
+                    this->removeFirst();
                 }
                 else if (position == length - 1)
                 {
@@ -325,6 +329,7 @@ public:
         }
         temp->item = value;
     }
+
     void display()
     {
         if (length > 0)
