@@ -180,7 +180,7 @@ int main()
         {
             cout << "\n\n\t\t\tPrevious:\t";
             sll->display();
-            cout << "Performing Sorting operation..." << endl;
+            cout << "\n\n\t\tPerforming Sorting operation...\n\n";
             cout << "\t\t\tNew     :\t";
             sll->sort();
             sll->display();

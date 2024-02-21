@@ -250,23 +250,33 @@ public:
             //     int x = sll->get(i);
             //     this->add(x);
             // }
-            Node *oH = head, *nH;
+            Node *nH = NULL;
             Node *temp = head;
             for (int i = 0; i < length; i++)
             {
                 Node *iItem = temp, *iPrev;
-                for (int j = i; j < length; j++)
+                for (int j = 0; j < length - 1 - i; j++)
                 {
                     iPrev = iItem;
                     iItem = iItem->ref;
                 }
-                Node *temp2 = ref;
-                temp2->ref = NULL;
-                iPrev = temp2;
-                iItem->ref = temp->ref;
-                temp = iItem;
-                temp = temp->ref;
+                if (nH == NULL)
+                {
+                    nH = iItem;
+                    iPrev->ref = NULL;
+                }
+                else
+                {
+                    Node *temp3 = nH;
+                    while (temp3->ref != NULL)
+                    {
+                        temp3 = temp3->ref;
+                    }
+                    temp3->ref = iItem;
+                    iPrev->ref = NULL;
+                }
             }
+            this->head = nH;
         }
         else
             cerr << "Add some element first to do reverse operation";
@@ -317,12 +327,18 @@ public:
     }
     void display()
     {
-        Node *temp = head;
-        while (temp != NULL)
+        if (length > 0)
         {
-            cout << temp->item << "\t";
-            temp = temp->ref;
+
+            Node *temp = head;
+            while (temp != NULL)
+            {
+                cout << temp->item << "\t";
+                temp = temp->ref;
+            }
+            cout << endl;
         }
-        cout << endl;
+        else
+            cout << "Add some value to perform display\n";
     }
 };
