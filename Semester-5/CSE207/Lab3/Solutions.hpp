@@ -28,3 +28,19 @@ void removeSmallerThanZero(SLL *sll)
             i++;
     }
 }
+
+// Problem 3 Solution
+
+void removeNextOfZero(SLL *sll)
+{
+    int n = sll->size(), i = 0;
+    while (i < n)
+    {
+        if (sll->get(i) < 0 && n > 0)
+        {
+            sll->remove(i + 1);
+            n--;
+        }
+        i++;
+    }
+}
