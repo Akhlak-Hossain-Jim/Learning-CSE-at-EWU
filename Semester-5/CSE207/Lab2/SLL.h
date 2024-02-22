@@ -109,7 +109,7 @@ public:
     int get(int position)
     {
         int res;
-        if (!((length == 0) && (position >= length)))
+        if (((length > 0) && (position < length) && (position > 0)))
         {
             Node *temp = head;
             for (int i = 1; i <= position; i++)
@@ -242,18 +242,6 @@ public:
     {
         if (length > 0)
         {
-            // SLL *sll = new SLL();
-            // for (int i = length - 1; i >= 0; i--)
-            // {
-            //     sll->add(this->get(i));
-            // }
-            // this->length = 0;
-            // this->head = NULL;
-            // for (int i = 0; i < sll->length; i++)
-            // {
-            //     int x = sll->get(i);
-            //     this->add(x);
-            // }
             Node *nH = NULL;
             Node *temp = head;
             for (int i = 0; i < length; i++)
@@ -328,6 +316,32 @@ public:
             temp = temp->ref;
         }
         temp->item = value;
+    }
+
+    void swap(int i1, int i2)
+    {
+        if ((i1 >= 0 && i1 < length) && (i2 >= 0 && i2 < length))
+        {
+            Node *i1P, *i1C = this->head;
+            for (int i = 1; i <= i1; i++)
+            {
+                i1P = i1C;
+                i1C = i1C->ref;
+            }
+            Node *i2P, *i2C = this->head;
+            for (int i = 1; i <= i2; i++)
+            {
+                i2P = i2C;
+                i2C = i2C->ref;
+            }
+            Node *temp = i1C->ref;
+            i2P->ref = i1C;
+            i1C->ref = i2C->ref;
+            i1P->ref = i2C;
+            i2C->ref = temp;
+        }
+        else
+            cout << "One of the index is out of bound";
     }
 
     void display()
