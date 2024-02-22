@@ -87,7 +87,7 @@ int main()
                 cout << "\t\t\tNew     :\t";
                 sll->display();
                 cout << "\t\t\tLooking for negative values and removing them ...\n";
-                removeSmallerThanZero(sll);
+                removeNextOfZero(sll);
                 cout << "\t\t\tNew     :\t";
                 sll->display();
             }
@@ -98,17 +98,46 @@ int main()
         }
         case 5:
         {
-            cout << "\n\n\t\t\tThe list has " << sll->size() << " items.";
+            cout << "\n\n\t\tCreating a new list... \n\t\t\tEnter a list length: ";
+            int len;
+            cin >> len;
+            SLL *sll2 = new SLL();
+            for (int i = 0; i < len; i++)
+            {
+                int te;
+                cout << "\t\t\tEnter the " << i + 1 << " th value: ";
+                cin >> te;
+                sll2->add(te);
+            }
+            cout << "\n\n\t\tThe list: \n\t\t\t";
+            sll2->display();
+            cout << "\n\n\t\tAppending the list... ";
+            for (int i = 0; i < len; i++)
+            {
+                sll->add(sll2->get(i));
+            }
+            cout << "\n\t\t\tList becomes:\n\t\t\t";
+            sll->display();
             input = 0;
             break;
         }
         case 6:
         {
             cout << "\n\n\t\t\t";
-            if (sll->isEmpty())
-                cout << "The list is empty.";
+            if (!(sll->isEmpty()))
+            {
+                int i1, i2;
+                cout << "\n\t\t\tEnter the 1st index: ";
+                cin >> i1;
+                cout << "\n\t\t\tEnter the 2nd index: ";
+                cin >> i2;
+                cout << "\n\n\t\tPerforming swap operation...\n";
+                sll->swap(i1, i2);
+                cout << "\n\t\t\tThe list becomes:\n\t\t\t";
+                sll->display();
+            }
             else
-                cout << "The list not empty.";
+                cout << "\n\t\tThe list is empty.";
             input = 0;
             break;
         }
