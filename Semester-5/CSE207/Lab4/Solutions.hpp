@@ -14,7 +14,6 @@ Stack *copy(Stack *st)
         sll->add(st->Top());
         st->Pop();
     }
-    sll->display();
     for (int i = n - 1; i >= 0; i--)
     {
         int x = sll->get(i);
