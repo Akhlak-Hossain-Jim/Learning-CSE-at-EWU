@@ -79,7 +79,10 @@ public:
             return this->head;
         }
         else
+        {
             cout << "Can't provide you top value of an empty Stack";
+            return NULL;
+        }
     }
 
     void display()
@@ -96,6 +99,6 @@ public:
             cout << endl;
         }
         else
-            cout << "Add some value to perform display\n";
+            cout << "The Stack is currently empty\n";
     }
 };
