@@ -24,9 +24,9 @@ int main()
             cout << "\t\t06. Pop Node\n";
             cout << "\t\t07. Stack length\n";
             cout << "\t\t08. Is Stack empty\n";
-            cout << "\t\t08. Destroy Stack\n";
-            cout << "\t\t09. Get top value\n";
-            cout << "\t\t10. Get top address\n";
+            cout << "\t\t09. Destroy Stack\n";
+            cout << "\t\t10. Get top value\n";
+            cout << "\t\t11. Get top address\n";
             cout << "\t\t14. Display all item from the list\n";
             cout << "\t\t100. Exit the program\n";
             cout << "\n\t\tEnter an option(Integer value): ";
@@ -80,15 +80,15 @@ int main()
         {
             if (!(st->isEmpty()))
             {
-                cout << "\n\n\t\t\tPrevious:\t";
+                cout << "\n\n\t\t\tCurrent Stack:\t";
                 st->display();
                 cout << "\t\t\tPerforming reverse operation operation..." << endl;
                 ReverseStack(st);
-                cout << "\t\t\tNew     :\t";
+                cout << "\t\t\tNew Stack     :\t";
                 st->display();
             }
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
             input = 0;
             break;
         }
@@ -110,19 +110,15 @@ int main()
         {
             if (!(st->isEmpty()))
             {
-                // cout << "\n\n\t\t\tPrevious:\t";
-                // st->display();
-                // cout << "\t\t\tPerforming traverse operation operation..." << endl;
-                // st->reverse();
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-                // cout << "\t\t\tLooking for negative values and removing them ...\n";
-                // removeSmallerThanZero(st);
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
+                cout << "\n\n\t\t\tCurrent Stack:\t";
+                st->display();
+                cout << "\t\t\tPerforming pop operation operation..." << endl;
+                st->Pop();
+                cout << "\t\t\tNew Stack     :\t";
+                st->display();
             }
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
             input = 0;
             break;
         }
@@ -131,40 +127,22 @@ int main()
         {
             if (!(st->isEmpty()))
             {
-                // cout << "\n\n\t\t\tPrevious:\t";
-                // st->display();
-                // cout << "\t\t\tPerforming traverse operation operation..." << endl;
-                // st->reverse();
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-                // cout << "\t\t\tLooking for negative values and removing them ...\n";
-                // removeSmallerThanZero(st);
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
+                cout << "\n\n\t\t\tCurrent length of stack:\t";
+                cout << st->Length();
             }
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
             input = 0;
             break;
         }
 
         case 8:
         {
-            if (!(st->isEmpty()))
-            {
-                // cout << "\n\n\t\t\tPrevious:\t";
-                // st->display();
-                // cout << "\t\t\tPerforming traverse operation operation..." << endl;
-                // st->reverse();
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-                // cout << "\t\t\tLooking for negative values and removing them ...\n";
-                // removeSmallerThanZero(st);
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-            }
+            cout << "\n\n\t\t\tThe Stack is currently ";
+            if ((st->isEmpty()))
+                cout << "Empty\n";
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "not Empty";
             input = 0;
             break;
         }
@@ -173,19 +151,15 @@ int main()
         {
             if (!(st->isEmpty()))
             {
-                // cout << "\n\n\t\t\tPrevious:\t";
-                // st->display();
-                // cout << "\t\t\tPerforming traverse operation operation..." << endl;
-                // st->reverse();
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-                // cout << "\t\t\tLooking for negative values and removing them ...\n";
-                // removeSmallerThanZero(st);
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
+                cout << "\n\n\t\t\tCurrent Stack:\t";
+                st->display();
+                cout << "\t\t\tDestroying the Stack..." << endl;
+                st->destroy();
+                cout << "\t\t\tNew Stack: ";
+                st->display();
             }
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
             input = 0;
             break;
         }
@@ -194,19 +168,24 @@ int main()
         {
             if (!(st->isEmpty()))
             {
-                // cout << "\n\n\t\t\tPrevious:\t";
-                // st->display();
-                // cout << "\t\t\tPerforming traverse operation operation..." << endl;
-                // st->reverse();
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
-                // cout << "\t\t\tLooking for negative values and removing them ...\n";
-                // removeSmallerThanZero(st);
-                // cout << "\t\t\tNew     :\t";
-                // st->display();
+                cout << "\n\n\t\t\tTop Value of the Current Stack:\t";
+                cout << st->Top();
             }
             else
-                cout << "Add some items first to perform traverse and remove negative nodes";
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
+            input = 0;
+            break;
+        }
+
+        case 11:
+        {
+            if (!(st->isEmpty()))
+            {
+                cout << "\n\n\t\t\tTop Address of the Current Stack:\t";
+                cout << st->TopAddress();
+            }
+            else
+                cout << "\t\t\tThe Stack is currently Empty add some node to perform this operation";
             input = 0;
             break;
         }
