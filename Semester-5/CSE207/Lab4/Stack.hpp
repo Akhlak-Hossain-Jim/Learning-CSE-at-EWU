@@ -51,7 +51,7 @@ public:
 
     void destroy()
     {
-        for (int i = 0; i < this->length; i++)
+        while (this->length != 0)
         {
             this->Pop();
         }
