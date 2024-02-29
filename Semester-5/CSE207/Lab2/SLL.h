@@ -109,7 +109,7 @@ public:
     int get(int position)
     {
         int res;
-        if (((length > 0) && (position < length) && (position > 0)))
+        if (((length > 0) && (position < length) && (position >= 0)))
         {
             Node *temp = head;
             for (int i = 1; i <= position; i++)
