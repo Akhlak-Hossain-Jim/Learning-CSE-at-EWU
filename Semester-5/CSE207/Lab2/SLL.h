@@ -127,6 +127,10 @@ public:
     {
         return head;
     }
+    void setHead(Node *n)
+    {
+        head = n;
+    }
 
     int indexOf(int value)
     {
