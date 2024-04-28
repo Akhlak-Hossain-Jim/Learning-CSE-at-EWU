@@ -123,6 +123,11 @@ public:
             throw invalid_argument("No Item fond at the provided index: " + position);
     }
 
+    Node *getHead()
+    {
+        return head;
+    }
+
     int indexOf(int value)
     {
         Node *temp = head;
