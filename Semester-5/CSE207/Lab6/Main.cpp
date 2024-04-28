@@ -104,7 +104,7 @@ int main()
 
         case 6:
         {
-            cout << "\n\n\t\t\Sorting a given linked list using recursion:\t";
+            cout << "\n\n\t\t\tSorting a given linked list using recursion:\t";
             int sllL;
             cout << "\n\t\t\tEnter the length of Linked List: ";
             cin >> sllL;
@@ -116,12 +116,13 @@ int main()
                 cin >> x;
                 sll->add(x);
             }
-            cout << "\n\t\tThe Linked List: ";
+            cout << "\n\t\t\tThe Linked List: ";
             sll->display();
             cout << "\n\t\t\tSorting the list:\n";
-            cout << "\n\t\t\tNew List:\n";
-            sortRecursion(sll->getHead(), 0, sllL);
-            sll->display();
+            cout << "\n\t\t\tNew List:";
+            // sortRecursion(sll->getHead(), 0, sllL);
+            sll = sortedList(sll);
+            // sll->display();
             cout << endl;
             input = 0;
             break;
