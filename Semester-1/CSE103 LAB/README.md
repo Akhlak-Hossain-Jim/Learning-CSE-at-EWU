@@ -12,3 +12,5 @@
 - [Lab 5, 13/11/2022](./classes/class-5/)
 - [Lab 6, 20/11/2022](./classes/class-6/)
 - [Lab 7, 27/11/2022](./classes/class-7/)
+
+Lab Project:[Coffee Shop Management](https://github.com/Akhlak-Hossain-Jim/CoffeeShopManagement-C)
