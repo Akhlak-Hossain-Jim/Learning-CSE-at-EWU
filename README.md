@@ -41,3 +41,13 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [CSE209](/Semester-5/CSE209/)
 - [MAT104](/Semester-5/MAT104/)
 - [MAT205](/Semester-5/MAT205/)
+
+## Semester 6
+
+- Skipped the short Semester
+
+## Semester 7
+
+- [CSE246](/Semester-7/CSE246/)
+- [CSE251](/Semester-7/CSE251/)
+- [CSE325](/Semester-7/CSE325/)
