@@ -66,24 +66,71 @@
         </tbody>
     </table>
 
+  **Explanation:** (Akhlak's Extra)
+
+  1. **Jobs**: You have a list of jobs, each with:
+     - _Deadline_: The last time by which the job must be completed.
+     - _Profit:_ The amount earned if the job is completed on time.
+     - Each job takes exactly one unit of time to complete.
+  2. **Rules:**
+     - You can only work on one job at a time.
+     - You must finish each job before its deadline.
+  3. **Goal:** Schedule the jobs to maximize your total profit.
+  4. **Output Explanation:**
+
+     > **Schedule the jobs:**
+     >
+     > - **Job c**: Deadline is 1. Schedule it on day 1 (it gives the highest profit).
+     > - **Job d**: Deadline is 1, but day 1 is already taken by Job c. So, skip it.
+     > - **Job a**: Deadline is 4. Schedule it on day 2 (it fits within its deadline and adds profit).
+     > - **Job b**: Deadline is 1, but day 1 is already taken. So, skip it.
+
 ## 4. Job sequencing problem – Loss minimization:
 
-- We are given N jobs numbered 1 to N. For each activity, let Ti denotes the number of days required to complete the job. For each day of delay before starting to work for job i, a loss of Li is incurred. You are required to find a sequence to complete the jobs so that overall loss is minimized. You can only work on one job at a time.
-<table>
-<thead>
-<tr>
-<th>Sample Input</th>
-<th>Sample Output</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>L = {3, 1, 2, 4}<br>
-T = {4, 1000, 2, 5}</td>
-<td>3, 4, 1, 2</td>
-</tr>
-</tbody>
-</table>
+- We are given N jobs numbered 1 to N. For each activity, let `T[i]` denotes the number of days required to complete the job. For each day of delay before starting to work for job `i`, a loss of `L[i]` is incurred. You are required to find a sequence to complete the jobs so that overall loss is minimized. You can only work on one job at a time.
+    <table>
+    <thead>
+    <tr>
+    <th>Sample Input</th>
+    <th>Sample Output</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>L = {3, 1, 2, 4}<br>
+    T = {4, 1000, 2, 5}</td>
+    <td>3, 4, 1, 2</td>
+    </tr>
+    </tbody>
+    </table>
+
+  **Explanation:** (Akhlak's Extra)
+
+  1. **Jobs**: You have a list of jobs, each with:
+
+     - **\( T[i] \)**: Time required to complete the job.
+     - **\( L[i] \)**: Daily loss incurred for every day of delay before starting the job.
+
+  2. **Rules**:
+
+     - You can only work on **one job at a time**.
+     - The loss for each job accumulates based on the number of days it is delayed before you start it.
+
+  3. **Goal**: Find the order of jobs to minimize the **total loss** caused by delays.
+
+  4. **Strategy**:
+     - Prioritize jobs that have a **high daily loss rate (\( L[i] \))** and **shorter durations (\( T[i] \))**.
+     - Use the ratio \( L[i] / T[i] \) (loss rate) to determine job priority.
+     - Schedule jobs in descending order of their loss rates.
+
+  **Output**
+
+  - **Job Sequence**: \( 3, 4, 1, 2 \)
+  - This sequence minimizes the total loss because:
+    > - Job 3 is prioritized due to the highest loss rate.
+    > - Job 4 follows, with the next highest loss rate.
+    > - Job 1 is scheduled next.
+    > - Job 2, with the lowest loss rate, is completed last, as delaying it has the least impact on the total loss.
 
 ## 5. Assign mice to hole:
 
