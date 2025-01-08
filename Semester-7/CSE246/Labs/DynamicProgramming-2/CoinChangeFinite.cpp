@@ -1,6 +1,11 @@
 #include <iostream>
 using namespace std;
 
+// inputs:
+// 3
+// 1 2 2 3 3 1
+// 10
+
 int CoinChangeFinite(int n, int sum, int coin[], int sup[])
 {
     int dp[n + 1][sum + 1];
