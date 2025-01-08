@@ -44,10 +44,10 @@ int main()
         {
             if (i == 0 || w == 0)
                 DP[i][w] = 0;
-            else if (wt[i] > w)
+            else if (wt[i - 1] > w)
                 DP[i][w] = DP[i - 1][w];
             else
-                DP[i][w] = maxV(DP[i - 1][w], DP[i - 1][w - wt[i]] + p[i]);
+                DP[i][w] = maxV(DP[i - 1][w], DP[i - 1][w - wt[i - 1]] + p[i - 1]);
         }
     }
 
@@ -77,7 +77,7 @@ int main()
         }
         else if (DP[i][j] < ref)
         {
-            res += " Obj " + to_string(i);
+            res += " Obj " + to_string(i + 1);
             ref = ref - p[i];
             ++i;
             while (DP[i][j] != ref)
@@ -85,7 +85,6 @@ int main()
                 j--;
             }
         }
-        cout << "\n&&&" << ref << "---" << i << j;
     }
 
     cout << res;
