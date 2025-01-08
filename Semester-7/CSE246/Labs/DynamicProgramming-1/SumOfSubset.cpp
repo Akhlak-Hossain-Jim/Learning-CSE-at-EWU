@@ -1,36 +1,36 @@
 #include <iostream>
 using namespace std;
 
-int sumofs(int n, int m, int value[])
+int sumOfSubsets(int n, int sum, int arr[])
 {
-    int dp[n + 1][m + 1];
+    int dp[n + 1][sum + 1];
     for (int i = 0; i <= n; i++)
     {
-        for (int j = 0; j <= m; j++)
+        for (int j = 0; j <= sum; j++)
         {
-            if (i == 0 || j == 0)
-            {
-                dp[0][j] = 0;
-                dp[i][0] = 1;
-            }
-            else if (value[i - 1] > j)
+            if (j == 0)
+                dp[i][j] = 1;
+            else if (i == 0)
+                dp[i][j] = 0;
+            else if (arr[i - 1] > j)
             {
                 dp[i][j] = dp[i - 1][j];
             }
             else
-                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - value[i - 1]];
+                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - arr[i - 1]];
         }
     }
 
+    cout << endl;
     for (int i = 0; i <= n; i++)
     {
-        for (int j = 0; j <= m; j++)
+        for (int j = 0; j <= sum; j++)
         {
             cout << dp[i][j] << " ";
         }
         cout << endl;
     }
-    return dp[n][m];
+    return dp[n][sum];
 }
 
 int main()
@@ -47,7 +47,7 @@ int main()
     }
     cin >> sum;
 
-    int t = sumofs(n, sum, value);
+    int t = sumOfSubsets(n, sum, value);
     if (t == 1)
     {
         cout << "Yes";
