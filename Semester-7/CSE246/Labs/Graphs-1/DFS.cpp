@@ -76,7 +76,7 @@ void print_stack(stack<int> q)
     cout << '\n';
 }
 
-void BFS(Graph G, int v, int s)
+void DFS(Graph G, int v, int s)
 {
     stack<int> st;
     bool Vis[v];
@@ -90,7 +90,7 @@ void BFS(Graph G, int v, int s)
     // print_stack(q);
     st.push(s);
     cout << endl
-         << "The traversed Graph(BFS): ";
+         << "The traversed Graph(DFS): ";
     while (!st.empty())
     {
         // cout<<endl<<"before pop: ";
@@ -157,7 +157,7 @@ int main()
     cout << "Enter the start vertice: ";
     cin >> start;
 
-    BFS(graph, vertices, start);
+    DFS(graph, vertices, start);
 
     return 0;
 }
