@@ -51,3 +51,10 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [CSE246](/Semester-7/CSE246/)
 - [CSE251](/Semester-7/CSE251/)
 - [CSE325](/Semester-7/CSE325/)
+
+## Semester 8
+
+- [CSE246](/Semester-8/CSE302/)
+- [CSE251](/Semester-8/CSE303/)
+- [CSE325](/Semester-8/GEN205/)
+- [CSE325](/Semester-8/PHY209/)
