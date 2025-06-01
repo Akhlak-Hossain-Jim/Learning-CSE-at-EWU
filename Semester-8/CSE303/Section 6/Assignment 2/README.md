@@ -10,7 +10,7 @@ In this project, we analyzed a loan dataset to predict the risk of default using
 
 We started by loading the dataset and understanding its structure. We checked for missing values, data types, and performed a brief exploration of the dataset.
 
-### Code:
+### Code:StudyMaterials
 
 ```python
 import pandas as pd
