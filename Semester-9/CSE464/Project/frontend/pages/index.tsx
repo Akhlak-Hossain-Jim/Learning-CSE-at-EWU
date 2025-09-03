@@ -31,7 +31,6 @@ const Home: NextPage<HomeProps> = ({ initialTables }) => {
   }, [selectedTable]);
 
   const handleShowHistory = (tableName: string, id: any) => {
-    const primaryKey = `${tableName.slice(0, -1)}_id`;
     fetch(`${API_BASE_URL}/table/${tableName}/${id}/history`)
       .then((res) => res.json())
       .then((data) => {
@@ -67,7 +66,6 @@ const Home: NextPage<HomeProps> = ({ initialTables }) => {
     if (!tableData.length) return <p>No data to display.</p>;
 
     const headers = Object.keys(tableData[0] || {});
-    const primaryKey = `${selectedTable.slice(0, -1)}_id`;
 
     return (
       <div className="overflow-x-auto">
@@ -79,21 +77,27 @@ const Home: NextPage<HomeProps> = ({ initialTables }) => {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {headers.map((header) => <td key={header}>{String(row[header])}</td>)}
-                <td>
-                  {!selectedTable.startsWith('audit_') && (
-                    <button 
-                      className="btn btn-xs btn-primary"
-                      onClick={() => handleShowHistory(selectedTable, row[primaryKey])}
-                    >
-                      History
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {tableData.map((row, rowIndex) => {
+              // More robust way to find the primary key for the history button
+              const idColumn = headers.find(h => h === `${selectedTable.slice(0, -1)}_id`);
+              const id = idColumn ? row[idColumn] : null;
+
+              return (
+                <tr key={rowIndex}>
+                  {headers.map((header) => <td key={header}>{String(row[header])}</td>)}
+                  <td>
+                    {id && !selectedTable.startsWith('audit_') && (
+                      <button 
+                        className="btn btn-xs btn-primary"
+                        onClick={() => handleShowHistory(selectedTable, id)}
+                      >
+                        History
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

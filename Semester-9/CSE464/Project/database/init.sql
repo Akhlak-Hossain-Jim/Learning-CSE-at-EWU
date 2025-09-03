@@ -1,8 +1,7 @@
-
 -- Housekeeping
 DROP VIEW IF EXISTS v_order_latest_status;
-DROP TABLE IF EXISTS customers, products, orders, order_items, payments, audit_products, audit_orders, audit_order_items, audit_payments CASCADE;
-DROP SEQUENCE IF EXISTS seq_audit_products, seq_audit_orders, seq_audit_order_items, seq_audit_payments;
+DROP TABLE IF EXISTS customers, products, orders, order_items, payments, audit_products, audit_orders, audit_order_items, audit_payments, audit_customers CASCADE;
+DROP SEQUENCE IF EXISTS seq_audit_products, seq_audit_orders, seq_audit_order_items, seq_audit_payments, seq_audit_customers;
 
 -- Core Schema (Normalized)
 
@@ -58,10 +57,24 @@ CREATE INDEX ix_order_items_order ON order_items(order_id);
 -- Audit/Provenance Tables
 
 -- Common sequences
+CREATE SEQUENCE seq_audit_customers START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_audit_products START WITH 10001 INCREMENT BY 1;
 CREATE SEQUENCE seq_audit_orders   START WITH 20001 INCREMENT BY 1;
 CREATE SEQUENCE seq_audit_order_items    START WITH 30001 INCREMENT BY 1;
 CREATE SEQUENCE seq_audit_payments START WITH 40001 INCREMENT BY 1;
+
+-- Customers provenance
+CREATE TABLE audit_customers (
+  audit_id      INTEGER PRIMARY KEY,
+  customer_id   INTEGER,
+  operation     VARCHAR(10),
+  old_name      VARCHAR(100),
+  new_name      VARCHAR(100),
+  old_email     VARCHAR(150),
+  new_email     VARCHAR(150),
+  actor         VARCHAR(128),
+  operation_time TIMESTAMP DEFAULT NOW()
+);
 
 -- Products provenance
 CREATE TABLE audit_products (
@@ -130,6 +143,29 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers to Capture Provenance
+
+-- Customers trigger function
+CREATE OR REPLACE FUNCTION func_audit_customers() RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    INSERT INTO audit_customers(audit_id, customer_id, operation, new_name, new_email, actor)
+    VALUES (nextval('seq_audit_customers'), NEW.customer_id, 'INSERT', NEW.name, NEW.email, CURRENT_USER);
+    RETURN NEW;
+  ELSIF (TG_OP = 'UPDATE') THEN
+    INSERT INTO audit_customers(audit_id, customer_id, operation, old_name, new_name, old_email, new_email, actor)
+    VALUES (nextval('seq_audit_customers'), OLD.customer_id, 'UPDATE', OLD.name, NEW.name, OLD.email, NEW.email, CURRENT_USER);
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE') THEN
+    INSERT INTO audit_customers(audit_id, customer_id, operation, old_name, old_email, actor)
+    VALUES (nextval('seq_audit_customers'), OLD.customer_id, 'DELETE', OLD.name, OLD.email, CURRENT_USER);
+    RETURN OLD;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_audit_customers
+AFTER INSERT OR UPDATE OR DELETE ON customers
+FOR EACH ROW EXECUTE FUNCTION func_audit_customers();
 
 -- Products trigger function
 CREATE OR REPLACE FUNCTION func_audit_products() RETURNS TRIGGER AS $$

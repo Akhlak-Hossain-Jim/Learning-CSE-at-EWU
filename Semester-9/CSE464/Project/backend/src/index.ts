@@ -68,17 +68,22 @@ app.post('/api/table/:tableName', async (req, res) => {
     const { tableName } = req.params;
     const data = req.body;
 
-    if (!/^[a-zA-Z0-9_]+$/.test(tableName)) {
-        return res.status(400).json({ error: 'Invalid table name' });
+    let query;
+    let values;
+
+    switch (tableName) {
+        case 'customers':
+            query = 'INSERT INTO customers(name, email) VALUES($1, $2) RETURNING *';
+            values = [data.name, data.email];
+            break;
+        case 'products':
+            query = 'INSERT INTO products(name, price, active_flag) VALUES($1, $2, $3) RETURNING *';
+            values = [data.name, data.price, data.active_flag || 'Y'];
+            break;
+        // Add cases for other tables that allow insertion
+        default:
+            return res.status(400).json({ error: `Inserts to table '${tableName}' are not supported.` });
     }
-
-    const columns = Object.keys(data).map(col => `"${col}"`).join(', ');
-    const placeholders = Object.keys(data).map((_, i) => `${i + 1}`).join(', ');
-    const values = Object.values(data);
-
-    const query = `INSERT INTO "${tableName}" (${columns}) VALUES (${placeholders}) RETURNING *`;
-
-    console.log('Executing query:', query, 'with values:', values);
 
     try {
         const result = await db.query(query, values);
