@@ -58,3 +58,17 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [CSE303](/Semester-8/CSE303/)
 - [GEN205](/Semester-8/GEN205/)
 - [PHY209](/Semester-8/PHY209/)
+
+## Semester 9
+
+- [CSE345](/Semester-9/CSE345/)
+- [CSE347](/Semester-9/CSE347/)
+- [CSE464](/Semester-9/CSE464)
+
+## Semester 10
+
+- [CSE350](/Semester-10/CSE350/)
+- [CSE360](/Semester-10/CSE360/)
+- [CSE400A](/Semester-10/CSE400A)
+- [CSE479](/Semester-10/CSE479)
+- [ECO7102](/Semester-10/ECO7102)
