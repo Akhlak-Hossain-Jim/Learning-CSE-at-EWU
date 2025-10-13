@@ -1,0 +1,31 @@
+---
+config:
+  layout: fixed
+---
+flowchart TD
+ subgraph subGraph0["Finova App System"]
+        Login(["Login"])
+        Expense(["Add Expense"])
+        Income(["Add Income"])
+        Summary(["View Summary"])
+        Budget(["Set Budget"])
+        Goal(["Set Savings Goal"])
+        Report(["Generate Report"])
+        Reminder(["Set Reminder"])
+        Export(["Export Data"])
+        Backup(["Backup Data"])
+        Category(["Manage Categories"])
+        Support(["Request Support"])
+        Deploy(["Deploy App"])
+        Test(["Test Features"])
+        Bug(["Bug Report"])
+  end
+    User(["User"]) --> Budget & Login & Expense & Income & Summary & Goal & Report & Reminder & Export & Backup & Category & Support
+    Developer(["Developer"]) --> Deploy & Test & Bug
+    Expense -. include .-> Login
+    Report -. include .-> Summary
+    Bug -. extend .-> Test
+    Export -. extend .-> Report
+    Backup -. extend .-> Export
+    Reminder -. extend .-> Expense
+    Category -. include .-> Expense
