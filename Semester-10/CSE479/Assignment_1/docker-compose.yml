@@ -1,0 +1,56 @@
+services:
+  # Apache/PHP Service (XAMPP-like environment)
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xampp_apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - xampp_network
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: xampp_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: user_auth_system
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    networks:
+      - xampp_network
+
+  # phpMyAdmin Service (Optional - for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: xampp_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: ""
+    depends_on:
+      - mysql
+    networks:
+      - xampp_network
+
+volumes:
+  mysql_data:
+
+networks:
+  xampp_network:
+    driver: bridge
+
