@@ -1,4 +1,6 @@
-**HTML Questions**
+# Final Practice Questions
+
+## HTML Questions
 
 1. [Level: Beginner] [Type: Conceptual]  
    Explain the purpose of semantic HTML elements like `<header>`, `<nav>`, `<article>`, and `<footer>`, and why they are preferred over generic `<div>` elements in modern web development.
@@ -27,7 +29,17 @@
    <iframe width="560" height="315" src="https://www.youtube.com/embed/videoID" frameborder="0" allowfullscreen></iframe>
    ```
 
-**CSS Questions**
+8. [Level: Advanced] [Type: Coding]  
+   Write HTML code for a responsive data table that includes a `<caption>`, proper `<thead>` and `<tbody>` sections, and uses the `scope` attribute on header cells for better accessibility.
+
+9. [Level: Beginner] [Type: Debugging]  
+   The following HTML link does not navigate when clicked. Identify the issue and provide the corrected code.  
+   ```html
+   <a name="contact">Contact Us</a>
+   ```
+
+
+## CSS Questions
 
 1. [Level: Beginner] [Type: Conceptual]  
    Explain the difference between inline, internal, and external CSS, and provide scenarios where each might be most appropriate in a web project.
@@ -61,7 +73,25 @@
 7. [Level: Advanced] [Type: Coding]  
    Write CSS to implement a card flip animation on hover for a product card, where the front shows an image and title, and the back reveals a description. Use transitions and 3D transforms.
 
-**JavaScript Questions**
+8. [Level: Advanced] [Type: Debugging]  
+   The following CSS custom properties (variables) are defined, but the fallback color is not applying correctly in older browsers. Explain the problem and suggest an improvement.  
+   ```css
+   :root {
+       --primary-color: #0066ff;
+   }
+   button {
+       background-color: var(--primary-color, blue);
+   }
+   ```
+
+9. [Level: Beginner] [Type: Coding]  
+   Write CSS to create a simple loading spinner using only a single `<div>` element and CSS animations (pure CSS, no JavaScript).
+
+10. [Level: Intermediate] [Type: Conceptual]  
+    Explain how the CSS `box-sizing` property affects element width calculations and why `border-box` is often preferred in modern layouts.
+
+
+## JavaScript Questions
 
 1. [Level: Beginner] [Type: Conceptual]  
    Explain the difference between `let`, `const`, and `var` for declaring variables in JavaScript, including scope and reassignment rules.
@@ -98,7 +128,19 @@
    console.log(data);
    ```
 
-**PHP Questions**
+8. [Level: Advanced] [Type: Coding]  
+   Write JavaScript code to implement a debounce function that limits how frequently a given callback can be executed (e.g., useful for search input handlers). Include a simple example usage.
+
+9. [Level: Beginner] [Type: Conceptual]  
+   What happens when you try to access an array index that doesn't exist in JavaScript? Explain the returned value and how it differs from trying to access a property on an undefined object.
+
+10. [Level: Intermediate] [Type: Coding]  
+    Write JavaScript code to add a click event listener to all buttons with the class "delete-btn" that prompts the user for confirmation before removing the parent list item from the DOM.
+
+11. [Level: Advanced] [Type: Conceptual]  
+    Discuss the event loop in JavaScript, including the roles of the call stack, task queue, and microtask queue. Explain why this matters for handling asynchronous operations like Promises versus setTimeout.
+
+## PHP Questions
 
 1. [Level: Beginner] [Type: Conceptual]  
    Explain the role of PHP in server-side web development and how it differs from client-side languages like JavaScript.
@@ -130,52 +172,6 @@
 
 7. [Level: Advanced] [Type: Coding]  
    Write PHP code to create a simple RESTful API endpoint that accepts a GET request with an 'id' parameter, queries a MySQL database for a user by that ID (assume connection is established), and returns the user data as JSON. Include basic error handling for no results.
-
-**HTML Questions** (continued)
-
-8. [Level: Advanced] [Type: Coding]  
-   Write HTML code for a responsive data table that includes a `<caption>`, proper `<thead>` and `<tbody>` sections, and uses the `scope` attribute on header cells for better accessibility.
-
-9. [Level: Beginner] [Type: Debugging]  
-   The following HTML link does not navigate when clicked. Identify the issue and provide the corrected code.  
-   ```html
-   <a name="contact">Contact Us</a>
-   ```
-
-**CSS Questions** (continued)
-
-8. [Level: Advanced] [Type: Debugging]  
-   The following CSS custom properties (variables) are defined, but the fallback color is not applying correctly in older browsers. Explain the problem and suggest an improvement.  
-   ```css
-   :root {
-       --primary-color: #0066ff;
-   }
-   button {
-       background-color: var(--primary-color, blue);
-   }
-   ```
-
-9. [Level: Beginner] [Type: Coding]  
-   Write CSS to create a simple loading spinner using only a single `<div>` element and CSS animations (pure CSS, no JavaScript).
-
-10. [Level: Intermediate] [Type: Conceptual]  
-    Explain how the CSS `box-sizing` property affects element width calculations and why `border-box` is often preferred in modern layouts.
-
-**JavaScript Questions** (continued)
-
-8. [Level: Advanced] [Type: Coding]  
-   Write JavaScript code to implement a debounce function that limits how frequently a given callback can be executed (e.g., useful for search input handlers). Include a simple example usage.
-
-9. [Level: Beginner] [Type: Conceptual]  
-   What happens when you try to access an array index that doesn't exist in JavaScript? Explain the returned value and how it differs from trying to access a property on an undefined object.
-
-10. [Level: Intermediate] [Type: Coding]  
-    Write JavaScript code to add a click event listener to all buttons with the class "delete-btn" that prompts the user for confirmation before removing the parent list item from the DOM.
-
-11. [Level: Advanced] [Type: Conceptual]  
-    Discuss the event loop in JavaScript, including the roles of the call stack, task queue, and microtask queue. Explain why this matters for handling asynchronous operations like Promises versus setTimeout.
-
-**PHP Questions** (continued)
 
 8. [Level: Advanced] [Type: Debugging]  
    The following PHP session code starts a session but the data is not persisting across page requests. Identify potential causes and suggest fixes.  
