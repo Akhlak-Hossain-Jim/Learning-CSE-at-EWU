@@ -72,3 +72,10 @@ What I have studied in CSE @ EWU will try to record here by lecture.
 - [CSE400A](/Semester-10/CSE400A)
 - [CSE479](/Semester-10/CSE479)
 - [ECO7102](/Semester-10/ECO7102)
+
+## Semester 11
+
+- [CSE400B](/Semester-11/CSE400b/)
+- [CSE405](/Semester-11/CSE405/)
+- [CSE412](/Semester-11/CSE412/)
+- [CSE489](/Semester-11/CSE489/)
