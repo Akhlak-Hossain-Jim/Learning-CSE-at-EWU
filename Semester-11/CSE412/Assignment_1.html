@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adapter Pattern: JSON to XML Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      textarea::-webkit-scrollbar {
+        width: 8px;
+      }
+      textarea::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      textarea::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      textarea::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body
+    class="flex flex-col h-[100dvh] bg-slate-50 text-slate-800 font-sans overflow-hidden"
+  >
+    <header
+      class="h-16 flex-none bg-white shadow-sm border-b border-slate-200 flex items-center justify-between px-4 sm:px-6"
+    >
+      <div>
+        <h1 class="font-bold text-lg sm:text-xl text-indigo-600 leading-tight">
+          Data Adapter
+        </h1>
+        <p class="text-xs text-slate-500 hidden sm:block">
+          Structural Design Pattern Implementation
+        </p>
+      </div>
+
+      <button
+        id="convertBtn"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm sm:text-base px-5 py-2 sm:py-2.5 rounded-lg shadow-sm transition-all active:scale-95 font-medium flex items-center gap-2"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+          ></path>
+        </svg>
+        Convert to XML
+      </button>
+    </header>
+
+    <main
+      class="flex-1 grid grid-rows-2 md:grid-rows-1 md:grid-cols-2 gap-4 p-4 min-h-0"
+    >
+      <div
+        class="flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+      >
+        <div
+          class="bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center"
+        >
+          <span class="font-semibold text-sm text-slate-700"
+            >Input Data (JSON)</span
+          >
+          <span
+            class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-mono"
+            >New Service</span
+          >
+        </div>
+        <textarea
+          id="jsonInput"
+          class="flex-1 w-full p-4 resize-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 font-mono text-sm sm:text-base text-slate-700"
+          spellcheck="false"
+        >
+{
+  "employee": {
+    "id": 1042,
+    "name": "Jane Doe",
+    "department": "Engineering",
+    "skills": [
+      "JavaScript",
+      "Design Patterns"
+    ]
+  }
+}</textarea
+        >
+      </div>
+
+      <div
+        class="flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+      >
+        <div
+          class="bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center"
+        >
+          <span class="font-semibold text-sm text-slate-700"
+            >Output Data (XML)</span
+          >
+          <span
+            class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-md font-mono"
+            >Legacy System</span
+          >
+        </div>
+        <textarea
+          id="xmlOutput"
+          class="flex-1 w-full p-4 resize-none bg-slate-50 focus:outline-none font-mono text-sm sm:text-base text-slate-600"
+          readonly
+          placeholder="Awaiting conversion..."
+          spellcheck="false"
+        ></textarea>
+      </div>
+    </main>
+
+    <footer
+      class="h-10 flex-none bg-slate-900 flex items-center justify-center text-slate-400 text-xs sm:text-sm"
+    >
+      <p>
+        Developed by
+        <a
+          href="https://akhlak.dev"
+          class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+          >akhlak.dev</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      class LegacyXmlSystem {
+        processData(xmlString) {
+          return xmlString;
+        }
+      }
+      class NewJsonService {
+        constructor(jsonString) {
+          this.jsonString = jsonString;
+        }
+        getJsonData() {
+          return JSON.parse(this.jsonString);
+        }
+      }
+
+      class JsonToXmlAdapter {
+        constructor(jsonService) {
+          this.jsonService = jsonService;
+        }
+
+        getXmlData() {
+          const jsonObj = this.jsonService.getJsonData();
+          return this._convertToXml(jsonObj);
+        }
+
+        _convertToXml(obj) {
+          let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<root>\n';
+          xml += this._traverseNode(obj, 1);
+          xml += "</root>";
+          return xml;
+        }
+
+        _traverseNode(obj, indentLevel) {
+          let xml = "";
+          const indent = "  ".repeat(indentLevel);
+
+          for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+              const val = obj[key];
+
+              if (Array.isArray(val)) {
+                val.forEach((item) => {
+                  if (typeof item === "object" && item !== null) {
+                    xml += `${indent}<${key}>\n`;
+                    xml += this._traverseNode(item, indentLevel + 1);
+                    xml += `${indent}</${key}>\n`;
+                  } else {
+                    xml += `${indent}<${key}>${item}</${key}>\n`;
+                  }
+                });
+              } else if (typeof val === "object" && val !== null) {
+                xml += `${indent}<${key}>\n`;
+                xml += this._traverseNode(val, indentLevel + 1);
+                xml += `${indent}</${key}>\n`;
+              } else {
+                xml += `${indent}<${key}>${val}</${key}>\n`;
+              }
+            }
+          }
+          return xml;
+        }
+      }
+
+      document.getElementById("convertBtn").addEventListener("click", () => {
+        const jsonInputStr = document.getElementById("jsonInput").value;
+        const outputArea = document.getElementById("xmlOutput");
+
+        try {
+          const jsonService = new NewJsonService(jsonInputStr);
+
+          const adapter = new JsonToXmlAdapter(jsonService);
+
+          const legacySystem = new LegacyXmlSystem();
+          const processedXml = legacySystem.processData(adapter.getXmlData());
+
+          outputArea.classList.remove("text-red-500");
+          outputArea.classList.add("text-slate-800");
+          outputArea.value = processedXml;
+        } catch (error) {
+          outputArea.classList.remove("text-slate-800");
+          outputArea.classList.add("text-red-500");
+          outputArea.value = "Error: Invalid JSON input.\n\n" + error.message;
+        }
+      });
+    </script>
+  </body>
+</html>
