@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CardStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_spacing"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding">
+
+        <!-- Top row: blood group + hospital + urgency tag -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Blood group badge -->
+            <TextView
+                android:id="@+id/tvBloodGroup"
+                android:layout_width="@dimen/blood_badge_md"
+                android:layout_height="@dimen/blood_badge_md"
+                android:gravity="center"
+                android:background="@drawable/bg_badge_rounded"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="O+" />
+
+            <!-- Hospital + units -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/space_md">
+
+                <TextView
+                    android:id="@+id/tvHospital"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City Hospital"
+                    style="@style/TextHeading3" />
+
+                <TextView
+                    android:id="@+id/tvUnits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:text="1 unit needed"
+                    style="@style/TextBodySmall" />
+
+            </LinearLayout>
+
+            <!-- Urgency tag -->
+            <TextView
+                android:id="@+id/tvUrgency"
+                style="@style/UrgencyTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_tag_urgent"
+                android:textColor="@color/colorUrgent"
+                android:text="@string/urgency_urgent" />
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm"
+            android:background="@color/dividerColor" />
+
+        <!-- Bottom row: contact phone + time ago -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Phone icon placeholder + number -->
+            <TextView
+                android:id="@+id/tvContactPhone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="—"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:fontFamily="@font/poppins_medium" />
+
+            <!-- Time ago -->
+            <TextView
+                android:id="@+id/tvTimeAgo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Just now"
+                style="@style/TextBodySmall" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

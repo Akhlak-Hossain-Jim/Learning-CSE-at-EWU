@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <!-- Blood drop badge -->
+    <TextView
+        android:id="@+id/tvDonationBloodGroup"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@drawable/bg_circle_red"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="A+" />
+
+    <!-- Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/space_md">
+
+        <TextView
+            android:id="@+id/tvDonationHospital"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dhaka Medical College"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins_medium" />
+
+        <TextView
+            android:id="@+id/tvDonationDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mar 15, 2026"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular" />
+
+    </LinearLayout>
+
+    <!-- Units -->
+    <TextView
+        android:id="@+id/tvDonationUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 unit"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
+        android:fontFamily="@font/poppins_medium" />
+
+</LinearLayout>

@@ -1,0 +1,162 @@
+<resources>
+    <!-- App -->
+    <string name="app_name">LifeFlow</string>
+    <string name="app_tagline">Uniting Hearts, Saving Lives</string>
+
+    <!-- Auth -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="create_account">Create Account</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="label_email">Email Address</string>
+    <string name="label_password">Password</string>
+    <string name="label_confirm_password">Confirm Password</string>
+    <string name="label_phone">Phone Number</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_signup">Create Account</string>
+    <string name="btn_get_started">Get Started</string>
+    <string name="link_no_account">Don\'t have an account? Sign Up</string>
+    <string name="link_have_account">Already have an account? Login</string>
+    <string name="btn_logout">Logout</string>
+
+    <!-- Roles -->
+    <string name="role_donor">I\'m a Donor</string>
+    <string name="role_recipient">I\'m a Recipient</string>
+
+    <!-- Blood groups -->
+    <string name="blood_group_label">Blood Group</string>
+    <string name="blood_group_a">A</string>
+    <string name="blood_group_b">B</string>
+    <string name="blood_group_ab">AB</string>
+    <string name="blood_group_o">O</string>
+    <string name="rh_positive">+</string>
+    <string name="rh_negative">−</string>
+
+    <!-- Home -->
+    <string name="greeting_prefix">Hi, %1$s!</string>
+    <string name="welcome_to_lifeflow">Welcome to LifeFlow</string>
+    <string name="what_do_you_want">What do you want?</string>
+    <string name="card_donate_blood">Donate Blood</string>
+    <string name="card_request_blood">Request Blood</string>
+    <string name="section_blood_requests">Blood Requests</string>
+    <string name="see_all">See All ›</string>
+    <string name="stat_donors_available">Donors Available</string>
+    <string name="stat_active_requests">Active Requests</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_donors">Donors</string>
+    <string name="nav_requests">Requests</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Donor list -->
+    <string name="title_find_donors">Find Donors</string>
+    <string name="hint_search_donors">Search by name or city…</string>
+    <string name="empty_donors">No donors found</string>
+    <string name="empty_donors_sub">Try a different blood group or search term</string>
+    <string name="filter_all">All</string>
+    <string name="label_available">Available</string>
+    <string name="label_unavailable">Unavailable</string>
+
+    <!-- Donor detail -->
+    <string name="title_donor_detail">Donor Profile</string>
+    <string name="btn_call_donor">Call Donor</string>
+    <string name="label_location">Location</string>
+    <string name="label_last_active">Last Active</string>
+
+    <!-- Edit profile -->
+    <string name="title_edit_profile">Edit Profile</string>
+    <string name="label_city">City</string>
+    <string name="label_district">District</string>
+    <string name="label_availability">Available to Donate</string>
+    <string name="btn_save">Save Changes</string>
+
+    <!-- Blood requests -->
+    <string name="title_blood_requests">Blood Requests</string>
+    <string name="title_create_request">Request Blood</string>
+    <string name="label_blood_group_needed">Blood Group Needed</string>
+    <string name="label_units_needed">Units Needed</string>
+    <string name="label_hospital_name">Hospital Name</string>
+    <string name="label_urgency">Urgency Level</string>
+    <string name="label_contact_phone">Contact Phone</string>
+    <string name="label_notes">Additional Notes (optional)</string>
+    <string name="btn_submit_request">Submit Request</string>
+    <string name="urgency_normal">Normal</string>
+    <string name="urgency_urgent">Urgent</string>
+    <string name="urgency_critical">Critical</string>
+    <string name="empty_requests">No active requests</string>
+    <string name="empty_requests_sub">No blood requests at the moment</string>
+    <string name="label_units_format">%1$d unit(s) needed</string>
+
+    <!-- Profile -->
+    <string name="title_my_profile">My Profile</string>
+    <string name="btn_edit_profile">Edit Profile</string>
+    <string name="btn_my_requests">My Requests</string>
+    <string name="label_donor_badge">Donor</string>
+    <string name="label_recipient_badge">Recipient</string>
+
+    <!-- Donation Info -->
+    <string name="btn_donation_info">Donation Info</string>
+    <string name="title_donation_info">Donation Info</string>
+    <string name="subtitle_donation_info">Your giving history</string>
+    <string name="label_total_donations">Total\nDonations</string>
+    <string name="label_lives_impacted">Lives\nImpacted</string>
+    <string name="label_years_donating">Years\nDonating</string>
+    <string name="label_eligibility">Next Eligibility</string>
+    <string name="label_last_donation">Last Donation</string>
+    <string name="label_next_eligible">Next Eligible</string>
+    <string name="label_donation_history">Donation History</string>
+
+    <!-- Donate Money screen -->
+    <string name="btn_donate_money">Donate Money</string>
+    <string name="title_donate_money">Donate Money</string>
+    <string name="subtitle_donate_money">Support LifeFlow\'s mission</string>
+    <string name="label_why_donate">Why Donate?</string>
+    <string name="text_why_donate_body">Your financial contribution helps us maintain the platform, reach more donors, and save lives across Bangladesh. Every taka counts.</string>
+    <string name="label_payment_methods">Payment Methods</string>
+    <string name="label_send_money">Send money to this number</string>
+    <string name="bkash_number">01700-000000</string>
+    <string name="nagad_number">01700-000000</string>
+    <string name="rocket_number">01700-0000000</string>
+    <string name="btn_copy">Copy</string>
+    <string name="label_bank_transfer">Bank Transfer</string>
+    <string name="label_bank_name">Bank</string>
+    <string name="bank_name">Dutch-Bangla Bank Ltd.</string>
+    <string name="label_account_name">Account Name</string>
+    <string name="bank_account_name">LifeFlow Foundation</string>
+    <string name="label_account_number">Account No.</string>
+    <string name="bank_account_number">1051234567890</string>
+    <string name="label_routing">Routing No.</string>
+    <string name="bank_routing">090261002</string>
+
+    <!-- My Requests screen -->
+    <string name="title_my_requests">My Requests</string>
+    <string name="empty_my_requests">No requests yet</string>
+    <string name="empty_my_requests_sub">You haven\'t posted any blood requests</string>
+
+    <!-- Errors & messages -->
+    <string name="error_network">Network error. Please try again.</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Enter a valid email address</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_blood_group_required">Please select a blood group</string>
+    <string name="error_phone_required">Phone number is required</string>
+    <string name="error_phone_invalid">Enter a valid phone number</string>
+    <string name="error_select_role">Please select a role</string>
+    <string name="error_login_failed">Invalid email or password</string>
+    <string name="error_signup_failed">Sign up failed. Please try again.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="msg_profile_saved">Profile saved successfully</string>
+    <string name="msg_request_submitted">Blood request submitted</string>
+    <string name="msg_loading">Please wait…</string>
+
+    <!-- Content descriptions (accessibility) -->
+    <string name="cd_back">Go back</string>
+    <string name="cd_app_logo">LifeFlow logo</string>
+    <string name="cd_avatar">User avatar</string>
+    <string name="cd_blood_drop">Blood drop icon</string>
+    <string name="cd_availability_indicator">Availability status indicator</string>
+</resources>

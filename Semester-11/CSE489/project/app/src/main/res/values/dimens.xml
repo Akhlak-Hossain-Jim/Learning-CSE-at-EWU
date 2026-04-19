@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">16dp</dimen>
+    <dimen name="space_lg">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+
+    <!-- Layout -->
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_spacing">12dp</dimen>
+    <dimen name="field_spacing">16dp</dimen>
+    <dimen name="curved_header_height">200dp</dimen>
+    <dimen name="curve_radius">40dp</dimen>
+    <dimen name="bottom_nav_height">60dp</dimen>
+
+    <!-- Components -->
+    <dimen name="button_height">52dp</dimen>
+    <dimen name="button_radius">12dp</dimen>
+    <dimen name="input_height">52dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_size_small">40dp</dimen>
+    <dimen name="chip_height">40dp</dimen>
+    <dimen name="chip_radius">20dp</dimen>
+    <dimen name="card_radius">16dp</dimen>
+    <dimen name="avatar_size">44dp</dimen>
+    <dimen name="blood_badge_sm">32dp</dimen>
+    <dimen name="blood_badge_md">48dp</dimen>
+    <dimen name="blood_badge_lg">72dp</dimen>
+    <dimen name="icon_sm">20dp</dimen>
+    <dimen name="icon_md">24dp</dimen>
+    <dimen name="icon_lg">32dp</dimen>
+    <dimen name="dot_indicator">8dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_card">3dp</dimen>
+    <dimen name="elevation_header">6dp</dimen>
+    <dimen name="elevation_fab">8dp</dimen>
+    <dimen name="elevation_bottom_nav">8dp</dimen>
+</resources>

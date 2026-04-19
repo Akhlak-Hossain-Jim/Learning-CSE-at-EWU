@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LifeFlow blood drop logo -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <!-- Blood drop body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,8
+            C40,8 16,36 16,50
+            A24,24 0 0 0 64,50
+            C64,36 40,8 40,8 Z" />
+
+    <!-- Inner highlight -->
+    <path
+        android:fillColor="#FFCDD2"
+        android:pathData="M33,46
+            A10,10 0 0 1 43,38
+            Q38,34 35,38
+            A10,10 0 0 0 33,46 Z" />
+
+    <!-- Hand / heart cutout hint at bottom — small cross symbol -->
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M37,52 L37,46 L43,46 L43,52 L49,52 L49,58 L43,58 L43,64 L37,64 L37,58 L31,58 L31,52 Z" />
+
+</vector>

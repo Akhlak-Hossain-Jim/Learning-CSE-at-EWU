@@ -1,0 +1,233 @@
+<resources>
+
+    <!-- ============================================================
+         TYPOGRAPHY
+         ============================================================ -->
+
+    <style name="TextHeading1">
+        <item name="android:textSize">26sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextHeading2">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextHeading3">
+        <item name="android:textSize">17sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextBodyLarge">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextBodyMedium">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/textSecondary</item>
+    </style>
+
+    <style name="TextBodySmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/textTertiary</item>
+    </style>
+
+    <style name="TextStatNumber">
+        <item name="android:textSize">36sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextBloodType">
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextHeaderTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/textOnPrimary</item>
+    </style>
+
+    <style name="TextHeaderSubtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/textOnPrimary</item>
+        <item name="android:alpha">0.8</item>
+    </style>
+
+    <style name="TextLabelLarge">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextLabelMedium">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/textSecondary</item>
+    </style>
+
+    <style name="TextLabelSmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/textSecondary</item>
+    </style>
+
+    <!-- ============================================================
+         BUTTONS
+         ============================================================ -->
+
+    <!-- Filled red primary button -->
+    <style name="PrimaryButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="cornerRadius">@dimen/button_radius</item>
+        <item name="iconGravity">end</item>
+        <item name="iconTint">@color/white</item>
+        <item name="rippleColor">@color/ripple_color</item>
+    </style>
+
+    <!-- Outlined secondary button -->
+    <style name="SecondaryButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="cornerRadius">@dimen/button_radius</item>
+        <item name="rippleColor">@color/ripple_color</item>
+    </style>
+
+    <!-- Text-only button (e.g. Logout, links) -->
+    <style name="TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="rippleColor">@color/ripple_color</item>
+    </style>
+
+    <!-- ============================================================
+         BLOOD GROUP PILL SELECTORS  (design_guide §5.5)
+         ============================================================ -->
+
+    <style name="BloodGroupPill" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/chip_height</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="strokeColor">@color/dividerColor</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="cornerRadius">@dimen/chip_radius</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="rippleColor">@color/ripple_color</item>
+    </style>
+
+    <!-- ============================================================
+         INPUT FIELDS
+         ============================================================ -->
+
+    <style name="InputField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/textTertiary</item>
+        <item name="errorTextColor">@color/colorCritical</item>
+        <item name="boxBackgroundColor">@color/colorSurface</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- ============================================================
+         CARDS
+         ============================================================ -->
+
+    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/card_radius</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+        <item name="contentPadding">@dimen/card_padding</item>
+        <item name="cardBackgroundColor">@color/colorSurface</item>
+    </style>
+
+    <!-- Stat cards on the home dashboard -->
+    <style name="StatCard" parent="CardStyle">
+        <item name="cardBackgroundColor">@color/colorPrimaryContainer</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/colorPrimaryLight</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Quick-action cards on the home dashboard -->
+    <style name="ActionCard" parent="CardStyle">
+        <item name="cardBackgroundColor">@color/colorSurface</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+    </style>
+
+    <!-- ============================================================
+         CHIPS  (search / filter screens)
+         ============================================================ -->
+
+    <style name="BloodFilterChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/colorSurface</item>
+        <item name="chipStrokeColor">@color/dividerColor</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/textSecondary</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="chipCornerRadius">@dimen/chip_radius</item>
+        <item name="chipMinHeight">36dp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- ============================================================
+         URGENCY TAGS
+         ============================================================ -->
+
+    <style name="UrgencyTag">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- ============================================================
+         TOOLBAR / HEADER BACK BUTTON
+         ============================================================ -->
+
+    <style name="HeaderBackButton">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:tint">@color/white</item>
+        <item name="android:contentDescription">@string/cd_back</item>
+    </style>
+
+</resources>

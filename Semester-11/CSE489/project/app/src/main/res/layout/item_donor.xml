@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CardStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_spacing"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/card_padding">
+
+        <!-- Blood group badge -->
+        <TextView
+            android:id="@+id/tvBloodGroup"
+            android:layout_width="@dimen/blood_badge_md"
+            android:layout_height="@dimen/blood_badge_md"
+            android:gravity="center"
+            android:background="@drawable/bg_badge_rounded"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="O+" />
+
+        <!-- Donor info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/space_md">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donor Name"
+                style="@style/TextHeading3" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/space_xs">
+
+                <TextView
+                    android:id="@+id/tvCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City"
+                    style="@style/TextBodySmall" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_xs"
+                    android:layout_marginEnd="@dimen/space_xs"
+                    android:text="·"
+                    style="@style/TextBodySmall" />
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone"
+                    style="@style/TextBodySmall" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Availability indicator dot -->
+        <View
+            android:id="@+id/viewAvailability"
+            android:layout_width="@dimen/dot_indicator"
+            android:layout_height="@dimen/dot_indicator"
+            android:background="@drawable/bg_circle_red"
+            android:contentDescription="@string/cd_availability_indicator" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

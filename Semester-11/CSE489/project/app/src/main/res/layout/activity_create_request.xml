@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+
+    <!-- Curved red header -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/curved_header_height"
+        android:background="@drawable/bg_curved_header" />
+
+    <!-- Header: back + title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/screen_padding"
+        android:paddingEnd="@dimen/screen_padding"
+        android:layout_marginTop="44dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            style="@style/HeaderBackButton"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/space_md"
+            android:text="@string/title_create_request"
+            style="@style/TextHeaderTitle" />
+
+    </LinearLayout>
+
+    <!-- Scrollable form -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingEnd="@dimen/screen_padding"
+            android:paddingTop="@dimen/space_lg"
+            android:paddingBottom="@dimen/space_xl">
+
+            <!-- Blood Group Needed label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_blood_group_needed"
+                style="@style/TextLabelLarge"
+                android:layout_marginBottom="@dimen/space_sm" />
+
+            <!-- Row 1: Type A / B / AB / O -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTypeA"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/blood_group_a" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTypeB"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/blood_group_b" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTypeAB"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/blood_group_ab" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTypeO"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:text="@string/blood_group_o" />
+
+            </LinearLayout>
+
+            <!-- Row 2: Rh factor -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/space_sm"
+                android:weightSum="4">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRhPos"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="2"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/rh_positive" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRhNeg"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="2"
+                    android:text="@string/rh_negative" />
+
+            </LinearLayout>
+
+            <!-- Blood group error -->
+            <TextView
+                android:id="@+id/tvBloodGroupError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:layout_marginStart="@dimen/space_md"
+                android:text="@string/error_blood_group_required"
+                android:textColor="@color/colorCritical"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_regular"
+                android:visibility="gone" />
+
+            <!-- Units Needed -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilUnits"
+                style="@style/InputField"
+                android:layout_marginTop="@dimen/field_spacing"
+                android:hint="@string/label_units_needed">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUnits"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/input_height"
+                    android:inputType="number"
+                    android:text="1"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Hospital Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilHospital"
+                style="@style/InputField"
+                android:layout_marginTop="@dimen/field_spacing"
+                android:hint="@string/label_hospital_name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etHospital"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/input_height"
+                    android:inputType="textCapWords"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Urgency label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginBottom="@dimen/space_sm"
+                android:text="@string/label_urgency"
+                style="@style/TextLabelLarge" />
+
+            <!-- Urgency pills: Normal / Urgent / Critical -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUrgencyNormal"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/urgency_normal" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUrgencyUrgent"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:text="@string/urgency_urgent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUrgencyCritical"
+                    style="@style/BloodGroupPill"
+                    android:layout_weight="1"
+                    android:text="@string/urgency_critical" />
+
+            </LinearLayout>
+
+            <!-- Contact Phone -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilContactPhone"
+                style="@style/InputField"
+                android:layout_marginTop="@dimen/field_spacing"
+                android:hint="@string/label_contact_phone">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etContactPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/input_height"
+                    android:inputType="phone"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Notes -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNotes"
+                style="@style/InputField"
+                android:layout_marginTop="@dimen/field_spacing"
+                android:hint="@string/label_notes">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:maxLines="5"
+                    android:inputType="textMultiLine"
+                    android:gravity="top"
+                    android:imeOptions="actionDone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Submit button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                style="@style/PrimaryButton"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/btn_submit_request" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Loading overlay -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white" />
+
+    </FrameLayout>
+
+</FrameLayout>

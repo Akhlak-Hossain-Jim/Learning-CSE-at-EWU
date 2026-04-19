@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Certificate array required by the Google Fonts downloadable-font provider.
+  The actual SHA-256 / SHA-1 cert bytes are validated at runtime by the font provider,
+  not at compile time. This stub satisfies the aapt2 resource linker.
+  Replace with real certs from the Android Studio "More fonts" wizard for production use.
+-->
+<resources>
+    <array name="com_google_android_gms_fonts_certs">
+        <item>@array/com_google_android_gms_fonts_certs_dev</item>
+        <item>@array/com_google_android_gms_fonts_certs_prod</item>
+    </array>
+
+    <string-array name="com_google_android_gms_fonts_certs_dev">
+        <item>
+            MIIEqDCCA5CgAwIBAgIJANWFuGx90071MA0GCSqGSIb3DQEBBAUAMIGUMQswCQYD
+            VQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU291bmV1cSBD
+            cmVlazEXMBUGA1UEChMOR29vZ2xlIEluYy4xEDAOBgNVBAsTB0FuZHJvaWQxHTAb
+            BgNVBAMTFEdvb2dsZSBDb2RlIFNpZ25pbmcwHhcNMTMwNzI0MTUzMjQyWhcNMjMw
+            NzIyMTUzMjQyWjCBlDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEx
+            FjAUBgNVBAcTDVNvdW5ldXEgQ3JlZWsxFzAVBgNVBAoTDkdvb2dsZSBJbmMuMRAw
+            DgYDVQQLEwdBbmRyb2lkMR0wGzYDVQQDExRHb29nbGUgQ29kZSBTaWduaW5nMIIB
+            IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0mX6
+        </item>
+    </string-array>
+
+    <string-array name="com_google_android_gms_fonts_certs_prod">
+        <item>
+            MIIEQzCCAyugAwIBAgIJAMLgh0ZkSjCNMA0GCSqGSIb3DQEBBAUAMHMxCzAJBgNV
+            BAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBW
+            aWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjERMA8GA1UECxMIQW5kcm9pZCAxETAP
+            BgNVBAMTCEFuZHJvaWQgMTAeFw0wODA4MjEyMzEzMzRaFw0zNjAxMDcyMzEzMzRa
+            MHMxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1N
+            b3VudGFpbiBWaWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjERMA8GA1UECxMIQW5k
+            cm9pZCAxETAPBgNVBAMTCEFuZHJvaWQgMTCBnzANBgkqhkiG9w0BAQEFAAOBDQAW
+            gYkCgYEA1iDggg==
+        </item>
+    </string-array>
+</resources>

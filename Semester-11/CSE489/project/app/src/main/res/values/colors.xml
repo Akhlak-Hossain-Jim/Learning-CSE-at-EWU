@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary -->
+    <color name="colorPrimary">#D32F2F</color>
+    <color name="colorPrimaryDark">#B71C1C</color>
+    <color name="colorPrimaryLight">#FFCDD2</color>
+    <color name="colorPrimaryContainer">#FFDEDE</color>
+    <color name="colorPrimaryOnHeader">#FFFFFF</color>
+
+    <!-- Neutrals -->
+    <color name="colorBackground">#FFF8F5</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#F5F0EE</color>
+    <color name="textPrimary">#1B1B1B</color>
+    <color name="textSecondary">#5F5F5F</color>
+    <color name="textTertiary">#9E9E9E</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+    <color name="dividerColor">#E8E0DE</color>
+
+    <!-- Semantic -->
+    <color name="colorSuccess">#2E7D32</color>
+    <color name="colorSuccessLight">#E8F5E9</color>
+    <color name="colorUrgent">#E65100</color>
+    <color name="colorUrgentBg">#FFF3E0</color>
+    <color name="colorCritical">#C62828</color>
+    <color name="colorCriticalBg">#FFEBEE</color>
+    <color name="colorNormal">#2E7D32</color>
+    <color name="colorNormalBg">#E8F5E9</color>
+    <color name="colorUnavailable">#BDBDBD</color>
+
+    <!-- Blood Group Badges -->
+    <color name="badge_a_pos_bg">#FFEBEE</color>
+    <color name="badge_a_pos_text">#C62828</color>
+    <color name="badge_a_neg_bg">#FCE4EC</color>
+    <color name="badge_a_neg_text">#AD1457</color>
+    <color name="badge_b_pos_bg">#FFF3E0</color>
+    <color name="badge_b_pos_text">#E65100</color>
+    <color name="badge_b_neg_bg">#FFF8E1</color>
+    <color name="badge_b_neg_text">#F57F17</color>
+    <color name="badge_o_pos_bg">#E8F5E9</color>
+    <color name="badge_o_pos_text">#2E7D32</color>
+    <color name="badge_o_neg_bg">#E0F2F1</color>
+    <color name="badge_o_neg_text">#00695C</color>
+    <color name="badge_ab_pos_bg">#E8EAF6</color>
+    <color name="badge_ab_pos_text">#283593</color>
+    <color name="badge_ab_neg_bg">#F3E5F5</color>
+    <color name="badge_ab_neg_text">#6A1B9A</color>
+
+    <!-- Misc -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="ripple_color">#20D32F2F</color>
+    <color name="shadow_color">#10000000</color>
+</resources>
