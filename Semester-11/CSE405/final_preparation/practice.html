@@ -1,0 +1,3294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSE405 Quiz Presentation</title>
+    <style id="mcp-host-fonts">
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Regular-Static.otf") format("opentype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-RegularItalic-Static.otf") format("opentype");
+            font-weight: 400;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Medium-Static.otf") format("opentype");
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-MediumItalic-Static.otf") format("opentype");
+            font-weight: 500;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Semibold-Static.otf") format("opentype");
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-SemiboldItalic-Static.otf") format("opentype");
+            font-weight: 600;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Bold-Static.otf") format("opentype");
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Sans";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSans-Text-BoldItalic-Static.otf") format("opentype");
+            font-weight: 700;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
+    <style>
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-Regular-Static.otf") format("opentype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-RegularItalic-Static.otf") format("opentype");
+            font-weight: 400;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-Medium-Static.otf") format("opentype");
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-MediumItalic-Static.otf") format("opentype");
+            font-weight: 500;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-Semibold-Static.otf") format("opentype");
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-SemiboldItalic-Static.otf") format("opentype");
+            font-weight: 600;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-Bold-Static.otf") format("opentype");
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Anthropic Serif";
+            src: url("https://assets.claude.ai/Fonts/AnthropicSerif-Text-BoldItalic-Static.otf") format("opentype");
+            font-weight: 700;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --font-serif: "Anthropic Serif", Georgia, "Times New Roman", serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            font-family: inherit;
+        }
+
+        body {
+            font-family:
+                "Anthropic Sans",
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background: transparent;
+        }
+
+        /* Iframe height is externally managed — host sets iframe.style.height to
+ * match body.getBoundingClientRect().height via postMessage. During the
+ * 1-frame lag (and the 0.25s initial transition), body > viewport triggers
+ * a transient scrollbar that steals ~15px width, reflowing flex content.
+ * Zero-width scrollbar = zero layout shift. Wheel/keyboard scroll still
+ * work if ever needed. */
+        html,
+        body {
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* Short var aliases — saves ~5 tokens per reference */
+        :root {
+            --p: var(--color-text-primary);
+            --s: var(--color-text-secondary);
+            --t: var(--color-text-tertiary);
+            --bg2: var(--color-background-secondary);
+            --b: var(--color-border-secondary);
+        }
+
+        /* SVG utility classes — use class="t" instead of repeating font/fill attrs */
+        .t {
+            font-size: 14px;
+            fill: var(--p);
+        }
+
+        .ts {
+            font-size: 12px;
+            fill: var(--s);
+        }
+
+        .th {
+            font-size: 14px;
+            fill: var(--p);
+            font-weight: 500;
+        }
+
+        .box {
+            fill: var(--bg2);
+            stroke: var(--b);
+        }
+
+        .arr {
+            stroke: var(--t);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node:hover rect,
+        .node:hover .box {
+            filter: brightness(0.97);
+        }
+
+        .node:hover text {
+            opacity: 0.8;
+        }
+
+        /* Form element defaults — model writes bare <input>, styling is automatic */
+        /* :not(form.elicit *) — elicitation form provides its own
+ * input/button styling at (0,1,0). Without this exclusion, these
+ * generic rules at (0,3,1) / (1,0,2) clobber every .elicit-* class. */
+        input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not(form.elicit *),
+        select:not(form.elicit *),
+        textarea:not(form.elicit *) {
+            width: 100%;
+            height: 36px;
+            padding: 8px 12px;
+            font-size: 16px;
+            background: var(--color-background-primary);
+            color: var(--color-text-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: 6px;
+            outline: none;
+            transition:
+                border-color 0.15s,
+                box-shadow 0.15s;
+        }
+
+        textarea {
+            height: auto;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not(form.elicit *):hover,
+        select:not(form.elicit *):hover,
+        textarea:not(form.elicit *):hover {
+            border-color: var(--color-border-secondary);
+        }
+
+        input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not(form.elicit *):focus,
+        select:not(form.elicit *):focus,
+        textarea:not(form.elicit *):focus {
+            border-color: var(--color-border-info);
+            box-shadow: 0 0 0 3px var(--color-background-info);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Range slider — model writes bare <input type="range">, styling automatic */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.1));
+            border-radius: 2px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-background-primary);
+            border: 1px solid var(--color-border-secondary);
+            cursor: pointer;
+            transition:
+                border-color 0.15s,
+                transform 0.15s;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            border-color: var(--color-border-primary);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-background-primary);
+            border: 1px solid var(--color-border-secondary);
+            cursor: pointer;
+        }
+
+        /* Button defaults — model writes bare <button>, interaction states automatic */
+        button:not(#action-btns button):not(form.elicit button) {
+            padding: 8px 16px;
+            font-size: 14px;
+            background: transparent;
+            color: var(--color-text-primary);
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition:
+                background 0.15s,
+                transform 0.1s;
+        }
+
+        button:not(#action-btns button):not(form.elicit button):hover {
+            background: var(--color-background-secondary);
+        }
+
+        button:not(#action-btns button):not(form.elicit button):active {
+            background: var(--color-border-tertiary);
+            transform: scale(0.98);
+        }
+
+        form.elicit {
+            background: var(--color-background-primary, #fff);
+            border: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 16px;
+            /* Figma 5340:3930 — soft diffuse shadow, lighter than DS --shadow-md.
+   * Margin keeps the shadow from clipping at #vis-container's overflow:hidden
+   * edge: y-offset 4px + blur 20px ≈ 24px below, 20px sides. */
+            box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.04);
+            margin: 4px 20px 24px;
+            overflow: hidden;
+            /* font-base = 14/1.4 sans — descendants inherit; only .elicit-question
+   * (serif 16/1.7), .name (12), .badge (9) override. */
+            font-family: var(--font-sans, system-ui, sans-serif);
+            font-size: 14px;
+            line-height: 1.4;
+            /* Match host rendering — without this the iframe uses subpixel AA and
+   * everything (notably weight-500 buttons) reads ~100 heavier on Retina
+   * than the same tokens outside the iframe. */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* Chrome props animate on the form→submitted-summary swap. */
+            transition:
+                background-color 200ms ease-out,
+                box-shadow 200ms ease-out,
+                border-radius 200ms ease-out,
+                padding 200ms ease-out,
+                margin 200ms ease-out;
+            /* Shared FileThumbnail tokens (border-border-300/25, shadow-sm/5). */
+            --elicit-border-faint: color-mix(in srgb,
+                    var(--color-border-tertiary, rgba(31, 30, 29, 0.15)) 25%,
+                    transparent);
+            --elicit-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form controls don't inherit font props from the UA sheet — pull from root.
+ * `font: inherit` shorthand so font-weight comes too; the individual-prop
+ * version left weight at the UA <button> default (bold-ish on some
+ * platforms) for any control that doesn't set its own weight. */
+        form.elicit :is(button, input, textarea) {
+            font: inherit;
+        }
+
+        form.elicit .elicit-header,
+        form.elicit .elicit-question {
+            font-family: var(--font-serif, "Anthropic Serif", Georgia, serif);
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--color-text-primary, #131313);
+        }
+
+        /* 44px total to match the suggested-connector widget spec.
+ * Fixed height + zero vertical padding lets align-items:center handle the rest;
+ * avoids the icon/text line-height arithmetic. */
+        form.elicit .elicit-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 16px;
+            border-bottom: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+        }
+
+        form.elicit .elicit-header>svg {
+            /* IconBase vectorSizeMap[16] = 20 — anthropicons render in a 20px box. */
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            fill: currentColor;
+        }
+
+        form.elicit .elicit-header>span {
+            flex: 1;
+        }
+
+        form.elicit .elicit-body {
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        form.elicit .elicit-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        form.elicit .elicit-question {
+            margin: 0;
+        }
+
+        /* Pills container — no horizontal padding. Previously had 0 8px which pushed
+ * pills 8px right of the question/textarea/date in the same .elicit-group. */
+        form.elicit .elicit-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        form.elicit .elicit-pill {
+            /* Fully rounded + tighter padding — visually distinct from the rectangular
+   * text inputs (textarea/other/date stay at 8-12px radius). Pills and inputs
+   * don't match in height so the shape difference reads as intentional. */
+            padding: 8px 12px;
+            border: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 9999px;
+            background: transparent;
+            color: var(--color-text-secondary, #383835);
+            cursor: pointer;
+            transition:
+                border-color 120ms ease,
+                background-color 120ms ease;
+        }
+
+        form.elicit .elicit-pill:hover {
+            border-color: var(--color-border-secondary, rgba(30, 30, 29, 0.3));
+        }
+
+        /* Semantic accents — same light-fill+soft-border recipe as the blue selected
+ * state, applied via attribute so inline style doesn't fight aria-pressed.
+ * Single-attr specificity; the [aria-pressed="true"] rule below wins on
+ * border+bg so selection remains visible on accented pills. */
+        form.elicit .elicit-pill[data-accent="warning"] {
+            border-color: var(--color-text-warning, #5a4815);
+            background: color-mix(in srgb,
+                    var(--color-text-warning, #5a4815) 15%,
+                    transparent);
+            color: var(--color-text-warning, #5a4815);
+        }
+
+        form.elicit .elicit-pill[data-accent="danger"] {
+            border-color: var(--color-text-danger, #7f2c28);
+            background: color-mix(in srgb,
+                    var(--color-text-danger, #7f2c28) 15%,
+                    transparent);
+            color: var(--color-text-danger, #7f2c28);
+        }
+
+        form.elicit .elicit-pill[data-accent="success"] {
+            border-color: var(--color-text-success, #265b19);
+            background: color-mix(in srgb,
+                    var(--color-text-success, #265b19) 15%,
+                    transparent);
+            color: var(--color-text-success, #265b19);
+        }
+
+        form.elicit .elicit-pill[aria-pressed="true"] {
+            /* Figma: 0.5px #184f95 border + rgba(205,226,251,0.5) fill (approx via color-mix). */
+            border: 0.5px solid var(--color-text-info, #184f95);
+            background: color-mix(in srgb,
+                    var(--color-text-info, #184f95) 15%,
+                    transparent);
+            /* accent-000 — host bridge maps DS accent to --color-text-info (no
+   * --accent-* var injected into the iframe). Matches border + fill. */
+            color: var(--color-text-info, #184f95);
+        }
+
+        /* "Other" conditional text input.
+ * background/color explicit — generic input rule no longer provides
+ * these post-specificity-fix, UA Canvas/CanvasText mismatch in dark mode. */
+        form.elicit .elicit-other {
+            margin-top: 8px;
+            height: 40px;
+            padding: 0 12px;
+            border: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 8px;
+            background: var(--color-background-primary, #fff);
+            color: var(--color-text-primary, #131313);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        form.elicit .elicit-other[hidden] {
+            display: none;
+        }
+
+        /* Textarea.
+ * background/color explicit — generic textarea rule no longer provides
+ * these post-specificity-fix, UA Canvas/CanvasText mismatch in dark mode. */
+        form.elicit .elicit-textarea {
+            min-height: 84px;
+            padding: 12px;
+            border: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 8px;
+            background: var(--color-background-primary, #fff);
+            color: var(--color-text-primary, #131313);
+            resize: vertical;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        form.elicit .elicit-textarea::placeholder {
+            color: var(--color-text-tertiary, #7b7974);
+        }
+
+        /* Date input — pill-shaped, hugs content */
+        form.elicit .elicit-date {
+            padding: 12px 16px;
+            border: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 12px;
+            background: transparent;
+            color: var(--color-text-primary, #131313);
+            width: fit-content;
+            cursor: pointer;
+        }
+
+        /* Shared focus ring for all text inputs — info-blue border + soft glow */
+        form.elicit .elicit-other:focus,
+        form.elicit .elicit-textarea:focus,
+        form.elicit .elicit-date:focus {
+            outline: none;
+            border-color: var(--color-border-info, #2a78d6);
+            box-shadow: 0 0 0 3px var(--color-background-info, rgba(42, 120, 214, 0.2));
+        }
+
+        /* File upload — dashed dropzone + filled tiles.
+ * Tile styling mirrors packages/chat/components/FileThumbnail.tsx (the
+ * thumbnail users already see in the chat input row) so a file picked here
+ * reads as the same object it becomes once attached. Dropzone is the first
+ * flex child; tiles append after it (flow right). */
+        form.elicit .elicit-files {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        form.elicit .elicit-dropzone {
+            /* 120×120 = FileThumbnail SIZE_MAP.normal. Dashed stays 1px — 0.5px
+   * dashed rasterizes to invisible gaps on non-retina. */
+            width: 120px;
+            height: 120px;
+            border: 1px dashed var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+            border-radius: 10px;
+            box-shadow: var(--elicit-shadow-sm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            /* Figma 5340:4071 — 2% text-000 wash over bg-000 */
+            background: color-mix(in srgb,
+                    var(--color-text-primary, #131313) 2%,
+                    var(--color-background-primary, #fff));
+            color: var(--color-text-tertiary, #7b7974);
+            transition:
+                border-color 120ms ease,
+                background-color 120ms ease;
+        }
+
+        form.elicit .elicit-dropzone:hover {
+            border-color: var(--color-text-info, #184f95);
+            background: color-mix(in srgb,
+                    var(--color-text-info, #184f95) 4%,
+                    transparent);
+        }
+
+        form.elicit .elicit-dropzone svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        form.elicit .elicit-dropzone input[type="file"] {
+            display: none;
+        }
+
+        form.elicit .elicit-file-tile {
+            /* FileThumbnail ThumbnailInteractionContainer:
+   * rounded-lg border-0.5 border-border-300/25 shadow-sm shadow-always-black/5
+   * bg-bg-000 px-2.5 py-2 gap-2.5 → 8px radius, 0.5px border, 8/10px pad */
+            width: 120px;
+            height: 120px;
+            border: 0.5px solid var(--elicit-border-faint);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            background: var(--color-background-primary, #fff);
+            box-shadow: var(--elicit-shadow-sm);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        form.elicit .elicit-file-tile .name {
+            /* FileThumbnail title: text-[12px] text-text-100 break-words line-clamp-3 */
+            font-size: 12px;
+            color: var(--color-text-primary, #131313);
+            word-break: break-word;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        form.elicit .elicit-file-tile .badge {
+            /* FileThumbnail ThumbnailTagContainer:
+   * h-[18px] px-1 border-0.5 border-border-300/25 shadow-sm rounded
+   * bg-bg-000/70 font-medium + inner text-[9px] uppercase font-bold */
+            align-self: flex-start;
+            height: 18px;
+            padding: 0 4px;
+            display: inline-flex;
+            align-items: center;
+            border: 0.5px solid var(--elicit-border-faint);
+            border-radius: 4px;
+            background: color-mix(in srgb,
+                    var(--color-background-primary, #fff) 70%,
+                    transparent);
+            box-shadow: var(--elicit-shadow-sm);
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--color-text-tertiary, #7b7974);
+            text-transform: uppercase;
+        }
+
+        /* FileThumbnail RemoveButton: w-5 h-5 -top-2 -left-2 rounded-full
+ * border-0.5 border-border-300/25 bg-bg-000/90 backdrop-blur-sm.
+ * Always visible (no group-hover in iframe — touch + no Tailwind group). */
+        form.elicit .elicit-file-tile .remove {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            border: 0.5px solid var(--elicit-border-faint);
+            border-radius: 9999px;
+            background: color-mix(in srgb,
+                    var(--color-background-primary, #fff) 90%,
+                    transparent);
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            color: var(--color-text-tertiary, #7b7974);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition:
+                color 120ms ease,
+                background-color 120ms ease;
+        }
+
+        form.elicit .elicit-file-tile .remove:hover {
+            color: var(--color-text-secondary, #383835);
+            background: color-mix(in srgb,
+                    var(--color-background-primary, #fff) 50%,
+                    transparent);
+        }
+
+        /* Footer — DS Button tokens transcribed (variant=secondary / variant=primary,
+ * size=default: h-9 px-4 rounded-lg min-w-[5rem] font-base-bold). */
+        form.elicit .elicit-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            /* Explicit height (mirrors .elicit-header) so the submitted-state height:0
+   * transition can interpolate — auto→0 snaps. 36px buttons + 32px breathing room. */
+            height: 68px;
+            padding: 0 24px;
+            border-top: 0.5px solid var(--color-border-tertiary, rgba(31, 30, 29, 0.15));
+        }
+
+        form.elicit .elicit-skip,
+        form.elicit .elicit-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            min-width: 80px;
+            padding: 0 16px;
+            border-radius: 8px;
+            /* DS Button primary/secondary = font-base-bold (tw-typography.js:26) */
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition:
+                background-color 100ms ease-out,
+                border-color 100ms ease-out,
+                transform 150ms cubic-bezier(0.165, 0.85, 0.45, 1);
+        }
+
+        form.elicit .elicit-skip:active,
+        form.elicit .elicit-submit:active {
+            transform: scale(0.96);
+        }
+
+        /* secondary */
+        form.elicit .elicit-skip {
+            border: 0.5px solid color-mix(in srgb,
+                    var(--color-border-secondary, rgba(30, 30, 29, 0.3)) 30%,
+                    transparent);
+            background: transparent;
+            color: var(--color-text-primary, #131313);
+        }
+
+        form.elicit .elicit-skip:hover {
+            background: var(--color-background-secondary, #f9f9f7);
+            border-color: transparent;
+        }
+
+        /* primary */
+        form.elicit .elicit-submit {
+            border: none;
+            background: var(--color-text-primary, #131313);
+            color: var(--color-background-primary, #fff);
+        }
+
+        form.elicit .elicit-submit:hover {
+            transform: scaleX(1.005) scaleY(1.015);
+        }
+
+        /* :hover and :active are both true during a mouse click; equal specificity →
+ * source order wins, so without this the hover-grow above masks the press-down. */
+        form.elicit .elicit-submit:hover:active {
+            transform: scale(0.96);
+        }
+
+        /* Post-submit — submitElicitation() adds .elicit-transitioning (body fades
+ * out), then after 150ms swaps the body for the Q/A summary and adds
+ * .elicit-submitted (chrome transitions to the bare card while body fades
+ * back in). Mirrors AskUserQuestion: outer card = AskUserQuestionToolUseCell
+ * .tsx:177 (rounded-xl border-0.5 border-border-300 p-4, no bg-bg-000 when
+ * submitted), rows = SubmittedResponses.tsx:14-36. */
+        form.elicit .elicit-body {
+            transition: opacity 150ms ease-out;
+        }
+
+        form.elicit.elicit-transitioning .elicit-body {
+            opacity: 0;
+        }
+
+        form.elicit.elicit-submitted {
+            background: transparent;
+            border-radius: 12px;
+            box-shadow: none;
+            padding: 16px;
+            margin: 4px;
+        }
+
+        /* `display: none` can't transition — collapse to zero so the chrome animates
+ * away with the form's 200ms transition instead of snapping. */
+        form.elicit .elicit-header,
+        form.elicit .elicit-footer {
+            transition:
+                opacity 200ms ease-out,
+                height 200ms ease-out,
+                padding 200ms ease-out,
+                border-width 200ms ease-out,
+                /* step to hidden after the collapse so Skip/Submit leave the tab order +
+     * a11y tree (pointer-events:none alone doesn't). */
+                visibility 0s linear 200ms;
+        }
+
+        form.elicit.elicit-submitted .elicit-header,
+        form.elicit.elicit-submitted .elicit-footer {
+            opacity: 0;
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        form.elicit.elicit-submitted .elicit-body {
+            padding: 0;
+        }
+
+        /* Quota-fallback "1" sentinel restore: shape check skips renderSubmittedSummary
+ * so the body still has live inputs — dim them so the locked state reads. */
+        form.elicit.elicit-submitted .elicit-body:not(:has(.elicit-summary)) {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* sessionStorage restore path adds this alongside .elicit-submitted so
+ * scroll-back/reload shows the summary immediately (no replayed crossfade). */
+        form.elicit.elicit-restored,
+        form.elicit.elicit-restored .elicit-body,
+        form.elicit.elicit-restored .elicit-header,
+        form.elicit.elicit-restored .elicit-footer {
+            transition: none;
+        }
+
+        form.elicit .elicit-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        form.elicit .elicit-summary-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        form.elicit .elicit-summary-q {
+            font-family: var(--font-serif, "Anthropic Serif", Georgia, serif);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--color-text-secondary, #383835);
+        }
+
+        /* SubmittedResponses answer: text-text-500 font-base (sans 14 / 430 / 1.4) */
+        form.elicit .elicit-summary-a {
+            font-weight: 430;
+            color: var(--color-text-tertiary, #7b7974);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Headings — bare tags get correct color in both modes */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--color-text-primary);
+        }
+
+        .leader {
+            stroke: var(--t);
+            stroke-width: 0.5;
+            stroke-dasharray: 4 3;
+            fill: none;
+        }
+
+        /* Color ramp classes — apply to <g> or shape element (rect/ellipse/circle/polygon), never <path>.
+   light-dark() responds to ancestor color-scheme, not just OS preference. */
+        g.c-purple>rect,
+        g.c-purple>ellipse,
+        g.c-purple>circle,
+        g.c-purple>polygon,
+        rect.c-purple,
+        ellipse.c-purple,
+        circle.c-purple,
+        polygon.c-purple {
+            fill: light-dark(#eeedfe, #3c3489);
+            stroke: light-dark(#534ab7, #afa9ec);
+        }
+
+        .c-purple>.th,
+        .c-purple>.t {
+            fill: light-dark(#3c3489, #cecbf6);
+        }
+
+        .c-purple>.ts {
+            fill: light-dark(#534ab7, #afa9ec);
+        }
+
+        g.c-teal>rect,
+        g.c-teal>ellipse,
+        g.c-teal>circle,
+        g.c-teal>polygon,
+        rect.c-teal,
+        ellipse.c-teal,
+        circle.c-teal,
+        polygon.c-teal {
+            fill: light-dark(#e1f5ee, #085041);
+            stroke: light-dark(#0f6e56, #5dcaa5);
+        }
+
+        .c-teal>.th,
+        .c-teal>.t {
+            fill: light-dark(#085041, #9fe1cb);
+        }
+
+        .c-teal>.ts {
+            fill: light-dark(#0f6e56, #5dcaa5);
+        }
+
+        g.c-coral>rect,
+        g.c-coral>ellipse,
+        g.c-coral>circle,
+        g.c-coral>polygon,
+        rect.c-coral,
+        ellipse.c-coral,
+        circle.c-coral,
+        polygon.c-coral {
+            fill: light-dark(#faece7, #712b13);
+            stroke: light-dark(#993c1d, #f0997b);
+        }
+
+        .c-coral>.th,
+        .c-coral>.t {
+            fill: light-dark(#712b13, #f5c4b3);
+        }
+
+        .c-coral>.ts {
+            fill: light-dark(#993c1d, #f0997b);
+        }
+
+        g.c-pink>rect,
+        g.c-pink>ellipse,
+        g.c-pink>circle,
+        g.c-pink>polygon,
+        rect.c-pink,
+        ellipse.c-pink,
+        circle.c-pink,
+        polygon.c-pink {
+            fill: light-dark(#fbeaf0, #72243e);
+            stroke: light-dark(#993556, #ed93b1);
+        }
+
+        .c-pink>.th,
+        .c-pink>.t {
+            fill: light-dark(#72243e, #f4c0d1);
+        }
+
+        .c-pink>.ts {
+            fill: light-dark(#993556, #ed93b1);
+        }
+
+        g.c-gray>rect,
+        g.c-gray>ellipse,
+        g.c-gray>circle,
+        g.c-gray>polygon,
+        rect.c-gray,
+        ellipse.c-gray,
+        circle.c-gray,
+        polygon.c-gray {
+            fill: light-dark(#f1efe8, #444441);
+            stroke: light-dark(#5f5e5a, #b4b2a9);
+        }
+
+        .c-gray>.th,
+        .c-gray>.t {
+            fill: light-dark(#444441, #d3d1c7);
+        }
+
+        .c-gray>.ts {
+            fill: light-dark(#5f5e5a, #b4b2a9);
+        }
+
+        g.c-blue>rect,
+        g.c-blue>ellipse,
+        g.c-blue>circle,
+        g.c-blue>polygon,
+        rect.c-blue,
+        ellipse.c-blue,
+        circle.c-blue,
+        polygon.c-blue {
+            fill: light-dark(#e6f1fb, #0c447c);
+            stroke: light-dark(#185fa5, #85b7eb);
+        }
+
+        .c-blue>.th,
+        .c-blue>.t {
+            fill: light-dark(#0c447c, #b5d4f4);
+        }
+
+        .c-blue>.ts {
+            fill: light-dark(#185fa5, #85b7eb);
+        }
+
+        g.c-green>rect,
+        g.c-green>ellipse,
+        g.c-green>circle,
+        g.c-green>polygon,
+        rect.c-green,
+        ellipse.c-green,
+        circle.c-green,
+        polygon.c-green {
+            fill: light-dark(#eaf3de, #27500a);
+            stroke: light-dark(#3b6d11, #97c459);
+        }
+
+        .c-green>.th,
+        .c-green>.t {
+            fill: light-dark(#27500a, #c0dd97);
+        }
+
+        .c-green>.ts {
+            fill: light-dark(#3b6d11, #97c459);
+        }
+
+        g.c-amber>rect,
+        g.c-amber>ellipse,
+        g.c-amber>circle,
+        g.c-amber>polygon,
+        rect.c-amber,
+        ellipse.c-amber,
+        circle.c-amber,
+        polygon.c-amber {
+            fill: light-dark(#faeeda, #633806);
+            stroke: light-dark(#854f0b, #ef9f27);
+        }
+
+        .c-amber>.th,
+        .c-amber>.t {
+            fill: light-dark(#633806, #fac775);
+        }
+
+        .c-amber>.ts {
+            fill: light-dark(#854f0b, #ef9f27);
+        }
+
+        g.c-red>rect,
+        g.c-red>ellipse,
+        g.c-red>circle,
+        g.c-red>polygon,
+        rect.c-red,
+        ellipse.c-red,
+        circle.c-red,
+        polygon.c-red {
+            fill: light-dark(#fcebeb, #791f1f);
+            stroke: light-dark(#a32d2d, #f09595);
+        }
+
+        .c-red>.th,
+        .c-red>.t {
+            fill: light-dark(#791f1f, #f7c1c1);
+        }
+
+        .c-red>.ts {
+            fill: light-dark(#a32d2d, #f09595);
+        }
+
+        /* Mermaid class/ER diagrams — match house aesthetic.
+   Mermaid v11 class/ER renderers use <path> (not <rect>) with inline stroke/fill
+   attrs that IGNORE themeVariables mainBkg/nodeBorder. Labels are
+   <foreignObject><div><span class="nodeLabel"><p>text</p> — NOT <text>. All style
+   fixes require !important to beat inline attrs + mermaid's inline <style>.
+   Selectors target .classDiagram/.erDiagram SVG root classes (always present)
+   rather than a .mermaid wrapper (which the model sometimes omits). */
+        svg.classDiagram,
+        svg.erDiagram {
+            font-size: 13px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Mermaid sizes foreignObject to fit measured text width. If we upsize post-render,
+   text clips. So: overflow visible on FO, and widen inner div past its max-width. */
+        svg.classDiagram foreignObject,
+        svg.erDiagram foreignObject {
+            overflow: visible;
+        }
+
+        svg.classDiagram foreignObject>div,
+        svg.erDiagram foreignObject>div {
+            max-width: none !important;
+        }
+
+        /* Body text: members, methods, attribute rows */
+        svg.classDiagram .nodeLabel,
+        svg.erDiagram .nodeLabel,
+        svg.classDiagram .label foreignObject div,
+        svg.erDiagram .label foreignObject div {
+            font-family: var(--font-sans) !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            color: var(--color-text-secondary) !important;
+        }
+
+        /* Titles: classDiagram wraps in .label-group; erDiagram wraps in .name */
+        svg.classDiagram .label-group .nodeLabel,
+        svg.erDiagram .name .nodeLabel {
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: var(--color-text-primary) !important;
+        }
+
+        /* Kill mermaid's inline style="font-weight: bolder" on the .label wrapper */
+        svg.classDiagram .label-group .label {
+            font-weight: 500 !important;
+        }
+
+        /* Edge labels (relationship verbs + cardinality) */
+        svg.classDiagram .edgeLabel,
+        svg.classDiagram .edgeLabel span,
+        svg.classDiagram .edgeTerminals foreignObject div,
+        svg.erDiagram .edgeLabel,
+        svg.erDiagram .edgeLabel span {
+            font-size: 11px !important;
+            color: var(--color-text-tertiary) !important;
+        }
+
+        /* Box outlines, row stripes, dividers — all rendered as <path> with inline attrs.
+   Mermaid's '#id .node path { fill:... }' CSS beats fill="none" attr — force fill:none. */
+        svg.classDiagram .node path[stroke]:not([stroke="none"]),
+        svg.classDiagram .divider path,
+        svg.erDiagram .node path[stroke]:not([stroke="none"]),
+        svg.erDiagram .divider path {
+            stroke: var(--color-border-tertiary) !important;
+            stroke-width: 0.5px !important;
+            fill: none !important;
+        }
+
+        /* classDiagram: box fill (inside .basic.label-container). Mermaid's inline CSS
+   '#id .node path { stroke:... }' beats the stroke="none" attr (SVG attrs have
+   lowest specificity), and the fill path is open (no Z) so the phantom stroke
+   only paints top/right/bottom — left edge looks darker. Kill the stroke. */
+        svg.classDiagram .node .basic path[fill]:not([fill="none"]) {
+            fill: var(--color-background-primary) !important;
+            stroke: none !important;
+            stroke-width: 0 !important;
+        }
+
+        /* erDiagram: header row (anonymous first-child <g>) uses secondary bg */
+        svg.erDiagram .node>g:first-child>path[fill]:not([fill="none"]) {
+            fill: var(--color-background-secondary) !important;
+        }
+
+        /* erDiagram: row stripes */
+        svg.erDiagram .row-rect-odd path[fill]:not([fill="none"]) {
+            fill: var(--color-background-primary) !important;
+        }
+
+        svg.erDiagram .row-rect-even path[fill]:not([fill="none"]) {
+            fill: var(--color-background-secondary) !important;
+        }
+
+        /* Connector lines */
+        svg.erDiagram .relationshipLine,
+        svg.classDiagram .relation {
+            stroke: var(--color-text-tertiary) !important;
+            stroke-width: 1px !important;
+        }
+
+        svg.classDiagram .marker,
+        svg.classDiagram marker path,
+        svg.erDiagram .marker,
+        svg.erDiagram marker path {
+            stroke: var(--color-text-tertiary) !important;
+            stroke-width: 1px !important;
+        }
+
+        svg.classDiagram marker path[fill]:not([fill="none"]):not([fill="transparent"]),
+        svg.erDiagram marker path[fill]:not([fill="none"]):not([fill="transparent"]) {
+            fill: var(--color-text-tertiary) !important;
+        }
+
+        /* Relationship label background — kill default 0.7 opacity */
+        svg.classDiagram .labelBkg,
+        svg.erDiagram .labelBkg {
+            background-color: var(--color-background-primary) !important;
+            opacity: 1 !important;
+        }
+
+        body {
+            position: relative;
+        }
+
+        #vis-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #vis-container>svg {
+            display: block;
+            margin-inline: auto;
+            max-width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        /* Action buttons group.
+   hidden attr is removed on tool-input (final) so buttons never show during streaming.
+   Popover items: Copy to clipboard, Download file. */
+        #action-btns {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2147483647;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        /* display:flex above would override UA [hidden] — restore it */
+        #action-btns[hidden] {
+            display: none;
+        }
+
+        body:hover #action-btns {
+            opacity: 1;
+        }
+
+        /* 28×28 chip style for the ⋯ trigger.
+   bg-100 at rest (visible over widget content), bg-300 on hover.
+   No border — bg change is enough hover feedback. Transparent border stays
+   for layout stability. Fallback light-dark() values match the design-system
+   --bg-100/--bg-300 tokens (widget iframe doesn't receive them via host
+   context, only --color-background-* semantic vars). */
+        #action-btns>button {
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm, 6px);
+            background: var(--bg-100, light-dark(#faf9f5, #262624));
+            border: 1px solid transparent;
+            color: var(--color-text-secondary, #3d3d3a);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        #action-btns>button:hover {
+            background: var(--bg-300, light-dark(#f0eee6, #141413));
+        }
+
+        #more-popover {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            min-width: 8rem;
+            padding: 6px;
+            border-radius: 12px;
+            background: var(--color-background-primary, #fff);
+            border: 0.5px solid var(--color-border-secondary, rgba(0, 0, 0, 0.1));
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 2px 8px light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.24));
+            font-family: var(--font-sans, system-ui);
+            color: var(--color-text-secondary, #3d3d3a);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition:
+                opacity 0.15s ease,
+                transform 0.15s ease,
+                visibility 0s linear 0.15s;
+        }
+
+        /* Reveal only when hovering the ⋯ trigger or the popover itself. A 4px
+   dead-zone between trigger and popover would close it, so
+   #more-popover:hover keeps it open during the crossing. */
+        #more-btn:hover~#more-popover,
+        #more-popover:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition:
+                opacity 0.15s ease,
+                transform 0.15s ease,
+                visibility 0s;
+        }
+
+        /* Popover items — single-line icon + label, matching native dropdown menu */
+        .more-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-family: var(--font-sans, system-ui) !important;
+            color: inherit;
+            transition: background 0.1s ease;
+            white-space: nowrap;
+        }
+
+        .more-item:hover {
+            background: var(--color-background-secondary, #f5f4ed);
+            color: var(--color-text-primary, #141413);
+        }
+
+        .more-item-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .more-item-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .more-item-label {
+            font-family: var(--font-sans, system-ui) !important;
+            font-size: 14px;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        #copy-toast {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--color-background-danger, #f7ecec);
+            color: var(--color-text-danger, #7f2c28);
+            border: 1px solid var(--color-border-danger, #a73d39);
+            font-family: var(--font-sans, system-ui);
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: var(--border-radius-md, 8px);
+            pointer-events: none;
+            opacity: 0;
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease;
+            z-index: 2147483647;
+            white-space: nowrap;
+        }
+
+        #copy-toast.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* HTML scripts-loading shimmer */
+        #vis-container.scripts-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        #vis-container.scripts-loading::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 10000;
+            overflow: hidden;
+        }
+
+        #vis-container.scripts-loading::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 60%;
+            height: 200%;
+            z-index: 10001;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08)) 50%,
+                    transparent 100%);
+            animation: scriptsShimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes scriptsShimmer {
+            0% {
+                transform: translateX(-100%) rotate(25deg);
+            }
+
+            100% {
+                transform: translateX(200%) rotate(25deg);
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0
+        }
+    </style>
+    <style id="entry-animation">
+        @keyframes svgFadeInScale {
+            from {
+                opacity: 0;
+                scale: 0.95;
+            }
+
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        #vis-container.streaming :where(svg,
+            circle,
+            rect,
+            path,
+            polygon,
+            polyline,
+            line,
+            ellipse,
+            g,
+            text):not([transform]):not([opacity]) {
+            transition:
+                fill 0.4s ease-out,
+                stroke 0.4s ease-out,
+                opacity 0.4s ease-out;
+            animation: svgFadeInScale 0.5s ease-out;
+            transform-origin: center;
+        }
+    </style>
+    <style id="mcp-host-variables">
+        :root {
+            --color-background-primary: light-dark(rgba(255, 255, 255, 1), rgba(48, 48, 46, 1));
+            --color-background-secondary: light-dark(rgba(245, 244, 237, 1), rgba(38, 38, 36, 1));
+            --color-background-tertiary: light-dark(rgba(250, 249, 245, 1), rgba(20, 20, 19, 1));
+            --color-background-inverse: light-dark(rgba(20, 20, 19, 1), rgba(250, 249, 245, 1));
+            --color-background-ghost: light-dark(rgba(255, 255, 255, 0), rgba(48, 48, 46, 0));
+            --color-background-info: light-dark(rgba(214, 228, 246, 1), rgba(37, 62, 95, 1));
+            --color-background-danger: light-dark(rgba(247, 236, 236, 1), rgba(96, 42, 40, 1));
+            --color-background-success: light-dark(rgba(233, 241, 220, 1), rgba(27, 70, 20, 1));
+            --color-background-warning: light-dark(rgba(246, 238, 223, 1), rgba(72, 58, 15, 1));
+            --color-background-disabled: light-dark(rgba(255, 255, 255, 0.5), rgba(48, 48, 46, 0.5));
+            --color-text-primary: light-dark(rgba(20, 20, 19, 1), rgba(250, 249, 245, 1));
+            --color-text-secondary: light-dark(rgba(61, 61, 58, 1), rgba(194, 192, 182, 1));
+            --color-text-tertiary: light-dark(rgba(115, 114, 108, 1), rgba(156, 154, 146, 1));
+            --color-text-inverse: light-dark(rgba(255, 255, 255, 1), rgba(20, 20, 19, 1));
+            --color-text-info: light-dark(rgba(50, 102, 173, 1), rgba(128, 170, 221, 1));
+            --color-text-danger: light-dark(rgba(127, 44, 40, 1), rgba(238, 136, 132, 1));
+            --color-text-success: light-dark(rgba(38, 91, 25, 1), rgba(122, 185, 72, 1));
+            --color-text-warning: light-dark(rgba(90, 72, 21, 1), rgba(209, 160, 65, 1));
+            --color-text-disabled: light-dark(rgba(20, 20, 19, 0.5), rgba(250, 249, 245, 0.5));
+            --color-text-ghost: light-dark(rgba(115, 114, 108, 0.5), rgba(156, 154, 146, 0.5));
+            --color-border-primary: light-dark(rgba(31, 30, 29, 0.4), rgba(222, 220, 209, 0.4));
+            --color-border-secondary: light-dark(rgba(31, 30, 29, 0.3), rgba(222, 220, 209, 0.3));
+            --color-border-tertiary: light-dark(rgba(31, 30, 29, 0.15), rgba(222, 220, 209, 0.15));
+            --color-border-inverse: light-dark(rgba(255, 255, 255, 0.3), rgba(20, 20, 19, 0.15));
+            --color-border-ghost: light-dark(rgba(31, 30, 29, 0), rgba(222, 220, 209, 0));
+            --color-border-info: light-dark(rgba(70, 130, 213, 1), rgba(70, 130, 213, 1));
+            --color-border-danger: light-dark(rgba(167, 61, 57, 1), rgba(205, 92, 88, 1));
+            --color-border-success: light-dark(rgba(67, 116, 38, 1), rgba(89, 145, 48, 1));
+            --color-border-warning: light-dark(rgba(128, 92, 31, 1), rgba(168, 120, 41, 1));
+            --color-border-disabled: light-dark(rgba(31, 30, 29, 0.1), rgba(222, 220, 209, 0.1));
+            --color-ring-primary: light-dark(rgba(20, 20, 19, 0.7), rgba(250, 249, 245, 0.7));
+            --color-ring-secondary: light-dark(rgba(61, 61, 58, 0.7), rgba(194, 192, 182, 0.7));
+            --color-ring-inverse: light-dark(rgba(255, 255, 255, 0.7), rgba(20, 20, 19, 0.7));
+            --color-ring-info: light-dark(rgba(50, 102, 173, 0.5), rgba(128, 170, 221, 0.5));
+            --color-ring-danger: light-dark(rgba(167, 61, 57, 0.5), rgba(205, 92, 88, 0.5));
+            --color-ring-success: light-dark(rgba(67, 116, 38, 0.5), rgba(89, 145, 48, 0.5));
+            --color-ring-warning: light-dark(rgba(128, 92, 31, 0.5), rgba(168, 120, 41, 0.5));
+            --font-sans: Anthropic Sans, sans-serif;
+            --font-mono: ui-monospace, monospace;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-text-xs-size: 12px;
+            --font-text-sm-size: 14px;
+            --font-text-md-size: 16px;
+            --font-text-lg-size: 20px;
+            --font-heading-xs-size: 12px;
+            --font-heading-sm-size: 14px;
+            --font-heading-md-size: 16px;
+            --font-heading-lg-size: 20px;
+            --font-heading-xl-size: 24px;
+            --font-heading-2xl-size: 28px;
+            --font-heading-3xl-size: 36px;
+            --font-text-xs-line-height: 1.4;
+            --font-text-sm-line-height: 1.4;
+            --font-text-md-line-height: 1.4;
+            --font-text-lg-line-height: 1.25;
+            --font-heading-xs-line-height: 1.4;
+            --font-heading-sm-line-height: 1.4;
+            --font-heading-md-line-height: 1.4;
+            --font-heading-lg-line-height: 1.25;
+            --font-heading-xl-line-height: 1.25;
+            --font-heading-2xl-line-height: 1.1;
+            --font-heading-3xl-line-height: 1;
+            --border-radius-xs: 4px;
+            --border-radius-sm: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 10px;
+            --border-radius-xl: 12px;
+            --border-radius-full: 9999px;
+            --border-width-regular: 0.5px;
+            --shadow-hairline: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <main class="" style="max-width: 800px; margin: 0 auto; padding: 24px; padding-top: 48px;">
+        <h1>Practice For CSE405 Quiz</h1>
+
+        <div id="vis-container" class="">
+            <style>
+                * {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                body {
+                    font-family: var(--font-sans);
+                }
+
+                .guide {
+                    padding: 1rem 0;
+                }
+
+                .nav {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    margin-bottom: 1.5rem;
+                }
+
+                .nav-btn {
+                    padding: 6px 14px;
+                    border: 0.5px solid var(--color-border-secondary);
+                    border-radius: var(--border-radius-md);
+                    background: var(--color-background-primary);
+                    color: var(--color-text-secondary);
+                    cursor: pointer;
+                    font-size: 13px;
+                    transition: all .15s;
+                }
+
+                .nav-btn.active,
+                .nav-btn:hover {
+                    background: var(--color-background-secondary);
+                    color: var(--color-text-primary);
+                    border-color: var(--color-border-primary);
+                }
+
+                .section {
+                    display: none;
+                }
+
+                .section.active {
+                    display: block;
+                }
+
+                h2 {
+                    font-size: 18px;
+                    font-weight: 500;
+                    color: var(--color-text-primary);
+                    margin-bottom: 1rem;
+                }
+
+                h3 {
+                    font-size: 15px;
+                    font-weight: 500;
+                    color: var(--color-text-primary);
+                    margin: 1.2rem 0 .5rem;
+                }
+
+                h4 {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: var(--color-text-secondary);
+                    margin: .8rem 0 .3rem;
+                    text-transform: uppercase;
+                    letter-spacing: .04em;
+                }
+
+                p {
+                    font-size: 14px;
+                    line-height: 1.7;
+                    color: var(--color-text-primary);
+                    margin-bottom: .6rem;
+                }
+
+                .card {
+                    background: var(--color-background-primary);
+                    border: 0.5px solid var(--color-border-tertiary);
+                    border-radius: var(--border-radius-lg);
+                    padding: 1rem 1.25rem;
+                    margin-bottom: .75rem;
+                }
+
+                .info-card {
+                    background: var(--color-background-info);
+                    border: 0.5px solid var(--color-border-info);
+                    border-radius: var(--border-radius-lg);
+                    padding: .75rem 1rem;
+                    margin-bottom: .75rem;
+                }
+
+                .warn-card {
+                    background: var(--color-background-warning);
+                    border: 0.5px solid var(--color-border-warning);
+                    border-radius: var(--border-radius-lg);
+                    padding: .75rem 1rem;
+                    margin-bottom: .75rem;
+                }
+
+                .danger-card {
+                    background: var(--color-background-danger);
+                    border: 0.5px solid var(--color-border-danger);
+                    border-radius: var(--border-radius-lg);
+                    padding: .75rem 1rem;
+                    margin-bottom: .75rem;
+                }
+
+                .success-card {
+                    background: var(--color-background-success);
+                    border: 0.5px solid var(--color-border-success);
+                    border-radius: var(--border-radius-lg);
+                    padding: .75rem 1rem;
+                    margin-bottom: .75rem;
+                }
+
+                .card p,
+                .info-card p,
+                .warn-card p,
+                .danger-card p,
+                .success-card p {
+                    margin-bottom: 0;
+                }
+
+                .badge {
+                    display: inline-block;
+                    font-size: 11px;
+                    font-weight: 500;
+                    padding: 2px 8px;
+                    border-radius: 20px;
+                    margin-bottom: .5rem;
+                }
+
+                .badge-blue {
+                    background: var(--color-background-info);
+                    color: var(--color-text-info);
+                }
+
+                .badge-amber {
+                    background: var(--color-background-warning);
+                    color: var(--color-text-warning);
+                }
+
+                .badge-green {
+                    background: var(--color-background-success);
+                    color: var(--color-text-success);
+                }
+
+                .badge-red {
+                    background: var(--color-background-danger);
+                    color: var(--color-text-danger);
+                }
+
+                code {
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    background: var(--color-background-secondary);
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                    color: var(--color-text-primary);
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 13px;
+                    margin: .75rem 0;
+                }
+
+                th {
+                    background: var(--color-background-secondary);
+                    font-weight: 500;
+                    padding: 6px 10px;
+                    border: 0.5px solid var(--color-border-tertiary);
+                    text-align: left;
+                    color: var(--color-text-primary);
+                }
+
+                td {
+                    padding: 6px 10px;
+                    border: 0.5px solid var(--color-border-tertiary);
+                    color: var(--color-text-primary);
+                }
+
+                tr:nth-child(even) td {
+                    background: var(--color-background-secondary);
+                }
+
+                .highlight-row td {
+                    background: var(--color-background-success) !important;
+                    font-weight: 500;
+                }
+
+                .quiz-q {
+                    margin-bottom: 1.25rem;
+                }
+
+                .quiz-q p {
+                    font-weight: 500;
+                    margin-bottom: .5rem;
+                    font-size: 14px;
+                }
+
+                .opt {
+                    display: block;
+                    padding: 7px 12px;
+                    margin: 4px 0;
+                    border: 0.5px solid var(--color-border-tertiary);
+                    border-radius: var(--border-radius-md);
+                    cursor: pointer;
+                    font-size: 13px;
+                    background: var(--color-background-primary);
+                    color: var(--color-text-primary);
+                    transition: all .1s;
+                    text-align: left;
+                    width: 100%;
+                }
+
+                .opt:hover {
+                    background: var(--color-background-secondary);
+                    border-color: var(--color-border-secondary);
+                }
+
+                .opt.correct {
+                    background: var(--color-background-success);
+                    border-color: var(--color-border-success);
+                    color: var(--color-text-success);
+                }
+
+                .opt.wrong {
+                    background: var(--color-background-danger);
+                    border-color: var(--color-border-danger);
+                    color: var(--color-text-danger);
+                }
+
+                .explain {
+                    font-size: 13px;
+                    color: var(--color-text-secondary);
+                    margin-top: .4rem;
+                    padding: .5rem .75rem;
+                    border-left: 2px solid var(--color-border-secondary);
+                    display: none;
+                    line-height: 1.6;
+                }
+
+                .explain.show {
+                    display: block;
+                }
+
+                .score-bar {
+                    display: flex;
+                    gap: 12px;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                    font-size: 14px;
+                }
+
+                .score-num {
+                    font-size: 22px;
+                    font-weight: 500;
+                    color: var(--color-text-primary);
+                }
+
+                .reset-btn {
+                    margin-top: 1rem;
+                    padding: 7px 16px;
+                    border: 0.5px solid var(--color-border-secondary);
+                    border-radius: var(--border-radius-md);
+                    background: var(--color-background-primary);
+                    cursor: pointer;
+                    font-size: 13px;
+                    color: var(--color-text-primary);
+                }
+
+                .reset-btn:hover {
+                    background: var(--color-background-secondary);
+                }
+
+                .graph-box {
+                    background: var(--color-background-secondary);
+                    border-radius: var(--border-radius-lg);
+                    padding: 1rem;
+                    margin: .75rem 0;
+                    overflow-x: auto;
+                }
+
+                .step-row {
+                    display: flex;
+                    gap: 8px;
+                    align-items: flex-start;
+                    margin-bottom: .5rem;
+                }
+
+                .step-num {
+                    min-width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    background: var(--color-background-info);
+                    color: var(--color-text-info);
+                    font-size: 12px;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                }
+
+                .step-text {
+                    font-size: 13px;
+                    line-height: 1.6;
+                    color: var(--color-text-primary);
+                }
+
+                .divider {
+                    border: none;
+                    border-top: 0.5px solid var(--color-border-tertiary);
+                    margin: 1.25rem 0;
+                }
+
+                .two-col {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                }
+
+                @media (max-width: 500px) {
+                    .two-col {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                .formula {
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    background: var(--color-background-secondary);
+                    padding: .5rem .75rem;
+                    border-radius: var(--border-radius-md);
+                    margin: .5rem 0;
+                    color: var(--color-text-primary);
+                    border-left: 2px solid var(--color-border-info);
+                }
+
+                .tag {
+                    display: inline-block;
+                    font-size: 11px;
+                    padding: 1px 7px;
+                    border-radius: 10px;
+                    background: var(--color-background-secondary);
+                    color: var(--color-text-secondary);
+                    border: 0.5px solid var(--color-border-tertiary);
+                    margin-right: 4px;
+                }
+            </style>
+
+            <div class="guide">
+                <div class="nav">
+                    <button class="nav-btn active" onclick="show(&#39;dv&#39;)">1. Distance Vector</button>
+                    <button class="nav-btn" onclick="show(&#39;rip&#39;)">2. RIP Protocol</button>
+                    <button class="nav-btn" onclick="show(&#39;instability&#39;)">3. Instability</button>
+                    <button class="nav-btn" onclick="show(&#39;ospf&#39;)">4. OSPF / Link State</button>
+                    <button class="nav-btn" onclick="show(&#39;practice&#39;)">5. Practice Problems</button>
+                    <button class="nav-btn" onclick="show(&#39;quiz&#39;)">6. Quick Quiz</button>
+                </div>
+
+                <!-- SECTION 1: Distance Vector Theory -->
+                <div class="section active" id="sec-dv">
+                    <h2>Distance Vector Routing — Theory</h2>
+                    <div class="info-card">
+                        <p><strong>Core idea:</strong> Each router knows only the distance (cost) to each destination
+                            and which
+                            neighbor to use as the next hop. Routers share their entire routing table with direct
+                            neighbors
+                            periodically.</p>
+                    </div>
+
+                    <h3>Bellman-Ford Equation</h3>
+                    <p>The foundation of DV routing is the Bellman-Ford algorithm:</p>
+                    <div class="formula">D<sub>x</sub>(y) = min over all neighbors v { cost(x,v) + D<sub>v</sub>(y) }
+                    </div>
+                    <p>Where <code>D_x(y)</code> = least-cost path from x to y, <code>cost(x,v)</code> = direct link
+                        cost from x
+                        to
+                        neighbor v, <code>D_v(y)</code> = neighbor v's known cost to y.</p>
+
+                    <h3>How the Algorithm Works</h3>
+                    <div class="step-row">
+                        <div class="step-num">1</div>
+                        <div class="step-text"><strong>Initialize:</strong> Each router sets distance to itself = 0,
+                            distance to
+                            directly connected neighbors = link cost, all others = ∞</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">2</div>
+                        <div class="step-text"><strong>Share:</strong> Each router sends its distance vector (table) to
+                            all direct
+                            neighbors</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">3</div>
+                        <div class="step-text"><strong>Update:</strong> On receiving a neighbor's table, recalculate
+                            using
+                            Bellman-Ford. If a shorter path is found, update your own table</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">4</div>
+                        <div class="step-text"><strong>Repeat:</strong> Continue until no table changes occur
+                            (convergence)</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">5</div>
+                        <div class="step-text"><strong>React to change:</strong> If a link cost changes, update local
+                            table and
+                            re-share with neighbors</div>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>Table Structure</h3>
+                    <p>Each router maintains a table: for every destination, record the <strong>best cost</strong> and
+                        the
+                        <strong>next hop</strong> neighbor.
+                    </p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Destination</th>
+                                <th>Cost</th>
+                                <th>Next Hop</th>
+                            </tr>
+                            <tr>
+                                <td>A (self)</td>
+                                <td>0</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>B</td>
+                                <td>4</td>
+                                <td>B</td>
+                            </tr>
+                            <tr>
+                                <td>C</td>
+                                <td>7</td>
+                                <td>B</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size:13px;color:var(--color-text-secondary)">Example: Router A's table. To reach C,
+                        cost is 7
+                        via
+                        neighbor B.</p>
+
+                    <hr class="divider">
+                    <h3>Worked Example — 3 Router Network</h3>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 160" role="img"
+                            style="max-width: 560px; display: block; margin-inline: auto;">
+                            <title>3-node graph A-B-C</title>
+                            <desc>A connects to B with cost 4, B connects to C with cost 3, A connects to C with cost 10
+                            </desc>
+                            <defs>
+                                <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+                                    orient="auto-start-reverse">
+                                    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </marker>
+                            </defs>
+                            <circle cx="80" cy="80" r="30" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"></circle>
+                            <text x="80" y="85" text-anchor="middle" font-size="15" font-weight="500"
+                                fill="#0C447C">A</text>
+                            <circle cx="280" cy="80" r="30" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="280" y="85" text-anchor="middle" font-size="15" font-weight="500"
+                                fill="#085041">B</text>
+                            <circle cx="480" cy="80" r="30" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="480" y="85" text-anchor="middle" font-size="15" font-weight="500"
+                                fill="#633806">C</text>
+                            <line x1="110" y1="80" x2="250" y2="80" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="180" y="70" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">4</text>
+                            <line x1="310" y1="80" x2="450" y2="80" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="380" y="70" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">3</text>
+                            <path d="M108 60 Q280 10 452 60" fill="none" stroke="#aaa" stroke-width="1"
+                                stroke-dasharray="5 4"></path>
+                            <text x="280" y="22" text-anchor="middle" font-size="12" fill="#888780">10</text>
+                        </svg>
+                    </div>
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Router A's initial table</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Dest</th>
+                                        <th>Cost</th>
+                                        <th>Via</th>
+                                    </tr>
+                                    <tr>
+                                        <td>A</td>
+                                        <td>0</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>B</td>
+                                        <td>4</td>
+                                        <td>B</td>
+                                    </tr>
+                                    <tr>
+                                        <td>C</td>
+                                        <td>10</td>
+                                        <td>C</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <h4>After receiving B's table</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Dest</th>
+                                        <th>Cost</th>
+                                        <th>Via</th>
+                                    </tr>
+                                    <tr>
+                                        <td>A</td>
+                                        <td>0</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>B</td>
+                                        <td>4</td>
+                                        <td>B</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>C</td>
+                                        <td>7</td>
+                                        <td>B</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="font-size:12px;color:var(--color-text-success);margin-top:.4rem">✓ A→C via B:
+                                4+3=7 &lt; 10, so
+                                update!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: RIP -->
+                <div class="section" id="sec-rip">
+                    <h2>RIP — Routing Information Protocol</h2>
+                    <div class="badge badge-blue">Distance Vector Protocol</div>
+                    <div class="badge badge-amber">UDP Port 520</div>
+
+                    <h3>Key Characteristics</h3>
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Metric</h4>
+                            <p>Hop count (each router = 1 hop). Maximum 15 hops — 16 = infinity (unreachable). Simple
+                                but ignores
+                                bandwidth.</p>
+                        </div>
+                        <div class="card">
+                            <h4>Update Behavior</h4>
+                            <p>Sends full routing table to neighbors every <strong>30 seconds</strong>. Only to directly
+                                connected
+                                neighbors.</p>
+                        </div>
+                    </div>
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Versions</h4>
+                            <p><strong>RIPv1:</strong> Classful only, broadcast updates.<br><strong>RIPv2:</strong>
+                                Classless (CIDR
+                                support), multicast 224.0.0.9, MD5 auth.</p>
+                        </div>
+                        <div class="card">
+                            <h4>Timers</h4>
+                            <p><strong>Update:</strong> 30s<br><strong>Invalid/Expire:</strong> 180s (no update
+                                received)<br><strong>Flush:</strong> 240s (removed from table)</p>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>RIP Table Creation — Step by Step</h3>
+                    <p>Rules: distance to a directly connected node = <strong>1 hop</strong>. When receiving a
+                        neighbor's table,
+                        add
+                        1 to all their distances.</p>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 180" role="img">
+                            <title>RIP network: A-B cost 1, B-C cost 1, C-D cost 1, A-D cost 1</title>
+                            <defs>
+                                <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+                                    orient="auto-start-reverse">
+                                    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </marker>
+                            </defs>
+                            <circle cx="100" cy="90" r="28" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"></circle>
+                            <text x="100" y="95" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">A</text>
+                            <circle cx="260" cy="40" r="28" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="260" y="45" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">B</text>
+                            <circle cx="420" cy="90" r="28" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="420" y="95" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">C</text>
+                            <circle cx="260" cy="145" r="28" fill="#FAECE7" stroke="#993C1D" stroke-width="1"></circle>
+                            <text x="260" y="150" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#712B13">D</text>
+                            <line x1="126" y1="76" x2="234" y2="52" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="172" y="55" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                            <line x1="286" y1="52" x2="394" y2="76" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="348" y="55" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                            <line x1="126" y1="104" x2="234" y2="130" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="172" y="130" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                            <line x1="286" y1="130" x2="394" y2="104" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="348" y="130" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                        </svg>
+                    </div>
+                    <p style="font-size:13px;color:var(--color-text-secondary)">Topology: A–B–C–D–A (ring). All links =
+                        1 hop.</p>
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Router A after convergence</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Dest</th>
+                                        <th>Hops</th>
+                                        <th>Via</th>
+                                    </tr>
+                                    <tr>
+                                        <td>A</td>
+                                        <td>0</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>B</td>
+                                        <td>1</td>
+                                        <td>B</td>
+                                    </tr>
+                                    <tr>
+                                        <td>C</td>
+                                        <td>2</td>
+                                        <td>B or D</td>
+                                    </tr>
+                                    <tr>
+                                        <td>D</td>
+                                        <td>1</td>
+                                        <td>D</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <h4>Router B after convergence</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Dest</th>
+                                        <th>Hops</th>
+                                        <th>Via</th>
+                                    </tr>
+                                    <tr>
+                                        <td>A</td>
+                                        <td>1</td>
+                                        <td>A</td>
+                                    </tr>
+                                    <tr>
+                                        <td>B</td>
+                                        <td>0</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>C</td>
+                                        <td>1</td>
+                                        <td>C</td>
+                                    </tr>
+                                    <tr>
+                                        <td>D</td>
+                                        <td>2</td>
+                                        <td>A or C</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>RIP Limitations</h3>
+                    <div class="danger-card">
+                        <p><strong>Slow convergence:</strong> With 15-hop limit, a failure can take many update cycles
+                            to propagate
+                            —
+                            causes "counting to infinity"</p>
+                    </div>
+                    <div class="warn-card">
+                        <p><strong>No load balancing:</strong> Only one path stored per destination</p>
+                    </div>
+                    <div class="warn-card">
+                        <p><strong>Metric ignores bandwidth:</strong> A 56 Kbps link counts same as 1 Gbps if hop count
+                            is equal</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: Instability -->
+                <div class="section" id="sec-instability">
+                    <h2>Routing Instability Problems</h2>
+
+                    <h3>Two-Node Instability (Counting to Infinity)</h3>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 420 120" role="img">
+                            <title>Two node instability: A connects to B, B connects to X</title>
+                            <circle cx="80" cy="60" r="28" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"></circle>
+                            <text x="80" y="65" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">A</text>
+                            <circle cx="220" cy="60" r="28" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="220" y="65" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">B</text>
+                            <circle cx="360" cy="60" r="28" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="360" y="65" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">X</text>
+                            <line x1="108" y1="60" x2="192" y2="60" stroke="#73726c" stroke-width="1.5"></line>
+                            <line x1="248" y1="60" x2="332" y2="60" stroke="#A32D2D" stroke-width="2"
+                                stroke-dasharray="5 4"></line>
+                            <text x="290" y="48" text-anchor="middle" font-size="12" fill="#A32D2D"
+                                font-weight="500">LINK
+                                FAILS</text>
+                        </svg>
+                    </div>
+                    <div class="card">
+                        <h4>Scenario: B–X link fails</h4>
+                        <div class="step-row">
+                            <div class="step-num">1</div>
+                            <div class="step-text">B detects link to X is down → sets D(X) = ∞</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">2</div>
+                            <div class="step-text">Before B can advertise this, A sends update: "I can reach X in 2
+                                hops" (A's old
+                                table: X via B = 1+1)</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">3</div>
+                            <div class="step-text">B thinks: "A says X is 2 hops, so I can reach X via A in 3 hops!" →
+                                sets D(X) = 3
+                                via
+                                A</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">4</div>
+                            <div class="step-text">A gets B's update: "X is 3 hops" → A updates: X = 4 via B. Loop
+                                continues...</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">5</div>
+                            <div class="step-text">Counts to 16 (infinity) before stopping — very slow convergence!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="danger-card">
+                        <p><strong>Root cause:</strong> A and B form a routing loop. Each thinks the other has a valid
+                            path to X.
+                            Neither knows the path was through the failed link.</p>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>Solutions to Two-Node Instability</h3>
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Split Horizon</h4>
+                            <p>Do not advertise a route back to the neighbor you learned it from. A will not tell B "I
+                                can reach X via
+                                B" — because A learned that from B.</p>
+                            <div class="success-card">
+                                <p>Prevents two-node loops completely</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h4>Poison Reverse</h4>
+                            <p>Instead of silence, actively advertise the route as unreachable (∞) back to the neighbor
+                                it was learned
+                                from.</p>
+                            <div class="success-card">
+                                <p>More explicit — faster convergence</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Triggered Updates</h4>
+                        <p>When a route changes, send an update immediately rather than waiting for the 30-second timer.
+                            Reduces the
+                            window for loops to form.</p>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>Three-Node Instability</h3>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 200" role="img">
+                            <title>Three-node instability: A-B-C-X where B-X link fails</title>
+                            <circle cx="70" cy="100" r="26" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"></circle>
+                            <text x="70" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">A</text>
+                            <circle cx="200" cy="100" r="26" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="200" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">B</text>
+                            <circle cx="330" cy="100" r="26" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="330" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">C</text>
+                            <circle cx="460" cy="100" r="26" fill="#FCEBEB" stroke="#A32D2D" stroke-width="1"></circle>
+                            <text x="460" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#791F1F">X</text>
+                            <line x1="96" y1="100" x2="174" y2="100" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="135" y="90" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                            <line x1="226" y1="100" x2="304" y2="100" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="265" y="90" text-anchor="middle" font-size="12" fill="#5F5E5A">1</text>
+                            <line x1="356" y1="100" x2="434" y2="100" stroke="#A32D2D" stroke-width="2"
+                                stroke-dasharray="5 4"></line>
+                            <text x="395" y="90" text-anchor="middle" font-size="12" fill="#A32D2D" font-weight="500">✗
+                                FAILS</text>
+                            <text x="280" y="168" text-anchor="middle" font-size="12" fill="#5F5E5A">A→X: 3, B→X: 2,
+                                C→X: 1
+                                (initially)</text>
+                        </svg>
+                    </div>
+                    <div class="card">
+                        <h4>Why split horizon fails here</h4>
+                        <div class="step-row">
+                            <div class="step-num">1</div>
+                            <div class="step-text">C–X link fails. C sets D(X) = ∞. Informs B.</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">2</div>
+                            <div class="step-text">B also sets D(X) = ∞. Split horizon: B won't tell C "I heard X via
+                                C". Correct so
+                                far.</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">3</div>
+                            <div class="step-text">But B still has A's update: "A says X is 3 hops" (A→B→C→X old route).
+                                B thinks X is
+                                reachable via A!</div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">4</div>
+                            <div class="step-text">B advertises to C: "X is 4 hops (via A)". C updates: X = 5 via B.
+                                Loop starts
+                                again.
+                            </div>
+                        </div>
+                        <div class="step-row">
+                            <div class="step-num">5</div>
+                            <div class="step-text">A, B, C all count to infinity together — split horizon didn't help
+                                because the loop
+                                involves all 3 nodes.</div>
+                        </div>
+                    </div>
+                    <div class="danger-card">
+                        <p><strong>Key insight:</strong> Split horizon only prevents a router from advertising a route
+                            back to where
+                            it was learned from. It cannot prevent loops spanning 3+ nodes where each router learned the
+                            route from a
+                            different neighbor.</p>
+                    </div>
+                    <div class="info-card">
+                        <p><strong>Solution:</strong> Hold-down timers — after a route becomes invalid, ignore updates
+                            claiming a
+                            better path for a period of time (prevents false "recovery" routes)</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: OSPF / Link State -->
+                <div class="section" id="sec-ospf">
+                    <h2>OSPF &amp; Link State Routing</h2>
+                    <div class="badge badge-green">Link State Protocol</div>
+                    <div class="badge badge-blue">IP Protocol 89</div>
+
+                    <h3>Core Concept</h3>
+                    <div class="info-card">
+                        <p><strong>Every router has a complete map of the network topology.</strong> Each router floods
+                            its
+                            link-state
+                            advertisements (LSAs) to all routers. After flooding, every router runs Dijkstra's algorithm
+                            independently
+                            to compute shortest paths.</p>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="card">
+                            <h4>Link State vs Distance Vector</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th></th>
+                                        <th>DV (RIP)</th>
+                                        <th>LS (OSPF)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Knowledge</td>
+                                        <td>Neighbors only</td>
+                                        <td>Full topology</td>
+                                    </tr>
+                                    <tr>
+                                        <td>What's shared</td>
+                                        <td>Distance table</td>
+                                        <td>Link costs (LSA)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Algorithm</td>
+                                        <td>Bellman-Ford</td>
+                                        <td>Dijkstra</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Convergence</td>
+                                        <td>Slow</td>
+                                        <td>Fast</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Loops</td>
+                                        <td>Possible</td>
+                                        <td>None (complete map)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <h4>OSPF Features</h4>
+                            <p><strong>Authentication:</strong> MD5 or plaintext password on updates</p>
+                            <p><strong>Multiple metrics:</strong> Bandwidth-based cost (100 Mbps / link bandwidth)</p>
+                            <p><strong>Areas:</strong> Hierarchical routing — area 0 = backbone, reduces LSA flooding
+                            </p>
+                            <p><strong>Equal-cost multipath:</strong> Load balances across equal-cost paths</p>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>Dijkstra's Algorithm — Shortest Path Finding</h3>
+                    <p>Dijkstra's computes the shortest path from a single source to all other nodes. OSPF runs this
+                        locally after
+                        receiving all LSAs.</p>
+                    <div class="formula">At each step: pick the unvisited node with the smallest known distance, then
+                        relax all
+                        its
+                        neighbors</div>
+
+                    <h4>Steps</h4>
+                    <div class="step-row">
+                        <div class="step-num">1</div>
+                        <div class="step-text">Set source = 0, all others = ∞. Mark all nodes as unvisited.</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">2</div>
+                        <div class="step-text">Pick the unvisited node with smallest distance — call it current node u.
+                        </div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">3</div>
+                        <div class="step-text">For each unvisited neighbor v of u: if dist(u) + cost(u,v) &lt; dist(v),
+                            update
+                            dist(v)
+                            = dist(u) + cost(u,v), and set predecessor of v = u.</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">4</div>
+                        <div class="step-text">Mark u as visited. Repeat from step 2 until all nodes visited.</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">5</div>
+                        <div class="step-text">Trace back predecessors from any destination to get the shortest path.
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+                    <h3>Worked Example — Dijkstra's</h3>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 230" role="img">
+                            <title>Dijkstra example graph with 5 nodes</title>
+                            <defs>
+                                <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+                                    orient="auto-start-reverse">
+                                    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </marker>
+                            </defs>
+                            <circle cx="80" cy="115" r="26" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"></circle>
+                            <text x="80" y="120" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">u</text>
+                            <circle cx="220" cy="50" r="26" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="220" y="55" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">v</text>
+                            <circle cx="220" cy="180" r="26" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="220" y="185" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">w</text>
+                            <circle cx="380" cy="50" r="26" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"></circle>
+                            <text x="380" y="55" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#27500A">x</text>
+                            <circle cx="480" cy="115" r="26" fill="#FAECE7" stroke="#993C1D" stroke-width="1"></circle>
+                            <text x="480" y="120" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#712B13">y</text>
+                            <line x1="104" y1="100" x2="196" y2="63" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="143" y="72" text-anchor="middle" font-size="12" fill="#5F5E5A"
+                                font-weight="500">2</text>
+                            <line x1="104" y1="128" x2="196" y2="165" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="143" y="163" text-anchor="middle" font-size="12" fill="#5F5E5A"
+                                font-weight="500">5</text>
+                            <line x1="246" y1="50" x2="354" y2="50" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="300" y="42" text-anchor="middle" font-size="12" fill="#5F5E5A"
+                                font-weight="500">3</text>
+                            <line x1="246" y1="180" x2="456" y2="128" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="365" y="172" text-anchor="middle" font-size="12" fill="#5F5E5A"
+                                font-weight="500">1</text>
+                            <line x1="404" y1="65" x2="458" y2="100" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="444" y="76" text-anchor="middle" font-size="12" fill="#5F5E5A"
+                                font-weight="500">2</text>
+                            <line x1="244" y1="65" x2="460" y2="105" stroke="#73726c" stroke-width="1.5"
+                                stroke-dasharray="4 3" opacity=".5"></line>
+                            <text x="355" y="92" text-anchor="middle" font-size="11" fill="#888">4</text>
+                        </svg>
+                    </div>
+                    <p style="font-size:13px;color:var(--color-text-secondary)">Source = u. Find shortest paths to all
+                        other
+                        nodes.
+                    </p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Step</th>
+                                <th>Visited</th>
+                                <th>u</th>
+                                <th>v</th>
+                                <th>w</th>
+                                <th>x</th>
+                                <th>y</th>
+                            </tr>
+                            <tr>
+                                <td>Init</td>
+                                <td>—</td>
+                                <td><strong>0</strong></td>
+                                <td>∞</td>
+                                <td>∞</td>
+                                <td>∞</td>
+                                <td>∞</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>{u}</td>
+                                <td>—</td>
+                                <td><strong>2</strong></td>
+                                <td>5</td>
+                                <td>∞</td>
+                                <td>∞</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>{u,v}</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>5</td>
+                                <td><strong>5</strong></td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>{u,v,w}</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><strong>5</strong></td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>{u,v,w,x}</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><strong>6*</strong></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td colspan="7">Final: u→v=2, u→w=5, u→x=5 (via v), u→y=6 (via w)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size:12px;color:var(--color-text-secondary)">*y via w: 5+1=6, also y via x: 5+2=7 — w
+                        path wins
+                    </p>
+                </div>
+
+                <!-- SECTION 5: Practice Problems -->
+                <div class="section" id="sec-practice">
+                    <h2>Practice Problems</h2>
+
+                    <h3>Problem 1 — DV Table Construction</h3>
+                    <span class="tag">Distance Vector</span><span class="tag">Table math</span>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 200" role="img">
+                            <title>Practice problem 1 graph</title>
+                            <circle cx="100" cy="100" r="26" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"></circle>
+                            <text x="100" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">A</text>
+                            <circle cx="280" cy="40" r="26" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="280" y="45" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">B</text>
+                            <circle cx="460" cy="100" r="26" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="460" y="105" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">C</text>
+                            <circle cx="280" cy="160" r="26" fill="#FAECE7" stroke="#993C1D" stroke-width="1"></circle>
+                            <text x="280" y="165" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#712B13">D</text>
+                            <line x1="124" y1="86" x2="256" y2="52" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="182" y="58" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">1</text>
+                            <line x1="304" y1="52" x2="436" y2="86" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="378" y="58" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">2</text>
+                            <line x1="124" y1="114" x2="256" y2="148" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="182" y="148" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">4</text>
+                            <line x1="304" y1="148" x2="436" y2="114" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="378" y="148" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">1</text>
+                            <line x1="280" y1="66" x2="280" y2="134" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="294" y="105" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">3</text>
+                        </svg>
+                    </div>
+                    <p><strong>Task:</strong> Construct the final converged Distance Vector routing tables for all 4
+                        routers (A,
+                        B,
+                        C, D). Show the best cost and next hop for each destination.</p>
+                    <div id="p1-ans" style="display: none;">
+                        <div class="success-card">
+                            <p>Click "Show Answer" to reveal</p>
+                        </div>
+                        <div class="two-col">
+                            <div class="card">
+                                <h4>Router A</h4>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>Dest</th>
+                                            <th>Cost</th>
+                                            <th>Via</th>
+                                        </tr>
+                                        <tr>
+                                            <td>A</td>
+                                            <td>0</td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td>B</td>
+                                            <td>1</td>
+                                            <td>B</td>
+                                        </tr>
+                                        <tr>
+                                            <td>C</td>
+                                            <td>3</td>
+                                            <td>B</td>
+                                        </tr>
+                                        <tr>
+                                            <td>D</td>
+                                            <td>4</td>
+                                            <td>B</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="font-size:12px;color:var(--color-text-secondary);margin-top:.4rem">A→C: via
+                                    B(1)+C(2)=3 &lt;
+                                    via
+                                    D(4)+C(1)=5</p>
+                            </div>
+                            <div class="card">
+                                <h4>Router B</h4>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>Dest</th>
+                                            <th>Cost</th>
+                                            <th>Via</th>
+                                        </tr>
+                                        <tr>
+                                            <td>A</td>
+                                            <td>1</td>
+                                            <td>A</td>
+                                        </tr>
+                                        <tr>
+                                            <td>B</td>
+                                            <td>0</td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td>C</td>
+                                            <td>2</td>
+                                            <td>C</td>
+                                        </tr>
+                                        <tr>
+                                            <td>D</td>
+                                            <td>3</td>
+                                            <td>C</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card">
+                                <h4>Router C</h4>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>Dest</th>
+                                            <th>Cost</th>
+                                            <th>Via</th>
+                                        </tr>
+                                        <tr>
+                                            <td>A</td>
+                                            <td>3</td>
+                                            <td>B</td>
+                                        </tr>
+                                        <tr>
+                                            <td>B</td>
+                                            <td>2</td>
+                                            <td>B</td>
+                                        </tr>
+                                        <tr>
+                                            <td>C</td>
+                                            <td>0</td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td>D</td>
+                                            <td>1</td>
+                                            <td>D</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card">
+                                <h4>Router D</h4>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>Dest</th>
+                                            <th>Cost</th>
+                                            <th>Via</th>
+                                        </tr>
+                                        <tr>
+                                            <td>A</td>
+                                            <td>4</td>
+                                            <td>B or A</td>
+                                        </tr>
+                                        <tr>
+                                            <td>B</td>
+                                            <td>3</td>
+                                            <td>C</td>
+                                        </tr>
+                                        <tr>
+                                            <td>C</td>
+                                            <td>1</td>
+                                            <td>C</td>
+                                        </tr>
+                                        <tr>
+                                            <td>D</td>
+                                            <td>0</td>
+                                            <td>—</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="reset-btn"
+                        onclick="document.getElementById(&#39;p1-ans&#39;).style.display=document.getElementById(&#39;p1-ans&#39;).style.display==&#39;none&#39;?&#39;block&#39;:&#39;none&#39;;this.textContent=this.textContent==&#39;Show Answer&#39;?&#39;Hide Answer&#39;:&#39;Show Answer&#39;">Show
+                        Answer</button>
+
+                    <hr class="divider">
+
+                    <h3>Problem 2 — Dijkstra's Shortest Path</h3>
+                    <span class="tag">OSPF</span><span class="tag">Dijkstra</span><span class="tag">Table steps</span>
+                    <div class="graph-box">
+                        <svg width="100%" viewBox="0 0 560 230" role="img">
+                            <title>Dijkstra practice problem graph</title>
+                            <circle cx="80" cy="115" r="26" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"></circle>
+                            <text x="80" y="120" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#0C447C">S</text>
+                            <circle cx="220" cy="50" r="26" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"></circle>
+                            <text x="220" y="55" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#085041">A</text>
+                            <circle cx="220" cy="180" r="26" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"></circle>
+                            <text x="220" y="185" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#633806">B</text>
+                            <circle cx="380" cy="50" r="26" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"></circle>
+                            <text x="380" y="55" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#27500A">C</text>
+                            <circle cx="380" cy="180" r="26" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"></circle>
+                            <text x="380" y="185" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#3C3489">D</text>
+                            <circle cx="510" cy="115" r="26" fill="#FAECE7" stroke="#993C1D" stroke-width="1"></circle>
+                            <text x="510" y="120" text-anchor="middle" font-size="14" font-weight="500"
+                                fill="#712B13">T</text>
+                            <line x1="104" y1="100" x2="196" y2="65" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="142" y="72" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">6</text>
+                            <line x1="104" y1="128" x2="196" y2="165" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="142" y="162" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">2</text>
+                            <line x1="244" y1="50" x2="356" y2="50" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="300" y="42" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">3</text>
+                            <line x1="220" y1="76" x2="220" y2="154" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="234" y="118" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">5</text>
+                            <line x1="244" y1="180" x2="356" y2="180" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="300" y="172" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">4</text>
+                            <line x1="380" y1="76" x2="380" y2="154" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="394" y="118" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">7</text>
+                            <line x1="404" y1="65" x2="488" y2="101" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="454" y="73" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">1</text>
+                            <line x1="404" y1="167" x2="488" y2="130" stroke="#73726c" stroke-width="1.5"></line>
+                            <text x="454" y="162" text-anchor="middle" font-size="13" fill="#5F5E5A"
+                                font-weight="500">3</text>
+                        </svg>
+                    </div>
+                    <p><strong>Task:</strong> Run Dijkstra's algorithm from source S. Fill in the step-by-step distance
+                        table and
+                        find the shortest path to T. Show your work.</p>
+                    <div id="p2-ans" style="display:none">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Visited</th>
+                                    <th>S</th>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                    <th>D</th>
+                                    <th>T</th>
+                                </tr>
+                                <tr>
+                                    <td>Init</td>
+                                    <td>—</td>
+                                    <td>0</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                </tr>
+                                <tr>
+                                    <td>1 (S)</td>
+                                    <td>{S}</td>
+                                    <td>—</td>
+                                    <td>6 (S)</td>
+                                    <td>2 (S)</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                    <td>∞</td>
+                                </tr>
+                                <tr>
+                                    <td>2 (B)</td>
+                                    <td>{S,B}</td>
+                                    <td>—</td>
+                                    <td>6 (S)</td>
+                                    <td>—</td>
+                                    <td>∞</td>
+                                    <td>6 (B)</td>
+                                    <td>∞</td>
+                                </tr>
+                                <tr>
+                                    <td>3 (A)</td>
+                                    <td>{S,B,A}</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>9 (A)</td>
+                                    <td>6 (B)</td>
+                                    <td>∞</td>
+                                </tr>
+                                <tr>
+                                    <td>4 (D)</td>
+                                    <td>{S,B,A,D}</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>9 (A)</td>
+                                    <td>—</td>
+                                    <td>9 (D)</td>
+                                </tr>
+                                <tr>
+                                    <td>5 (C)</td>
+                                    <td>{S,B,A,D,C}</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>9 (D)</td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td colspan="8">Shortest path S→T = 9 via S→B→D→T (costs: 2+4+3=9)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="reset-btn"
+                        onclick="document.getElementById(&#39;p2-ans&#39;).style.display=document.getElementById(&#39;p2-ans&#39;).style.display==&#39;none&#39;?&#39;block&#39;:&#39;none&#39;;this.textContent=this.textContent==&#39;Show Answer&#39;?&#39;Hide Answer&#39;:&#39;Show Answer&#39;">Show
+                        Answer</button>
+
+                    <hr class="divider">
+
+                    <h3>Problem 3 — Scenario: Counting to Infinity</h3>
+                    <span class="tag">Instability</span><span class="tag">Scenario</span>
+                    <div class="card">
+                        <p><strong>Network:</strong> Routers A–B–C in a line. A–B cost 1, B–C cost 1. All tables
+                            converged. Then
+                            link
+                            A–B fails.</p>
+                        <p style="margin-top:.5rem"><strong>Questions:</strong></p>
+                        <p>a) What does router B do first when it detects the failure?</p>
+                        <p>b) Trace through the first 3 update cycles. What happens to B's distance to A?</p>
+                        <p>c) How does Split Horizon prevent this loop?</p>
+                        <p>d) Would Split Horizon also prevent instability if a 4th router D were added, with D–C cost
+                            1?</p>
+                    </div>
+                    <div id="p3-ans" style="display:none">
+                        <div class="card">
+                            <h4>Answers</h4>
+                            <p><strong>a)</strong> B sets D(A) = ∞ (infinity) and should send an update to C.</p>
+                            <p><strong>b)</strong> Before B can update C, C tells B "I can reach A in 2 hops" (C's old
+                                table: A via B
+                                =
+                                1+1=2). B updates D(A) = 3 via C. B tells C: A = 3. C updates to 4. B updates to 5...
+                                counts to 16.</p>
+                            <p><strong>c)</strong> With Split Horizon: C learned A via B, so C never tells B "I can
+                                reach A." B
+                                receives
+                                no claims of a path to A, keeps D(A) = ∞. Loop never starts.</p>
+                            <p><strong>d)</strong> No. D learned A via C→B, not directly from B. So Split Horizon
+                                doesn't stop D from
+                                advertising A back to C. The loop now involves B, C, D — three-node instability occurs.
+                            </p>
+                        </div>
+                    </div>
+                    <button class="reset-btn"
+                        onclick="document.getElementById(&#39;p3-ans&#39;).style.display=document.getElementById(&#39;p3-ans&#39;).style.display==&#39;none&#39;?&#39;block&#39;:&#39;none&#39;;this.textContent=this.textContent==&#39;Show Answer&#39;?&#39;Hide Answer&#39;:&#39;Show Answer&#39;">Show
+                        Answer</button>
+
+                    <hr class="divider">
+
+                    <h3>Problem 4 — Theoretical Short Answer</h3>
+                    <span class="tag">Theory</span>
+                    <div class="card">
+                        <p><strong>Q1.</strong> Why does OSPF converge faster than RIP after a topology change?</p>
+                        <p style="margin-top:.6rem"><strong>Q2.</strong> What is the purpose of the "flush timer" in
+                            RIP?</p>
+                        <p style="margin-top:.6rem"><strong>Q3.</strong> In Dijkstra's algorithm, why do we always pick
+                            the
+                            unvisited
+                            node with the smallest distance next?</p>
+                        <p style="margin-top:.6rem"><strong>Q4.</strong> A network uses RIP. Router X has a route to
+                            subnet Y with
+                            hop
+                            count 14. Is this route usable? What if hop count reaches 15?</p>
+                    </div>
+                    <div id="p4-ans" style="display:none">
+                        <div class="card">
+                            <p><strong>A1.</strong> OSPF uses triggered updates (LSAs flooded immediately) and each
+                                router has the
+                                full
+                                topology map, so it recalculates Dijkstra's instantly. RIP waits 30s between updates and
+                                must propagate
+                                changes hop-by-hop.</p>
+                            <p><strong>A2.</strong> The flush timer (240s) removes a route from the routing table
+                                entirely after it
+                                has
+                                been declared invalid (invalid timer = 180s). This frees memory and ensures stale routes
+                                don't persist.
+                            </p>
+                            <p><strong>A3.</strong> This is the greedy choice that guarantees optimality. Because all
+                                edge weights are
+                                non-negative, once a node is finalized with the smallest tentative distance, no future
+                                path can improve
+                                it
+                                — that distance is truly the shortest.</p>
+                            <p><strong>A4.</strong> Hop count 14 is usable (max is 15). At hop count 15, the route is
+                                still valid but
+                                barely. At 16 the route is considered unreachable (infinity) and is removed.</p>
+                        </div>
+                    </div>
+                    <button class="reset-btn"
+                        onclick="document.getElementById(&#39;p4-ans&#39;).style.display=document.getElementById(&#39;p4-ans&#39;).style.display==&#39;none&#39;?&#39;block&#39;:&#39;none&#39;;this.textContent=this.textContent==&#39;Show Answer&#39;?&#39;Hide Answer&#39;:&#39;Show Answer&#39;">Show
+                        Answer</button>
+                </div>
+
+                <!-- SECTION 6: Quiz -->
+                <div class="section" id="sec-quiz">
+                    <h2>Quick Quiz</h2>
+                    <p style="color:var(--color-text-secondary);font-size:13px;margin-bottom:1rem">10 questions — click
+                        an option
+                        to
+                        see if you're right</p>
+                    <div class="score-bar"><span class="score-num" id="score-display">0</span><span
+                            style="color:var(--color-text-secondary);font-size:14px">/ <span id="score-total">0</span>
+                            answered</span>
+                    </div>
+                    <div id="quiz-container">
+                        <div class="quiz-q card" id="qq-0">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q1</span>
+                                What algorithm
+                                does Distance Vector routing use to compute paths?</p>
+                            <button class="opt" onclick="answer(0,0)" id="opt-0-0">Dijkstra's algorithm</button><button
+                                class="opt" onclick="answer(0,1)" id="opt-0-1">Bellman-Ford algorithm</button><button
+                                class="opt" onclick="answer(0,2)" id="opt-0-2">Floyd-Warshall algorithm</button><button
+                                class="opt" onclick="answer(0,3)" id="opt-0-3">A* search</button>
+                            <div class="explain" id="exp-0">Distance Vector uses Bellman-Ford. Each router iteratively
+                                updates its
+                                distance estimates using neighbors' information. Dijkstra's is used by Link State
+                                (OSPF).</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-1">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q2</span>
+                                What is the
+                                maximum hop count in RIP before a destination is considered unreachable?</p>
+                            <button class="opt" onclick="answer(1,0)" id="opt-1-0">8 hops</button><button class="opt"
+                                onclick="answer(1,1)" id="opt-1-1">15 hops</button><button class="opt"
+                                onclick="answer(1,2)" id="opt-1-2">16 hops</button><button class="opt"
+                                onclick="answer(1,3)" id="opt-1-3">255 hops</button>
+                            <div class="explain" id="exp-1">In RIP, hop count 16 = infinity (unreachable). The maximum
+                                usable hop
+                                count
+                                is 15. This limits RIP to small networks.</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-2">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q3</span>
+                                In two-node
+                                instability, why do routers 'count to infinity'?</p>
+                            <button class="opt" onclick="answer(2,0)" id="opt-2-0">The timer is too
+                                short</button><button class="opt" onclick="answer(2,1)" id="opt-2-1">Each router falsely
+                                believes the other has a valid path to the failed
+                                destination</button><button class="opt" onclick="answer(2,2)" id="opt-2-2">The link
+                                costs are not
+                                correctly set</button><button class="opt" onclick="answer(2,3)" id="opt-2-3">ICMP
+                                messages are
+                                blocked</button>
+                            <div class="explain" id="exp-2">A routing loop forms: each router thinks the other still has
+                                a valid path.
+                                They keep incrementing the hop count every exchange until reaching 16 (infinity).</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-3">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q4</span>
+                                Split Horizon
+                                prevents routing loops by:</p>
+                            <button class="opt" onclick="answer(3,0)" id="opt-3-0">Sending updates every 15 seconds
+                                instead of
+                                30</button><button class="opt" onclick="answer(3,1)" id="opt-3-1">Not advertising a
+                                route back to the
+                                neighbor it was learned from</button><button class="opt" onclick="answer(3,2)"
+                                id="opt-3-2">Using
+                                Dijkstra's algorithm for path selection</button><button class="opt"
+                                onclick="answer(3,3)" id="opt-3-3">Setting all failed routes to infinity
+                                immediately</button>
+                            <div class="explain" id="exp-3">Split Horizon: if router A learned about destination X from
+                                router B, A
+                                will
+                                not include X in updates sent back to B. This breaks two-node loops.</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-4">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q5</span>
+                                Why does Split
+                                Horizon fail to prevent three-node instability?</p>
+                            <button class="opt" onclick="answer(4,0)" id="opt-4-0">Split Horizon requires OSPF to
+                                work</button><button class="opt" onclick="answer(4,1)" id="opt-4-1">It only breaks
+                                direct two-node loops — 3-node loops
+                                involve
+                                a third router that didn't learn the route from the same neighbor</button><button
+                                class="opt" onclick="answer(4,2)" id="opt-4-2">Split Horizon is disabled for more than 2
+                                nodes</button><button class="opt" onclick="answer(4,3)" id="opt-4-3">Split Horizon
+                                requires the route to be already
+                                failed</button>
+                            <div class="explain" id="exp-4">In 3-node loops (A→B→C→A), each router advertises back to a
+                                *different*
+                                neighbor, not the one they learned from. Split Horizon's rule doesn't apply across the
+                                three-way loop.
+                            </div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-5">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q6</span>
+                                OSPF uses
+                                which
+                                algorithm to compute shortest paths?</p>
+                            <button class="opt" onclick="answer(5,0)" id="opt-5-0">Bellman-Ford</button><button
+                                class="opt" onclick="answer(5,1)" id="opt-5-1">Spanning Tree Protocol</button><button
+                                class="opt" onclick="answer(5,2)" id="opt-5-2">Dijkstra's algorithm</button><button
+                                class="opt" onclick="answer(5,3)" id="opt-5-3">BGP path selection</button>
+                            <div class="explain" id="exp-5">OSPF uses Dijkstra's shortest path first (SPF) algorithm.
+                                Each router runs
+                                it locally after receiving all Link State Advertisements (LSAs) from the network.</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-6">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q7</span>
+                                In Dijkstra's
+                                algorithm, at each step we select:</p>
+                            <button class="opt" onclick="answer(6,0)" id="opt-6-0">The node with the highest known
+                                distance</button><button class="opt" onclick="answer(6,1)" id="opt-6-1">Any unvisited
+                                neighbor of the
+                                current node</button><button class="opt" onclick="answer(6,2)" id="opt-6-2">The
+                                unvisited node with the
+                                smallest known distance</button><button class="opt" onclick="answer(6,3)"
+                                id="opt-6-3">The node with the
+                                most connections</button>
+                            <div class="explain" id="exp-6">Dijkstra's greedy strategy: always pick the unvisited node
+                                with the
+                                smallest
+                                tentative distance. This guarantees optimality when all edge weights are non-negative.
+                            </div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-7">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q8</span>
+                                How does OSPF
+                                learn the full network topology?</p>
+                            <button class="opt" onclick="answer(7,0)" id="opt-7-0">By broadcasting routing tables every
+                                30 seconds
+                                like
+                                RIP</button><button class="opt" onclick="answer(7,1)" id="opt-7-1">By flooding Link
+                                State Advertisements
+                                (LSAs) to all routers in the area</button><button class="opt" onclick="answer(7,2)"
+                                id="opt-7-2">By
+                                querying a central route server</button><button class="opt" onclick="answer(7,3)"
+                                id="opt-7-3">By
+                                reading
+                                BGP tables</button>
+                            <div class="explain" id="exp-7">Each OSPF router creates an LSA describing its links and
+                                floods it
+                                throughout the area. Every router collects all LSAs and builds an identical complete
+                                topology map.</div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-8">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q9</span>
+                                The
+                                Bellman-Ford
+                                equation D_x(y) = min_v { cost(x,v) + D_v(y) } means:</p>
+                            <button class="opt" onclick="answer(8,0)" id="opt-8-0">Find the neighbor with the highest
+                                cost to
+                                y</button><button class="opt" onclick="answer(8,1)" id="opt-8-1">The shortest path from
+                                x to y equals
+                                the
+                                minimum over all neighbors of (link cost to that neighbor + that neighbor's distance to
+                                y)</button><button class="opt" onclick="answer(8,2)" id="opt-8-2">Sort all destinations
+                                by
+                                cost</button><button class="opt" onclick="answer(8,3)" id="opt-8-3">Run Dijkstra's from
+                                neighbor
+                                v</button>
+                            <div class="explain" id="exp-8">The equation finds the best path to y by trying each
+                                neighbor v: go from x
+                                to v (cost(x,v)), then from v to y (D_v(y)). Pick the minimum over all neighbors v.
+                            </div>
+                        </div>
+
+                        <div class="quiz-q card" id="qq-9">
+                            <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q10</span>
+                                Which
+                                mechanism
+                                sends a routing update immediately upon detecting a topology change?</p>
+                            <button class="opt" onclick="answer(9,0)" id="opt-9-0">Periodic update</button><button
+                                class="opt" onclick="answer(9,1)" id="opt-9-1">Hold-down timer</button><button
+                                class="opt" onclick="answer(9,2)" id="opt-9-2">Triggered update</button><button
+                                class="opt" onclick="answer(9,3)" id="opt-9-3">Flush
+                                timer</button>
+                            <div class="explain" id="exp-9">Triggered updates fire immediately when a route changes,
+                                rather than
+                                waiting
+                                for the next 30-second periodic cycle. This speeds convergence and reduces the window
+                                for
+                                counting-to-infinity.</div>
+                        </div>
+                    </div>
+                    <button class="reset-btn" onclick="resetQuiz()">↺ Reset quiz</button>
+                </div>
+
+            </div>
+
+            <script>
+                function show(id) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.getElementById('sec-' + id).classList.add('active');
+                    event.target.classList.add('active');
+                }
+
+                const questions = [
+                    { q: "What algorithm does Distance Vector routing use to compute paths?", opts: ["Dijkstra's algorithm", "Bellman-Ford algorithm", "Floyd-Warshall algorithm", "A* search"], ans: 1, exp: "Distance Vector uses Bellman-Ford. Each router iteratively updates its distance estimates using neighbors' information. Dijkstra's is used by Link State (OSPF)." },
+                    { q: "What is the maximum hop count in RIP before a destination is considered unreachable?", opts: ["8 hops", "15 hops", "16 hops", "255 hops"], ans: 2, exp: "In RIP, hop count 16 = infinity (unreachable). The maximum usable hop count is 15. This limits RIP to small networks." },
+                    { q: "In two-node instability, why do routers 'count to infinity'?", opts: ["The timer is too short", "Each router falsely believes the other has a valid path to the failed destination", "The link costs are not correctly set", "ICMP messages are blocked"], ans: 1, exp: "A routing loop forms: each router thinks the other still has a valid path. They keep incrementing the hop count every exchange until reaching 16 (infinity)." },
+                    { q: "Split Horizon prevents routing loops by:", opts: ["Sending updates every 15 seconds instead of 30", "Not advertising a route back to the neighbor it was learned from", "Using Dijkstra's algorithm for path selection", "Setting all failed routes to infinity immediately"], ans: 1, exp: "Split Horizon: if router A learned about destination X from router B, A will not include X in updates sent back to B. This breaks two-node loops." },
+                    { q: "Why does Split Horizon fail to prevent three-node instability?", opts: ["Split Horizon requires OSPF to work", "It only breaks direct two-node loops — 3-node loops involve a third router that didn't learn the route from the same neighbor", "Split Horizon is disabled for more than 2 nodes", "Split Horizon requires the route to be already failed"], ans: 1, exp: "In 3-node loops (A→B→C→A), each router advertises back to a *different* neighbor, not the one they learned from. Split Horizon's rule doesn't apply across the three-way loop." },
+                    { q: "OSPF uses which algorithm to compute shortest paths?", opts: ["Bellman-Ford", "Spanning Tree Protocol", "Dijkstra's algorithm", "BGP path selection"], ans: 2, exp: "OSPF uses Dijkstra's shortest path first (SPF) algorithm. Each router runs it locally after receiving all Link State Advertisements (LSAs) from the network." },
+                    { q: "In Dijkstra's algorithm, at each step we select:", opts: ["The node with the highest known distance", "Any unvisited neighbor of the current node", "The unvisited node with the smallest known distance", "The node with the most connections"], ans: 2, exp: "Dijkstra's greedy strategy: always pick the unvisited node with the smallest tentative distance. This guarantees optimality when all edge weights are non-negative." },
+                    { q: "How does OSPF learn the full network topology?", opts: ["By broadcasting routing tables every 30 seconds like RIP", "By flooding Link State Advertisements (LSAs) to all routers in the area", "By querying a central route server", "By reading BGP tables"], ans: 1, exp: "Each OSPF router creates an LSA describing its links and floods it throughout the area. Every router collects all LSAs and builds an identical complete topology map." },
+                    { q: "The Bellman-Ford equation D_x(y) = min_v { cost(x,v) + D_v(y) } means:", opts: ["Find the neighbor with the highest cost to y", "The shortest path from x to y equals the minimum over all neighbors of (link cost to that neighbor + that neighbor's distance to y)", "Sort all destinations by cost", "Run Dijkstra's from neighbor v"], ans: 1, exp: "The equation finds the best path to y by trying each neighbor v: go from x to v (cost(x,v)), then from v to y (D_v(y)). Pick the minimum over all neighbors v." },
+                    { q: "Which mechanism sends a routing update immediately upon detecting a topology change?", opts: ["Periodic update", "Hold-down timer", "Triggered update", "Flush timer"], ans: 2, exp: "Triggered updates fire immediately when a route changes, rather than waiting for the next 30-second periodic cycle. This speeds convergence and reduces the window for counting-to-infinity." }
+                ];
+
+                let scores = new Array(questions.length).fill(null);
+
+                function renderQuiz() {
+                    const c = document.getElementById('quiz-container');
+                    c.innerHTML = questions.map((q, i) => `
+      <div class="quiz-q card" id="qq-${i}">
+        <p><span style="color:var(--color-text-secondary);font-weight:400;font-size:12px">Q${i + 1}</span> ${q.q}</p>
+        ${q.opts.map((o, j) => `<button class="opt" onclick="answer(${i},${j})" id="opt-${i}-${j}">${o}</button>`).join('')}
+        <div class="explain" id="exp-${i}">${q.exp}</div>
+      </div>
+    `).join('');
+                    updateScore();
+                }
+
+                function answer(qi, oi) {
+                    if (scores[qi] !== null) return;
+                    scores[qi] = oi === questions[qi].ans;
+                    for (let j = 0; j < questions[qi].opts.length; j++) {
+                        const btn = document.getElementById(`opt-${qi}-${j}`);
+                        btn.disabled = true;
+                        if (j === questions[qi].ans) btn.classList.add('correct');
+                        else if (j === oi) btn.classList.add('wrong');
+                    }
+                    document.getElementById(`exp-${qi}`).classList.add('show');
+                    updateScore();
+                }
+
+                function updateScore() {
+                    const answered = scores.filter(s => s !== null).length;
+                    const correct = scores.filter(s => s === true).length;
+                    document.getElementById('score-display').textContent = correct;
+                    document.getElementById('score-total').textContent = answered;
+                }
+
+                function resetQuiz() {
+                    scores = new Array(questions.length).fill(null);
+                    renderQuiz();
+                }
+
+                renderQuiz();
+            </script>
+        </div>
+    </main>
+
+</body>
+
+</html>
