@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE405 / ICE302 — Computer Networks Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          heading: ['Sora','sans-serif'],
+          body: ['DM Sans','sans-serif'],
+          mono: ['"JetBrains Mono"','monospace'],
+        },
+        colors: {
+          navy: { 950:'#070d1a',900:'#0b1120',800:'#0f1a2e',700:'#131d2e',600:'#1a2744',500:'#1e3257' },
+          arp:  { 400:'#60a5fa',500:'#3b82f6',600:'#2563eb' },
+          rout: { 400:'#34d399',500:'#10b981',600:'#059669' },
+          cong: { 400:'#fb923c',500:'#f97316',600:'#ea580c' },
+          qos:  { 400:'#c084fc',500:'#a855f7',600:'#9333ea' },
+          tcp:  { 400:'#22d3ee',500:'#06b6d4',600:'#0891b2' },
+        }
+      }
+    }
+  }
+</script>
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:#0b1120;color:#e2e8f0;font-family:'DM Sans',sans-serif;margin:0}
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar{width:5px;height:5px}
+  ::-webkit-scrollbar-track{background:#0b1120}
+  ::-webkit-scrollbar-thumb{background:#1e3257;border-radius:3px}
+
+  /* ── Tab system ── */
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
+
+  /* ── Sidebar nav active ── */
+  .toc-link{display:block;padding:6px 12px;border-radius:6px;font-size:.8rem;color:#94a3b8;transition:all .2s;border-left:2px solid transparent;text-decoration:none;cursor:pointer}
+  .toc-link:hover,.toc-link.active{color:#e2e8f0;background:#131d2e;border-left-color:#3b82f6}
+  .toc-ch{font-size:.7rem;font-weight:700;color:#475569;letter-spacing:.1em;text-transform:uppercase;padding:14px 12px 4px;font-family:'Sora',sans-serif}
+
+  /* ── Code blocks ── */
+  pre{background:#050d1a;border:1px solid #1e3257;border-radius:8px;padding:16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6;color:#94d8ff}
+  code{font-family:'JetBrains Mono',monospace;font-size:.82em;background:#0d1a2e;padding:2px 6px;border-radius:4px;color:#7dd3fc}
+
+  /* ── Tables ── */
+  .data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .data-table th{background:#0f1a2e;color:#7dd3fc;font-family:'Sora',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:10px 14px;border-bottom:1px solid #1e3257;text-align:left}
+  .data-table td{padding:9px 14px;border-bottom:1px solid #0f1a2e;color:#cbd5e1}
+  .data-table tr:hover td{background:#0f1a2e40}
+  .data-table tr:last-child td{border-bottom:none}
+
+  /* ── Section cards ── */
+  .card{background:#0f1629;border:1px solid #1e3257;border-radius:12px;padding:24px;margin-bottom:20px}
+  .card-sm{background:#0f1629;border:1px solid #1e3257;border-radius:8px;padding:14px 18px;margin-bottom:12px}
+
+  /* ── Chapter heading colors ── */
+  .ch-arp   .ch-accent{color:#60a5fa}.ch-arp   .ch-badge{background:#1d3a6b;color:#60a5fa}
+  .ch-rout  .ch-accent{color:#34d399}.ch-rout  .ch-badge{background:#0c3329;color:#34d399}
+  .ch-cong  .ch-accent{color:#fb923c}.ch-cong  .ch-badge{background:#3b1a08;color:#fb923c}
+  .ch-qos   .ch-accent{color:#c084fc}.ch-qos   .ch-badge{background:#2e1154;color:#c084fc}
+  .ch-tcp   .ch-accent{color:#22d3ee}.ch-tcp   .ch-badge{background:#062a35;color:#22d3ee}
+
+  /* ── Section heading ── */
+  h1{font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:800;margin:0 0 6px}
+  h2{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;margin:28px 0 12px;padding-top:6px}
+  h3{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;margin:20px 0 8px;color:#94a3b8}
+  h4{font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;margin:14px 0 6px;color:#7dd3fc}
+
+  /* ── Key rules box ── */
+  .key-box{border-radius:8px;padding:14px 18px;margin:14px 0}
+  .key-box.blue {background:#0d1f3c;border-left:3px solid #3b82f6}
+  .key-box.green{background:#061f15;border-left:3px solid #10b981}
+  .key-box.amber{background:#1c1005;border-left:3px solid #f59e0b}
+  .key-box.red  {background:#1f0909;border-left:3px solid #ef4444}
+  .key-box.purple{background:#1a0d2e;border-left:3px solid #a855f7}
+
+  /* ── Analogy box ── */
+  .analogy{background:#0c1a10;border:1px solid #1a3a22;border-radius:8px;padding:14px 18px;margin:12px 0;font-style:italic;color:#86efac;font-size:.9rem}
+  .analogy::before{content:'💡 Analogy: ';font-style:normal;font-weight:600;color:#4ade80}
+
+  /* ── Collapsible solutions ── */
+  .sol-toggle{cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0a1020;border-radius:8px;border:1px solid #1e3257;color:#7dd3fc;font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;transition:all .2s}
+  .sol-toggle:hover{background:#0f1a2e;border-color:#3b82f6}
+  .sol-toggle .arrow{transition:transform .3s;font-size:.75rem}
+  .sol-toggle.open .arrow{transform:rotate(90deg)}
+  .sol-body{display:none;padding:16px;background:#070d1a;border:1px solid #1e3257;border-top:none;border-radius:0 0 8px 8px;font-size:.88rem;line-height:1.7}
+  .sol-body.open{display:block}
+
+  /* ── Q number badge ── */
+  .q-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;flex-shrink:0}
+
+  /* ── Rule list ── */
+  .rule-list{list-style:none;padding:0;margin:0}
+  .rule-list li{padding:5px 0 5px 22px;position:relative;color:#cbd5e1;font-size:.88rem}
+  .rule-list li::before{content:'✅';position:absolute;left:0;font-size:.8rem}
+  .rule-list.warn li::before{content:'⚠️'}
+  .rule-list.arrow li::before{content:'→';color:#60a5fa;font-family:monospace}
+
+  /* ── Comparison grid ── */
+  .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .vs-box{background:#0d1a2e;border:1px solid #1e3257;border-radius:8px;padding:14px}
+  .vs-box h4{margin:0 0 8px;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ── Packet field display ── */
+  .pkt-field{display:grid;grid-template-columns:160px 80px 1fr;gap:0;border:1px solid #1e3257;border-radius:8px;overflow:hidden;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+  .pkt-row{display:contents}
+  .pkt-row > div{padding:7px 12px;border-bottom:1px solid #0f1629}
+  .pkt-row:last-child > div{border-bottom:none}
+  .pkt-row > div:nth-child(1){background:#0a1525;color:#7dd3fc;font-weight:600}
+  .pkt-row > div:nth-child(2){background:#0d1a2e;color:#94a3b8;text-align:center}
+  .pkt-row > div:nth-child(3){background:#080f1c;color:#cbd5e1}
+  .pkt-header > div{background:#0f1a2e!important;color:#3b82f6!important;font-family:'Sora',sans-serif;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ── Step timeline ── */
+  .steps{position:relative;padding-left:28px;margin:12px 0}
+  .steps::before{content:'';position:absolute;left:9px;top:4px;bottom:4px;width:2px;background:#1e3257}
+  .step{position:relative;margin-bottom:14px}
+  .step-dot{position:absolute;left:-24px;top:3px;width:12px;height:12px;border-radius:50%;background:#3b82f6;border:2px solid #0b1120;z-index:1}
+  .step-title{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:#60a5fa;margin-bottom:4px}
+  .step-body{font-size:.86rem;color:#cbd5e1;line-height:1.6}
+
+  /* ── Print styles ── */
+  @media print{
+    #sidebar,#topbar{display:none!important}
+    #main-content{margin:0!important;padding:20px!important;max-width:100%!important}
+    .tab-pane{display:block!important}
+    pre{white-space:pre-wrap}
+  }
+
+  /* ── Responsive ── */
+  @media(max-width:768px){
+    #sidebar{display:none}
+    #main-content{margin-left:0!important}
+  }
+
+  /* ── Dijkstra table ── */
+  .dijk-table{font-size:.78rem;border-collapse:collapse;width:100%;font-family:'JetBrains Mono',monospace}
+  .dijk-table th,.dijk-table td{border:1px solid #1e3257;padding:7px 10px;text-align:center}
+  .dijk-table th{background:#0f1a2e;color:#60a5fa;font-family:'Sora',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+  .dijk-table .visited{background:#0a1e10;color:#4ade80;font-weight:600}
+  .dijk-table .updated{color:#fb923c;font-weight:600}
+  .dijk-table .final{background:#0d1f3c;color:#7dd3fc;font-weight:700}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ═══════════════ TOP NAVIGATION BAR ═══════════════ -->
+<header id="topbar" class="fixed top-0 left-0 right-0 z-50 border-b border-navy-600" style="background:#070d1a">
+  <div class="flex items-center gap-0 px-4 h-14">
+    <div class="flex items-center gap-3 mr-8">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold" style="background:#1d3a6b;color:#60a5fa;font-family:'Sora',sans-serif">CS</div>
+      <div>
+        <div style="font-family:'Sora',sans-serif;font-size:.78rem;font-weight:700;color:#e2e8f0;line-height:1">CSE405 / ICE302</div>
+        <div style="font-size:.68rem;color:#475569">Computer Networks · East West University</div>
+      </div>
+    </div>
+    <nav class="flex gap-1">
+      <button onclick="switchTab('study')" id="tab-study"
+        class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold transition-all"
+        style="font-family:'Sora',sans-serif">📖 Study Material</button>
+      <button onclick="switchTab('questions')" id="tab-questions"
+        class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold transition-all"
+        style="font-family:'Sora',sans-serif">📝 Practice Questions</button>
+    </nav>
+    <div class="ml-auto flex gap-2">
+      <button onclick="window.print()" class="text-xs px-3 py-1.5 rounded-md border transition-all" style="border-color:#1e3257;color:#94a3b8;font-family:'Sora',sans-serif">🖨 Print</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ LAYOUT WRAPPER ═══════════════ -->
+<div class="flex" style="padding-top:56px">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside id="sidebar" class="fixed left-0 bottom-0 overflow-y-auto border-r border-navy-600" style="top:56px;width:220px;background:#070d1a;padding:12px 0">
+
+  <!-- Study Material TOC -->
+  <div id="toc-study">
+    <div class="toc-ch">Study Material</div>
+    <a class="toc-link" href="#s-arp">Ch 1 · ARP &amp; RARP</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-arp-what">What is ARP?</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-arp-packet">Packet Format</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-arp-cache">ARP Cache</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-arp-proxy">Proxy ARP</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-rarp">RARP</a>
+    <a class="toc-link" href="#s-routing">Ch 2 · Routing</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-dv">Distance Vector</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-instability">Instability</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-rip">RIP</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-ls">Link State</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-dijkstra">Dijkstra</a>
+    <a class="toc-link" href="#s-congestion">Ch 3 · Congestion</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-openloop">Open Loop</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-closedloop">Closed Loop</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-tcpcong">TCP Policy</a>
+    <a class="toc-link" href="#s-qos">Ch 4 · QoS</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-flowchar">Flow Characteristics</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-leaky">Leaky Bucket</a>
+    <a class="toc-link" href="#s-tcp">Ch 5 · TCP</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-tcp-estab">Establishment</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-tcp-data">Data Transfer</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-tcp-term">Termination</a>
+    <a class="toc-link" style="padding-left:22px;font-size:.76rem" href="#s-tcp-misc">Half-Close &amp; SYN Flood</a>
+    <div class="toc-ch mt-4">Quick Reference</div>
+    <a class="toc-link" href="#s-cheatsheet">Cheat Sheet</a>
+  </div>
+
+  <!-- Questions TOC -->
+  <div id="toc-questions" style="display:none">
+    <div class="toc-ch">Practice Questions</div>
+    <a class="toc-link" href="#q-pattern">Exam Pattern</a>
+    <div class="toc-ch">Exam Sets</div>
+    <a class="toc-link" href="#q-set1">Set 1 (5 Questions)</a>
+    <a class="toc-link" href="#q-set2">Set 2 (5 Questions)</a>
+    <div class="toc-ch">Topic-Wise</div>
+    <a class="toc-link" href="#q-arp">ARP &amp; RARP (3 Q)</a>
+    <a class="toc-link" href="#q-routing">Routing (3 Q)</a>
+    <a class="toc-link" href="#q-congestion">Congestion (3 Q)</a>
+    <a class="toc-link" href="#q-qos">QoS (2 Q)</a>
+    <a class="toc-link" href="#q-tcp">TCP (3 Q)</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main id="main-content" style="margin-left:220px;padding:32px 40px;max-width:960px;width:100%">
+
+<!-- ════════════════════════════════════════════════════
+     TAB 1: STUDY MATERIAL
+════════════════════════════════════════════════════ -->
+<div id="pane-study" class="tab-pane active">
+
+<!-- Page Header -->
+<div class="mb-8">
+  <div class="text-xs font-bold tracking-widest mb-2" style="color:#3b82f6;font-family:'Sora',sans-serif">COMPLETE STUDY MATERIAL</div>
+  <h1 style="color:#e2e8f0">Computer Networks<br><span style="color:#3b82f6">Study Guide</span></h1>
+  <p style="color:#64748b;font-size:.88rem;margin-top:8px">Covers: ARP &amp; RARP · Routing Protocols · Congestion Control · QoS · TCP · Exam Pattern: East West University</p>
+</div>
+
+<!-- ─── CHAPTER 1: ARP & RARP ─── -->
+<section id="s-arp" class="ch-arp mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="ch-badge px-3 py-1 rounded-full text-xs font-bold" style="font-family:'Sora',sans-serif">CH 01</span>
+    <h1 class="ch-accent" style="font-size:1.5rem;margin:0">ARP &amp; RARP</h1>
+  </div>
+
+  <!-- What is ARP -->
+  <div id="s-arp-what" class="card">
+    <h2 class="ch-accent">What is ARP and Why Do We Need It?</h2>
+    <div class="analogy">You're in class and want to pass a note to "Ali." You know Ali's name (= IP address) but need to know which seat Ali sits in (= MAC address). You shout: "Who is Ali? Raise your hand!" Everyone hears it, Ali raises hand. That's ARP.</div>
+    <p style="font-size:.9rem;color:#cbd5e1;margin:12px 0">In a network, <strong style="color:#60a5fa">IP address</strong> = logical address used for routing. <strong style="color:#60a5fa">MAC address</strong> = physical address used for actual delivery on the local network. ARP converts <strong>IP → MAC</strong> so Ethernet can deliver the frame.</p>
+
+    <h3>The ARP Process</h3>
+    <div class="steps">
+      <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 1 — Check ARP Cache</div><div class="step-body">Host A checks its local cache for a mapping of 192.168.1.2 → MAC. If found (RESOLVED state) → use it directly. If not found → proceed to broadcast.</div></div>
+      <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 2 — Broadcast ARP Request</div><div class="step-body">A sends ARP request to <code>FF:FF:FF:FF:FF:FF</code> (all hosts). Packet says: "Who has 192.168.1.2? Tell 192.168.1.1." The Target HW Address field = <code>00:00:00:00:00:00</code> (unknown).</div></div>
+      <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 3 — Target Recognizes Its IP</div><div class="step-body">All hosts receive the broadcast. Only Host B (192.168.1.2) says "That's me!" Everyone else ignores it.</div></div>
+      <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 4 — Unicast ARP Reply</div><div class="step-body">B sends a unicast reply <em>only to A</em>: "192.168.1.2 is at BB:BB:BB:BB:BB:BB." A caches this mapping (State: RESOLVED, TTL starts).</div></div>
+    </div>
+    <div class="key-box blue"><strong style="color:#60a5fa">Golden Rule:</strong> ARP Request = <strong>BROADCAST</strong> &nbsp;|&nbsp; ARP Reply = <strong>UNICAST</strong></div>
+  </div>
+
+  <!-- ARP Packet -->
+  <div id="s-arp-packet" class="card">
+    <h2 class="ch-accent">ARP Packet Format (28 bytes total)</h2>
+    <div class="pkt-field">
+      <div class="pkt-row pkt-header"><div>Field</div><div>Size</div><div>Description</div></div>
+      <div class="pkt-row"><div>Hardware Type</div><div>2 bytes</div><div>Network type. Ethernet = <code>0x0001</code></div></div>
+      <div class="pkt-row"><div>Protocol Type</div><div>2 bytes</div><div>Higher-level protocol. IPv4 = <code>0x0800</code></div></div>
+      <div class="pkt-row"><div>Hardware Length</div><div>1 byte</div><div>MAC address size. Ethernet = <code>6</code></div></div>
+      <div class="pkt-row"><div>Protocol Length</div><div>1 byte</div><div>IP address size. IPv4 = <code>4</code></div></div>
+      <div class="pkt-row"><div>Operation</div><div>2 bytes</div><div>ARP Req=1, ARP Reply=2, RARP Req=3, RARP Reply=4</div></div>
+      <div class="pkt-row"><div>Sender HW Addr</div><div>6 bytes</div><div>MAC of the sender</div></div>
+      <div class="pkt-row"><div>Sender Protocol Addr</div><div>4 bytes</div><div>IP of the sender</div></div>
+      <div class="pkt-row"><div>Target HW Addr</div><div>6 bytes</div><div>MAC of target. In REQUEST → <code>00:00:00:00:00:00</code></div></div>
+      <div class="pkt-row"><div>Target Protocol Addr</div><div>4 bytes</div><div>IP of target (the IP we are asking about)</div></div>
+    </div>
+    <h3>Request vs Reply — What Changes?</h3>
+    <table class="data-table mt-2">
+      <tr><th>Field</th><th>In REQUEST</th><th>In REPLY</th></tr>
+      <tr><td>Operation</td><td><code>1</code></td><td><code>2</code></td></tr>
+      <tr><td>Sender HW</td><td>Requester's MAC</td><td>Responder's MAC</td></tr>
+      <tr><td>Target HW</td><td><code style="color:#ef4444">00:00:00:00:00:00</code> (unknown)</td><td>Requester's MAC</td></tr>
+    </table>
+    <p style="font-size:.8rem;color:#64748b;margin-top:10px">ARP is encapsulated in Ethernet with Ethernet Type = <code>0x0806</code>. Destination Ethernet MAC in request frame = <code>FF:FF:FF:FF:FF:FF</code></p>
+  </div>
+
+  <!-- ARP Cache -->
+  <div id="s-arp-cache" class="card">
+    <h2 class="ch-accent">ARP Cache — The Memory System</h2>
+    <p style="font-size:.9rem;color:#cbd5e1;margin:0 0 14px">To avoid repeated broadcasts, devices cache IP→MAC mappings. Each entry has one of three states:</p>
+    <table class="data-table">
+      <tr><th>State</th><th>Meaning</th><th>Has TTL?</th><th>Has Attempt#?</th></tr>
+      <tr><td><code style="color:#4ade80">R</code> Resolved</td><td>MAC is known, mapping is valid</td><td>✅ Yes — decrements over time</td><td>No</td></tr>
+      <tr><td><code style="color:#fb923c">P</code> Pending</td><td>ARP request sent, waiting for reply</td><td>No</td><td>✅ Yes — increments each retry</td></tr>
+      <tr><td><code style="color:#94a3b8">F</code> Free</td><td>Empty slot, available for new entry</td><td>No</td><td>No</td></tr>
+    </table>
+    <div class="key-box amber" style="margin-top:14px">
+      <strong style="color:#f59e0b">Cache-Control Module runs periodically:</strong><ul class="rule-list arrow mt-2" style="list-style:none"><li>RESOLVED entries: TTL decremented. TTL → 0 means entry becomes FREE</li><li>PENDING entries: Attempt counter incremented, new ARP sent. Max attempts exceeded → FREE</li></ul>
+    </div>
+  </div>
+
+  <!-- 4 Cases -->
+  <div class="card">
+    <h2 class="ch-accent">Four Cases Where ARP is Used</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="card-sm"><div style="font-size:.75rem;font-weight:700;color:#3b82f6;font-family:'Sora',sans-serif;margin-bottom:6px">CASE 1</div><p style="font-size:.84rem;color:#cbd5e1;margin:0">Sender &amp; receiver on <strong>same network</strong>. ARP finds receiver's MAC directly.</p></div>
+      <div class="card-sm"><div style="font-size:.75rem;font-weight:700;color:#3b82f6;font-family:'Sora',sans-serif;margin-bottom:6px">CASE 2</div><p style="font-size:.84rem;color:#cbd5e1;margin:0">Receiver on <strong>another network</strong>. ARP finds the <strong>default router's MAC</strong> (gateway).</p></div>
+      <div class="card-sm"><div style="font-size:.75rem;font-weight:700;color:#3b82f6;font-family:'Sora',sans-serif;margin-bottom:6px">CASE 3</div><p style="font-size:.84rem;color:#cbd5e1;margin:0">Router forwards packet. Target IP = <strong>next hop router's IP</strong> (from routing table).</p></div>
+      <div class="card-sm"><div style="font-size:.75rem;font-weight:700;color:#3b82f6;font-family:'Sora',sans-serif;margin-bottom:6px">CASE 4</div><p style="font-size:.84rem;color:#cbd5e1;margin:0">Router delivers to final host. Target IP = <strong>destination host's IP</strong> on local network.</p></div>
+    </div>
+  </div>
+
+  <!-- Proxy ARP -->
+  <div id="s-arp-proxy" class="card">
+    <h2 class="ch-accent">Proxy ARP</h2>
+    <div class="analogy">You ask someone: "Does Ali live here?" A neighbor (the proxy router) who knows Ali says: "Yes, send your mail to ME and I'll pass it along." You never know Ali's real address — you just trust the neighbor.</div>
+    <p style="font-size:.9rem;color:#cbd5e1;margin:12px 0">When a new subnetwork is added, hosts on the main network can't ARP across routers (routers don't forward broadcasts). The <strong>Proxy ARP router</strong> replies on behalf of the unreachable hosts using its OWN MAC address.</p>
+    <pre style="font-size:.76rem">Host P broadcasts: "Who has 192.168.1.21?"
+Proxy ARP Router sees this → knows 192.168.1.21 is behind it
+Router replies: "192.168.1.21 is at [ROUTER's MAC]"  ← uses its OWN MAC!
+Host P caches: 192.168.1.21 → Router's MAC
+Host P sends data → Router forwards to actual host 192.168.1.21 ✓
+Host P never knows a router is involved (transparent)</pre>
+  </div>
+
+  <!-- RARP -->
+  <div id="s-rarp" class="card">
+    <h2 class="ch-accent">RARP — Reverse ARP</h2>
+    <div class="analogy">You know your employee ID (MAC) but forgot which desk you were assigned (IP). You broadcast: "I'm employee #12345, what desk is mine?" HR (RARP server) looks up the table and tells you.</div>
+    <p style="font-size:.9rem;color:#cbd5e1;margin:12px 0">RARP does the opposite of ARP: <strong>MAC → IP</strong>. Used by diskless workstations that know their hardware address but not their IP address.</p>
+    <div class="key-box blue"><strong style="color:#60a5fa">Golden Rule:</strong> RARP Request = <strong>BROADCAST</strong> &nbsp;|&nbsp; RARP Reply = <strong>UNICAST</strong> (sent by RARP Server)</div>
+    <h3 style="margin-top:16px">ARP vs RARP — Complete Comparison</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>ARP</th><th>RARP</th></tr>
+      <tr><td>You know</td><td>IP address</td><td>MAC address</td></tr>
+      <tr><td>You want</td><td>MAC address</td><td>IP address</td></tr>
+      <tr><td>Operation codes</td><td>Req=1, Reply=2</td><td>Req=3, Reply=4</td></tr>
+      <tr><td>Unknown field in request</td><td>Target HW Addr (all 0s)</td><td>Sender &amp; Target Protocol Addr</td></tr>
+      <tr><td>Needs special server?</td><td>No</td><td><strong style="color:#fb923c">Yes — RARP Server</strong></td></tr>
+      <tr><td>Ethernet Type</td><td><code>0x0806</code></td><td><code>0x8035</code></td></tr>
+      <tr><td>Limitation</td><td>None</td><td>Only gives IP (no mask, gateway, DNS) — replaced by DHCP</td></tr>
+    </table>
+  </div>
+
+  <!-- Key Points -->
+  <div class="card" style="border-color:#1d3a6b">
+    <h3 style="color:#60a5fa;margin-top:0">⭐ Key Points for Exam — ARP &amp; RARP</h3>
+    <ul class="rule-list">
+      <li>ARP: IP → MAC (broadcast request, unicast reply)</li>
+      <li>RARP: MAC → IP (broadcast request, unicast reply)</li>
+      <li>ARP Operation: 1=Req, 2=Reply &nbsp;|&nbsp; RARP: 3=Req, 4=Reply</li>
+      <li>Ethernet type: ARP=0x0806, RARP=0x8035</li>
+      <li>Target HW Addr in ARP REQUEST = <code>00:00:00:00:00:00</code></li>
+      <li>ARP Cache states: R=Resolved, P=Pending, F=Free</li>
+      <li>Proxy ARP: router answers ARP using its OWN MAC on behalf of another host</li>
+      <li>ARP packet total = 28 bytes</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CHAPTER 2: ROUTING ─── -->
+<section id="s-routing" class="ch-rout mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="ch-badge px-3 py-1 rounded-full text-xs font-bold" style="font-family:'Sora',sans-serif">CH 02</span>
+    <h1 class="ch-accent" style="font-size:1.5rem;margin:0">Routing Protocols</h1>
+  </div>
+
+  <!-- Intro -->
+  <div class="card">
+    <h2 class="ch-accent">What is Routing?</h2>
+    <div class="analogy">Sending a package from Dhaka to London — it goes through intermediaries (post offices, airports, customs). Each stop decides the next destination. Routing is how routers make those decisions.</div>
+    <div class="vs-grid">
+      <div class="vs-box"><h4 style="color:#34d399">Intradomain Routing</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Routing <strong>inside</strong> one Autonomous System (AS). Protocols: <strong>RIP</strong> (Distance Vector), <strong>OSPF</strong> (Link State)</p></div>
+      <div class="vs-box"><h4 style="color:#34d399">Interdomain Routing</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Routing <strong>between</strong> different AS's. Protocol: <strong>BGP</strong> (Path Vector)</p></div>
+    </div>
+  </div>
+
+  <!-- Distance Vector -->
+  <div id="s-dv" class="card">
+    <h2 class="ch-accent">Distance Vector Routing</h2>
+    <div class="analogy">Ask a friend for directions: "How far is the market from your place?" They say 2km. You know your friend is 1km away. So: market = 3km from you. You trust what neighbors tell you — no map needed.</div>
+    <p style="font-size:.9rem;color:#cbd5e1;margin:12px 0">Each router maintains a table of (Destination, Cost, Next Hop). Routers share their tables only with <strong>immediate neighbors</strong> periodically and when there is a change.</p>
+
+    <h3>The Update Formula (Bellman-Ford)</h3>
+    <div class="key-box green">
+      <strong style="color:#4ade80">If: (link cost to neighbor N) + (N's cost to destination D) &lt; my current cost to D</strong><br>
+      <strong style="color:#4ade80">→ UPDATE my cost to D, and set Next Hop = N</strong>
+    </div>
+
+    <h3>Example — A receives update from C (A-C link cost = 1)</h3>
+    <p style="font-size:.84rem;color:#94a3b8;margin-bottom:8px">Network: A-B=3, A-C=1, C-B=1, C-D=5</p>
+    <table class="data-table">
+      <tr><th>Dest</th><th>C's value</th><th>+ link cost A-C (1)</th><th>A's old cost</th><th>New cost</th><th>Changed?</th></tr>
+      <tr><td>A</td><td>1</td><td>2</td><td>0</td><td>0 (no change)</td><td>—</td></tr>
+      <tr><td>B</td><td>1</td><td>2</td><td>3</td><td><strong style="color:#fb923c">2 via C</strong></td><td>✅ YES</td></tr>
+      <tr><td>C</td><td>0</td><td>1</td><td>1</td><td>1 (no change)</td><td>—</td></tr>
+      <tr><td>D</td><td>5</td><td>6</td><td>∞</td><td><strong style="color:#fb923c">6 via C</strong></td><td>✅ YES</td></tr>
+    </table>
+    <div class="key-box blue" style="margin-top:12px"><strong style="color:#60a5fa">Rule:</strong> In distance vector routing, each node shares its routing table with its <strong>immediate neighbors periodically and when there is a change</strong>.</div>
+  </div>
+
+  <!-- Instability -->
+  <div id="s-instability" class="card">
+    <h2 class="ch-accent">Instability Problems</h2>
+    <h3>Two-Node Instability (Count-to-Infinity)</h3>
+    <p style="font-size:.88rem;color:#cbd5e1;margin-bottom:10px">Setup: X–2–A–4–B. X is reachable: A=2 (direct), B=6 (via A). <strong>X fails.</strong></p>
+    <table class="data-table">
+      <tr><th>Event</th><th>A's cost to X</th><th>B's cost to X</th></tr>
+      <tr><td>X fails, A updates</td><td>∞</td><td>6 (stale — doesn't know yet)</td></tr>
+      <tr><td>A receives B's stale update (6). A thinks: 6+4=10</td><td style="color:#fb923c">10 via B</td><td>6</td></tr>
+      <tr><td>B receives A's update (10). B thinks: 10+4=14</td><td>10</td><td style="color:#fb923c">14 via A</td></tr>
+      <tr><td>Keeps growing…</td><td>↑</td><td>↑</td></tr>
+      <tr><td>Final (RIP max=16)</td><td>16 (∞)</td><td>16 (∞)</td></tr>
+    </table>
+    <h3 style="margin-top:16px">Solution: Split Horizon + Poison Reverse</h3>
+    <div class="vs-grid">
+      <div class="vs-box"><h4 style="color:#34d399">Split Horizon</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Don't advertise a route back to the neighbor you learned it <em>from</em>. "B learned X from A → B does NOT advertise X to A."</p></div>
+      <div class="vs-box"><h4 style="color:#34d399">Poison Reverse</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Instead of silence, advertise it with <strong>cost=16 (∞)</strong>. Faster convergence. "B tells A: X=16 (unreachable through me)."</p></div>
+    </div>
+    <h3>Three-Node Instability</h3>
+    <p style="font-size:.88rem;color:#cbd5e1">X fails. A sends update to B <em>and</em> C, but <strong>the packet to C gets lost</strong>. C still thinks X is reachable at cost 5 (via A). C's stale info feeds back into A, causing A→B→A loop. Three nodes perpetuate false information. Same fix: Split Horizon + Poison Reverse.</p>
+  </div>
+
+  <!-- RIP -->
+  <div id="s-rip" class="card">
+    <h2 class="ch-accent">RIP — Routing Information Protocol</h2>
+    <table class="data-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td>Intradomain, Distance Vector</td></tr>
+      <tr><td>Metric</td><td>Hop count (number of routers to cross)</td></tr>
+      <tr><td>Maximum hops</td><td>15 (16 = infinity/unreachable)</td></tr>
+      <tr><td>Transport</td><td><strong style="color:#4ade80">UDP, Port 520</strong></td></tr>
+      <tr><td>Max networks per message</td><td>25</td></tr>
+    </table>
+    <h3>RIP Timers</h3>
+    <table class="data-table">
+      <tr><th>Timer</th><th>Duration</th><th>Purpose</th></tr>
+      <tr><td>Periodic</td><td>25–35 seconds</td><td>Send routing table updates to neighbors</td></tr>
+      <tr><td>Expiration</td><td>180 seconds</td><td>If no update for 180s → route cost set to 16 (expired)</td></tr>
+      <tr><td>Garbage Collection</td><td>120 seconds</td><td>After expiration, wait 120s then delete entry completely</td></tr>
+    </table>
+    <div class="key-box green" style="margin-top:12px"><strong style="color:#4ade80">Exam Tip:</strong> A table with 20 entries, 5 routes not updated for 200s → Timers = 1 Periodic + 15 Expiration + 5 Garbage = <strong>21 timers</strong></div>
+    <div class="key-box blue" style="margin-top:8px"><strong style="color:#60a5fa">Note: RIP uses the services of UDP on well-known port 520.</strong></div>
+  </div>
+
+  <!-- Link State -->
+  <div id="s-ls" class="card">
+    <h2 class="ch-accent">Link State Routing</h2>
+    <div class="analogy">Instead of asking friends for directions, you get a complete city map. Every router broadcasts its own connections to EVERYONE — then every router independently calculates the best route using the full map.</div>
+    <h3>The 5-Step Process</h3>
+    <div class="steps">
+      <div class="step"><div class="step-dot" style="background:#34d399"></div><div class="step-title">1. Neighbor Discovery</div><div class="step-body">Routers send HELLO packets. Neighbors reply → router learns who is directly connected and link costs.</div></div>
+      <div class="step"><div class="step-dot" style="background:#34d399"></div><div class="step-title">2. Create Link State Packet (LSP)</div><div class="step-body">Each router creates an LSP with: its own ID, list of direct neighbors + costs, Sequence Number (freshness), TTL.</div></div>
+      <div class="step"><div class="step-dot" style="background:#34d399"></div><div class="step-title">3. Flood the LSP</div><div class="step-body">Each router sends its LSP to ALL other routers (not just neighbors). Each router forwards received LSPs on all ports except where it arrived. Sequence# prevents loops; TTL prevents eternal circulation.</div></div>
+      <div class="step"><div class="step-dot" style="background:#34d399"></div><div class="step-title">4. Build Full Topology Map</div><div class="step-body">After flooding, every router has the same complete picture of the entire network.</div></div>
+      <div class="step"><div class="step-dot" style="background:#34d399"></div><div class="step-title">5. Run Dijkstra</div><div class="step-body">Each router independently runs Dijkstra's algorithm to find the shortest path to every other router.</div></div>
+    </div>
+    <h3>Link-State Table (what each node broadcasts)</h3>
+    <table class="data-table">
+      <tr><th>Node (sender)</th><th>Sequence #</th><th>TTL</th><th>Neighbors (direct links + costs)</th></tr>
+      <tr><td><code>A</code></td><td>5</td><td>40</td><td>B:2, D:4</td></tr>
+      <tr><td><code>B</code></td><td>8</td><td>—</td><td>A:2, C:3, D:1</td></tr>
+      <tr><td><code>D</code></td><td>7</td><td>48</td><td>A:4, B:1, E:3</td></tr>
+    </table>
+    <p style="font-size:.8rem;color:#64748b;margin-top:8px">Higher sequence number = more recent. If a router receives an LSP with an older sequence# than stored, it discards it.</p>
+  </div>
+
+  <!-- Dijkstra -->
+  <div id="s-dijkstra" class="card">
+    <h2 class="ch-accent">Dijkstra's Algorithm</h2>
+    <p style="font-size:.9rem;color:#cbd5e1;margin-bottom:12px">Finds shortest path from source to <em>all</em> other nodes. Always picks the <strong>minimum unvisited node</strong> next.</p>
+    <div class="key-box green">
+      <strong style="color:#4ade80">Algorithm:</strong><br>
+      1. Source = 0, all others = ∞<br>
+      2. Pick unvisited node with <strong>smallest distance</strong> → visit it<br>
+      3. For each neighbor: if (dist[current] + edge) &lt; dist[neighbor] → <strong>UPDATE</strong><br>
+      4. Mark as visited. Repeat until all visited.
+    </div>
+    <h3>Worked Example: A-B=2, A-D=4, B-C=3, B-D=1, C-E=2, C-F=5, D-E=3, E-F=1</h3>
+    <div style="overflow-x:auto;margin:12px 0">
+      <table class="dijk-table">
+        <tr><th>Step</th><th>Visit</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+        <tr><td>Init</td><td>—</td><td class="final">0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td></tr>
+        <tr><td>1</td><td class="visited">A (0)</td><td class="final">0</td><td class="updated">2(A)</td><td>∞</td><td class="updated">4(A)</td><td>∞</td><td>∞</td></tr>
+        <tr><td>2</td><td class="visited">B (2)</td><td class="final">0</td><td class="final">2</td><td class="updated">5(B)</td><td class="updated">3(B)↓</td><td>∞</td><td>∞</td></tr>
+        <tr><td>3</td><td class="visited">D (3)</td><td class="final">0</td><td class="final">2</td><td>5</td><td class="final">3</td><td class="updated">6(D)</td><td>∞</td></tr>
+        <tr><td>4</td><td class="visited">C (5)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td>6</td><td class="updated">10(C)</td></tr>
+        <tr><td>5</td><td class="visited">E (6)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td class="final">6</td><td class="updated">7(E)↓</td></tr>
+        <tr><td>6</td><td class="visited">F (7)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td class="final">6</td><td class="final">7 ✓</td></tr>
+      </table>
+    </div>
+    <p style="font-size:.84rem;color:#94a3b8">Orange = updated this round. Green row = visited (locked in). <strong style="color:#22d3ee">Shortest path A→F = 7 via A→B→D→E→F</strong> (verify: 2+1+3+1=7 ✓)</p>
+    <div class="key-box blue" style="margin-top:10px"><strong>Step 2 detail:</strong> When visiting B (cost=2), neighbor D is updated from 4(via A) to 3(via B) because 2+1=3 &lt; 4. <strong>Always check if the new path is shorter!</strong></div>
+  </div>
+
+  <!-- Key Points -->
+  <div class="card" style="border-color:#0c3329">
+    <h3 style="color:#34d399;margin-top:0">⭐ Key Points for Exam — Routing</h3>
+    <ul class="rule-list">
+      <li>DV: share routing table with NEIGHBORS only | LS: flood LSP to EVERYONE</li>
+      <li>Count-to-infinity: DV problem | Fix: Split Horizon + Poison Reverse</li>
+      <li>RIP: UDP port 520, max 15 hops (16=∞), 25-35s periodic update</li>
+      <li>RIP Timers: Periodic(25-35s), Expiration(180s), Garbage Collection(120s)</li>
+      <li>Dijkstra: always pick MINIMUM unvisited → update all its neighbors</li>
+      <li>Link State: Seq# tracks freshness, TTL prevents infinite flooding</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CHAPTER 3: CONGESTION ─── -->
+<section id="s-congestion" class="ch-cong mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="ch-badge px-3 py-1 rounded-full text-xs font-bold" style="font-family:'Sora',sans-serif">CH 03</span>
+    <h1 class="ch-accent" style="font-size:1.5rem;margin:0">Congestion Control</h1>
+  </div>
+
+  <div class="card">
+    <h2 class="ch-accent">Overview</h2>
+    <div class="analogy">Rush hour highway — too many cars for 4 lanes. Cars slow, some take shortcuts, creating more chaos. Eventually everyone stops. Same happens in networks when too many packets overload routers.</div>
+    <div class="vs-grid">
+      <div class="vs-box"><h4 style="color:#fb923c">Open Loop (Prevention)</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Policies designed <em>before</em> congestion happens. Stop it before it starts. Handled by sender, receiver, or router statically.</p></div>
+      <div class="vs-box"><h4 style="color:#fb923c">Closed Loop (Removal)</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Detect congestion <em>after</em> it happens and take action to remove it. Uses feedback — network signals the sender to slow down.</p></div>
+    </div>
+  </div>
+
+  <!-- Open Loop -->
+  <div id="s-openloop" class="card">
+    <h2 class="ch-accent">Open-Loop Congestion Control (5 Policies)</h2>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">1. Retransmission Policy</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">Retransmitting too quickly floods the network. TCP uses adaptive RTO (exponential backoff) — wait longer before retransmitting if no ACK. Prevents "panic retransmission" that worsens congestion.</p></div>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">2. Window Policy</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">Go-Back-N: one lost packet → retransmit many (N) packets. <strong>Selective Repeat</strong>: only the lost packet is resent → fewer redundant packets → less congestion. Using Selective Repeat is the better window policy.</p></div>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">3. Acknowledgment Policy</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">ACKs are packets too. <strong>Delayed ACKs:</strong> acknowledge multiple packets at once instead of one ACK per packet. Fewer ACK packets = less network load = helps prevent congestion.</p></div>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">4. Discarding Policy</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">When buffer fills, drop <strong>least important</strong> packets first. E.g., in audio streaming, drop low-priority audio frames. Sound quality degrades slightly but stream continues — better than dropping everything.</p></div>
+    <div class="card-sm"><h4 style="color:#fb923c;margin-top:0">5. Admission Policy</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">Before a new flow joins, <strong>check if the network can handle it</strong>. If congested → deny new connection. Like a bouncer: "Sorry, capacity full." Used in virtual-circuit networks (ATM).</p></div>
+  </div>
+
+  <!-- Closed Loop -->
+  <div id="s-closedloop" class="card">
+    <h2 class="ch-accent">Closed-Loop Congestion Control (4 Methods)</h2>
+    <div class="card-sm" style="margin-bottom:10px">
+      <h4 style="color:#fb923c;margin-top:0">1. Backpressure</h4>
+      <p style="font-size:.86rem;color:#cbd5e1;margin:0 0 8px">Congested node tells its <strong>immediate upstream neighbor</strong> to slow down. That neighbor may become congested → tells its upstream neighbor. Signal propagates backward, hop by hop, to the source.</p>
+      <pre style="font-size:.73rem;margin:8px 0">Source → I → II → III(CONGESTED) → IV → Dest
+◄ backpressure propagates hop-by-hop backward
+Source ← I ← II ←slow— III       (each node involved)</pre>
+      <p style="font-size:.8rem;color:#64748b;margin:4px 0 0">Works only in virtual-circuit networks. Slow to reach source. Intermediate nodes are affected.</p>
+    </div>
+    <div class="card-sm" style="margin-bottom:10px">
+      <h4 style="color:#fb923c;margin-top:0">2. Choke Packet</h4>
+      <p style="font-size:.86rem;color:#cbd5e1;margin:0 0 8px">Congested node sends warning <strong>directly to the SOURCE</strong>, bypassing intermediate nodes.</p>
+      <pre style="font-size:.73rem;margin:8px 0">Source → I → II → III(CONGESTED) → IV → Dest
+  ↑________________|
+  CHOKE PACKET (direct, Node I and II NOT warned)</pre>
+    </div>
+    <h3>Backpressure vs Choke Packet</h3>
+    <table class="data-table">
+      <tr><th>Feature</th><th>Backpressure</th><th>Choke Packet</th></tr>
+      <tr><td>Signal path</td><td>Hop-by-hop backward</td><td><strong style="color:#4ade80">Direct to source</strong></td></tr>
+      <tr><td>Intermediate nodes warned?</td><td>YES</td><td>NO</td></tr>
+      <tr><td>Speed reaching source</td><td>Slow</td><td><strong style="color:#4ade80">Fast</strong></td></tr>
+      <tr><td>Network type</td><td>Virtual-circuit ONLY</td><td>Any</td></tr>
+      <tr><td>Example</td><td>X.25</td><td>ICMP Source Quench</td></tr>
+    </table>
+    <div class="card-sm" style="margin-top:12px;margin-bottom:10px">
+      <h4 style="color:#fb923c;margin-top:0">3. Implicit Signaling</h4>
+      <p style="font-size:.86rem;color:#cbd5e1;margin:0">No explicit signal. Source <strong>guesses congestion</strong> from symptoms: <strong>Timeout</strong> (no ACK → packet dropped → congestion assumed) or <strong>3 Duplicate ACKs</strong> (packet lost but network still working). Source reduces rate on its own. TCP uses this.</p>
+    </div>
+    <div class="card-sm">
+      <h4 style="color:#fb923c;margin-top:0">4. Explicit Signaling</h4>
+      <p style="font-size:.86rem;color:#cbd5e1;margin:0"><strong>Backward:</strong> Congested node sets a bit in ACK packets flowing toward source. Source sees the bit → slows down.<br><strong>Forward:</strong> Congested node sets a bit in data packets going toward destination. Destination slows ACKs → source slows down.</p>
+    </div>
+  </div>
+
+  <!-- TCP Congestion Policy -->
+  <div id="s-tcpcong" class="card">
+    <h2 class="ch-accent">TCP Congestion Policy</h2>
+    <p style="font-size:.9rem;color:#cbd5e1;margin-bottom:12px">TCP uses three phases: <strong>Slow Start</strong>, <strong>Congestion Avoidance</strong>, <strong>Congestion Detection</strong>. The congestion window (<code>cwnd</code>) controls how many segments can be sent without acknowledgment.</p>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">Phase 1: Slow Start (Exponential Increase)</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">cwnd starts at 1 MSS. <strong>Doubles each round</strong> (×2). Continues until cwnd reaches ssthresh (slow-start threshold). Despite the name "slow," it grows exponentially — 1→2→4→8→16...</p></div>
+    <div class="card-sm" style="margin-bottom:10px"><h4 style="color:#fb923c;margin-top:0">Phase 2: Congestion Avoidance (Additive Increase)</h4><p style="font-size:.86rem;color:#cbd5e1;margin:0">When cwnd = ssthresh, slow start stops. Now cwnd <strong>increases by +1 MSS per round</strong> (linear). Careful growth to avoid overloading the network.</p></div>
+    <div class="card-sm"><h4 style="color:#fb923c;margin-top:0">Phase 3: Congestion Detection (Multiplicative Decrease)</h4>
+      <div class="vs-grid" style="margin-top:8px">
+        <div class="vs-box"><h4 style="color:#ef4444">Timeout (severe)</h4><p style="font-size:.82rem;color:#94a3b8;margin:0">ssthresh = cwnd/2<br>cwnd = <strong>1 MSS</strong> (hard reset)<br>→ Restart Slow Start</p></div>
+        <div class="vs-box"><h4 style="color:#fb923c">3 Dup ACKs (mild)</h4><p style="font-size:.82rem;color:#94a3b8;margin:0">ssthresh = cwnd/2<br>cwnd = <strong>ssthresh</strong> (soft reset)<br>→ Skip to Cong. Avoidance</p></div>
+      </div>
+    </div>
+    <h3>Full Example: cwnd=1, ssthresh=8</h3>
+    <table class="data-table">
+      <tr><th>Round</th><th>cwnd</th><th>Phase</th><th>Rule</th></tr>
+      <tr><td>Start</td><td>1</td><td>Slow Start</td><td>Initial</td></tr>
+      <tr><td>1</td><td>2</td><td>Slow Start</td><td>×2</td></tr>
+      <tr><td>2</td><td>4</td><td>Slow Start</td><td>×2</td></tr>
+      <tr><td>3</td><td><strong style="color:#fb923c">8 = ssthresh</strong></td><td>Slow Start → CA</td><td>×2 → switches phase</td></tr>
+      <tr><td>4</td><td>9</td><td>Congestion Avoidance</td><td>+1</td></tr>
+      <tr><td>5</td><td>10</td><td>Congestion Avoidance</td><td>+1</td></tr>
+    </table>
+    <div class="key-box amber" style="margin-top:12px">
+      <strong style="color:#f59e0b">Actual window size = minimum(cwnd, rwnd)</strong><br>
+      rwnd = receiver-advertised window. The network (cwnd) AND the receiver (rwnd) both limit the sender.
+    </div>
+  </div>
+
+  <!-- Key Points -->
+  <div class="card" style="border-color:#3b1a08">
+    <h3 style="color:#fb923c;margin-top:0">⭐ Key Points for Exam — Congestion Control</h3>
+    <ul class="rule-list">
+      <li>Open Loop = PREVENT (before) | Closed Loop = REMOVE (after)</li>
+      <li>Backpressure: hop-by-hop backward, intermediate nodes warned</li>
+      <li>Choke Packet: directly to source, intermediate nodes NOT warned</li>
+      <li>Implicit: source guesses from timeout/3 dup ACKs (TCP)</li>
+      <li>Slow Start: cwnd ×2 per round (below ssthresh)</li>
+      <li>Congestion Avoidance: cwnd +1 per round (at/above ssthresh)</li>
+      <li>Timeout → ssthresh=cwnd/2, cwnd=1 | 3 dup ACKs → ssthresh=cwnd/2, cwnd=ssthresh</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CHAPTER 4: QoS ─── -->
+<section id="s-qos" class="ch-qos mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="ch-badge px-3 py-1 rounded-full text-xs font-bold" style="font-family:'Sora',sans-serif">CH 04</span>
+    <h1 class="ch-accent" style="font-size:1.5rem;margin:0">Quality of Service</h1>
+  </div>
+
+  <div id="s-flowchar" class="card">
+    <h2 class="ch-accent">The Four Flow Characteristics</h2>
+    <table class="data-table">
+      <tr><th>Characteristic</th><th>What it Means</th><th>Critical for</th><th>Less Important for</th></tr>
+      <tr><td><strong style="color:#c084fc">Reliability</strong></td><td>Every packet must arrive correctly</td><td>Email, file transfer, banking</td><td>VoIP, live video (some loss OK)</td></tr>
+      <tr><td><strong style="color:#c084fc">Delay</strong></td><td>Time for packet to travel source→dest</td><td>VoIP, video conference, gaming</td><td>Email, file download</td></tr>
+      <tr><td><strong style="color:#c084fc">Jitter</strong></td><td>Variation in delay between packets</td><td>Audio/video (consistent timing needed)</td><td>Email, FTP (doesn't matter)</td></tr>
+      <tr><td><strong style="color:#c084fc">Bandwidth</strong></td><td>Data per unit time (Mbps/Gbps)</td><td>4K video, large file transfer</td><td>VoIP, text messaging</td></tr>
+    </table>
+    <div class="analogy" style="margin-top:14px">Jitter analogy: A bus supposed to come every 10 min. Arrives at 10, 10, 10 min → low jitter (good for real-time). Arrives at 8, 15, 3 min → high jitter (terrible for audio/video — choppy!).</div>
+  </div>
+
+  <div id="s-leaky" class="card">
+    <h2 class="ch-accent">Leaky Bucket Algorithm</h2>
+    <div class="analogy">A bucket with a hole at the bottom. Water (data) pours in at bursty rates. Water drips out at a CONSTANT rate (determined by hole size). Too much input → bucket overflows → data dropped.</div>
+    <div class="vs-grid" style="margin-top:14px">
+      <div class="vs-box"><h4 style="color:#c084fc">Leaky Bucket</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Output always <strong>constant rate</strong>. Drops packets on overflow. Does NOT reward idle time. "You can only go 60 km/h — always."</p></div>
+      <div class="vs-box"><h4 style="color:#c084fc">Token Bucket</h4><p style="font-size:.84rem;color:#94a3b8;margin:0">Tokens accumulate during idle time → allows <strong>controlled bursting</strong>. "Save up speed credits, burst later."</p></div>
+    </div>
+    <div class="key-box purple" style="margin-top:12px"><strong style="color:#c084fc">Key Property:</strong> Leaky bucket shapes bursty traffic into fixed-rate traffic by averaging the data rate. It may <strong>drop packets</strong> if the bucket is full.</div>
+  </div>
+</section>
+
+<!-- ─── CHAPTER 5: TCP ─── -->
+<section id="s-tcp" class="ch-tcp mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="ch-badge px-3 py-1 rounded-full text-xs font-bold" style="font-family:'Sora',sans-serif">CH 05</span>
+    <h1 class="ch-accent" style="font-size:1.5rem;margin:0">TCP — Three-Way Handshaking</h1>
+  </div>
+
+  <!-- Establishment -->
+  <div id="s-tcp-estab" class="card">
+    <h2 class="ch-accent">Phase 1: Connection Establishment</h2>
+    <div class="analogy">Phone call: Ali: "Can you hear me?" Sara: "Yes! Can you hear me?" Ali: "Yes! Let's talk." Both sides confirm they can communicate — three messages total.</div>
+    <pre style="font-size:.76rem; margin: 14px 0">Host A (192.168.1.2)                         Server B (203.0.113.1)
+         |                                               |
+         |  ─── Segment 1: SYN ──────────────────────►  |
+         |  SYN=1, ACK=0, seq=8000                      | [B enters SYN_RECEIVED]
+         |  (no data, but CONSUMES 1 sequence number)   |
+         |                                               |
+         |  ◄── Segment 2: SYN+ACK ───────────────────  |
+         |  SYN=1, ACK=1                                |
+         |  seq=15000, ack=8001  ← "got seq 8000, want 8001 next"
+         |  (consumes 1 sequence number for B's SYN)   |
+         |                                               |
+         |  ─── Segment 3: ACK ──────────────────────►  | Connection
+         |  SYN=0, ACK=1                                | ESTABLISHED ✓
+         |  seq=8001, ack=15001 ← "got seq 15000, want 15001 next"
+         |  (pure ACK — consumes NO sequence number)   |</pre>
+    <h3>Sequence Number Rules</h3>
+    <table class="data-table">
+      <tr><th>Segment Type</th><th>Seq# Consumed?</th><th>Why</th></tr>
+      <tr><td>SYN</td><td><strong style="color:#22d3ee">YES (+1)</strong></td><td>Treated as 1 imaginary byte</td></tr>
+      <tr><td>SYN+ACK</td><td><strong style="color:#22d3ee">YES (+1)</strong></td><td>Also 1 imaginary byte</td></tr>
+      <tr><td>ACK (no data)</td><td><strong style="color:#94a3b8">NO</strong></td><td>Pure control, no payload</td></tr>
+      <tr><td>FIN (no data)</td><td><strong style="color:#22d3ee">YES (+1)</strong></td><td>Same as SYN — 1 imaginary byte</td></tr>
+      <tr><td>DATA (N bytes)</td><td><strong style="color:#22d3ee">YES (+N)</strong></td><td>Each byte has a sequence number</td></tr>
+    </table>
+    <div class="key-box blue" style="margin-top:12px"><strong style="color:#22d3ee">ACK formula:</strong> ack = (received seq) + 1 for SYN/FIN &nbsp;|&nbsp; ack = (received seq) + (bytes received) for DATA</div>
+  </div>
+
+  <!-- Data Transfer -->
+  <div id="s-tcp-data" class="card">
+    <h2 class="ch-accent">Phase 2: Data Transfer</h2>
+    <p style="font-size:.9rem;color:#cbd5e1;margin-bottom:12px">After handshake: A's next seq=8001, B's next seq=15001. A sends 2000 bytes (two segments of 1000). B sends 2000 bytes (one segment).</p>
+    <pre style="font-size:.76rem">A ─── DATA (1000 bytes): seq=8001, ack=15001 ─────────────────► B
+A ─── DATA (1000 bytes): seq=9001, ack=15001 ─────────────────► B
+A ◄── DATA (2000 bytes)+ACK: seq=15001, ack=10001 ─────────── B
+       (B says: got bytes 8001-10000, next expected=10001)
+A ─── ACK: seq=10001, ack=17001 ──────────────────────────────► B
+       (A says: got bytes 15001-17000, next expected=17001)</pre>
+    <div class="key-box blue" style="margin-top:10px"><strong style="color:#22d3ee">PSH flag:</strong> When set, receiver must deliver data to application <em>immediately</em> — don't buffer. Used for interactive apps. ACKs can be piggybacked inside data segments.</div>
+  </div>
+
+  <!-- Termination -->
+  <div id="s-tcp-term" class="card">
+    <h2 class="ch-accent">Phase 3: Connection Termination</h2>
+    <pre style="font-size:.76rem; margin:14px 0">Host A (active close)                            Server B
+  |                                                    |
+  | ─── Segment 1: FIN+ACK ──────────────────────────►|
+  | FIN=1, ACK=1, seq=x, ack=y                       |
+  | [FIN with no data CONSUMES 1 sequence number]     |
+  |                                                    |
+  | ◄── Segment 2: FIN+ACK ───────────────────────── |
+  | FIN=1, ACK=1, seq=y, ack=x+1                     |
+  | [FIN+ACK also CONSUMES 1 sequence number]         |
+  |                                                    |
+  | ─── Segment 3: ACK ──────────────────────────────►| Connection
+  | ACK=1, seq=x, ack=y+1                            | TERMINATED ✓
+  | [pure ACK — consumes NO sequence number]          |</pre>
+    <div class="key-box blue"><strong style="color:#22d3ee">ack=x+1</strong> in Seg 2 means: "I received your FIN (seq=x), expecting x+1 next."<br><strong style="color:#22d3ee">ack=y+1</strong> in Seg 3 means: "I received your FIN (seq=y), expecting y+1 next."</div>
+  </div>
+
+  <!-- Half-Close & SYN Flood -->
+  <div id="s-tcp-misc" class="card">
+    <h2 class="ch-accent">Half-Close &amp; SYN Flooding</h2>
+    <h3>Half-Close</h3>
+    <p style="font-size:.88rem;color:#cbd5e1;margin-bottom:8px">TCP allows closing ONE direction while keeping the OTHER open. Use case: sorting service — client sends all data (closes sending), server sorts and sends results back (server's direction stays open).</p>
+    <pre style="font-size:.75rem">Client ─── FIN ──────────────────────────────────────────────► Server
+           [Client stops SENDING, but still RECEIVES]
+Client ◄── ACK ──────────────────────────────────────────────── Server
+           [Data still flows from Server to Client]
+Client ◄── sorted results ──────────────────────────────────── Server
+Client ─── ACKs ────────────────────────────────────────────► Server
+Client ◄── FIN ──────────────────────────────────────────────── Server
+Client ─── ACK ──────────────────────────────────────────────► Server  DONE ✓</pre>
+
+    <h3 style="margin-top:16px">SYN Flooding Attack &amp; SYN Cookie Defense</h3>
+    <div class="vs-grid">
+      <div class="vs-box"><h4 style="color:#ef4444">SYN Flooding Attack</h4><ol style="font-size:.82rem;color:#94a3b8;margin:0;padding-left:16px"><li>Attacker sends 1000s of SYNs with fake source IPs</li><li>Server allocates resources for each, sends SYN+ACK to fake IPs</li><li>No real ACK ever comes back</li><li>Server's connection table fills up</li><li>Legitimate users denied → DoS attack ✓</li></ol></div>
+      <div class="vs-box"><h4 style="color:#4ade80">SYN Cookie Defense</h4><ol style="font-size:.82rem;color:#94a3b8;margin:0;padding-left:16px"><li>Server does NOT allocate resources on SYN</li><li>Encodes connection info as a cryptographic cookie in SYN+ACK's seq#</li><li>Only when real ACK arrives with cookie+1 → server allocates resources</li><li>Spoofed SYNs never complete → no resources wasted ✓</li></ol></div>
+    </div>
+  </div>
+
+  <!-- Key Points -->
+  <div class="card" style="border-color:#062a35">
+    <h3 style="color:#22d3ee;margin-top:0">⭐ Key Points for Exam — TCP</h3>
+    <ul class="rule-list">
+      <li>Three-way handshake: SYN → SYN+ACK → ACK</li>
+      <li>SYN, SYN+ACK, FIN: each consumes 1 sequence number</li>
+      <li>Pure ACK with no data: consumes 0 sequence numbers</li>
+      <li>DATA: consumes N sequence numbers (N = bytes sent)</li>
+      <li>ack number = (last received byte seq) + 1 for SYN/FIN; last seq + bytes for DATA</li>
+      <li>Termination: FIN+ACK → FIN+ACK → ACK</li>
+      <li>Half-close: one direction closed, other still open (e.g., sorting service)</li>
+      <li>SYN flooding: fake SYNs exhaust resources | Fix: SYN Cookies</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CHEAT SHEET ─── -->
+<section id="s-cheatsheet" class="mb-12">
+  <div class="flex items-center gap-3 mb-6">
+    <span class="px-3 py-1 rounded-full text-xs font-bold" style="background:#1a2744;color:#e2e8f0;font-family:'Sora',sans-serif">QUICK REF</span>
+    <h1 style="font-size:1.5rem;margin:0;color:#e2e8f0">Complete Exam Cheat Sheet</h1>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card-sm ch-arp">
+      <div class="ch-badge px-2 py-0.5 rounded text-xs font-bold mb-2" style="display:inline-block;font-family:'Sora',sans-serif">ARP / RARP</div>
+      <ul class="rule-list" style="font-size:.8rem">
+        <li>ARP: IP→MAC | RARP: MAC→IP</li>
+        <li>Both: Request=BROADCAST, Reply=UNICAST</li>
+        <li>ARP ops: 1=Req, 2=Rep | RARP: 3=Req, 4=Rep</li>
+        <li>Ethernet: ARP=0x0806, RARP=0x8035</li>
+        <li>ARP Request: Target HW = 00:00:00:00:00:00</li>
+      </ul>
+    </div>
+    <div class="card-sm ch-rout">
+      <div class="ch-badge px-2 py-0.5 rounded text-xs font-bold mb-2" style="display:inline-block;font-family:'Sora',sans-serif">ROUTING</div>
+      <ul class="rule-list" style="font-size:.8rem">
+        <li>DV: share with neighbors | LS: flood to everyone</li>
+        <li>Count-to-∞: DV problem | Fix: Split Horizon + PR</li>
+        <li>RIP: UDP 520, max 15 hops, 16=∞</li>
+        <li>Dijkstra: pick min unvisited, update neighbors</li>
+        <li>Timers: Periodic(25-35s), Expiry(180s), GC(120s)</li>
+      </ul>
+    </div>
+    <div class="card-sm ch-cong">
+      <div class="ch-badge px-2 py-0.5 rounded text-xs font-bold mb-2" style="display:inline-block;font-family:'Sora',sans-serif">CONGESTION</div>
+      <ul class="rule-list" style="font-size:.8rem">
+        <li>Open=prevent | Closed=remove</li>
+        <li>Backpressure: hop-by-hop, intermediate warned</li>
+        <li>Choke: direct to source, intermediate NOT warned</li>
+        <li>Slow Start: cwnd ×2 (below ssthresh)</li>
+        <li>Timeout: cwnd=1 | 3 dup ACK: cwnd=ssthresh</li>
+      </ul>
+    </div>
+    <div class="card-sm ch-tcp">
+      <div class="ch-badge px-2 py-0.5 rounded text-xs font-bold mb-2" style="display:inline-block;font-family:'Sora',sans-serif">TCP</div>
+      <ul class="rule-list" style="font-size:.8rem">
+        <li>SYN → SYN+ACK → ACK (establish)</li>
+        <li>FIN+ACK → FIN+ACK → ACK (terminate)</li>
+        <li>SYN, FIN: consume 1 seq# | Pure ACK: 0</li>
+        <li>ack = last received seq + 1 (SYN/FIN)</li>
+        <li>Half-close: one dir closed, other open</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div><!-- end pane-study -->
+
+<!-- ════════════════════════════════════════════════════
+     TAB 2: PRACTICE QUESTIONS
+════════════════════════════════════════════════════ -->
+<div id="pane-questions" class="tab-pane">
+
+<!-- Page Header -->
+<div class="mb-8">
+  <div class="text-xs font-bold tracking-widest mb-2" style="color:#10b981;font-family:'Sora',sans-serif">PRACTICE QUESTION BANK</div>
+  <h1 style="color:#e2e8f0">Practice Questions<br><span style="color:#10b981">with Solutions</span></h1>
+  <p style="color:#64748b;font-size:.88rem;margin-top:8px">Based on previous exam pattern · All solutions collapsible · Exam Set 1 &amp; 2 + Topic-wise Questions</p>
+</div>
+
+<!-- Exam Pattern -->
+<div id="q-pattern" class="card mb-8">
+  <h2 style="color:#e2e8f0;margin-top:0">Exam Pattern Analysis</h2>
+  <table class="data-table">
+    <tr><th>Feature</th><th>Detail</th></tr>
+    <tr><td>Total Questions</td><td>5 (ALL compulsory)</td></tr>
+    <tr><td>Total Marks</td><td>30 (6 per question)</td></tr>
+    <tr><td>Time</td><td>1 Hour</td></tr>
+    <tr><td>Mark splits</td><td>3+3 / 2+2+2 / 2+4 / 1+2+3</td></tr>
+    <tr><td>Style</td><td>Always scenario-based with specific IPs, MACs, network figures</td></tr>
+    <tr><td>Action verbs</td><td><strong>Illustrate, Apply, Construct, Explain, Show, Solve</strong></td></tr>
+    <tr><td>Cognitive level</td><td>C2 (Understand) + C3 (Apply/Analyze)</td></tr>
+    <tr><td>Common topics</td><td>ARP/RARP · Dijkstra + Link State · TCP handshaking · Congestion Control · Distance Vector</td></tr>
+  </table>
+</div>
+
+<!-- helper macro: question card -->
+<!-- ─── EXAM SET 1 ─── -->
+<div id="q-set1">
+  <h2 style="color:#e2e8f0;border-bottom:1px solid #1e3257;padding-bottom:10px">📋 Practice Exam Set 1 &nbsp;<span style="font-size:.75rem;color:#64748b;font-family:'Sora',sans-serif">30 Marks · 1 Hour · All Questions Compulsory</span></h2>
+
+  <!-- Q1 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#1d3a6b;color:#60a5fa">Q1</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#e2e8f0;margin:0 0 10px">Fig. 1 shows four hosts connected through a hub:</p>
+        <table class="data-table" style="margin-bottom:12px">
+          <tr><th>Host</th><th>IP Address</th><th>MAC Address</th></tr>
+          <tr><td>A</td><td>137.196.7.88</td><td>0C:C4:11:6F:E3:98</td></tr>
+          <tr><td>B</td><td>137.196.7.14</td><td>58:23:D7:FA:20:B0</td></tr>
+          <tr><td>C</td><td>137.196.7.78</td><td>1A:2F:BB:76:09:AD</td></tr>
+          <tr><td>D</td><td>137.196.7.23</td><td>71:65:F7:2B:08:53</td></tr>
+        </table>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Host C wants to find the MAC address of Host A. Host B only knows its physical address and wants to discover its own IP address.<br><strong style="color:#60a5fa">a)</strong> <strong>Apply</strong> ARP protocol: show the complete request and reply packet fields. <strong style="color:#60a5fa">b)</strong> <strong>Apply</strong> RARP protocol: show how Host B discovers its IP and explain differences from ARP.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)">
+        <span>▶ View Solution</span><span class="arrow">›</span>
+      </div>
+      <div class="sol-body">
+        <h4 style="color:#60a5fa">Part a) ARP: Host C finds Host A's MAC</h4>
+        <p style="color:#94a3b8;font-size:.85rem;margin:4px 0 8px">Step 1: C checks cache — not found → broadcasts ARP request to FF:FF:FF:FF:FF:FF</p>
+        <pre>ARP REQUEST (from C, broadcast):
+  Operation:           1 (REQUEST)
+  Sender HW Address:   1A:2F:BB:76:09:AD  ← Host C
+  Sender Protocol Addr: 137.196.7.78      ← Host C  
+  Target HW Address:   00:00:00:00:00:00  ← UNKNOWN (blank)
+  Target Protocol Addr: 137.196.7.88      ← Host A's IP (asking about this)</pre>
+        <p style="color:#94a3b8;font-size:.85rem;margin:8px 0">Step 2: All hosts receive it. Only Host A (137.196.7.88) recognizes its IP → sends unicast reply:</p>
+        <pre>ARP REPLY (from A, unicast to C):
+  Operation:           2 (REPLY)
+  Sender HW Address:   0C:C4:11:6F:E3:98  ← Host A's MAC (THE ANSWER)
+  Sender Protocol Addr: 137.196.7.88      ← Host A
+  Target HW Address:   1A:2F:BB:76:09:AD  ← Host C
+  Target Protocol Addr: 137.196.7.78      ← Host C</pre>
+        <p style="color:#4ade80;font-size:.85rem">→ C caches: 137.196.7.88 → 0C:C4:11:6F:E3:98 (RESOLVED) ✓</p>
+        <h4 style="color:#60a5fa;margin-top:14px">Part b) RARP: Host B finds its own IP</h4>
+        <p style="color:#94a3b8;font-size:.85rem;margin:4px 0 8px">B knows its own MAC (58:23:D7:FA:20:B0) but not its IP. RARP request is broadcast:</p>
+        <pre>RARP REQUEST (from B, broadcast):
+  Operation:           3 (RARP REQUEST)
+  Sender HW Address:   58:23:D7:FA:20:B0  ← Host B
+  Sender Protocol Addr: 00:00:00:00        ← UNKNOWN
+  Target HW Address:   58:23:D7:FA:20:B0  ← same as sender (asking for self)
+  Target Protocol Addr: 00:00:00:00        ← UNKNOWN (what we want!)
+
+RARP REPLY (from RARP Server, unicast):
+  Operation:           4 (RARP REPLY)
+  Target Protocol Addr: 137.196.7.14       ← THE ANSWER (B's IP)</pre>
+        <h4 style="color:#60a5fa;margin-top:12px">ARP vs RARP differences:</h4>
+        <table class="data-table" style="margin-top:4px">
+          <tr><th>Feature</th><th>ARP</th><th>RARP</th></tr>
+          <tr><td>Unknown field</td><td>Target HW Addr</td><td>Sender &amp; Target Protocol Addr</td></tr>
+          <tr><td>Operations</td><td>1 &amp; 2</td><td>3 &amp; 4</td></tr>
+          <tr><td>Needs server?</td><td>No</td><td>YES (RARP Server)</td></tr>
+          <tr><td>Ethernet type</td><td>0x0806</td><td>0x8035</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">Q2</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 2+4]</div>
+        <p style="font-size:.9rem;color:#e2e8f0;margin:0 0 8px">Fig. 2 shows a network. Connections and costs: <strong>A-B:2, A-D:4, B-C:3, B-D:1, C-E:2, C-F:5, D-E:3, E-F:1</strong></p>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong style="color:#34d399">a)</strong> <strong>Construct</strong> the link-state routing table for nodes A, B, and D. <strong style="color:#34d399">b)</strong> <strong>Apply</strong> Dijkstra's algorithm from node A to find the shortest path to all nodes. Show the step-by-step table. What is the shortest path from A to F?</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#34d399">Part a) Link-State Tables (direct neighbors only)</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:8px 0">
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node A:</strong><table class="data-table" style="margin-top:4px"><tr><th>Neighbor</th><th>Cost</th></tr><tr><td>B</td><td>2</td></tr><tr><td>D</td><td>4</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node B:</strong><table class="data-table" style="margin-top:4px"><tr><th>Neighbor</th><th>Cost</th></tr><tr><td>A</td><td>2</td></tr><tr><td>C</td><td>3</td></tr><tr><td>D</td><td>1</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node D:</strong><table class="data-table" style="margin-top:4px"><tr><th>Neighbor</th><th>Cost</th></tr><tr><td>A</td><td>4</td></tr><tr><td>B</td><td>1</td></tr><tr><td>E</td><td>3</td></tr></table></div>
+        </div>
+        <h4 style="color:#34d399;margin-top:14px">Part b) Dijkstra from A</h4>
+        <div style="overflow-x:auto">
+          <table class="dijk-table">
+            <tr><th>Step</th><th>Visit</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+            <tr><td>Init</td><td>—</td><td class="final">0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td></tr>
+            <tr><td>1</td><td class="visited">A(0)</td><td class="final">0</td><td class="updated">2(A)</td><td>∞</td><td class="updated">4(A)</td><td>∞</td><td>∞</td></tr>
+            <tr><td>2</td><td class="visited">B(2)</td><td class="final">0</td><td class="final">2</td><td class="updated">5(B)</td><td class="updated">3(B)↓</td><td>∞</td><td>∞</td></tr>
+            <tr><td>3</td><td class="visited">D(3)</td><td class="final">0</td><td class="final">2</td><td>5</td><td class="final">3</td><td class="updated">6(D)</td><td>∞</td></tr>
+            <tr><td>4</td><td class="visited">C(5)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td>6</td><td class="updated">10(C)</td></tr>
+            <tr><td>5</td><td class="visited">E(6)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td class="final">6</td><td class="updated">7(E)↓</td></tr>
+            <tr><td>6</td><td class="visited">F(7)</td><td class="final">0</td><td class="final">2</td><td class="final">5</td><td class="final">3</td><td class="final">6</td><td class="final">7 ✓</td></tr>
+          </table>
+        </div>
+        <p style="color:#4ade80;font-size:.88rem;margin-top:10px"><strong>Shortest path A→F = 7 via A→B→D→E→F</strong> (verify: 2+1+3+1 = 7 ✓)</p>
+        <p style="color:#94a3b8;font-size:.82rem;margin-top:6px">Step 2 note: D updated from 4(via A) to 3(via B) because 2+1=3 &lt; 4. Step 5: F updated from 10(via C) to 7(via E) because 6+1=7 &lt; 10.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#062a35;color:#22d3ee">Q3</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C2 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Host A (<code>192.168.1.2</code>) wants to establish a TCP connection with Server B (<code>203.0.113.1</code>). Host A uses <strong>seq=8000</strong>. Server B uses <strong>seq=15000</strong>.<br><strong style="color:#22d3ee">a)</strong> <strong>Show</strong> the complete three-way handshake with all segment details (flags, seq, ack numbers). <strong style="color:#22d3ee">b)</strong> <strong>Illustrate</strong> the connection termination. Explain which segments consume sequence numbers.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#22d3ee">Part a) Connection Establishment</h4>
+        <table class="data-table" style="margin-bottom:10px">
+          <tr><th>Seg</th><th>Direction</th><th>Flags</th><th>seq</th><th>ack</th><th>Seq# used?</th></tr>
+          <tr><td>1 SYN</td><td>A→B</td><td>SYN=1, ACK=0</td><td>8000</td><td>—</td><td style="color:#22d3ee">YES (+1) → next A seq = 8001</td></tr>
+          <tr><td>2 SYN+ACK</td><td>B→A</td><td>SYN=1, ACK=1</td><td>15000</td><td>8001</td><td style="color:#22d3ee">YES (+1) → next B seq = 15001</td></tr>
+          <tr><td>3 ACK</td><td>A→B</td><td>SYN=0, ACK=1</td><td>8001</td><td>15001</td><td style="color:#94a3b8">NO (pure ACK)</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#94a3b8"><strong style="color:#60a5fa">ack=8001:</strong> B received seq=8000, next expected = 8000+1 = 8001<br><strong style="color:#60a5fa">ack=15001:</strong> A received seq=15000, next expected = 15000+1 = 15001</p>
+        <h4 style="color:#22d3ee;margin-top:14px">Part b) Connection Termination (A initiates, A's seq=x, B's seq=y)</h4>
+        <table class="data-table">
+          <tr><th>Seg</th><th>Direction</th><th>Flags</th><th>seq</th><th>ack</th><th>Seq# used?</th></tr>
+          <tr><td>1 FIN+ACK</td><td>A→B</td><td>FIN=1, ACK=1</td><td>x</td><td>y</td><td style="color:#22d3ee">YES (+1) → x+1</td></tr>
+          <tr><td>2 FIN+ACK</td><td>B→A</td><td>FIN=1, ACK=1</td><td>y</td><td>x+1</td><td style="color:#22d3ee">YES (+1) → y+1</td></tr>
+          <tr><td>3 ACK</td><td>A→B</td><td>ACK=1</td><td>x</td><td>y+1</td><td style="color:#94a3b8">NO (pure ACK)</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#4ade80;margin-top:8px">Rule: FIN segment (without data) consumes ONE sequence number, just like SYN. Pure ACK consumes nothing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">Q4</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">A network has nodes A, B, C, D. Link costs: <strong>A-B:3, A-C:1, B-D:2, C-B:1, C-D:5</strong><br><strong style="color:#34d399">a)</strong> <strong>Construct</strong> the initial distance vector routing tables for ALL four nodes. <strong style="color:#34d399">b)</strong> Node A receives the distance vector from Node C. Show the step-by-step update process and construct A's new routing table with next hops.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#34d399">Part a) Initial Tables (direct neighbors only, unknown = ∞)</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0">
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node A:</strong><table class="data-table" style="margin-top:4px"><tr><th>To</th><th>Cost</th><th>Next</th></tr><tr><td>A</td><td>0</td><td>—</td></tr><tr><td>B</td><td>3</td><td>B</td></tr><tr><td>C</td><td>1</td><td>C</td></tr><tr><td>D</td><td>∞</td><td>—</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node B:</strong><table class="data-table" style="margin-top:4px"><tr><th>To</th><th>Cost</th><th>Next</th></tr><tr><td>A</td><td>3</td><td>A</td></tr><tr><td>B</td><td>0</td><td>—</td></tr><tr><td>C</td><td>1</td><td>C</td></tr><tr><td>D</td><td>2</td><td>D</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node C:</strong><table class="data-table" style="margin-top:4px"><tr><th>To</th><th>Cost</th><th>Next</th></tr><tr><td>A</td><td>1</td><td>A</td></tr><tr><td>B</td><td>1</td><td>B</td></tr><tr><td>C</td><td>0</td><td>—</td></tr><tr><td>D</td><td>5</td><td>D</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.8rem">Node D:</strong><table class="data-table" style="margin-top:4px"><tr><th>To</th><th>Cost</th><th>Next</th></tr><tr><td>A</td><td>∞</td><td>—</td></tr><tr><td>B</td><td>2</td><td>B</td></tr><tr><td>C</td><td>5</td><td>C</td></tr><tr><td>D</td><td>0</td><td>—</td></tr></table></div>
+        </div>
+        <h4 style="color:#34d399;margin-top:14px">Part b) A receives C's vector {A:1, B:1, C:0, D:5}. A-C link cost = 1</h4>
+        <p style="font-size:.84rem;color:#94a3b8;margin:6px 0">Step: A adds link cost (1) to each of C's values → compares with A's old table → takes minimum</p>
+        <table class="data-table">
+          <tr><th>To</th><th>A's old</th><th>C's value</th><th>+1 (A-C link)</th><th>min()</th><th>New cost</th><th>Next hop</th><th>Changed?</th></tr>
+          <tr><td>A</td><td>0</td><td>1</td><td>2</td><td>min(0,2)=0</td><td>0</td><td>—</td><td>No</td></tr>
+          <tr><td>B</td><td>3</td><td>1</td><td>2</td><td>min(3,2)=<strong style="color:#fb923c">2</strong></td><td style="color:#fb923c"><strong>2</strong></td><td style="color:#fb923c"><strong>C</strong></td><td>✅ YES</td></tr>
+          <tr><td>C</td><td>1</td><td>0</td><td>1</td><td>min(1,1)=1</td><td>1</td><td>—</td><td>No</td></tr>
+          <tr><td>D</td><td>∞</td><td>5</td><td>6</td><td>min(∞,6)=<strong style="color:#fb923c">6</strong></td><td style="color:#fb923c"><strong>6</strong></td><td style="color:#fb923c"><strong>C</strong></td><td>✅ YES</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#4ade80;margin-top:8px">A→B via C = 1+1=2 (better than direct A→B=3) ✓ | A→D via C = 1+5=6 (new route discovered) ✓</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#3b1a08;color:#fb923c">Q5</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 2+2+2]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Fig. 4: Source → Node I → Node II → Node III(congested) → Node IV → Destination. <strong>Apply</strong> the following congestion control mechanisms with diagrams:<br><strong style="color:#fb923c">i)</strong> Backpressure &nbsp;<strong style="color:#fb923c">ii)</strong> Choke Packet &nbsp;<strong style="color:#fb923c">iii)</strong> TCP Slow Start (cwnd=1, ssthresh=8, show rounds 1-6)</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#fb923c">i) Backpressure</h4>
+        <pre style="font-size:.74rem">Data: Source → I → II → III(CONGESTED) → IV → Dest
+Step 1: III congested → tells II to slow down
+  Source → I → II ←slow— III → IV → Dest
+Step 2: II may get congested → tells I to slow down
+  Source → I ←slow— II → III → IV → Dest
+Step 3: I tells Source to slow down
+  Source ←slow— I → II → III → IV → Dest
+Signal travels HOP-BY-HOP BACKWARD. All intermediate nodes warned.</pre>
+        <h4 style="color:#fb923c;margin-top:12px">ii) Choke Packet</h4>
+        <pre style="font-size:.74rem">Data: Source → I → II → III(CONGESTED) → IV → Dest
+  ↑__________________________________|
+  CHOKE PACKET (direct from III to Source — skips I and II)
+Source receives choke packet → reduces transmission rate immediately.
+Node I and Node II are NOT warned and continue normally.</pre>
+        <h4 style="color:#fb923c;margin-top:12px">iii) TCP Slow Start (cwnd=1, ssthresh=8)</h4>
+        <table class="data-table">
+          <tr><th>Round</th><th>cwnd (MSS)</th><th>Phase</th><th>Rule</th></tr>
+          <tr><td>Start</td><td>1</td><td>Slow Start</td><td>Initial</td></tr>
+          <tr><td>1</td><td>2</td><td>Slow Start</td><td>×2</td></tr>
+          <tr><td>2</td><td>4</td><td>Slow Start</td><td>×2</td></tr>
+          <tr><td>3</td><td><strong style="color:#fb923c">8 = ssthresh</strong></td><td>Slow Start → CA</td><td>×2 → switches phase</td></tr>
+          <tr><td>4</td><td>9</td><td>Congestion Avoidance</td><td>+1</td></tr>
+          <tr><td>5</td><td>10</td><td>Congestion Avoidance</td><td>+1</td></tr>
+          <tr><td>6</td><td>11</td><td>Congestion Avoidance</td><td>+1</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#94a3b8;margin-top:8px">At round 3, cwnd=ssthresh=8 → Slow Start stops. Phase changes to Congestion Avoidance (+1 per round instead of ×2).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EXAM SET 2 ─── -->
+<div id="q-set2" style="margin-top:36px">
+  <h2 style="color:#e2e8f0;border-bottom:1px solid #1e3257;padding-bottom:10px">📋 Practice Exam Set 2 &nbsp;<span style="font-size:.75rem;color:#64748b;font-family:'Sora',sans-serif">30 Marks · 1 Hour · All Questions Compulsory</span></h2>
+
+  <!-- Q1 Set 2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#1d3a6b;color:#60a5fa">Q1</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Four hosts: P(IP=10.20.30.5, MAC=AA:BB:11:22:33:44), Q(10.20.30.10, CC:DD:55:66:77:88), R(10.20.30.15, EE:FF:99:00:AB:CD), S(10.20.30.20, 12:34:56:78:9A:BC) connected through a hub. Host R wants to communicate with S but doesn't know S's MAC. A new host T (MAC=DE:AD:BE:EF:00:01) joined and only knows its MAC.<br><strong style="color:#60a5fa">a)</strong> <strong>Illustrate</strong> complete ARP process: show ALL packet fields. <strong style="color:#60a5fa">b)</strong> <strong>Illustrate</strong> RARP process for T. Why is RARP limited compared to DHCP?</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#60a5fa">Part a) ARP: R finds S's MAC</h4>
+        <pre>ARP REQUEST (R broadcasts, dest=FF:FF:FF:FF:FF:FF):
+  Operation:            1 (REQUEST)
+  Sender HW Address:    EE:FF:99:00:AB:CD  ← Host R
+  Sender Protocol Addr: 10.20.30.15        ← Host R
+  Target HW Address:    00:00:00:00:00:00  ← BLANK (unknown)
+  Target Protocol Addr: 10.20.30.20        ← Host S (looking for this)
+
+ARP REPLY (S unicasts to R):
+  Operation:            2 (REPLY)
+  Sender HW Address:    12:34:56:78:9A:BC  ← Host S's MAC ← THE ANSWER
+  Sender Protocol Addr: 10.20.30.20        ← Host S
+  Target HW Address:    EE:FF:99:00:AB:CD  ← Host R
+  Target Protocol Addr: 10.20.30.15        ← Host R</pre>
+        <h4 style="color:#60a5fa;margin-top:12px">Part b) RARP: T finds its IP</h4>
+        <pre>RARP REQUEST (T broadcasts): "My MAC=DE:AD:BE:EF:00:01, what is my IP?"
+  Operation: 3 | Sender HW: DE:AD:BE:EF:00:01
+  All protocol address fields: 00:00:00:00 (unknown)
+
+RARP REPLY (RARP Server unicasts):
+  Target Protocol Addr: 10.20.30.25  ← THE ANSWER</pre>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:8px"><strong style="color:#60a5fa">Why RARP is limited vs DHCP:</strong> RARP only gives an IP address — no subnet mask, no default gateway, no DNS server. It also requires a RARP server on EVERY physical network (can't cross routers), and requires manual static table configuration per MAC address. DHCP provides all configuration dynamically and works across networks.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 Set 2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">Q2</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 2+4]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Network: <strong>A-B:5, A-D:1, B-C:2, B-E:3, C-F:1, D-B:3, D-E:6, E-F:2</strong><br><strong style="color:#34d399">a)</strong> <strong>Construct</strong> link-state routing table for nodes A, D, E. <strong style="color:#34d399">b)</strong> <strong>Apply</strong> Dijkstra's algorithm from A. Show step-by-step table. What is the shortest path from A to F?</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#34d399">Part a) Link-State Tables</h4>
+        <p style="font-size:.84rem;color:#94a3b8">Node A: {B:5, D:1} &nbsp;|&nbsp; Node D: {A:1, B:3, E:6} &nbsp;|&nbsp; Node E: {B:3, D:6, F:2}</p>
+        <h4 style="color:#34d399;margin-top:14px">Part b) Dijkstra from A</h4>
+        <div style="overflow-x:auto">
+          <table class="dijk-table">
+            <tr><th>Step</th><th>Visit</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+            <tr><td>Init</td><td>—</td><td class="final">0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td></tr>
+            <tr><td>1</td><td class="visited">A(0)</td><td class="final">0</td><td class="updated">5(A)</td><td>∞</td><td class="updated">1(A)</td><td>∞</td><td>∞</td></tr>
+            <tr><td>2</td><td class="visited">D(1)</td><td class="final">0</td><td class="updated">4(D)↓</td><td>∞</td><td class="final">1</td><td class="updated">7(D)</td><td>∞</td></tr>
+            <tr><td>3</td><td class="visited">B(4)</td><td class="final">0</td><td class="final">4</td><td class="updated">6(B)</td><td class="final">1</td><td>7</td><td>∞</td></tr>
+            <tr><td>4</td><td class="visited">C(6)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td>7</td><td class="updated">7(C)</td></tr>
+            <tr><td>5</td><td class="visited">E(7)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td class="final">7</td><td>7(C)=7(E) tie</td></tr>
+            <tr><td>6</td><td class="visited">F(7)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td class="final">7</td><td class="final">7 ✓</td></tr>
+          </table>
+        </div>
+        <p style="color:#4ade80;font-size:.88rem;margin-top:8px"><strong>Shortest path A→F = 7 via A→D→B→C→F</strong> (1+3+2+1=7 ✓)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 Set 2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#062a35;color:#22d3ee">Q3</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C2 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Host A (<code>192.168.1.2</code>) sends SYN to Host B (<code>203.0.113.1</code>). Host B replies SYN-ACK, but the <strong>final ACK from Host A is delayed significantly</strong>.<br><strong style="color:#22d3ee">a)</strong> <strong>Explain</strong> the mechanism ensuring successful connection despite delayed ACK. <strong>Show</strong> the diagram. <strong style="color:#22d3ee">b)</strong> <strong>Explain</strong> the SYN Flooding Attack and how SYN Cookie defense works.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#22d3ee">Part a) Delayed ACK Mechanism</h4>
+        <pre style="font-size:.74rem">Host A                                     Server B
+  | ─── SYN (seq=1000) ─────────────────────► |
+  |                                            |
+  | ◄── SYN+ACK (seq=5000, ack=1001) ─────── |
+  |                                            |
+  |        [ACK IS DELAYED......]              |
+  |  Server B starts RETRANSMISSION TIMER     |
+  |  If timer expires → B resends SYN+ACK    |
+  |                                            |
+  | ─── ACK (seq=1001, ack=5001) ────────────► | ESTABLISHED ✓
+  |        [arrives late but still works]      |</pre>
+        <p style="font-size:.84rem;color:#94a3b8;margin:8px 0">TCP handles this with a retransmission timer. Server starts a timer after sending SYN+ACK. If ACK doesn't arrive in time, server RETRANSMITS SYN+ACK. When ACK eventually arrives, server moves from SYN_RECEIVED → ESTABLISHED state.</p>
+        <h4 style="color:#22d3ee;margin-top:12px">Part b) SYN Flooding &amp; SYN Cookie Defense</h4>
+        <div class="vs-grid">
+          <div class="vs-box"><h4 style="color:#ef4444">SYN Flooding Attack</h4><ol style="font-size:.82rem;color:#94a3b8;margin:4px 0 0;padding-left:16px"><li>Send 1000s of SYNs with fake source IPs</li><li>Server allocates memory, timers for each</li><li>No real ACK → half-open connections pile up</li><li>Server's connection table fills completely</li><li>Legitimate users denied = DoS attack</li></ol></div>
+          <div class="vs-box"><h4 style="color:#4ade80">SYN Cookie Defense</h4><ol style="font-size:.82rem;color:#94a3b8;margin:4px 0 0;padding-left:16px"><li>Server does NOT allocate resources on SYN</li><li>Encodes info as cryptographic hash ("cookie") in SYN+ACK's seq#</li><li>Only when real ACK arrives (with cookie+1) → allocate resources</li><li>Spoofed SYNs can't complete → no waste ✓</li></ol></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 Set 2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">Q4</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Network: <strong>A-B:2, A-C:8, B-C:3, B-D:6, C-D:1, C-E:7, D-E:2</strong><br><strong style="color:#34d399">a)</strong> <strong>Construct</strong> initial distance vector routing tables for ALL five nodes (A,B,C,D,E). <strong style="color:#34d399">b)</strong> Node B receives update from Node C. Show step-by-step update process and write B's new table. Identify which routes changed.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#34d399">Part a) Initial Tables</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+          <div><strong style="color:#94a3b8;font-size:.78rem">Node A:</strong><table class="data-table" style="margin-top:4px;font-size:.78rem"><tr><th>To</th><th>Cost</th></tr><tr><td>A</td><td>0</td></tr><tr><td>B</td><td>2</td></tr><tr><td>C</td><td>8</td></tr><tr><td>D</td><td>∞</td></tr><tr><td>E</td><td>∞</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.78rem">Node B:</strong><table class="data-table" style="margin-top:4px;font-size:.78rem"><tr><th>To</th><th>Cost</th></tr><tr><td>A</td><td>2</td></tr><tr><td>B</td><td>0</td></tr><tr><td>C</td><td>3</td></tr><tr><td>D</td><td>6</td></tr><tr><td>E</td><td>∞</td></tr></table></div>
+          <div><strong style="color:#94a3b8;font-size:.78rem">Node C:</strong><table class="data-table" style="margin-top:4px;font-size:.78rem"><tr><th>To</th><th>Cost</th></tr><tr><td>A</td><td>8</td></tr><tr><td>B</td><td>3</td></tr><tr><td>C</td><td>0</td></tr><tr><td>D</td><td>1</td></tr><tr><td>E</td><td>7</td></tr></table></div>
+        </div>
+        <h4 style="color:#34d399">Part b) B receives C's vector {A:8,B:3,C:0,D:1,E:7} | B-C link cost=3</h4>
+        <table class="data-table">
+          <tr><th>To</th><th>B's old</th><th>C's value +3</th><th>min()</th><th>New</th><th>Next</th><th>Changed?</th></tr>
+          <tr><td>A</td><td>2</td><td>8+3=11</td><td>2</td><td>2</td><td>A</td><td>No</td></tr>
+          <tr><td>B</td><td>0</td><td>3+3=6</td><td>0</td><td>0</td><td>—</td><td>No</td></tr>
+          <tr><td>C</td><td>3</td><td>0+3=3</td><td>3</td><td>3</td><td>C</td><td>No</td></tr>
+          <tr><td>D</td><td>6</td><td>1+3=<strong style="color:#fb923c">4</strong></td><td><strong style="color:#fb923c">4</strong></td><td style="color:#fb923c"><strong>4</strong></td><td style="color:#fb923c"><strong>C</strong></td><td>✅ YES</td></tr>
+          <tr><td>E</td><td>∞</td><td>7+3=<strong style="color:#fb923c">10</strong></td><td><strong style="color:#fb923c">10</strong></td><td style="color:#fb923c"><strong>10</strong></td><td style="color:#fb923c"><strong>C</strong></td><td>✅ YES</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 Set 2 -->
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#3b1a08;color:#fb923c">Q5</span>
+      <div class="flex-1">
+        <div style="font-size:.75rem;color:#475569;font-family:'Sora',sans-serif;margin-bottom:6px">CO2, C3 · [Mark: 6 = 3+3]</div>
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0">Network: Source → I → II → III(congested) → IV → Destination.<br><strong style="color:#fb923c">a)</strong> <strong>Apply</strong> and explain Implicit Signaling and Explicit Backward Signaling for this network. <strong style="color:#fb923c">b)</strong> Host has committed rate 3 Mbps. Leaky Bucket bucket capacity = 8 Mbits. Input: 10 Mbps for 2 seconds, silence for 3s, 1 Mbps for 5s. Trace the bucket output.</p>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#fb923c">Part a) Implicit vs Explicit Backward Signaling</h4>
+        <div class="vs-grid">
+          <div class="vs-box"><h4 style="color:#94a3b8">Implicit Signaling</h4><p style="font-size:.82rem;color:#94a3b8;margin:0">Node III sends NO signal. Source guesses congestion from: <strong style="color:#e2e8f0">Timeout</strong> (no ACK → packet dropped) or <strong style="color:#e2e8f0">3 dup ACKs</strong> (mild congestion). Source reduces rate on its own. Used by TCP.</p></div>
+          <div class="vs-box"><h4 style="color:#94a3b8">Explicit Backward</h4><p style="font-size:.82rem;color:#94a3b8;margin:0">III sets a <strong style="color:#e2e8f0">congestion bit</strong> in ACK packets flowing backward toward Source. Source sees the bit in ACKs → immediately reduces transmission rate. More direct than implicit.</p></div>
+        </div>
+        <h4 style="color:#fb923c;margin-top:14px">Part b) Leaky Bucket Trace (rate=3 Mbps, capacity=8 Mbits)</h4>
+        <table class="data-table">
+          <tr><th>Time</th><th>Input</th><th>Bucket before</th><th>Incoming</th><th>Output</th><th>Overflow?</th><th>Bucket after</th></tr>
+          <tr><td>0–1s</td><td>10 Mbps</td><td>0</td><td>+10 Mb</td><td>-3 Mb</td><td style="color:#ef4444">YES (drops 2 Mb, cap=8)</td><td>8 (full)</td></tr>
+          <tr><td>1–2s</td><td>10 Mbps</td><td>8</td><td>+10 Mb</td><td>-3 Mb</td><td style="color:#ef4444">YES (drops 7 Mb)</td><td>8 (full)</td></tr>
+          <tr><td>2–3s</td><td>0 Mbps</td><td>8</td><td>+0</td><td>-3 Mb</td><td>No</td><td>5</td></tr>
+          <tr><td>3–4s</td><td>0 Mbps</td><td>5</td><td>+0</td><td>-3 Mb</td><td>No</td><td>2</td></tr>
+          <tr><td>4–5s</td><td>0 Mbps</td><td>2</td><td>+0</td><td>-2 Mb (empty)</td><td>No</td><td>0</td></tr>
+          <tr><td>5–10s</td><td>1 Mbps</td><td>≈0</td><td>+1 Mb/s</td><td>1 Mb/s</td><td>No (input &lt; rate)</td><td>≈0</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#94a3b8;margin-top:8px">Output is smoothed at 3 Mbps during buffered periods. Leaky Bucket drops overflow — it does NOT allow bursting above the committed rate.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOPIC-WISE: ARP ─── -->
+<div id="q-arp" style="margin-top:36px">
+  <h2 style="color:#60a5fa;border-bottom:1px solid #1e3257;padding-bottom:10px">🔵 Topic: ARP &amp; RARP (3 Questions)</h2>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#1d3a6b;color:#60a5fa">T1</span>
+      <div class="flex-1">
+        <p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[ARP Cache Operations]</strong> The ARP cache contains entries with TTL=450 (IP: 114.5.7.89, HW: 457342ACAE32), Pending/attempt=2 (IP: 129.34.4.8), and TTL=60 (IP: 19.1.7.82, HW: 4573E3242ACA). <strong>a)</strong> Output module receives datagram for 114.5.7.89 — what happens? <strong>b)</strong> Output module receives datagram for 200.50.3.1 (not in cache) — what happens? Show updated table. <strong>c)</strong> 60 seconds pass — show all changes.</p>
+      </div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <p><strong style="color:#60a5fa">a)</strong> Cache HIT (State=R). Output module extracts MAC 457342ACAE32 directly and sends to data link layer. No ARP needed. TTL countdown continues.</p>
+        <p style="margin-top:8px"><strong style="color:#60a5fa">b)</strong> Cache MISS. Module creates new PENDING entry: State=P, Attempt=1, queue created for 200.50.3.1, broadcasts ARP request. Updated table gains new row: P | new_queue | 1 | — | 200.50.3.1 | —</p>
+        <p style="margin-top:8px"><strong style="color:#60a5fa">c)</strong> After 60s: Entry 114.5.7.89: TTL 450→390. Entry 19.1.7.82: TTL 60→0 → <strong style="color:#ef4444">State becomes FREE (deleted)</strong>. PENDING entries: attempt counters incremented (129.34.4.8: 2→3; 200.50.3.1: 1→2), new ARP requests sent for each.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#1d3a6b;color:#60a5fa">T2</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Proxy ARP]</strong> A new subnetwork (hosts 192.168.1.20–22) is added behind a Proxy ARP router. Host M (192.168.1.5) on the main network sends an ARP request for 192.168.1.21. <strong>Explain</strong> the complete Proxy ARP process. Why does Host M believe it is communicating directly with 192.168.1.21?</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <div class="steps" style="margin-top:4px">
+          <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 1</div><div class="step-body">Host M broadcasts: "Who has 192.168.1.21? Tell 192.168.1.5"</div></div>
+          <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 2</div><div class="step-body">Proxy ARP Router receives broadcast. Checks routing table → knows 192.168.1.21 is on connected sub-network. Decides to respond on its behalf.</div></div>
+          <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 3</div><div class="step-body">Router sends ARP Reply: "192.168.1.21 is at <strong>[ROUTER's OWN MAC]</strong>" — NOT the actual host's MAC!</div></div>
+          <div class="step"><div class="step-dot" style="background:#60a5fa"></div><div class="step-title">Step 4</div><div class="step-body">M caches: 192.168.1.21 → Router's MAC. Sends all data to router. Router forwards to actual 192.168.1.21 on subnetwork.</div></div>
+        </div>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:6px"><strong>Why M doesn't know:</strong> ARP reply looks completely standard. M sees a normal IP→MAC mapping in its cache. The routing is handled transparently by the proxy router. M has no way to distinguish a proxy reply from a direct reply — this is the definition of transparent service.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#1d3a6b;color:#60a5fa">T3</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[ARP Packet &amp; Encapsulation]</strong> Host A (IP: 130.23.43.20, MAC: B2:34:55:10:22:10) sends an ARP request for IP 130.23.43.25. <strong>Show</strong> the complete Ethernet frame with all ARP packet fields. What Ethernet Type value is used? Why is the Ethernet destination MAC different from the Target HW Address in the ARP packet?</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <pre>ETHERNET FRAME:
+┌──────────────┬──────────────────┬──────────────────┬──────────┬────────────────┬──────┐
+│ Preamble+SFD │ Dest MAC         │ Source MAC       │ Type     │ ARP Packet     │ CRC  │
+│ 8 bytes      │ FF:FF:FF:FF:FF:FF│ B2:34:55:10:22:10│ 0x0806   │ 28 bytes       │4bytes│
+└──────────────┴──────────────────┴──────────────────┴──────────┴────────────────┴──────┘
+
+ARP PACKET (inside Data field, 28 bytes):
+  Hardware Type:       0x0001 (Ethernet)
+  Protocol Type:       0x0800 (IPv4)
+  Hardware Length:     6 | Protocol Length: 4
+  Operation:           1 (REQUEST)
+  Sender HW:           B2:34:55:10:22:10  | Sender IP: 130.23.43.20 (= 0x82172B14)
+  Target HW:           00:00:00:00:00:00  ← BLANK (unknown, this is what we want)
+  Target IP:           130.23.43.25 (= 0x82172B19)</pre>
+        <p style="font-size:.84rem;color:#4ade80;margin-top:8px"><strong>Ethernet Type = 0x0806</strong> — identifies the payload as ARP to the receiver.</p>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:6px"><strong>Why different?</strong> Ethernet dest MAC = FF:FF:FF:FF:FF:FF (broadcast) is the <em>delivery mechanism</em> — tells the switch/hub to deliver this frame to ALL devices. Target HW Address = 00:00:00:00:00:00 is the <em>question being asked</em> — the field we want filled in the reply. The Ethernet broadcast gets the question to everyone; the ARP payload contains the actual question.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOPIC: ROUTING ─── -->
+<div id="q-routing" style="margin-top:36px">
+  <h2 style="color:#34d399;border-bottom:1px solid #1e3257;padding-bottom:10px">🟢 Topic: Routing (3 Questions)</h2>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">T4</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Two-Node Instability]</strong> Nodes A and B connected (cost=4). Node X connected to A (cost=2). Before failure: A's cost to X=2, B's cost to X=6 (via A). X fails. <strong>Show</strong> the complete count-to-infinity problem step by step. At what cost value do A and B finally agree X is unreachable? How does Split Horizon with Poison Reverse solve this?</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>Event</th><th>A's cost to X</th><th>B's cost to X</th></tr>
+          <tr><td>Before failure</td><td>2 (direct)</td><td>6 (via A)</td></tr>
+          <tr><td>X fails, A updates</td><td>∞</td><td>6 (stale — doesn't know)</td></tr>
+          <tr><td>A gets B's update (6) → A: 6+4=10</td><td style="color:#fb923c">10 via B</td><td>6</td></tr>
+          <tr><td>B gets A's update (10) → B: 10+4=14</td><td>10</td><td style="color:#fb923c">14 via A</td></tr>
+          <tr><td>A: 14+4=18</td><td style="color:#fb923c">18</td><td>14</td></tr>
+          <tr><td>Continues…</td><td>↑</td><td>↑</td></tr>
+          <tr><td>Both reach RIP's infinity</td><td style="color:#4ade80">16 (∞)</td><td style="color:#4ade80">16 (∞)</td></tr>
+        </table>
+        <p style="font-size:.84rem;color:#4ade80;margin-top:8px"><strong>Agreement at cost=16</strong> (RIP's definition of infinity). Both finally agree X is unreachable.</p>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:8px"><strong>Poison Reverse solution:</strong> B learned about X from A. When B sends updates back to A, it reports X=<strong>16 (poison/∞)</strong> instead of 6. A receives this → A knows "B can't help me reach X." A keeps X=∞. No loop forms. Both converge to ∞ immediately ✓</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">T5</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[RIP Message &amp; Split Horizon]</strong> Router R1 sends update to R2 via interface 130.10.0.2. R1's table has: 130.10.0.0 (1 hop direct), 130.11.0.0 (1 hop direct), 195.2.4.0 (2 hops via R2 — learned FROM R2), 195.2.5.0 (1 hop direct). <strong>Explain</strong> Split Horizon with Poison Reverse and <strong>show</strong> what hop counts R1 sends to R2. What transport protocol does RIP use and on which port?</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <p style="font-size:.84rem;color:#94a3b8"><strong style="color:#34d399">Split Horizon + Poison Reverse:</strong> R1 learned about 195.2.4.0 FROM R2. To prevent count-to-infinity, when R1 sends updates BACK to R2, it reports 195.2.4.0 with cost=<strong>16 (infinity/poison)</strong> instead of the real value 2. This tells R2: "Don't try to reach 195.2.4.0 through me — I only know it through you."</p>
+        <table class="data-table" style="margin:10px 0">
+          <tr><th>Network</th><th>Real hop count</th><th>Sent to R2</th><th>Reason</th></tr>
+          <tr><td>130.10.0.0</td><td>1</td><td>1</td><td>Direct link — advertise normally</td></tr>
+          <tr><td>130.11.0.0</td><td>1</td><td>1</td><td>Direct link — advertise normally</td></tr>
+          <tr><td>195.2.4.0</td><td>2</td><td style="color:#ef4444"><strong>16 (∞)</strong></td><td>Learned FROM R2 → Poison Reverse!</td></tr>
+          <tr><td>195.2.5.0</td><td>1</td><td>1</td><td>Direct link — advertise normally</td></tr>
+        </table>
+        <p style="font-size:.84rem;color:#4ade80"><strong>RIP uses UDP on well-known port 520.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#0c3329;color:#34d399">T6</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Dijkstra Full Problem]</strong> Network: A-B:5, A-D:1, B-C:2, B-E:3, C-F:1, D-B:3, D-E:6, E-F:2. <strong>Apply</strong> Dijkstra's algorithm from Node A. Show priority queue at each step and identify the shortest path to F.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <div style="overflow-x:auto">
+          <table class="dijk-table">
+            <tr><th>Step</th><th>Visit</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>Queue after</th></tr>
+            <tr><td>Init</td><td>—</td><td class="final">0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>{A:0}</td></tr>
+            <tr><td>1</td><td class="visited">A(0)</td><td class="final">0</td><td class="updated">5(A)</td><td>∞</td><td class="updated">1(A)</td><td>∞</td><td>∞</td><td>{D:1,B:5}</td></tr>
+            <tr><td>2</td><td class="visited">D(1)</td><td class="final">0</td><td class="updated">4(D)↓</td><td>∞</td><td class="final">1</td><td class="updated">7(D)</td><td>∞</td><td>{B:4,E:7}</td></tr>
+            <tr><td>3</td><td class="visited">B(4)</td><td class="final">0</td><td class="final">4</td><td class="updated">6(B)</td><td class="final">1</td><td>7</td><td>∞</td><td>{C:6,E:7}</td></tr>
+            <tr><td>4</td><td class="visited">C(6)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td>7</td><td class="updated">7(C)</td><td>{E:7,F:7}</td></tr>
+            <tr><td>5</td><td class="visited">E(7)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td class="final">7</td><td>7</td><td>{F:7}</td></tr>
+            <tr><td>6</td><td class="visited">F(7)</td><td class="final">0</td><td class="final">4</td><td class="final">6</td><td class="final">1</td><td class="final">7</td><td class="final">7 ✓</td><td>Done</td></tr>
+          </table>
+        </div>
+        <p style="color:#4ade80;font-size:.88rem;margin-top:10px"><strong>Shortest path A→F = 7 via A→D→B→C→F</strong> (1+3+2+1=7 ✓)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOPIC: CONGESTION ─── -->
+<div id="q-congestion" style="margin-top:36px">
+  <h2 style="color:#fb923c;border-bottom:1px solid #1e3257;padding-bottom:10px">🟠 Topic: Congestion Control (3 Questions)</h2>
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#3b1a08;color:#fb923c">T7</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Open Loop Policies]</strong> For each scenario, identify which open-loop congestion control policy is being applied and explain why it helps prevent congestion: <strong>a)</strong> A router discards low-priority audio frames when buffer is 80% full. <strong>b)</strong> Receiver sends one ACK for every three packets. <strong>c)</strong> TCP sender uses Selective Repeat instead of Go-Back-N.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <p><strong style="color:#fb923c">a) Discarding Policy</strong> — The router selectively discards less-critical (low-priority audio) data. By not filling the buffer completely, it prevents total overflow. For audio streams, occasional frame drops are barely noticeable — smart discarding preserves stream integrity while preventing congestion.</p>
+        <p style="margin-top:8px"><strong style="color:#fb923c">b) Acknowledgment Policy</strong> — Delayed/selective ACKs: receiver waits and acknowledges multiple packets at once. ACKs are packets too; sending fewer ACKs reduces overall network load and helps prevent congestion before it starts.</p>
+        <p style="margin-top:8px"><strong style="color:#fb923c">c) Window Policy</strong> — Selective Repeat retransmits ONLY the lost packet; Go-Back-N retransmits the lost packet AND all subsequent packets. Fewer unnecessary retransmissions = less redundant traffic = lower network load = helps prevent congestion.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#3b1a08;color:#fb923c">T8</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[TCP Congestion Full Scenario]</strong> TCP sender: cwnd=1 MSS, ssthresh=16 MSS. <strong>a)</strong> Show cwnd for rounds 1-10 (no congestion). <strong>b)</strong> Timeout occurs at round 10. Show what happens and trace rounds 11-15. <strong>c)</strong> At round 14, 3 dup ACKs received — show the response (compare with timeout).</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <h4 style="color:#fb923c">Part a) Rounds 1-10</h4>
+        <table class="data-table" style="margin-bottom:12px">
+          <tr><th>Round</th><th>cwnd</th><th>Phase</th></tr>
+          <tr><td>Start</td><td>1</td><td>Slow Start</td></tr>
+          <tr><td>1-4</td><td>2→4→8→16=ssthresh</td><td>Slow Start (×2 each round)</td></tr>
+          <tr><td>5-10</td><td>17→18→19→20→21→22</td><td>Congestion Avoidance (+1/round)</td></tr>
+        </table>
+        <h4 style="color:#fb923c">Part b) Timeout at round 10 (cwnd=22)</h4>
+        <p style="font-size:.84rem;color:#94a3b8">ssthresh = 22/2 = <strong style="color:#e2e8f0">11</strong> &nbsp;|&nbsp; cwnd = <strong style="color:#ef4444">1</strong> (hard reset)</p>
+        <table class="data-table" style="margin:8px 0">
+          <tr><th>Round</th><th>cwnd</th><th>Phase</th></tr>
+          <tr><td>11</td><td>1</td><td>Slow Start (restart)</td></tr>
+          <tr><td>12</td><td>2</td><td>Slow Start ×2</td></tr>
+          <tr><td>13</td><td>4</td><td>Slow Start ×2</td></tr>
+          <tr><td>14</td><td>8</td><td>Slow Start ×2</td></tr>
+          <tr><td>15</td><td>11 (new ssthresh)</td><td>Slow Start → CA</td></tr>
+        </table>
+        <h4 style="color:#fb923c">Part c) 3 dup ACKs at round 14 (cwnd=8)</h4>
+        <p style="font-size:.84rem;color:#94a3b8">ssthresh = 8/2 = <strong style="color:#e2e8f0">4</strong> &nbsp;|&nbsp; cwnd = <strong style="color:#fb923c">4 (= ssthresh)</strong> — NOT reset to 1!</p>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:6px">Skip Slow Start → go directly to Congestion Avoidance from cwnd=4.</p>
+        <div class="key-box amber" style="margin-top:10px"><strong>Key difference:</strong> Timeout = severe → cwnd reset to 1, restart from scratch. 3 dup ACKs = mild → cwnd=ssthresh, skip to CA. Less severe punishment for less severe congestion signal.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#3b1a08;color:#fb923c">T9</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Implicit vs Explicit Signaling]</strong> In a network R1→R2→R3(congested)→R4→Dest, distinguish between Implicit Signaling and Explicit Signaling (forward and backward). For each, show where the signal originates, where it goes, and what action the receiver takes.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>Method</th><th>Who signals?</th><th>Where does signal go?</th><th>Action taken</th><th>Example</th></tr>
+          <tr><td>Implicit</td><td>Nobody — source observes symptoms</td><td>None sent</td><td>Source reduces rate after timeout or 3 dup ACKs</td><td>TCP</td></tr>
+          <tr><td>Explicit Backward</td><td>R3 sets congestion bit in backward ACKs</td><td>Source (via ACK packets)</td><td>Source sees bit in ACKs → reduces rate immediately</td><td>ECN (TCP)</td></tr>
+          <tr><td>Explicit Forward</td><td>R3 sets congestion bit in forward data packets</td><td>Destination</td><td>Destination slows its ACKs → source slows down</td><td>Frame Relay FECN</td></tr>
+        </table>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:10px"><strong style="color:#60a5fa">Implicit vs Explicit:</strong> Implicit has no overhead (no signaling packets) but slower detection (relies on timeout/packet loss symptoms). Explicit is faster and more accurate (direct signal from congested node) but adds overhead (bits in existing packets or separate packets).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOPIC: QoS ─── -->
+<div id="q-qos" style="margin-top:36px">
+  <h2 style="color:#c084fc;border-bottom:1px solid #1e3257;padding-bottom:10px">🟣 Topic: Quality of Service (2 Questions)</h2>
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#2e1154;color:#c084fc">T10</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Flow Characteristics]</strong> For each application, rank the four QoS flow characteristics (1=most important, 4=least) and justify: <strong>a)</strong> Video Conferencing &nbsp;<strong>b)</strong> Email/File Transfer &nbsp;<strong>c)</strong> Online Gaming</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>App</th><th>Reliability</th><th>Delay</th><th>Jitter</th><th>Bandwidth</th></tr>
+          <tr><td>Video Conferencing</td><td>4 (some loss OK)</td><td><strong style="color:#c084fc">1</strong> (must be real-time)</td><td><strong style="color:#c084fc">2</strong> (choppy if high)</td><td>3 (needs decent BW)</td></tr>
+          <tr><td>Email/File Transfer</td><td><strong style="color:#c084fc">1</strong> (every bit must arrive)</td><td>4 (delay doesn't matter)</td><td>4 (irrelevant)</td><td>2 (for large files)</td></tr>
+          <tr><td>Online Gaming</td><td>3 (minor loss OK)</td><td><strong style="color:#c084fc">1</strong> (low ping critical)</td><td><strong style="color:#c084fc">2</strong> (consistent timing)</td><td>4 (games use little BW)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#2e1154;color:#c084fc">T11</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Leaky Bucket Algorithm]</strong> Committed rate = 2 Mbps. Bucket capacity = 10 Mbits. Input: 8 Mbps for 3s, silence for 2s, 1 Mbps for 5s. <strong>Trace</strong> bucket level and output each second. What is the total data dropped? Compare behavior with Token Bucket.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>Second</th><th>Input</th><th>Bucket before</th><th>+ Input</th><th>Output</th><th>Overflow</th><th>Bucket after</th></tr>
+          <tr><td>0→1s</td><td>8 Mb</td><td>0</td><td>+8</td><td>-2</td><td style="color:#ef4444">0 (fits: 8-2=6≤10)</td><td>6</td></tr>
+          <tr><td>1→2s</td><td>8 Mb</td><td>6</td><td>+8=14</td><td>-2</td><td style="color:#ef4444">DROP 2 Mb (14-2-10=2)</td><td>10 (full)</td></tr>
+          <tr><td>2→3s</td><td>8 Mb</td><td>10</td><td>+8=18</td><td>-2</td><td style="color:#ef4444">DROP 6 Mb (18-2-10=6)</td><td>10 (full)</td></tr>
+          <tr><td>3→4s</td><td>0</td><td>10</td><td>+0</td><td>-2</td><td>0</td><td>8</td></tr>
+          <tr><td>4→5s</td><td>0</td><td>8</td><td>+0</td><td>-2</td><td>0</td><td>6</td></tr>
+          <tr><td>5→10s</td><td>1 Mb/s</td><td>6→…</td><td>+1/s</td><td>-1/s</td><td>0 (input&lt;rate)</td><td>drains</td></tr>
+        </table>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:8px"><strong>Total dropped ≈ 8 Mb</strong> (2+6 from seconds 1-3)</p>
+        <p style="font-size:.84rem;color:#94a3b8;margin-top:6px"><strong style="color:#c084fc">Leaky vs Token Bucket:</strong> Leaky bucket always outputs at exactly 2 Mbps and <em>discards</em> overflow. Token bucket accumulates tokens during the 2s silence — allowing a burst later. Token bucket is more flexible (rewards idle time) while leaky bucket enforces strict constant rate.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOPIC: TCP ─── -->
+<div id="q-tcp" style="margin-top:36px">
+  <h2 style="color:#22d3ee;border-bottom:1px solid #1e3257;padding-bottom:10px">🔵 Topic: TCP (3 Questions)</h2>
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#062a35;color:#22d3ee">T12</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Sequence Numbers]</strong> Fill in ALL missing values:<br><code>Client→Server: SYN, seq=500</code> | <code>Server→Client: SYN+ACK, seq=?, ack=?</code> | <code>Client→Server: ACK, seq=?, ack=?</code> | <code>Client→Server: DATA(100 bytes), seq=?, ack=?</code> | <code>Server→Client: ACK, seq=?, ack=?</code></p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>Segment</th><th>Type</th><th>seq</th><th>ack</th><th>Explanation</th></tr>
+          <tr><td>1</td><td>SYN (C→S)</td><td>500</td><td>—</td><td>Client's ISN. Consumes seq 500.</td></tr>
+          <tr><td>2</td><td>SYN+ACK (S→C)</td><td>3000*</td><td style="color:#22d3ee"><strong>501</strong></td><td>ack=500+1. Server's ISN=3000 (any value). Consumes 3000.</td></tr>
+          <tr><td>3</td><td>ACK (C→S)</td><td style="color:#22d3ee"><strong>501</strong></td><td style="color:#22d3ee"><strong>3001</strong></td><td>ack=3000+1. seq=501 (SYN consumed 500). Pure ACK: no consumption.</td></tr>
+          <tr><td>4</td><td>DATA 100B (C→S)</td><td style="color:#22d3ee"><strong>501</strong></td><td style="color:#22d3ee"><strong>3001</strong></td><td>Data bytes 501-600. seq stays at 501 (same as ACK above).</td></tr>
+          <tr><td>5</td><td>ACK (S→C)</td><td style="color:#22d3ee"><strong>3001</strong></td><td style="color:#22d3ee"><strong>601</strong></td><td>ack=501+100=601 (received 100 bytes, next expected=601).</td></tr>
+        </table>
+        <p style="font-size:.8rem;color:#64748b;margin-top:6px">*Server's ISN can be any value; 3000 used here as example.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#062a35;color:#22d3ee">T13</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Full TCP Session]</strong> Host A (ISN=2000) establishes connection with Server S (ISN=7000). After connection: A sends 500 bytes, S acknowledges and sends 300 bytes, A acknowledges. A then initiates termination. <strong>Show ALL segments</strong> with complete seq and ack numbers from establishment to closure.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <table class="data-table">
+          <tr><th>Seg</th><th>Direction</th><th>Type</th><th>seq</th><th>ack</th><th>Bytes</th><th>Phase</th></tr>
+          <tr><td>1</td><td>A→S</td><td>SYN</td><td>2000</td><td>—</td><td>0</td><td>Establish</td></tr>
+          <tr><td>2</td><td>S→A</td><td>SYN+ACK</td><td>7000</td><td>2001</td><td>0</td><td>Establish</td></tr>
+          <tr><td>3</td><td>A→S</td><td>ACK</td><td>2001</td><td>7001</td><td>0</td><td>Establish</td></tr>
+          <tr><td>4</td><td>A→S</td><td>DATA+ACK</td><td>2001</td><td>7001</td><td>500</td><td>Transfer</td></tr>
+          <tr><td>5</td><td>S→A</td><td>DATA+ACK</td><td>7001</td><td>2501</td><td>300</td><td>Transfer</td></tr>
+          <tr><td>6</td><td>A→S</td><td>ACK</td><td>2501</td><td>7301</td><td>0</td><td>Transfer</td></tr>
+          <tr><td>7</td><td>A→S</td><td>FIN+ACK</td><td>2501</td><td>7301</td><td>0</td><td>Terminate</td></tr>
+          <tr><td>8</td><td>S→A</td><td>FIN+ACK</td><td>7301</td><td>2502</td><td>0</td><td>Terminate</td></tr>
+          <tr><td>9</td><td>A→S</td><td>ACK</td><td>2502</td><td>7302</td><td>0</td><td>Terminate</td></tr>
+        </table>
+        <p style="font-size:.83rem;color:#94a3b8;margin-top:8px">
+          Seg 5: ack=2001+500=<strong>2501</strong> (received 500 bytes from A)<br>
+          Seg 6: ack=7001+300=<strong>7301</strong> (received 300 bytes from S)<br>
+          Seg 8: ack=2501+1=<strong>2502</strong> (FIN consumed 1 seq#)<br>
+          Seg 9: ack=7301+1=<strong>7302</strong> (FIN consumed 1 seq#)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="flex items-start gap-3">
+      <span class="q-num" style="background:#062a35;color:#22d3ee">T14</span>
+      <div class="flex-1"><p style="font-size:.9rem;color:#cbd5e1;margin:0"><strong>[Half-Close]</strong> <strong>Explain</strong> the TCP Half-Close mechanism. Why is it needed? Give a real-world example (sorting service) and draw the complete sequence of segments showing which directions are open/closed at each stage.</p></div>
+    </div>
+    <div class="mt-4"><div class="sol-toggle" onclick="toggleSol(this)"><span>▶ View Solution</span><span class="arrow">›</span></div>
+      <div class="sol-body">
+        <p style="font-size:.84rem;color:#94a3b8"><strong style="color:#22d3ee">What is half-close:</strong> TCP allows ONE side to close its SENDING direction while keeping its RECEIVING direction open. This is called a half-close.</p>
+        <p style="font-size:.84rem;color:#94a3b8;margin:8px 0"><strong style="color:#22d3ee">Why needed (sorting service):</strong> Server needs ALL records from client before sorting can begin. If client closes the full connection → server can't send sorted results back. Solution: client closes only the C→S direction, keeps S→C open to receive results.</p>
+        <pre style="font-size:.73rem">Client                                         Server
+  | ─── DATA (all records to sort) ────────────► |
+  | ─── FIN (close C→S direction only) ─────────► |  ← Half-close!
+  | ◄── ACK ─────────────────────────────────────  |  C can still RECEIVE
+  |    [Client can NO LONGER SEND]                |  [Server still CAN send]
+  |    [Client can still RECEIVE]                 |  [Server sorts data...]
+  | ◄── DATA (sorted results from S to C) ──────  |
+  | ─── ACKs ────────────────────────────────────► |
+  | ◄── FIN (S closes S→C direction) ─────────── |  Full close
+  | ─── ACK ─────────────────────────────────────► |  DONE ✓</pre>
+        <table class="data-table" style="margin-top:10px">
+          <tr><th>Stage</th><th>C→S direction</th><th>S→C direction</th></tr>
+          <tr><td>After connection</td><td>OPEN</td><td>OPEN</td></tr>
+          <tr><td>After client's FIN</td><td style="color:#ef4444"><strong>CLOSED</strong></td><td>OPEN</td></tr>
+          <tr><td>While server sends results</td><td style="color:#ef4444">CLOSED</td><td>OPEN</td></tr>
+          <tr><td>After server's FIN + client's ACK</td><td style="color:#ef4444">CLOSED</td><td style="color:#ef4444"><strong>CLOSED</strong></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end pane-questions -->
+
+</main>
+</div><!-- end flex wrapper -->
+
+<!-- Back to top button -->
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})" id="back-top" style="position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;background:#1d3a6b;border:1px solid #3b82f6;color:#60a5fa;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s;z-index:100">↑</button>
+
+<script>
+// ── Tab switching ──
+function switchTab(tab){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+tab).classList.add('active');
+  document.getElementById('toc-study').style.display = tab==='study'?'block':'none';
+  document.getElementById('toc-questions').style.display = tab==='questions'?'block':'none';
+  document.getElementById('tab-study').style.background = tab==='study'?'#1d3a6b':'transparent';
+  document.getElementById('tab-study').style.color = tab==='study'?'#60a5fa':'#64748b';
+  document.getElementById('tab-questions').style.background = tab==='questions'?'#0c3329':'transparent';
+  document.getElementById('tab-questions').style.color = tab==='questions'?'#34d399':'#64748b';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// Initialize tab styles
+switchTab('study');
+
+// ── Collapsible solutions ──
+function toggleSol(btn){
+  const body = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+  btn.querySelector('span:first-child').textContent = isOpen ? '▶ View Solution' : '▼ Hide Solution';
+}
+
+// ── Sidebar active link on scroll ──
+const tocLinks = document.querySelectorAll('.toc-link[href^="#"]');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id = entry.target.id;
+      tocLinks.forEach(l=>{
+        l.classList.toggle('active', l.getAttribute('href')==='#'+id);
+      });
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section[id], div[id^="s-"], div[id^="q-"]').forEach(el=>observer.observe(el));
+
+// ── Back to top button ──
+const backTop = document.getElementById('back-top');
+document.getElementById('main-content').addEventListener('scroll',function(){
+  backTop.style.display = this.scrollTop > 400 ? 'flex' : 'none';
+});
+window.addEventListener('scroll',function(){
+  backTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+});
+</script>
+</body>
+</html>
