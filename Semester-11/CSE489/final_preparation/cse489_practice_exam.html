@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); padding: 20px 0; color: var(--color-text-primary); background: transparent; }
+pre { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; overflow-x: auto; white-space: pre; padding: 14px 16px; color: var(--color-text-primary); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 7px 10px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-secondary); font-weight: 500; color: var(--color-text-secondary); }
+td { padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; font-size: 13px; line-height: 1.5; }
+button { background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; padding: 5px 14px; cursor: pointer; font-size: 13px; color: var(--color-text-primary); font-family: var(--font-sans); }
+button:hover { background: var(--color-background-secondary); }
+ul { padding-left: 20px; }
+li { font-size: 13px; line-height: 1.8; }
+.tag-badge { font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.q-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+.q-head { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.q-body { padding: 14px 16px; }
+.scenario { font-size: 13px; color: var(--color-text-secondary); line-height: 1.7; padding: 10px 12px; background: var(--color-background-secondary); border-radius: 8px; border-left: 3px solid var(--color-border-secondary); margin-bottom: 12px; }
+.qtext { font-size: 14px; font-weight: 500; line-height: 1.6; margin-bottom: 12px; white-space: pre-line; }
+.answer-section { padding-top: 14px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 6px; }
+.ans-label { font-size: 11px; font-weight: 500; color: var(--color-text-success); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.code-wrap { position: relative; background: var(--color-background-secondary); border-radius: 8px; border: 0.5px solid var(--color-border-secondary); overflow: hidden; margin-bottom: 14px; }
+.code-label { font-size: 12px; color: var(--color-text-secondary); padding: 6px 12px 0; font-style: italic; }
+.copy-btn { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 2px 8px; }
+.correction { margin-bottom: 12px; padding: 10px 12px; background: var(--color-background-secondary); border-radius: 8px; border: 0.5px solid var(--color-border-tertiary); }
+.wrong { color: var(--color-text-danger); text-decoration: line-through; }
+.correct { color: var(--color-text-success); }
+.biz-point { margin-bottom: 10px; padding: 10px 12px; background: var(--color-background-secondary); border-radius: 8px; border-left: 3px solid var(--color-border-secondary); }
+.intro-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 12px; }
+.part-label { font-size: 14px; font-weight: 500; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.num-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.reveal-all-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.header { margin-bottom: 20px; }
+.note-box { margin-top: 20px; padding: 12px 14px; background: var(--color-background-secondary); border-radius: 8px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;color:var(--color-text-secondary);margin-bottom:4px;">EAST WEST UNIVERSITY · CSE489 MOBILE PROGRAMMING</div>
+  <div style="font-size:22px;font-weight:500;margin-bottom:6px;">Practice Exam</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">8 questions · 51 marks total · Covers all exam topics · Based on Spring 2025 &amp; Fall 2024 patterns</div>
+  <div class="reveal-all-bar">
+    <button id="toggleAllBtn" onclick="toggleAll()">Reveal all answers ↗</button>
+    <span style="font-size:12px;color:var(--color-text-secondary);">or reveal each individually below</span>
+  </div>
+</div>
+
+<div id="questions"></div>
+
+<div class="note-box">
+  Good luck tomorrow! Focus especially on Q1 (threading code), Q3 (app design), and the code analysis pattern — those carry the most marks.
+</div>
+
+<script>
+const topicColors = {
+  "Threads & Concurrency": { bg: "#e6f1fb", text: "#0c447c", border: "#85b7eb" },
+  "AsyncTask — Code Analysis": { bg: "#faeeda", text: "#633806", border: "#ef9f27" },
+  "App Design — Services & Broadcast": { bg: "#e1f5ee", text: "#085041", border: "#1d9e75" },
+  "Services & Broadcast Receivers": { bg: "#eeedfe", text: "#3c3489", border: "#7f77dd" },
+  "Process Priority & Kill Order": { bg: "#faece7", text: "#4a1b0c", border: "#d85a30" },
+  "Data Storage & WebView": { bg: "#fbeaf0", text: "#4b1528", border: "#d4537e" },
+  "App Business Model": { bg: "#eaf3de", text: "#173404", border: "#639922" },
+  "App Publishing": { bg: "#f1efe8", text: "#2c2c2a", border: "#888780" }
+};
+
+const questions = [
+  { id:1, marks:8, topic:"Threads & Concurrency", co:"CO2, C3",
+    scenario:"ChessClock is a two-player chess game app for Android. Each player has a limited time to make their move. The app has a TextView named tvTimer that shows the current player's remaining time (e.g., \"28s\"). The timer must stop and call onTimerExpired() when it reaches zero.",
+    qtext:"Write the Android Java code snippet to update the tvTimer countdown every second using any Android-supported threading mechanism.",
+    answerHtml:`<p class="intro-text">Two approaches are accepted. Both keep the UI thread free and update tvTimer safely from a worker thread.</p>
+<div class="code-wrap"><div class="code-label">Method 1: Executor + Handler (preferred, modern approach)</div><pre>int totalTime = 30; // seconds
+Handler handler = new Handler(Looper.getMainLooper());
+ExecutorService executor = Executors.newSingleThreadExecutor();
+
+executor.execute(() -> {
+    for (int i = totalTime; i >= 0; i--) {
+        final int remaining = i;
+        handler.post(() -> {
+            tvTimer.setText(remaining + "s"); // safe UI update
+        });
+        if (i == 0) break;
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) { e.printStackTrace(); }
+    }
+    handler.post(() -> {
+        onTimerExpired(); // notify game logic on UI thread
+    });
+});</pre></div>
+<div class="code-wrap"><div class="code-label">Method 2: AsyncTask</div><pre>private class ChessTimerTask extends AsyncTask&lt;Integer, Integer, Void&gt; {
+    @Override
+    protected Void doInBackground(Integer... params) { // worker thread
+        int seconds = params[0];
+        for (int i = seconds; i >= 0; i--) {
+            publishProgress(i);
+            if (i == 0) break;
+            try { Thread.sleep(1000); }
+            catch (InterruptedException e) { cancel(true); }
+            if (isCancelled()) break;
+        }
+        return null;
+    }
+    @Override
+    protected void onProgressUpdate(Integer... values) { // UI thread
+        tvTimer.setText(values[0] + "s");
+    }
+    @Override
+    protected void onPostExecute(Void result) { // UI thread
+        onTimerExpired();
+    }
+}
+// Usage: new ChessTimerTask().execute(30);</pre></div>`
+  },
+  { id:2, marks:7, topic:"AsyncTask — Code Analysis", co:"CO2, C2",
+    scenario:"The MyUploadTask class below is a basic implementation of an asynchronous task to upload a file. Each method contains some information and hints about its purpose. However, some pieces are incorrect. Identify the incorrect ones and replace them with correct information.",
+    qtext:"Identify all incorrect Info/Hint comments and provide the correct replacement for each.",
+    givenCode:`private class MyUploadTask extends AsyncTask<String, Integer, String> {
+
+  // Info-1: This method runs on the UI thread
+  // Hint-1: Perform network setup and file reading operations here
+  @Override
+  protected void onPreExecute() {
+      progressBar.setVisibility(View.VISIBLE);
+      tvStatus.setText("Starting upload...");
+  }
+
+  // Info-2: This method runs on a background thread
+  // Hint-2: Update the progress bar UI directly from here
+  @Override
+  protected String doInBackground(String... urls) {
+      for (int i = 0; i <= 100; i += 10) {
+          publishProgress(i);
+          try { Thread.sleep(500); } catch (InterruptedException e) {}
+      }
+      return "Upload Complete";
+  }
+
+  // Info-3: This method runs on the UI thread after publishProgress() is called
+  // Hint-3: Use this to send progress data back to the background thread
+  @Override
+  protected void onProgressUpdate(Integer... values) {
+      progressBar.setProgress(values[0]);
+  }
+
+  // Info-4: This method runs on a background thread after doInBackground() finishes
+  // Hint-4: Display the final result to the user here
+  @Override
+  protected void onPostExecute(String result) {
+      progressBar.setVisibility(View.GONE);
+      tvStatus.setText(result);
+  }
+}`,
+    answerHtml:`<p class="intro-text">Info-1, Info-2, Info-3 are all correct. The following are INCORRECT:</p>
+<div class="correction">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:6px;">Hint-1 — INCORRECT</div>
+  <div style="font-size:13px;margin-bottom:4px;"><span style="color:var(--color-text-secondary)">Wrong: </span><span class="wrong">Perform network setup and file reading operations here</span></div>
+  <div style="font-size:13px;"><span style="color:var(--color-text-secondary)">Correct: </span><span class="correct">Set up UI elements here (e.g., show progress bar, disable buttons). Do NOT do network or file I/O — onPreExecute() runs on the UI thread and will block it.</span></div>
+</div>
+<div class="correction">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:6px;">Hint-2 — INCORRECT</div>
+  <div style="font-size:13px;margin-bottom:4px;"><span style="color:var(--color-text-secondary)">Wrong: </span><span class="wrong">Update the progress bar UI directly from here</span></div>
+  <div style="font-size:13px;"><span style="color:var(--color-text-secondary)">Correct: </span><span class="correct">Call publishProgress(value) to report progress. You cannot access UI elements from doInBackground() — it throws CalledFromWrongThreadException.</span></div>
+</div>
+<div class="correction">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:6px;">Hint-3 — INCORRECT</div>
+  <div style="font-size:13px;margin-bottom:4px;"><span style="color:var(--color-text-secondary)">Wrong: </span><span class="wrong">Use this to send progress data back to the background thread</span></div>
+  <div style="font-size:13px;"><span style="color:var(--color-text-secondary)">Correct: </span><span class="correct">Update UI elements here (progressBar, tvStatus). This method runs on the UI thread — it receives values from publishProgress() and uses them to update the UI.</span></div>
+</div>
+<div class="correction">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:6px;">Info-4 — INCORRECT</div>
+  <div style="font-size:13px;margin-bottom:4px;"><span style="color:var(--color-text-secondary)">Wrong: </span><span class="wrong">This method runs on a background thread after doInBackground() finishes</span></div>
+  <div style="font-size:13px;"><span style="color:var(--color-text-secondary)">Correct: </span><span class="correct">This method runs on the UI thread after doInBackground() finishes. It is safe to access and update all UI elements here.</span></div>
+</div>`
+  },
+  { id:3, marks:15, topic:"App Design — Services & Broadcast", co:"CO3, C3",
+    scenario:"You are developing an Android app called EventAlert with two screens: HomeActivity (list of events) and DetailActivity (full event details). Users can download events from either screen for offline viewing. Only one download at a time is allowed, downloads must continue even if the app is closed, saved events must reload after device restart, and download progress must show on both screens simultaneously.",
+    qtext:"a) Prepare a list of required features. (2 marks)\nb) Select an appropriate Android component for each feature. (4 marks)\nc) Implement essential Java code snippets to accomplish these features. (9 marks)",
+    answerHtml:`<div class="part-label">a) Required Features</div>
+<ul style="margin-bottom:16px;">
+  <li>Download event details for offline viewing</li>
+  <li>Allow only one download at a time (no concurrent downloads)</li>
+  <li>Downloads continue even if the app is closed</li>
+  <li>Automatically reload saved events after device restart</li>
+  <li>Show live download progress on both HomeActivity and DetailActivity</li>
+</ul>
+<div class="part-label">b) Android Components</div>
+<div style="overflow-x:auto;margin-bottom:16px;"><table>
+  <thead><tr><th>Feature</th><th>Component</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td>Download events</td><td>Started Service</td><td>Survives Activity lifecycle; runs when app is closed</td></tr>
+    <tr><td>One download at a time</td><td>Executors.newSingleThreadExecutor()</td><td>Queues requests; only one runs at a time</td></tr>
+    <tr><td>Survive app close</td><td>START_REDELIVER_INTENT</td><td>System restarts service and re-delivers intent if killed</td></tr>
+    <tr><td>Reload after restart</td><td>BroadcastReceiver (BOOT_COMPLETED)</td><td>Triggered by system after every device boot</td></tr>
+    <tr><td>Progress on both screens</td><td>LocalBroadcastManager</td><td>Any registered Activity gets live updates</td></tr>
+  </tbody>
+</table></div>
+<div class="part-label">c) Code Snippets</div>
+<div class="code-wrap"><div class="code-label">EventDownloadService.java</div><pre>public class EventDownloadService extends Service {
+    public static final String ACTION_PROGRESS = "com.eventalert.PROGRESS";
+    public static final String EXTRA_PROGRESS = "progress";
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String eventId = intent.getStringExtra("eventId");
+        executor.execute(() -> {
+            for (int i = 0; i <= 100; i += 10) {
+                try { Thread.sleep(500); } catch (InterruptedException e) {}
+                Intent b = new Intent(ACTION_PROGRESS);
+                b.putExtra(EXTRA_PROGRESS, i);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(b);
+            }
+            stopSelf();
+        });
+        return START_REDELIVER_INTENT; // restart if system kills it
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) { return null; }
+}</pre></div>
+<div class="code-wrap"><div class="code-label">BootReceiver.java</div><pre>public class BootReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+            context.startService(new Intent(context, EventDownloadService.class));
+        }
+    }
+}</pre></div>
+<div class="code-wrap"><div class="code-label">In HomeActivity.java AND DetailActivity.java</div><pre>private BroadcastReceiver progressReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        int p = intent.getIntExtra(EventDownloadService.EXTRA_PROGRESS, 0);
+        progressBar.setProgress(p);
+        tvStatus.setText(p + "% downloaded");
+    }
+};
+
+@Override
+protected void onStart() {
+    super.onStart();
+    LocalBroadcastManager.getInstance(this).registerReceiver(
+        progressReceiver, new IntentFilter(EventDownloadService.ACTION_PROGRESS));
+}
+
+@Override
+protected void onStop() {
+    super.onStop();
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(progressReceiver);
+}
+
+// To start a download from either screen:
+Intent i = new Intent(this, EventDownloadService.class);
+i.putExtra("eventId", selectedId);
+startService(i);</pre></div>
+<div class="code-wrap"><div class="code-label">AndroidManifest.xml</div><pre>&lt;uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /&gt;
+
+&lt;service android:name=".EventDownloadService" android:exported="false" /&gt;
+
+&lt;receiver android:name=".BootReceiver" android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.BOOT_COMPLETED" /&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;</pre></div>`
+  },
+  { id:4, marks:6, topic:"Services & Broadcast Receivers", co:"CO3, C2, C3",
+    scenario:"WordRace is a multiplayer word game where players take turns. After each submission a 30-second countdown begins for the opponent. If it finishes before the opponent acts, turnCompleted() must be called. The countdown cannot run on the UI thread — a Service must be used.",
+    qtext:"Discuss which type of service you prefer for the countdown and explain why. Then write the XML declarations and Java code needed to notify the Activity when the countdown is completed.",
+    answerHtml:`<div style="padding:12px 14px;background:var(--color-background-secondary);border-radius:8px;border:0.5px solid var(--color-border-tertiary);margin-bottom:14px;">
+  <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Discussion</div>
+  <p style="font-size:13px;line-height:1.7;">A <strong>Started (Unbound) Service</strong> is preferred because:<br>
+  • The countdown is a fire-and-forget task — the Activity does not need to call methods on it.<br>
+  • It runs independently of the Activity lifecycle with no ServiceConnection overhead.<br>
+  • sendBroadcast() cleanly notifies any registered Activity when time is up.<br>
+  • A Bound Service would add unnecessary complexity (Binder, ServiceConnection) for a simple one-way notification.</p>
+</div>
+<div class="code-wrap"><div class="code-label">AndroidManifest.xml</div><pre>&lt;service android:name=".CountdownService" android:exported="false" /&gt;</pre></div>
+<div class="code-wrap"><div class="code-label">CountdownService.java</div><pre>public class CountdownService extends Service {
+    public static final String ACTION_TURN_COMPLETED = "com.wordrace.TURN_COMPLETED";
+    private static final int COUNTDOWN_SEC = 30;
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        new Thread(() -> {
+            for (int i = COUNTDOWN_SEC; i > 0; i--) {
+                try { Thread.sleep(1000); }
+                catch (InterruptedException e) { break; }
+            }
+            sendBroadcast(new Intent(ACTION_TURN_COMPLETED));
+            stopSelf();
+        }).start();
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) { return null; }
+}</pre></div>
+<div class="code-wrap"><div class="code-label">GameActivity.java — register and handle the broadcast</div><pre>private BroadcastReceiver turnReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        turnCompleted(); // called when countdown ends
+    }
+};
+
+@Override
+protected void onStart() {
+    super.onStart();
+    registerReceiver(turnReceiver,
+        new IntentFilter(CountdownService.ACTION_TURN_COMPLETED));
+    startService(new Intent(this, CountdownService.class));
+}
+
+@Override
+protected void onStop() {
+    super.onStop();
+    unregisterReceiver(turnReceiver);
+}</pre></div>`
+  },
+  { id:5, marks:3, topic:"Process Priority & Kill Order", co:"CO2, C2",
+    scenario:"You opened a news reader app at 8:00 AM. At 8:30 AM you opened a music player which began playing in the background. At 9:00 AM you opened a navigation app (Maps) which remains visible on screen. At 9:15 AM you opened Instagram, scrolled for 10 minutes, then pressed Home. You are now actively playing a mobile game. Meanwhile, a backup app has been syncing files via a background service. The mobile game needs additional memory.",
+    qtext:"Prepare the list of victim applications in the sequence of priority that the Android system follows to keep the gaming application running.",
+    answerHtml:`<p class="intro-text">Android kills processes from lowest to highest priority. The gaming app is a foreground process and is protected.</p>
+<div style="overflow-x:auto"><table>
+  <thead><tr><th>Kill Order</th><th>App</th><th>Priority Type</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td style="color:var(--color-text-danger);font-weight:500;">1st (first killed)</td><td>News reader app</td><td>Empty Process</td><td>Opened earliest at 8:00 AM, no active component, onDestroy() called — lowest priority</td></tr>
+    <tr><td style="color:var(--color-text-danger);font-weight:500;">2nd</td><td>Instagram</td><td>Background Process</td><td>onStop() called when user pressed Home; in LRU cache but expendable</td></tr>
+    <tr><td style="color:var(--color-text-danger);font-weight:500;">3rd</td><td>Backup app</td><td>Service Process</td><td>Background sync service — lower priority than visible processes</td></tr>
+    <tr><td style="color:var(--color-text-danger);font-weight:500;">4th</td><td>Navigation app (Maps)</td><td>Visible Process</td><td>Visible on screen but not the active foreground — Android protects it longer</td></tr>
+    <tr><td style="color:var(--color-text-danger);font-weight:500;">5th (last killed)</td><td>Music player</td><td>Foreground Service</td><td>Foreground service with notification for playback — highest priority among victims</td></tr>
+  </tbody>
+</table></div>
+<p style="margin-top:10px;font-size:13px;color:var(--color-text-secondary);font-style:italic;">The gaming app is a Foreground Process (active user interaction) — it is never killed to free its own memory.</p>`
+  },
+  { id:6, marks:8, topic:"Data Storage & WebView", co:"CO3, C3",
+    scenario:"MediTrack is a mobile app that helps patients track medical appointments and health records. It stores appointment schedules, prescription history, and highly sensitive data (patient location and emergency contacts). Access to sensitive data must be restricted to verified users. All data is stored and accessed remotely and securely.",
+    qtext:"a) Suggest your preferred approach — Own Processing Technique, API, or WebView — for implementation, authentication & verification, performance optimization, and data security. (3 marks)\n\nb) Implement the XML and Java code to load and display http://www.meditrack.info using a WebView. (5 marks)",
+    answerHtml:`<div class="part-label">a) Technique Suggestions</div>
+<div style="overflow-x:auto;margin-bottom:16px;"><table>
+  <thead><tr><th>Concern</th><th>Technique</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td>Implementation</td><td>API (REST)</td><td>Lightweight, structured data. Returns only required fields. Faster than loading full HTML pages.</td></tr>
+    <tr><td>Authentication &amp; Verification</td><td>API (JWT tokens)</td><td>Supports role-based access, refresh tokens, server-side session revocation. WebView cannot securely manage auth tokens.</td></tr>
+    <tr><td>Performance Optimization</td><td>API</td><td>Fetches only needed data; supports local caching (Room/SQLite). WebView loads entire pages — much heavier for structured data.</td></tr>
+    <tr><td>Data Security</td><td>Own Processing Technique</td><td>Sensitive fields must be encrypted at rest with AES-256 before local storage. API secures transport (HTTPS) but app-side encryption requires own implementation.</td></tr>
+  </tbody>
+</table></div>
+<div class="part-label">b) WebView Implementation</div>
+<div class="code-wrap"><div class="code-label">activity_main.xml</div><pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"&gt;
+
+    &lt;WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+
+&lt;/LinearLayout&gt;</pre></div>
+<div class="code-wrap"><div class="code-label">MainActivity.java</div><pre>public class MainActivity extends AppCompatActivity {
+    private WebView webView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        webView = findViewById(R.id.webView);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+
+        // Keeps navigation inside the app
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl("http://www.meditrack.info");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+}</pre></div>
+<div class="code-wrap"><div class="code-label">AndroidManifest.xml</div><pre>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;</pre></div>`
+  },
+  { id:7, marks:7, topic:"App Business Model", co:"CO3, C2",
+    scenario:"You have developed LinguaLeap, a language learning app offering vocabulary drills, grammar lessons, pronunciation practice, and AI speaking challenges for 20+ languages. You aim to generate continuous revenue from users while they are actively using the app.",
+    qtext:"Propose a suitable business model — individual or hybrid — that ensures continuous income from users while they actively use the app. Clearly explain how the chosen model enables consistent monetization over time.",
+    answerHtml:`<div style="display:inline-block;font-size:13px;font-weight:500;padding:4px 12px;background:#eaf3de;color:#173404;border-radius:6px;margin-bottom:14px;border:0.5px solid #97c459;">Recommended Model: Freemium + Subscription (Paywall) Hybrid</div>
+<div class="biz-point"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">Freemium Layer — User Acquisition</div><div style="font-size:13px;line-height:1.7;">LinguaLeap is free to download. New users access 3 languages, 10 lessons each, basic vocabulary quizzes, and a daily 5-minute challenge. This removes the download barrier and lets users experience real value before paying.</div></div>
+<div class="biz-point"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">Subscription Layer — Continuous Revenue</div><div style="font-size:13px;line-height:1.7;">Once users are engaged (streaks, progress tracking, partial fluency), they are prompted to subscribe: ৳299/month or ৳2,499/year. Subscribers unlock all 20+ languages, unlimited lessons, AI speaking sessions, offline downloads, and ad-free experience. Subscriptions auto-renew, creating predictable recurring revenue.</div></div>
+<div class="biz-point"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">Why This Ensures Continuous Income</div><div style="font-size:13px;line-height:1.7;">Daily streaks and personalized learning paths drive long-term engagement. Free users who see real progress are highly motivated to upgrade. Auto-renewal means revenue does not depend on repeated purchase decisions. The yearly plan (discounted) locks in users for a full year at a time.</div></div>
+<div class="biz-point"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">Optional Add-on: In-App Purchases</div><div style="font-size:13px;line-height:1.7;">Specialized packs (e.g., "IELTS Preparation", "Business Japanese") sold as one-time purchases capture users who resist subscriptions but will pay for specific, high-value content.</div></div>`
+  },
+  { id:8, marks:5, topic:"App Publishing", co:"CO3, C2",
+    scenario:"You have finished developing a productivity mobile application and are ready to publish it on the Google Play Store.",
+    qtext:"Identify the general requirements for publishing an Android app on the Play Store, including necessary account types, required assets, and compliance with content policies.",
+    answerHtml:`<div style="font-size:13px;font-weight:500;margin-bottom:6px;">1. Account Requirements</div>
+<ul style="margin-bottom:12px;"><li>Google Developer Account — one-time $25 fee; required to publish any app</li><li>Google Merchant Account — required only if selling paid apps or in-app purchases</li></ul>
+<div style="font-size:13px;font-weight:500;margin-bottom:6px;">2. Legal Documents</div>
+<ul style="margin-bottom:12px;"><li>Privacy Policy — list all personal data collected, usage purpose, and storage location</li><li>EULA — defines what users can and cannot do with the app</li><li>Terms of Use — optional but strongly recommended</li></ul>
+<div style="font-size:13px;font-weight:500;margin-bottom:6px;">3. Technical Requirements</div>
+<ul style="margin-bottom:12px;"><li>Unique Bundle/Package ID — cannot be changed after publishing</li><li>App signed with a developer signing certificate</li><li>File format: AAB (.aab) preferred; APK (.apk) also accepted</li><li>App size ≤ 100MB (use APK Expansion Files if larger)</li></ul>
+<div style="font-size:13px;font-weight:500;margin-bottom:6px;">4. Required Store Assets</div>
+<ul style="margin-bottom:12px;"><li>App icon: 512×512px, 32-bit PNG, max 1024KB</li><li>Minimum 2 screenshots: 480×800px, 72dpi, JPEG or 24-bit PNG</li><li>Feature graphic (if featured): 1024×500px, 24-bit PNG</li><li>App name, description (max 4000 chars), category, contact info</li></ul>
+<div style="font-size:13px;font-weight:500;margin-bottom:6px;">5. Content Policy Compliance</div>
+<ul style="margin-bottom:12px;"><li>Complete IARC content rating questionnaire accurately — misrepresentation leads to removal</li><li>Comply with all Google Play policies (no restricted content, spam, deception)</li><li>Declare ads and in-app purchases on the store listing page</li><li>Note: a paid app can later become free, but NOT the other way around</li></ul>`
+  }
+];
+
+let openAnswers = {};
+
+function toggleAll() {
+  const allOpen = questions.every(q => openAnswers[q.id]);
+  if (allOpen) {
+    openAnswers = {};
+    document.getElementById("toggleAllBtn").textContent = "Reveal all answers ↗";
+  } else {
+    questions.forEach(q => openAnswers[q.id] = true);
+    document.getElementById("toggleAllBtn").textContent = "Hide all answers";
+  }
+  renderQuestions();
+}
+
+function toggleAnswer(id) {
+  openAnswers[id] = !openAnswers[id];
+  const allOpen = questions.every(q => openAnswers[q.id]);
+  document.getElementById("toggleAllBtn").textContent = allOpen ? "Hide all answers" : "Reveal all answers ↗";
+  renderQuestions();
+}
+
+function copyCode(id) {
+  const pre = document.getElementById("pre_" + id);
+  if (pre) {
+    navigator.clipboard.writeText(pre.textContent);
+    const btn = document.getElementById("cpbtn_" + id);
+    if (btn) { btn.textContent = "✓ copied"; setTimeout(() => { btn.textContent = "copy"; }, 1500); }
+  }
+}
+
+function renderQuestions() {
+  const container = document.getElementById("questions");
+  let html = "";
+  questions.forEach(q => {
+    const c = topicColors[q.topic] || { bg:"#f1efe8", text:"#2c2c2a", border:"#888780" };
+    const open = openAnswers[q.id];
+    let givenCodeHtml = "";
+    if (q.givenCode) {
+      givenCodeHtml = `<div class="code-wrap" style="margin-bottom:12px;"><div class="code-label">Given code — analyze this:</div><pre>${escHtml(q.givenCode)}</pre></div>`;
+    }
+    html += `<div class="q-card">
+      <div class="q-head">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="num-circle">${q.id}</div>
+          <span class="tag-badge" style="background:${c.bg};color:${c.text};border:0.5px solid ${c.border};">${q.topic}</span>
+          <span style="font-size:12px;color:var(--color-text-secondary);">${q.co}</span>
+        </div>
+        <span style="font-size:13px;font-weight:500;">${q.marks} marks</span>
+      </div>
+      <div class="q-body">
+        <div class="scenario">${escHtml(q.scenario)}</div>
+        ${givenCodeHtml}
+        <div class="qtext">${escHtml(q.qtext)}</div>
+        <button onclick="toggleAnswer(${q.id})">${open ? "Hide answer" : "Show answer ↗"}</button>
+        ${open ? `<div class="answer-section"><div class="ans-label">Answer</div>${q.answerHtml}</div>` : ""}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+renderQuestions();
+</script>
+</body>
+</html>
