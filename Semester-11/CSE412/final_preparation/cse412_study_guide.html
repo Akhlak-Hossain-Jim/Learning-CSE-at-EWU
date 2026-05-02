@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CSE412 · Exam Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{background:#0f0f0f;color:#e5e5e5;font-family:'DM Sans',sans-serif;line-height:1.65}
+.card{background:#181818;border:1px solid #2a2a2a;border-radius:14px;padding:22px}
+.card-sm{background:#1e1e1e;border:1px solid #2d2d2d;border-radius:10px;padding:16px}
+.card-inner{background:#111;border:1px solid #252525;border-radius:8px;padding:14px}
+.mono{font-family:'JetBrains Mono',monospace}
+pre,.code-block{background:#0d0d0d;border:1px solid #252525;border-radius:8px;padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:0.81rem;line-height:1.9;color:#ccc;overflow-x:auto;white-space:pre}
+.kw{color:#569cd6}.fn{color:#dcdcaa}.num{color:#b5cea8}.str{color:#ce9178}.cmt{color:#6a9955}.tp{color:#4ec9b0}.vr{color:#9cdcfe}.op{color:#D97757}
+.ans-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.ans-body.open{max-height:9999px}
+table{border-collapse:collapse;width:100%;font-size:0.85rem}
+th,td{border:1px solid #2d2d2d;padding:8px 12px;text-align:center}
+th{background:#1a1a1a;color:#D97757;font-weight:600;font-size:0.78rem;letter-spacing:.04em;text-transform:uppercase}
+td{background:#141414}
+tr:nth-child(even) td{background:#161616}
+td.xc{color:#4ade80;font-weight:700;font-size:1.05rem}
+td.dc{color:#444}
+td.hi{font-weight:600;color:#D97757}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.bo{background:rgba(217,119,87,.13);color:#D97757;border:1px solid rgba(217,119,87,.3)}
+.bb{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25)}
+.bg{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25)}
+.bp{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25)}
+.formula{background:#111;border:1px solid #D97757;border-radius:8px;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:.88rem;color:#D97757;text-align:center;margin:6px 0}
+.sec-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:7px;font-size:.73rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.sticky-nav{position:sticky;top:0;z-index:50;background:rgba(15,15,15,.96);backdrop-filter:blur(14px);border-bottom:1px solid #1e1e1e}
+.q-card{background:#161616;border:1px solid #2d2d2d;border-radius:14px;overflow:hidden;margin-bottom:20px}
+.q-hdr{padding:16px 22px;border-bottom:1px solid #222;display:flex;align-items:center;gap:12px}
+.q-body{padding:18px 22px}
+.q-btn{background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.3);color:#D97757;border-radius:8px;padding:8px 18px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%;font-family:'DM Sans',sans-serif}
+.q-btn:hover{background:rgba(217,119,87,.2)}
+.ans-wrap{border-top:1px solid #222;padding:22px}
+.step{display:flex;gap:11px;margin-bottom:9px;font-size:.86rem;color:#bbb}
+.snum{width:24px;height:24px;border-radius:50%;background:rgba(217,119,87,.14);border:1px solid rgba(217,119,87,.35);color:#D97757;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.pbox{background:#161616;border:1.5px solid #D97757;border-radius:8px;padding:10px 13px;text-align:center;font-size:.8rem}
+.pbox .ptitle{color:#D97757;font-weight:700;padding-bottom:5px;margin-bottom:5px;border-bottom:1px solid #2a2a2a;font-size:.77rem}
+.pbox .pf{color:#888;font-family:'JetBrains Mono',monospace;font-size:.72rem;text-align:left;line-height:1.7}
+.pbox-b{border-color:#60a5fa}.pbox-b .ptitle{color:#60a5fa}
+.pbox-g{border-color:#4ade80}.pbox-g .ptitle{color:#4ade80}
+.pbox-gr{border-color:#555}.pbox-gr .ptitle{color:#aaa}
+section[id]{scroll-margin-top:70px}
+hr.div{border:none;border-top:1px solid #222;margin:32px 0}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sticky-nav">
+  <div style="max-width:1100px;margin:0 auto;padding:0 22px">
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;overflow-x:auto">
+      <div style="width:28px;height:28px;border-radius:50%;background:#D97757;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3L3 8.5l9 5.5 9-5.5L12 3z" stroke="white" stroke-width="2.2" stroke-linejoin="round"/><path d="M3 15.5l9 5.5 9-5.5M3 11.5l9 5.5 9-5.5" stroke="white" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      </div>
+      <span style="font-weight:700;font-size:.88rem;color:#fff;margin-right:6px;white-space:nowrap">CSE412 Exam Prep</span>
+      <div style="width:1px;height:18px;background:#333;flex-shrink:0"></div>
+      <a href="#wb" style="color:#888;text-decoration:none;font-size:.79rem;font-weight:500;white-space:nowrap;padding:4px 9px;border-radius:6px;transition:color .2s" onmouseover="this.style.color='#D97757'" onmouseout="this.style.color='#888'">⬜ White Box</a>
+      <a href="#bb" style="color:#888;text-decoration:none;font-size:.79rem;font-weight:500;white-space:nowrap;padding:4px 9px" onmouseover="this.style.color='#60a5fa'" onmouseout="this.style.color='#888'">⬛ Black Box</a>
+      <a href="#oop" style="color:#888;text-decoration:none;font-size:.79rem;font-weight:500;white-space:nowrap;padding:4px 9px" onmouseover="this.style.color='#4ade80'" onmouseout="this.style.color='#888'">🔷 OOP</a>
+      <a href="#dp" style="color:#888;text-decoration:none;font-size:.79rem;font-weight:500;white-space:nowrap;padding:4px 9px" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#888'">🧩 Patterns</a>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;padding:36px 22px 80px">
+
+<!-- HERO -->
+<div style="text-align:center;padding:36px 0 48px">
+  <div class="badge bo" style="margin:0 auto 14px">Exam Tomorrow · CSE412 Software Testing</div>
+  <h1 style="font-size:2.3rem;font-weight:700;line-height:1.22;margin-bottom:10px">Software Testing &amp;<br><span style="color:#D97757">OOP Design Patterns</span></h1>
+  <p style="color:#666;max-width:520px;margin:0 auto;font-size:.9rem">Practice questions modelled on your lecture slides — DD graphs, decision tables, BVA, all four OOP pillars, and all four design patterns.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:20px">
+    <span class="badge bo">CFG &amp; DD Graph</span><span class="badge bo">Cyclomatic Complexity</span>
+    <span class="badge bb">Decision Table</span><span class="badge bb">BVC · Robust · Worst-case</span>
+    <span class="badge bg">Encapsulation · Abstraction</span><span class="badge bg">Inheritance · Polymorphism</span>
+    <span class="badge bp">Singleton · Adapter · Bridge · Observer</span>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 1: WHITE BOX ═══════════ -->
+<section id="wb">
+<div class="sec-tag" style="background:rgba(217,119,87,.07);border:1px solid rgba(217,119,87,.25);color:#D97757">⬜ Section 1 · White Box Testing</div>
+<h2 style="font-size:1.55rem;font-weight:700;margin-bottom:3px">White Box Testing</h2>
+<p style="color:#666;margin-bottom:24px;font-size:.88rem">CFG · DD Graph · Cyclomatic Complexity — testing with full knowledge of internal code structure</p>
+
+<!-- Theory cards -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px;margin-bottom:26px">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><span style="font-size:1.2rem">📊</span><h3 style="font-weight:700;font-size:.93rem">Control Flow Graph (CFG)</h3></div>
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;color:#bbb;font-size:.85rem">
+      <li style="display:flex;gap:8px"><span style="color:#D97757;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Node</strong> — one or more sequential statements (circle)</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#D97757;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Edge</strong> — directed arrow, flow of control</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#D97757;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Decision node</strong> — &gt;1 edge leaving (double circle)</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#D97757;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Junction node</strong> — &gt;1 edge entering</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#D97757;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Region</strong> — bounded area incl. outer region</span></li>
+    </ul>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><span style="font-size:1.2rem">🗺️</span><h3 style="font-weight:700;font-size:.93rem">Building a DD Graph — Steps</h3></div>
+    <div class="step"><div class="snum">1</div><span>Number executable statements (skip uninitialised declarations)</span></div>
+    <div class="step"><div class="snum">2</div><span>Group sequential statements into one node</span></div>
+    <div class="step"><div class="snum">3</div><span>Draw directed edges; label T/F on decision branches</span></div>
+    <div class="step"><div class="snum">4</div><span>Label nodes alphabetically A, B, C…</span></div>
+    <div class="step"><div class="snum">5</div><span>For loops: condition node is both decision AND junction (back-edge from loop body)</span></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><span style="font-size:1.2rem">🔢</span><h3 style="font-weight:700;font-size:.93rem">Cyclomatic Complexity — 3 Formulas</h3></div>
+    <div class="formula">V(G) = e – n + 2p</div>
+    <div class="formula">V(G) = Number of Regions</div>
+    <div class="formula">V(G) = Decision Nodes + 1</div>
+    <p style="font-size:.81rem;color:#666;margin-top:10px"><span class="mono" style="color:#D97757">e</span> = edges · <span class="mono" style="color:#D97757">n</span> = nodes · <span class="mono" style="color:#D97757">p</span> = components (usually 1)</p>
+  </div>
+</div>
+
+<!-- Q1 -->
+<div class="q-card">
+  <div class="q-hdr">
+    <span class="badge bo">Q1</span>
+    <h3 style="font-weight:700;font-size:.97rem;flex:1">White Box · Two Sequential If-Else Statements</h3>
+    <span class="badge" style="background:#1a1a1a;border:1px solid #333;color:#666">Intermediate</span>
+  </div>
+  <div class="q-body">
+    <p style="color:#bbb;margin-bottom:14px;font-size:.88rem">Consider the following program:</p>
+    <pre><span class="kw">main</span>() {
+  <span class="tp">int</span> <span class="vr">a</span>, <span class="vr">b</span>, <span class="vr">result</span>;
+  <span class="num">1</span>.  <span class="fn">scanf</span>(<span class="str">"%d %d"</span>, &amp;<span class="vr">a</span>, &amp;<span class="vr">b</span>);
+  <span class="num">2</span>.  <span class="kw">if</span> (<span class="vr">a</span> <span class="op">&gt;</span> <span class="vr">b</span>)
+  <span class="num">3</span>.    <span class="vr">result</span> <span class="op">=</span> <span class="vr">a</span> <span class="op">-</span> <span class="vr">b</span>;
+  <span class="num">4</span>.  <span class="kw">else</span>
+  <span class="num">5</span>.    <span class="vr">result</span> <span class="op">=</span> <span class="vr">b</span> <span class="op">-</span> <span class="vr">a</span>;
+  <span class="num">6</span>.  <span class="kw">if</span> (<span class="vr">result</span> <span class="op">==</span> <span class="num">0</span>)
+  <span class="num">7</span>.    <span class="fn">printf</span>(<span class="str">"Numbers are equal"</span>);
+  <span class="num">8</span>.  <span class="kw">else</span>
+  <span class="num">9</span>.    <span class="fn">printf</span>(<span class="str">"Difference is %d"</span>, <span class="vr">result</span>);
+  <span class="num">10</span>. } <span class="cmt">// end main</span></pre>
+    <div style="margin-top:14px;padding:13px 16px;background:#111;border-left:3px solid #D97757;border-radius:0 8px 8px 0">
+      <strong style="font-size:.88rem">Tasks:</strong>
+      <ol style="color:#bbb;font-size:.86rem;margin:6px 0 0 18px;display:flex;flex-direction:column;gap:3px">
+        <li>Draw the DD Graph</li><li>Calculate CC using all three methods</li>
+        <li>List all independent paths</li><li>Design test cases from independent paths</li>
+      </ol>
+    </div>
+    <div style="margin-top:18px"><button class="q-btn" onclick="tog(this,'a1')">▼ Show Answer</button></div>
+  </div>
+  <div id="a1" class="ans-body">
+  <div class="ans-wrap">
+    <h4 style="font-weight:700;color:#D97757;margin-bottom:14px;font-size:.93rem">✦ Complete Solution</h4>
+
+    <!-- Node mapping -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:9px;font-size:.86rem">Step 1 — Node Grouping</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:7px;font-size:.81rem">
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">A</span> → {1} scanf</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">B</span> → {2} <strong>Decision:</strong> if(a&gt;b)</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">C</span> → {3} result = a−b</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">D</span> → {5} result = b−a</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">E</span> → {6} <strong>Junction+Decision:</strong> if(result==0)</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">F</span> → {7} printf "equal"</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">G</span> → {9} printf "diff"</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">H</span> → Exit</div>
+      </div>
+      <p style="color:#555;font-size:.78rem;margin-top:8px">Edges: A→B, B→C(T), B→D(F), C→E, D→E, E→F(T), E→G(F), F→H, G→H &nbsp;→&nbsp; e=9, n=8</p>
+    </div>
+
+    <!-- DD Graph SVG -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:12px;font-size:.86rem">Step 2 — DD Graph</p>
+      <div style="display:flex;justify-content:center;align-items:flex-start;gap:24px;flex-wrap:wrap">
+        <svg viewBox="0 0 290 490" width="230" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+          <defs><marker id="a1m" markerWidth="7" markerHeight="5.5" refX="6" refY="2.75" orient="auto"><polygon points="0 0,7 2.75,0 5.5" fill="#555"/></marker></defs>
+          <!-- edges -->
+          <line x1="145" y1="60" x2="145" y2="95" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <line x1="130" y1="132" x2="90" y2="178" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <text x="82" y="158" fill="#4ade80" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">T</text>
+          <line x1="160" y1="132" x2="200" y2="178" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <text x="196" y="158" fill="#f87171" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">F</text>
+          <line x1="87" y1="218" x2="127" y2="258" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <line x1="203" y1="218" x2="163" y2="258" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <line x1="130" y1="295" x2="90" y2="340" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <text x="82" y="320" fill="#4ade80" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">T</text>
+          <line x1="160" y1="295" x2="200" y2="340" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <text x="196" y="320" fill="#f87171" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">F</text>
+          <line x1="87" y1="378" x2="127" y2="418" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <line x1="203" y1="378" x2="163" y2="418" stroke="#555" stroke-width="1.5" marker-end="url(#a1m)"/>
+          <!-- nodes -->
+          <circle cx="145" cy="38" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="145" y="34" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">A</text>
+          <text x="145" y="47" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{1}</text>
+          <!-- B decision double -->
+          <circle cx="145" cy="114" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <circle cx="145" cy="114" r="14" fill="none" stroke="#D97757" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="145" y="110" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">B</text>
+          <text x="145" y="123" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{2}</text>
+          <circle cx="72" cy="198" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="72" y="194" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">C</text>
+          <text x="72" y="207" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{3}</text>
+          <circle cx="218" cy="198" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="218" y="194" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">D</text>
+          <text x="218" y="207" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{5}</text>
+          <!-- E decision double -->
+          <circle cx="145" cy="277" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <circle cx="145" cy="277" r="14" fill="none" stroke="#D97757" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="145" y="273" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">E</text>
+          <text x="145" y="286" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{6}</text>
+          <circle cx="72" cy="358" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="72" y="354" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">F</text>
+          <text x="72" y="367" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{7}</text>
+          <circle cx="218" cy="358" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="218" y="354" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">G</text>
+          <text x="218" y="367" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{9}</text>
+          <circle cx="145" cy="438" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="145" y="434" fill="#e5e5e5" font-size="11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">H</text>
+          <text x="145" y="447" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">exit</text>
+          <!-- region labels -->
+          <text x="145" y="240" fill="#2a2a2a" font-size="10" text-anchor="middle" font-family="DM Sans,sans-serif">R₁</text>
+          <text x="145" y="403" fill="#2a2a2a" font-size="10" text-anchor="middle" font-family="DM Sans,sans-serif">R₂</text>
+          <text x="258" y="290" fill="#2a2a2a" font-size="10" text-anchor="middle" font-family="DM Sans,sans-serif">R₃</text>
+        </svg>
+        <div style="padding:8px 0;font-size:.8rem;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="28" height="28"><circle cx="14" cy="14" r="11" fill="#161616" stroke="#D97757" stroke-width="2"/></svg>
+            <span style="color:#bbb">Sequential node</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="28" height="28"><circle cx="14" cy="14" r="11" fill="#161616" stroke="#D97757" stroke-width="2"/><circle cx="14" cy="14" r="7" fill="none" stroke="#D97757" stroke-width="1" stroke-dasharray="2,2"/></svg>
+            <span style="color:#bbb">Decision node</span>
+          </div>
+          <div style="margin-top:8px;color:#aaa;line-height:1.7">
+            <strong style="color:#e5e5e5">Count:</strong><br>
+            e = 9 edges<br>n = 8 nodes<br>p = 1 component
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CC -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Step 3 — Cyclomatic Complexity (all 3 methods)</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">
+        <div style="background:#111;border-radius:7px;padding:12px;border:1px solid #222">
+          <div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:6px">V(G) = e – n + 2p</div>
+          <div class="mono" style="font-size:.82rem;color:#ccc">= 9 – 8 + 2(1) = <strong style="color:#4ade80">3</strong></div>
+        </div>
+        <div style="background:#111;border-radius:7px;padding:12px;border:1px solid #222">
+          <div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:6px">Regions</div>
+          <div style="font-size:.81rem;color:#ccc">R₁ (B-C-E), R₂ (E-F-H-G), R₃ (outer) = <strong style="color:#4ade80">3</strong></div>
+        </div>
+        <div style="background:#111;border-radius:7px;padding:12px;border:1px solid #222">
+          <div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:6px">Decision Nodes + 1</div>
+          <div style="font-size:.81rem;color:#ccc">B and E = 2 decisions → 2 + 1 = <strong style="color:#4ade80">3</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paths -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:9px;font-size:.86rem">Step 4 — Independent Paths (CC = 3)</p>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(i)</span><span class="mono" style="color:#D97757;font-size:.83rem">A→B→C→E→G→H</span><span style="color:#777;font-size:.8rem">a&gt;b, result≠0</span></div>
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(ii)</span><span class="mono" style="color:#D97757;font-size:.83rem">A→B→D→E→F→H</span><span style="color:#777;font-size:.8rem">a=b, result=0</span></div>
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(iii)</span><span class="mono" style="color:#D97757;font-size:.83rem">A→B→D→E→G→H</span><span style="color:#777;font-size:.8rem">a&lt;b, result≠0</span></div>
+      </div>
+    </div>
+
+    <!-- Test cases -->
+    <div class="card-sm">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Step 5 — Test Cases</p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>TC</th><th>Path</th><th>Input (a,b)</th><th>result</th><th>Expected Output</th></tr></thead>
+          <tbody>
+            <tr><td class="hi">TC-1</td><td>(i)</td><td class="mono">7, 3</td><td class="mono">4</td><td>Difference is 4</td></tr>
+            <tr><td class="hi">TC-2</td><td>(ii)</td><td class="mono">5, 5</td><td class="mono">0</td><td>Numbers are equal</td></tr>
+            <tr><td class="hi">TC-3</td><td>(iii)</td><td class="mono">3, 8</td><td class="mono">5</td><td>Difference is 5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card">
+  <div class="q-hdr">
+    <span class="badge bo">Q2</span>
+    <h3 style="font-weight:700;font-size:.97rem;flex:1">White Box · For-Loop with Inner Decision</h3>
+    <span class="badge" style="background:#1a1a1a;border:1px solid #333;color:#666">Intermediate</span>
+  </div>
+  <div class="q-body">
+    <pre><span class="kw">main</span>() {
+  <span class="tp">int</span> <span class="vr">n</span>, <span class="vr">sum</span> <span class="op">=</span> <span class="num">0</span>, <span class="vr">i</span>;
+  <span class="num">1</span>.  <span class="fn">scanf</span>(<span class="str">"%d"</span>, &amp;<span class="vr">n</span>);
+  <span class="num">2</span>.  <span class="kw">for</span> (<span class="vr">i</span> <span class="op">=</span> <span class="num">1</span>; <span class="vr">i</span> <span class="op">&lt;=</span> <span class="vr">n</span>; <span class="vr">i</span><span class="op">++</span>) {
+  <span class="num">3</span>.    <span class="kw">if</span> (<span class="vr">i</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>)
+  <span class="num">4</span>.      <span class="vr">sum</span> <span class="op">=</span> <span class="vr">sum</span> <span class="op">+</span> <span class="vr">i</span>;
+  <span class="num">5</span>.    <span class="kw">else</span>
+  <span class="num">6</span>.      <span class="vr">sum</span> <span class="op">=</span> <span class="vr">sum</span> <span class="op">-</span> <span class="vr">i</span>;
+  <span class="num">7</span>.  }
+  <span class="num">8</span>.  <span class="fn">printf</span>(<span class="str">"Result = %d"</span>, <span class="vr">sum</span>);
+  <span class="num">9</span>. } <span class="cmt">// end main</span></pre>
+    <div style="margin-top:14px;padding:12px 15px;background:#111;border-left:3px solid #D97757;border-radius:0 8px 8px 0">
+      <strong style="font-size:.88rem">Tasks:</strong>
+      <ol style="color:#bbb;font-size:.85rem;margin:5px 0 0 18px;display:flex;flex-direction:column;gap:3px">
+        <li>Draw the DD Graph</li><li>Calculate CC using all three methods</li>
+        <li>List all independent paths</li><li>Design test cases</li>
+      </ol>
+    </div>
+    <div style="margin-top:18px"><button class="q-btn" onclick="tog(this,'a2')">▼ Show Answer</button></div>
+  </div>
+  <div id="a2" class="ans-body">
+  <div class="ans-wrap">
+    <h4 style="font-weight:700;color:#D97757;margin-bottom:14px;font-size:.93rem">✦ Complete Solution</h4>
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:9px;font-size:.86rem">Step 1 — Node Grouping</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:7px;font-size:.81rem">
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">A</span> → {1} scanf</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">B</span> → {2} for(i≤n) — <strong>Decision + Junction</strong></div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">C</span> → {3} if(i%2==0) — <strong>Decision</strong></div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">D</span> → {4} sum=sum+i</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">E</span> → {6} sum=sum−i</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">F</span> → {8} printf</div>
+        <div style="background:#111;border-radius:6px;padding:7px 11px"><span style="color:#D97757;font-weight:700" class="mono">G</span> → exit</div>
+      </div>
+      <p style="color:#555;font-size:.78rem;margin-top:8px">Edges: A→B, B→C(T), B→F(F), C→D(T), C→E(F), D→B, E→B, F→G → e=8, n=7</p>
+    </div>
+
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:12px;font-size:.86rem">Step 2 — DD Graph</p>
+      <div style="display:flex;justify-content:center;align-items:flex-start;gap:20px;flex-wrap:wrap">
+        <svg viewBox="0 0 310 430" width="260" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+          <defs><marker id="a2m" markerWidth="7" markerHeight="5.5" refX="6" refY="2.75" orient="auto"><polygon points="0 0,7 2.75,0 5.5" fill="#555"/></marker></defs>
+          <!-- A→B -->
+          <line x1="155" y1="58" x2="155" y2="93" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <!-- B→C T -->
+          <line x1="140" y1="130" x2="100" y2="175" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <text x="98" y="155" fill="#4ade80" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">T</text>
+          <!-- B→F F -->
+          <line x1="170" y1="130" x2="250" y2="175" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <text x="222" y="151" fill="#f87171" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">F</text>
+          <!-- C→D T -->
+          <line x1="78" y1="213" x2="52" y2="258" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <text x="51" y="238" fill="#4ade80" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">T</text>
+          <!-- C→E F -->
+          <line x1="106" y1="215" x2="145" y2="258" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <text x="137" y="240" fill="#f87171" font-size="11" font-family="DM Sans,sans-serif" font-weight="700">F</text>
+          <!-- D→B loop back (left arc) -->
+          <path d="M 38,282 C -15,255 -15,105 135,112" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#a2m)"/>
+          <text x="-2" y="195" fill="#555" font-size="9" font-family="DM Sans,sans-serif" font-style="italic">loop back</text>
+          <!-- E→B loop back -->
+          <path d="M 150,280 C 80,260 65,150 135,112" stroke="#555" stroke-width="1.5" fill="none" stroke-dasharray="5,2" marker-end="url(#a2m)"/>
+          <!-- F→G -->
+          <line x1="265" y1="215" x2="265" y2="258" stroke="#555" stroke-width="1.5" marker-end="url(#a2m)"/>
+          <!-- NODES -->
+          <circle cx="155" cy="38" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="155" y="34" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">A</text>
+          <text x="155" y="47" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{1}</text>
+          <!-- B double -->
+          <circle cx="155" cy="112" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <circle cx="155" cy="112" r="14" fill="none" stroke="#D97757" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="155" y="108" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">B</text>
+          <text x="155" y="121" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{2}</text>
+          <!-- C double -->
+          <circle cx="88" cy="195" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <circle cx="88" cy="195" r="14" fill="none" stroke="#D97757" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="88" y="191" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">C</text>
+          <text x="88" y="204" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{3}</text>
+          <!-- F -->
+          <circle cx="265" cy="195" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="265" y="191" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">F</text>
+          <text x="265" y="204" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{8}</text>
+          <!-- D -->
+          <circle cx="38" cy="300" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="38" y="296" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">D</text>
+          <text x="38" y="309" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{4}</text>
+          <!-- E -->
+          <circle cx="158" cy="300" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="158" y="296" fill="#e5e5e5" font-size="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">E</text>
+          <text x="158" y="309" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">{6}</text>
+          <!-- G -->
+          <circle cx="265" cy="300" r="20" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="265" y="296" fill="#e5e5e5" font-size="11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">G</text>
+          <text x="265" y="309" fill="#666" font-size="9" text-anchor="middle" font-family="DM Sans,sans-serif">exit</text>
+        </svg>
+        <div style="font-size:.79rem;color:#aaa;padding:6px 0 0;display:flex;flex-direction:column;gap:6px">
+          <div style="color:#bbb"><strong style="color:#e5e5e5">Count:</strong><br>e = 8 edges<br>n = 7 nodes<br>p = 1 component</div>
+          <div style="margin-top:6px;padding:8px 10px;background:#111;border-radius:6px;color:#888;font-size:.77rem">Dashed arc = loop-back edge from E→B (else branch of inner if)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Step 3 — Cyclomatic Complexity</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px">
+        <div style="background:#111;border-radius:7px;padding:11px;border:1px solid #222"><div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:5px">V(G) = e – n + 2p</div><div class="mono" style="font-size:.81rem;color:#ccc">= 8 – 7 + 2(1) = <strong style="color:#4ade80">3</strong></div></div>
+        <div style="background:#111;border-radius:7px;padding:11px;border:1px solid #222"><div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:5px">Regions</div><div style="font-size:.8rem;color:#ccc">Loop cycle (R₁), if-else (R₂), outer (R₃) = <strong style="color:#4ade80">3</strong></div></div>
+        <div style="background:#111;border-radius:7px;padding:11px;border:1px solid #222"><div style="color:#D97757;font-weight:700;font-size:.77rem;margin-bottom:5px">Decision Nodes + 1</div><div style="font-size:.8rem;color:#ccc">B, C = 2 decisions → 2+1 = <strong style="color:#4ade80">3</strong></div></div>
+      </div>
+    </div>
+
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:9px;font-size:.86rem">Step 4 — Independent Paths</p>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(i)</span><span class="mono" style="color:#D97757;font-size:.82rem">A→B→F→G</span><span style="color:#777;font-size:.79rem">n=0, loop doesn't execute</span></div>
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(ii)</span><span class="mono" style="color:#D97757;font-size:.82rem">A→B→C→D→B→…→F→G</span><span style="color:#777;font-size:.79rem">iteration where i is even</span></div>
+        <div style="display:flex;align-items:center;gap:9px"><span class="badge bb">(iii)</span><span class="mono" style="color:#D97757;font-size:.82rem">A→B→C→E→B→…→F→G</span><span style="color:#777;font-size:.79rem">iteration where i is odd</span></div>
+      </div>
+    </div>
+
+    <div class="card-sm">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Step 5 — Test Cases</p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>TC</th><th>Path</th><th>Input n</th><th>Trace</th><th>Expected Output</th></tr></thead>
+          <tbody>
+            <tr><td class="hi">TC-1</td><td>(i)</td><td class="mono">0</td><td>Loop skipped, sum=0</td><td>Result = 0</td></tr>
+            <tr><td class="hi">TC-2</td><td>(ii)</td><td class="mono">2</td><td>i=1(odd,sum=−1), i=2(even,sum=1)</td><td>Result = 1</td></tr>
+            <tr><td class="hi">TC-3</td><td>(iii)</td><td class="mono">1</td><td>i=1(odd,sum=−1)</td><td>Result = -1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ═══════════ SECTION 2: BLACK BOX ═══════════ -->
+<section id="bb">
+<div class="sec-tag" style="background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.25);color:#60a5fa">⬛ Section 2 · Black Box Testing</div>
+<h2 style="font-size:1.55rem;font-weight:700;margin-bottom:3px">Black Box Testing</h2>
+<p style="color:#666;margin-bottom:24px;font-size:.88rem">Testing based purely on functional requirements — no code knowledge required</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(295px,1fr));gap:14px;margin-bottom:26px">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><span style="font-size:1.2rem">📋</span><h3 style="font-weight:700;font-size:.93rem">Decision Table</h3></div>
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;color:#bbb;font-size:.85rem">
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Condition Stub</strong> — list of input conditions (rows, top)</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Action Stub</strong> — resulting actions (rows, bottom)</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Condition Entry</strong> — T/F per rule column</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Action Entry</strong> — X marks action fired</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span><strong style="color:#e5e5e5">Don't-care (—)</strong> — condition doesn't affect outcome; collapses multiple rules into one</span></li>
+      <li style="display:flex;gap:8px"><span style="color:#60a5fa;flex-shrink:0">▸</span><span>n binary conditions → max <strong style="color:#e5e5e5">2ⁿ</strong> rules; 1 test case per rule</span></li>
+    </ul>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><span style="font-size:1.2rem">📏</span><h3 style="font-weight:700;font-size:.93rem">Boundary Value Analysis</h3></div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:.84rem">
+      <div style="background:#111;border-radius:6px;padding:9px 11px"><div style="color:#60a5fa;font-weight:700;font-size:.76rem;margin-bottom:3px">BVC — Boundary Value Checking</div><div style="color:#bbb">One variable at extreme, others at nominal. Values: Min, Min⁺, Nom, Max⁻, Max.</div><div class="mono" style="color:#D97757;margin-top:3px;font-size:.8rem">4n + 1 test cases</div></div>
+      <div style="background:#111;border-radius:6px;padding:9px 11px"><div style="color:#60a5fa;font-weight:700;font-size:.76rem;margin-bottom:3px">Robust Testing</div><div style="color:#bbb">Extends BVC — also tests just beyond valid boundaries (Min⁻, Max⁺).</div><div class="mono" style="color:#D97757;margin-top:3px;font-size:.8rem">6n + 1 test cases</div></div>
+      <div style="background:#111;border-radius:6px;padding:9px 11px"><div style="color:#60a5fa;font-weight:700;font-size:.76rem;margin-bottom:3px">Worst-Case Testing</div><div style="color:#bbb">All combos of boundary values — multiple variables at extreme simultaneously.</div><div class="mono" style="color:#D97757;margin-top:3px;font-size:.8rem">5ⁿ test cases</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3: Decision Table -->
+<div class="q-card">
+  <div class="q-hdr">
+    <span class="badge bb">Q3</span>
+    <h3 style="font-weight:700;font-size:.97rem;flex:1">Black Box · Decision Table Design</h3>
+    <span class="badge" style="background:#1a1a1a;border:1px solid #333;color:#666">Intermediate</span>
+  </div>
+  <div class="q-body">
+    <p style="color:#bbb;margin-bottom:13px;font-size:.88rem">A bank determines loan eligibility based on:</p>
+    <div class="card-inner" style="margin-bottom:14px;font-size:.86rem">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div><span style="color:#60a5fa;font-weight:700">C1:</span> <span style="color:#bbb">Credit Score ≥ 700</span></div>
+        <div><span style="color:#60a5fa;font-weight:700">C2:</span> <span style="color:#bbb">Monthly Income &gt; BDT 50,000</span></div>
+        <div><span style="color:#60a5fa;font-weight:700">C3:</span> <span style="color:#bbb">Permanent Employment</span></div>
+      </div>
+      <hr style="border:none;border-top:1px solid #252525;margin:10px 0">
+      <div style="font-size:.85rem;color:#bbb;display:flex;flex-direction:column;gap:4px">
+        <div><span style="color:#4ade80">✦</span> <strong style="color:#e5e5e5">Approved (Standard):</strong> All 3 conditions met</div>
+        <div><span style="color:#4ade80">✦</span> <strong style="color:#e5e5e5">Approved (Higher Rate):</strong> C1 met, plus at least one of C2/C3</div>
+        <div><span style="color:#4ade80">✦</span> <strong style="color:#e5e5e5">Manual Review:</strong> C1 met, but neither C2 nor C3</div>
+        <div><span style="color:#f87171">✦</span> <strong style="color:#e5e5e5">Rejected:</strong> C1 not met (C2/C3 irrelevant)</div>
+      </div>
+    </div>
+    <p style="color:#777;font-size:.84rem">Tasks: (i) Draw the collapsed decision table &nbsp; (ii) Derive test cases</p>
+    <div style="margin-top:16px"><button class="q-btn" onclick="tog(this,'a3')">▼ Show Answer</button></div>
+  </div>
+  <div id="a3" class="ans-body">
+  <div class="ans-wrap">
+    <h4 style="font-weight:700;color:#60a5fa;margin-bottom:14px;font-size:.93rem">✦ Complete Solution</h4>
+    <p style="color:#888;font-size:.83rem;margin-bottom:12px">3 binary conditions → 2³ = 8 raw rules. Rules 5–8 (C1=F) collapse to 1 since C2/C3 are don't-care. Final: <strong style="color:#e5e5e5">5 rules</strong>.</p>
+    <div style="overflow-x:auto;margin-bottom:16px">
+      <table>
+        <thead><tr><th style="text-align:left;min-width:170px">Condition / Action</th><th>Rule 1</th><th>Rule 2</th><th>Rule 3</th><th>Rule 4</th><th>Rule 5</th></tr></thead>
+        <tbody>
+          <tr><td style="text-align:left;color:#60a5fa;font-weight:600;background:#131313">C1: Score ≥ 700</td><td>T</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
+          <tr><td style="text-align:left;color:#60a5fa;font-weight:600;background:#131313">C2: Income &gt; 50K</td><td>T</td><td>T</td><td>F</td><td>F</td><td class="dc">—</td></tr>
+          <tr><td style="text-align:left;color:#60a5fa;font-weight:600;background:#131313">C3: Permanent</td><td>T</td><td>F</td><td>T</td><td>F</td><td class="dc">—</td></tr>
+          <tr style="border-top:2px solid #333"><td style="text-align:left;background:#131313;color:#888">Approved (Standard)</td><td class="xc">X</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td style="text-align:left;background:#131313;color:#888">Approved (Higher)</td><td></td><td class="xc">X</td><td class="xc">X</td><td></td><td></td></tr>
+          <tr><td style="text-align:left;background:#131313;color:#888">Manual Review</td><td></td><td></td><td></td><td class="xc">X</td><td></td></tr>
+          <tr><td style="text-align:left;background:#131313;color:#888">Rejected</td><td></td><td></td><td></td><td></td><td class="xc">X</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-sm">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Test Cases</p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>TC</th><th>Rule</th><th>Score</th><th>Income</th><th>Employment</th><th>Expected</th></tr></thead>
+          <tbody>
+            <tr><td class="hi">TC-1</td><td>R1</td><td>750</td><td>60,000</td><td>Permanent</td><td style="color:#4ade80">Approved (Standard)</td></tr>
+            <tr><td class="hi">TC-2</td><td>R2</td><td>720</td><td>55,000</td><td>Contract</td><td style="color:#60a5fa">Approved (Higher)</td></tr>
+            <tr><td class="hi">TC-3</td><td>R3</td><td>710</td><td>40,000</td><td>Permanent</td><td style="color:#60a5fa">Approved (Higher)</td></tr>
+            <tr><td class="hi">TC-4</td><td>R4</td><td>800</td><td>45,000</td><td>Freelance</td><td style="color:#fbbf24">Manual Review</td></tr>
+            <tr><td class="hi">TC-5</td><td>R5</td><td>620</td><td>80,000</td><td>Permanent</td><td style="color:#f87171">Rejected</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Q4: BVA -->
+<div class="q-card">
+  <div class="q-hdr">
+    <span class="badge bb">Q4</span>
+    <h3 style="font-weight:700;font-size:.97rem;flex:1">Black Box · BVC, Robust &amp; Worst-case Testing</h3>
+    <span class="badge" style="background:#1a1a1a;border:1px solid #333;color:#666">Intermediate</span>
+  </div>
+  <div class="q-body">
+    <p style="color:#bbb;margin-bottom:13px;font-size:.88rem">A program computes <strong style="color:#D97757">a<sup>b</sup></strong> where variable <span class="mono" style="color:#D97757">a ∈ [2, 8]</span> and <span class="mono" style="color:#60a5fa">b ∈ [1, 4]</span>.</p>
+    <p style="color:#777;font-size:.84rem">Design test cases using: (i) BVC &nbsp; (ii) Robust Testing &nbsp; (iii) Worst-case Testing</p>
+    <div style="margin-top:16px"><button class="q-btn" onclick="tog(this,'a4')">▼ Show Answer</button></div>
+  </div>
+  <div id="a4" class="ans-body">
+  <div class="ans-wrap">
+    <h4 style="font-weight:700;color:#60a5fa;margin-bottom:14px;font-size:.93rem">✦ Complete Solution</h4>
+
+    <!-- Boundary values reference -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Boundary Values</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div>
+          <div style="color:#D97757;font-weight:700;margin-bottom:7px;font-size:.83rem">a ∈ [2, 8]</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:.8rem">
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#666">Min⁻</span><span style="color:#f87171" class="mono">a=1</span><span style="color:#f87171;font-size:.73rem">out-of-range</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Min</span><span class="mono" style="color:#D97757">a=2</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Min⁺</span><span class="mono" style="color:#D97757">a=3</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px;border:1px solid #2a2a2a"><span class="mono" style="color:#888">Nom</span><span class="mono">a=5</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Max⁻</span><span class="mono" style="color:#D97757">a=7</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Max</span><span class="mono" style="color:#D97757">a=8</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#666">Max⁺</span><span style="color:#f87171" class="mono">a=9</span><span style="color:#f87171;font-size:.73rem">out-of-range</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="color:#60a5fa;font-weight:700;margin-bottom:7px;font-size:.83rem">b ∈ [1, 4]</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:.8rem">
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#666">Min⁻</span><span style="color:#f87171" class="mono">b=0</span><span style="color:#f87171;font-size:.73rem">out-of-range</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Min</span><span class="mono" style="color:#60a5fa">b=1</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Min⁺</span><span class="mono" style="color:#60a5fa">b=2</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px;border:1px solid #2a2a2a"><span class="mono" style="color:#888">Nom</span><span class="mono">b=2</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Max⁻</span><span class="mono" style="color:#60a5fa">b=3</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#888">Max</span><span class="mono" style="color:#60a5fa">b=4</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 9px;background:#111;border-radius:5px"><span class="mono" style="color:#666">Max⁺</span><span style="color:#f87171" class="mono">b=5</span><span style="color:#f87171;font-size:.73rem">out-of-range</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BVC -->
+    <div class="card-sm" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px"><div class="badge bo">BVC</div><p style="font-weight:600;font-size:.86rem">4n + 1 = 4(2) + 1 = <strong style="color:#D97757">9 Test Cases</strong></p></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>TC</th><th>a</th><th>b</th><th>Type</th><th>a<sup>b</sup></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>5</td><td class="hi">1</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#60a5fa">b_min</span></td><td class="mono">5</td></tr>
+            <tr><td>2</td><td>5</td><td class="hi">2</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#60a5fa">b_min⁺</span></td><td class="mono">25</td></tr>
+            <tr><td>3</td><td>5</td><td class="hi">3</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#60a5fa">b_max⁻</span></td><td class="mono">125</td></tr>
+            <tr><td>4</td><td>5</td><td class="hi">4</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#60a5fa">b_max</span></td><td class="mono">625</td></tr>
+            <tr><td>5</td><td class="hi">2</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#D97757">a_min</span>, b_nom</td><td class="mono">4</td></tr>
+            <tr><td>6</td><td class="hi">3</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#D97757">a_min⁺</span>, b_nom</td><td class="mono">9</td></tr>
+            <tr><td>7</td><td class="hi">7</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#D97757">a_max⁻</span>, b_nom</td><td class="mono">49</td></tr>
+            <tr><td>8</td><td class="hi">8</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#D97757">a_max</span>, b_nom</td><td class="mono">64</td></tr>
+            <tr><td>9</td><td>5</td><td>2</td><td style="font-size:.78rem;text-align:left">a_nom, b_nom</td><td class="mono">25</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Robust -->
+    <div class="card-sm" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px"><div class="badge bb">Robust</div><p style="font-weight:600;font-size:.86rem">6n + 1 = 6(2) + 1 = <strong style="color:#60a5fa">13 Test Cases</strong> (TCs 1–9 from BVC + 4 extra)</p></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>TC</th><th>a</th><th>b</th><th>Type</th><th>Expected Output</th></tr></thead>
+          <tbody>
+            <tr><td colspan="5" style="color:#555;background:#111;font-size:.78rem">← TCs 1–9 same as BVC above →</td></tr>
+            <tr><td>10</td><td class="mono" style="color:#f87171">9</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#f87171">a_max⁺</span> (invalid), b_nom</td><td style="color:#f87171">Error</td></tr>
+            <tr><td>11</td><td class="mono" style="color:#f87171">1</td><td>2</td><td style="font-size:.78rem;text-align:left"><span style="color:#f87171">a_min⁻</span> (invalid), b_nom</td><td style="color:#f87171">Error</td></tr>
+            <tr><td>12</td><td>5</td><td class="mono" style="color:#f87171">5</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#f87171">b_max⁺</span> (invalid)</td><td style="color:#f87171">Error</td></tr>
+            <tr><td>13</td><td>5</td><td class="mono" style="color:#f87171">0</td><td style="font-size:.78rem;text-align:left">a_nom, <span style="color:#f87171">b_min⁻</span> (invalid)</td><td style="color:#f87171">Error</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Worst-case -->
+    <div class="card-sm">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px"><div class="badge bg">Worst-case</div><p style="font-weight:600;font-size:.86rem">5ⁿ = 5² = <strong style="color:#4ade80">25 Test Cases</strong></p></div>
+      <p style="color:#888;font-size:.82rem;margin-bottom:10px">All combinations of {Min, Min⁺, Nom, Max⁻, Max} × {Min, Min⁺, Nom, Max⁻, Max}:</p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>a \ b</th><th>Min(1)</th><th>Min⁺(2)</th><th>Nom(2)</th><th>Max⁻(3)</th><th>Max(4)</th></tr></thead>
+          <tbody>
+            <tr><td class="hi" style="text-align:left">Min (2)</td><td class="mono">2</td><td class="mono">4</td><td class="mono">4</td><td class="mono">8</td><td class="mono">16</td></tr>
+            <tr><td class="hi" style="text-align:left">Min⁺ (3)</td><td class="mono">3</td><td class="mono">9</td><td class="mono">9</td><td class="mono">27</td><td class="mono">81</td></tr>
+            <tr><td class="hi" style="text-align:left">Nom (5)</td><td class="mono">5</td><td class="mono">25</td><td class="mono">25</td><td class="mono">125</td><td class="mono">625</td></tr>
+            <tr><td class="hi" style="text-align:left">Max⁻ (7)</td><td class="mono">7</td><td class="mono">49</td><td class="mono">49</td><td class="mono">343</td><td class="mono">2401</td></tr>
+            <tr><td class="hi" style="text-align:left">Max (8)</td><td class="mono">8</td><td class="mono">64</td><td class="mono">64</td><td class="mono">512</td><td class="mono">4096</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:#555;font-size:.77rem;margin-top:8px">Each cell = one test case. Total = 5×5 = 25.</p>
+    </div>
+  </div>
+  </div>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ═══════════ SECTION 3: OOP ═══════════ -->
+<section id="oop">
+<div class="sec-tag" style="background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.25);color:#4ade80">🔷 Section 3 · OOP</div>
+<h2 style="font-size:1.55rem;font-weight:700;margin-bottom:3px">Object-Oriented Programming</h2>
+<p style="color:#666;margin-bottom:24px;font-size:.88rem">The four pillars: Encapsulation · Abstraction · Inheritance · Polymorphism</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:14px;margin-bottom:26px">
+  <div class="card" style="border-top:3px solid #4ade80">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:1.2rem">🔒</span><h3 style="font-weight:700;font-size:.9rem;color:#4ade80">Encapsulation</h3></div>
+    <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Bundle data &amp; methods; restrict direct access to fields using <strong>private</strong> with public getters/setters.</p>
+    <pre style="font-size:.72rem;padding:9px 11px"><span class="kw">class</span> <span class="tp">Account</span> {
+  <span class="kw">private</span> <span class="tp">double</span> <span class="vr">balance</span>;
+  <span class="kw">public</span> <span class="tp">double</span> <span class="fn">getBalance</span>() {
+    <span class="kw">return</span> <span class="vr">balance</span>;
+  }
+}</pre>
+  </div>
+  <div class="card" style="border-top:3px solid #fbbf24">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:1.2rem">🎭</span><h3 style="font-weight:700;font-size:.9rem;color:#fbbf24">Abstraction</h3></div>
+    <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Hide complexity; show only what's necessary. Use <strong>abstract classes</strong> or <strong>interfaces</strong>.</p>
+    <pre style="font-size:.72rem;padding:9px 11px"><span class="kw">abstract class</span> <span class="tp">Shape</span> {
+  <span class="kw">abstract</span> <span class="tp">double</span> <span class="fn">area</span>();
+  <span class="kw">void</span> <span class="fn">show</span>() {
+    <span class="fn">print</span>(<span class="str">"Area:"</span> <span class="op">+</span> <span class="fn">area</span>());
+  }
+}</pre>
+  </div>
+  <div class="card" style="border-top:3px solid #60a5fa">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:1.2rem">🧬</span><h3 style="font-weight:700;font-size:.9rem;color:#60a5fa">Inheritance</h3></div>
+    <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Child class acquires parent's properties. Promotes reuse. IS-A relationship.</p>
+    <pre style="font-size:.72rem;padding:9px 11px"><span class="kw">class</span> <span class="tp">Dog</span> <span class="kw">extends</span> <span class="tp">Animal</span> {
+  <span class="kw">void</span> <span class="fn">bark</span>() {
+    <span class="fn">print</span>(<span class="str">"Woof!"</span>);
+  }
+  <span class="cmt">// inherits name, eat()</span>
+}</pre>
+  </div>
+  <div class="card" style="border-top:3px solid #a78bfa">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:1.2rem">🎨</span><h3 style="font-weight:700;font-size:.9rem;color:#a78bfa">Polymorphism</h3></div>
+    <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Same method name → different behaviour. Overloading (compile-time) or Overriding (runtime).</p>
+    <pre style="font-size:.72rem;padding:9px 11px"><span class="tp">Animal</span> <span class="vr">a</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Dog</span>();
+<span class="vr">a</span>.<span class="fn">speak</span>(); <span class="cmt">// "Woof!"</span>
+<span class="tp">Animal</span> <span class="vr">b</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Cat</span>();
+<span class="vr">b</span>.<span class="fn">speak</span>(); <span class="cmt">// "Meow!"</span></pre>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card">
+  <div class="q-hdr"><span class="badge bg">Q5</span><h3 style="font-weight:700;font-size:.97rem;flex:1">OOP · Identify Which Pillar + Explain</h3></div>
+  <div class="q-body">
+    <p style="color:#bbb;margin-bottom:14px;font-size:.88rem">For each snippet, name the OOP pillar demonstrated and explain why.</p>
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div><div class="badge bb" style="margin-bottom:7px">Snippet A</div>
+      <pre><span class="kw">class</span> <span class="tp">Student</span> {
+  <span class="kw">private</span> <span class="tp">int</span> <span class="vr">age</span>; <span class="kw">private</span> <span class="tp">String</span> <span class="vr">id</span>;
+  <span class="kw">public</span> <span class="tp">int</span> <span class="fn">getAge</span>() { <span class="kw">return</span> <span class="vr">age</span>; }
+  <span class="kw">public void</span> <span class="fn">setAge</span>(<span class="tp">int</span> <span class="vr">a</span>) { <span class="kw">if</span>(<span class="vr">a</span><span class="op">&gt;</span><span class="num">0</span>) <span class="vr">age</span><span class="op">=</span><span class="vr">a</span>; }
+}</pre></div>
+      <div><div class="badge bb" style="margin-bottom:7px">Snippet B</div>
+      <pre><span class="kw">abstract class</span> <span class="tp">Vehicle</span> {
+  <span class="kw">abstract void</span> <span class="fn">startEngine</span>();
+  <span class="kw">void</span> <span class="fn">refuel</span>() { <span class="fn">print</span>(<span class="str">"Refueling..."</span>); }
+}
+<span class="kw">class</span> <span class="tp">ElectricCar</span> <span class="kw">extends</span> <span class="tp">Vehicle</span> {
+  <span class="kw">void</span> <span class="fn">startEngine</span>() { <span class="fn">print</span>(<span class="str">"Silent start"</span>); }
+}</pre></div>
+      <div><div class="badge bb" style="margin-bottom:7px">Snippet C</div>
+      <pre><span class="kw">class</span> <span class="tp">Manager</span> <span class="kw">extends</span> <span class="tp">Employee</span> {
+  <span class="tp">Manager</span>(<span class="tp">String</span> <span class="vr">name</span>, <span class="tp">int</span> <span class="vr">id</span>) { <span class="kw">super</span>(<span class="vr">name</span>,<span class="vr">id</span>); }
+  <span class="kw">void</span> <span class="fn">addToTeam</span>(<span class="tp">Employee</span> <span class="vr">e</span>) { <span class="cmt">/*...*/</span> }
+}</pre></div>
+      <div><div class="badge bb" style="margin-bottom:7px">Snippet D</div>
+      <pre><span class="kw">interface</span> <span class="tp">Drawable</span> { <span class="kw">void</span> <span class="fn">draw</span>(); }
+<span class="kw">class</span> <span class="tp">Circle</span> <span class="kw">implements</span> <span class="tp">Drawable</span> {
+  <span class="kw">public void</span> <span class="fn">draw</span>() { <span class="fn">print</span>(<span class="str">"○ Circle"</span>); }
+}
+<span class="kw">class</span> <span class="tp">Square</span> <span class="kw">implements</span> <span class="tp">Drawable</span> {
+  <span class="kw">public void</span> <span class="fn">draw</span>() { <span class="fn">print</span>(<span class="str">"□ Square"</span>); }
+}
+<span class="cmt">// Drawable d = new Circle(); d.draw(); → "○ Circle"</span></pre></div>
+    </div>
+    <div style="margin-top:16px"><button class="q-btn" onclick="tog(this,'a5')">▼ Show Answer</button></div>
+  </div>
+  <div id="a5" class="ans-body">
+  <div class="ans-wrap">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card-sm"><div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="badge bb">Snippet A</span><span style="color:#4ade80;font-weight:700">🔒 Encapsulation</span></div><p style="color:#bbb;font-size:.84rem"><code class="mono" style="color:#D97757">age</code> and <code class="mono" style="color:#D97757">id</code> are <strong style="color:#4ade80">private</strong> — direct external access is blocked. The class controls access through public methods. The setter validates input (age &gt; 0), protecting the object's state from invalid data. This is the essence of encapsulation.</p></div>
+      <div class="card-sm"><div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="badge bb">Snippet B</span><span style="color:#fbbf24;font-weight:700">🎭 Abstraction</span></div><p style="color:#bbb;font-size:.84rem"><code class="mono" style="color:#D97757">Vehicle</code> is <strong style="color:#fbbf24">abstract</strong> — it defines <em>what</em> any vehicle must do (startEngine), without defining <em>how</em>. The internal details are hidden. <code class="mono" style="color:#tp">ElectricCar</code> fills in the specific implementation. Callers work with Vehicle without needing to know what's inside.</p></div>
+      <div class="card-sm"><div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="badge bb">Snippet C</span><span style="color:#60a5fa;font-weight:700">🧬 Inheritance</span></div><p style="color:#bbb;font-size:.84rem"><code class="mono" style="color:#D97757">Manager</code> <strong style="color:#60a5fa">extends</strong> Employee — it inherits all fields (name, id) and methods without rewriting them. The <code class="mono" style="color:#D97757">super(name, id)</code> call delegates construction to the parent class. Manager IS-A Employee with extra capability. This is single-level inheritance.</p></div>
+      <div class="card-sm"><div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="badge bb">Snippet D</span><span style="color:#a78bfa;font-weight:700">🎨 Polymorphism</span></div><p style="color:#bbb;font-size:.84rem">Both Circle and Square implement <code class="mono" style="color:#D97757">Drawable</code>. The same call <code class="mono" style="color:#dcdcaa">d.draw()</code> produces different output depending on the actual object type at <strong style="color:#a78bfa">runtime</strong>. This is runtime polymorphism (method overriding). The calling code doesn't need to know the concrete type — it just calls draw().</p></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card">
+  <div class="q-hdr"><span class="badge bg">Q6</span><h3 style="font-weight:700;font-size:.97rem;flex:1">OOP · Design a University Class Hierarchy</h3></div>
+  <div class="q-body">
+    <p style="color:#bbb;margin-bottom:12px;font-size:.88rem">Design a class hierarchy for a <strong style="color:#e5e5e5">University System</strong>:</p>
+    <ul style="color:#bbb;font-size:.85rem;margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px">
+      <li>Interface <strong>Printable</strong> with printDetails()</li>
+      <li>Base class <strong>Person</strong> (implements Printable) — name (private), id (private), getName(), getInfo()</li>
+      <li><strong>Student</strong> extends Person — gpa (private), enroll()</li>
+      <li><strong>Faculty</strong> extends Person — department (private), teach()</li>
+      <li><strong>GradStudent</strong> extends Student — advisor, submitThesis()</li>
+    </ul>
+    <p style="color:#777;font-size:.83rem;margin-top:10px">Show code and identify which OOP pillar each part demonstrates.</p>
+    <div style="margin-top:16px"><button class="q-btn" onclick="tog(this,'a6')">▼ Show Answer</button></div>
+  </div>
+  <div id="a6" class="ans-body">
+  <div class="ans-wrap">
+    <!-- Hierarchy diagram -->
+    <div class="card-sm" style="margin-bottom:16px">
+      <p style="font-weight:600;margin-bottom:12px;font-size:.86rem">Class Hierarchy Diagram</p>
+      <div style="overflow-x:auto">
+        <svg viewBox="0 0 600 320" width="100%" style="min-width:480px" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="inh" markerWidth="12" markerHeight="9" refX="11" refY="4.5" orient="auto"><polygon points="0 0,12 4.5,0 9" fill="none" stroke="#555" stroke-width="1.5"/></marker>
+            <marker id="impl" markerWidth="12" markerHeight="9" refX="11" refY="4.5" orient="auto"><polygon points="0 0,12 4.5,0 9" fill="none" stroke="#4ade80" stroke-width="1.5"/></marker>
+          </defs>
+          <!-- Printable -->
+          <rect x="210" y="10" width="180" height="44" rx="6" fill="#141414" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="300" y="30" fill="#4ade80" font-size="9.5" text-anchor="middle" font-family="JetBrains Mono,monospace" font-style="italic">&lt;&lt;interface&gt;&gt;</text>
+          <text x="300" y="46" fill="#e5e5e5" font-size="12" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">Printable</text>
+          <!-- Person -->
+          <rect x="210" y="102" width="180" height="62" rx="6" fill="#161616" stroke="#D97757" stroke-width="2"/>
+          <text x="300" y="124" fill="#D97757" font-size="12" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">Person</text>
+          <line x1="210" y1="130" x2="390" y2="130" stroke="#2a2a2a" stroke-width="1"/>
+          <text x="218" y="146" fill="#9cdcfe" font-size="9" font-family="JetBrains Mono,monospace">-name:String  -id:int</text>
+          <text x="218" y="158" fill="#dcdcaa" font-size="9" font-family="JetBrains Mono,monospace">+getName()  +getInfo()</text>
+          <!-- Student -->
+          <rect x="38" y="230" width="158" height="70" rx="6" fill="#161616" stroke="#60a5fa" stroke-width="1.5"/>
+          <text x="117" y="252" fill="#60a5fa" font-size="11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">Student</text>
+          <line x1="38" y1="258" x2="196" y2="258" stroke="#2a2a2a" stroke-width="1"/>
+          <text x="46" y="272" fill="#9cdcfe" font-size="8.5" font-family="JetBrains Mono,monospace">-gpa:double</text>
+          <text x="46" y="284" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+enroll()</text>
+          <text x="46" y="296" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+printDetails()</text>
+          <!-- GradStudent -->
+          <rect x="214" y="230" width="172" height="70" rx="6" fill="#161616" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="300" y="252" fill="#a78bfa" font-size="10.5" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">GradStudent</text>
+          <line x1="214" y1="258" x2="386" y2="258" stroke="#2a2a2a" stroke-width="1"/>
+          <text x="222" y="272" fill="#9cdcfe" font-size="8.5" font-family="JetBrains Mono,monospace">-advisor:String</text>
+          <text x="222" y="284" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+submitThesis()</text>
+          <text x="222" y="296" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+printDetails()</text>
+          <!-- Faculty -->
+          <rect x="404" y="230" width="172" height="70" rx="6" fill="#161616" stroke="#60a5fa" stroke-width="1.5"/>
+          <text x="490" y="252" fill="#60a5fa" font-size="11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700">Faculty</text>
+          <line x1="404" y1="258" x2="576" y2="258" stroke="#2a2a2a" stroke-width="1"/>
+          <text x="412" y="272" fill="#9cdcfe" font-size="8.5" font-family="JetBrains Mono,monospace">-department:String</text>
+          <text x="412" y="284" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+teach()</text>
+          <text x="412" y="296" fill="#dcdcaa" font-size="8.5" font-family="JetBrains Mono,monospace">+printDetails()</text>
+          <!-- Edges -->
+          <line x1="300" y1="54" x2="300" y2="100" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#impl)"/>
+          <line x1="300" y1="164" x2="117" y2="228" stroke="#555" stroke-width="1.5" marker-end="url(#inh)"/>
+          <line x1="300" y1="164" x2="490" y2="228" stroke="#555" stroke-width="1.5" marker-end="url(#inh)"/>
+          <line x1="196" y1="265" x2="214" y2="265" stroke="#555" stroke-width="1.5" marker-end="url(#inh)"/>
+          <!-- legend -->
+          <line x1="430" y1="168" x2="455" y2="168" stroke="#555" stroke-width="1.5" marker-end="url(#inh)"/><text x="460" y="172" fill="#666" font-size="8.5" font-family="DM Sans,sans-serif">extends</text>
+          <line x1="430" y1="182" x2="455" y2="182" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#impl)"/><text x="460" y="186" fill="#666" font-size="8.5" font-family="DM Sans,sans-serif">implements</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card-sm" style="margin-bottom:14px">
+      <p style="font-weight:600;margin-bottom:10px;font-size:.86rem">Java Pseudocode</p>
+      <pre style="font-size:.77rem"><span class="kw">interface</span> <span class="tp">Printable</span> { <span class="kw">void</span> <span class="fn">printDetails</span>(); }  <span class="cmt">// ABSTRACTION</span>
+
+<span class="kw">class</span> <span class="tp">Person</span> <span class="kw">implements</span> <span class="tp">Printable</span> {
+  <span class="kw">private</span> <span class="tp">String</span> <span class="vr">name</span>; <span class="kw">private</span> <span class="tp">int</span> <span class="vr">id</span>;  <span class="cmt">// ENCAPSULATION</span>
+  <span class="tp">Person</span>(<span class="tp">String</span> <span class="vr">n</span>, <span class="tp">int</span> <span class="vr">i</span>) { <span class="vr">name</span><span class="op">=</span><span class="vr">n</span>; <span class="vr">id</span><span class="op">=</span><span class="vr">i</span>; }
+  <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getName</span>() { <span class="kw">return</span> <span class="vr">name</span>; }  <span class="cmt">// ENCAPSULATION</span>
+  <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getInfo</span>() { <span class="kw">return</span> <span class="vr">name</span><span class="op">+</span><span class="str">", ID:"</span><span class="op">+</span><span class="vr">id</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">Student</span> <span class="kw">extends</span> <span class="tp">Person</span> {   <span class="cmt">// INHERITANCE</span>
+  <span class="kw">private</span> <span class="tp">double</span> <span class="vr">gpa</span>;
+  <span class="tp">Student</span>(<span class="tp">String</span> <span class="vr">n</span>, <span class="tp">int</span> <span class="vr">i</span>, <span class="tp">double</span> <span class="vr">g</span>) { <span class="kw">super</span>(<span class="vr">n</span>,<span class="vr">i</span>); <span class="vr">gpa</span><span class="op">=</span><span class="vr">g</span>; }
+  <span class="kw">void</span> <span class="fn">enroll</span>() { <span class="fn">print</span>(<span class="fn">getName</span>()+<span class="str">" enrolled"</span>); }
+  <span class="kw">public void</span> <span class="fn">printDetails</span>() {  <span class="cmt">// POLYMORPHISM (override)</span>
+    <span class="fn">print</span>(<span class="str">"Student: "</span><span class="op">+</span><span class="fn">getInfo</span>()<span class="op">+</span><span class="str">", GPA:"</span><span class="op">+</span><span class="vr">gpa</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="tp">GradStudent</span> <span class="kw">extends</span> <span class="tp">Student</span> {  <span class="cmt">// INHERITANCE (multi-level)</span>
+  <span class="kw">private</span> <span class="tp">String</span> <span class="vr">advisor</span>;
+  <span class="kw">void</span> <span class="fn">submitThesis</span>() { <span class="fn">print</span>(<span class="str">"Thesis submitted"</span>); }
+  <span class="kw">public void</span> <span class="fn">printDetails</span>() {  <span class="cmt">// POLYMORPHISM</span>
+    <span class="fn">print</span>(<span class="str">"GradStudent, Advisor:"</span><span class="op">+</span><span class="vr">advisor</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="tp">Faculty</span> <span class="kw">extends</span> <span class="tp">Person</span> {  <span class="cmt">// INHERITANCE</span>
+  <span class="kw">private</span> <span class="tp">String</span> <span class="vr">dept</span>;
+  <span class="kw">void</span> <span class="fn">teach</span>() { <span class="fn">print</span>(<span class="vr">dept</span><span class="op">+</span><span class="str">" class in session"</span>); }
+  <span class="kw">public void</span> <span class="fn">printDetails</span>() { <span class="fn">print</span>(<span class="str">"Faculty:"</span><span class="op">+</span><span class="fn">getInfo</span>()); }
+}</pre>
+    </div>
+
+    <div class="card-sm">
+      <p style="font-weight:600;margin-bottom:9px;font-size:.86rem">Pillars Demonstrated</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;font-size:.82rem">
+        <div style="padding:9px 11px;background:#111;border-radius:6px;border-left:3px solid #4ade80"><strong style="color:#4ade80">Encapsulation:</strong><span style="color:#bbb"> private name, id, gpa, dept — access via public methods only</span></div>
+        <div style="padding:9px 11px;background:#111;border-radius:6px;border-left:3px solid #fbbf24"><strong style="color:#fbbf24">Abstraction:</strong><span style="color:#bbb"> Printable interface hides how details are printed</span></div>
+        <div style="padding:9px 11px;background:#111;border-radius:6px;border-left:3px solid #60a5fa"><strong style="color:#60a5fa">Inheritance:</strong><span style="color:#bbb"> Student, Faculty ← Person; GradStudent ← Student (multi-level)</span></div>
+        <div style="padding:9px 11px;background:#111;border-radius:6px;border-left:3px solid #a78bfa"><strong style="color:#a78bfa">Polymorphism:</strong><span style="color:#bbb"> printDetails() gives different output per class</span></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ═══════════ SECTION 4: DESIGN PATTERNS ═══════════ -->
+<section id="dp">
+<div class="sec-tag" style="background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.25);color:#a78bfa">🧩 Section 4 · Design Patterns</div>
+<h2 style="font-size:1.55rem;font-weight:700;margin-bottom:3px">Design Patterns</h2>
+<p style="color:#666;margin-bottom:24px;font-size:.88rem">Reusable solutions to common software design problems</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px;margin-bottom:30px">
+  <div style="padding:13px 15px;background:#181818;border:1px solid #2a2a2a;border-radius:10px"><div class="badge bp" style="margin-bottom:7px">Creational</div><div style="font-weight:700;margin-bottom:3px">Singleton</div><div style="color:#777;font-size:.81rem">One instance, global access point</div></div>
+  <div style="padding:13px 15px;background:#181818;border:1px solid #2a2a2a;border-radius:10px"><div class="badge bb" style="margin-bottom:7px">Structural</div><div style="font-weight:700;margin-bottom:3px">Adapter</div><div style="color:#777;font-size:.81rem">Bridge incompatible interfaces</div></div>
+  <div style="padding:13px 15px;background:#181818;border:1px solid #2a2a2a;border-radius:10px"><div class="badge bb" style="margin-bottom:7px">Structural</div><div style="font-weight:700;margin-bottom:3px">Bridge</div><div style="color:#777;font-size:.81rem">Decouple abstraction from implementation</div></div>
+  <div style="padding:13px 15px;background:#181818;border:1px solid #2a2a2a;border-radius:10px"><div class="badge bg" style="margin-bottom:7px">Behavioral</div><div style="font-weight:700;margin-bottom:3px">Observer</div><div style="color:#777;font-size:.81rem">Publish/subscribe event mechanism</div></div>
+</div>
+
+<!-- ── SINGLETON ── -->
+<div style="margin-bottom:36px">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+    <div style="width:4px;height:26px;background:#a78bfa;border-radius:2px"></div>
+    <h3 style="font-weight:700;font-size:1.15rem">Singleton Pattern <span style="color:#666;font-size:.83rem;font-weight:400">(Creational)</span></h3>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:8px;font-size:.88rem">Intent &amp; When to Use</h4>
+      <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Ensures a class has <strong style="color:#a78bfa">only one instance</strong> and provides a global access point. Solves: controlling access to a shared resource.</p>
+      <div style="font-size:.82rem;color:#bbb"><strong style="color:#e5e5e5">Use for:</strong> Database connections, logging, config managers, thread pools</div>
+      <div style="margin-top:10px;padding:8px 10px;background:#111;border-radius:6px;font-size:.8rem;color:#888"><strong style="color:#a78bfa">Key rules:</strong> ① Private constructor &nbsp; ② Static instance field &nbsp; ③ Public static getInstance()</div>
+    </div>
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Structure (UML)</h4>
+      <div style="display:flex;justify-content:center">
+        <div class="pbox" style="width:100%;max-width:220px">
+          <div class="ptitle">Singleton</div>
+          <div class="pf">- instance: Singleton {static}<br>- Singleton() &nbsp;<em style="color:#444">// private</em></div>
+          <div style="border-top:1px solid #2a2a2a;margin:6px 0"></div>
+          <div class="pf">+ getInstance(): Singleton {static}<br>+ doWork(): void</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Implementation</h4>
+    <pre><span class="kw">class</span> <span class="tp">Logger</span> {
+  <span class="kw">private static</span> <span class="tp">Logger</span> <span class="vr">instance</span> <span class="op">=</span> <span class="kw">null</span>;          <span class="cmt">// ① static field</span>
+  <span class="kw">private</span> <span class="fn">Logger</span>() { }                               <span class="cmt">// ② private constructor</span>
+  <span class="kw">public static synchronized</span> <span class="tp">Logger</span> <span class="fn">getInstance</span>() { <span class="cmt">// ③ factory method</span>
+    <span class="kw">if</span> (<span class="vr">instance</span> <span class="op">==</span> <span class="kw">null</span>) <span class="vr">instance</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Logger</span>();
+    <span class="kw">return</span> <span class="vr">instance</span>;
+  }
+  <span class="kw">public void</span> <span class="fn">log</span>(<span class="tp">String</span> <span class="vr">msg</span>) { <span class="fn">print</span>(<span class="str">"[LOG] "</span><span class="op">+</span><span class="vr">msg</span>); }
+}
+<span class="tp">Logger</span> <span class="vr">a</span> <span class="op">=</span> <span class="tp">Logger</span>.<span class="fn">getInstance</span>();
+<span class="tp">Logger</span> <span class="vr">b</span> <span class="op">=</span> <span class="tp">Logger</span>.<span class="fn">getInstance</span>();  <span class="cmt">// a == b → true</span></pre>
+  </div>
+  <div class="q-card">
+    <div class="q-hdr"><span class="badge bp">Q7</span><h3 style="font-weight:700;font-size:.97rem;flex:1">Singleton · Application Config Manager</h3></div>
+    <div class="q-body">
+      <p style="color:#bbb;font-size:.87rem">A web app needs a <strong>ConfigManager</strong> that loads settings (db_url, max_connections, timeout) from a file <em>exactly once</em>. Multiple modules request the config. Implement Singleton and prove only one instance is created.</p>
+      <div style="margin-top:14px"><button class="q-btn" onclick="tog(this,'a7')">▼ Show Answer</button></div>
+    </div>
+    <div id="a7" class="ans-body"><div class="ans-wrap">
+      <pre><span class="kw">class</span> <span class="tp">ConfigManager</span> {
+  <span class="kw">private static</span> <span class="tp">ConfigManager</span> <span class="vr">instance</span> <span class="op">=</span> <span class="kw">null</span>;
+  <span class="kw">private</span> <span class="tp">String</span> <span class="vr">dbUrl</span>; <span class="kw">private</span> <span class="tp">int</span> <span class="vr">maxConn</span>; <span class="kw">private</span> <span class="tp">int</span> <span class="vr">timeout</span>;
+
+  <span class="kw">private</span> <span class="fn">ConfigManager</span>() {               <span class="cmt">// private — file loaded once here</span>
+    <span class="vr">dbUrl</span>   <span class="op">=</span> <span class="str">"jdbc:mysql://localhost:3306/mydb"</span>;
+    <span class="vr">maxConn</span> <span class="op">=</span> <span class="num">100</span>;
+    <span class="vr">timeout</span> <span class="op">=</span> <span class="num">30</span>;
+    <span class="fn">print</span>(<span class="str">"Config loaded from file."</span>);
+  }
+  <span class="kw">public static synchronized</span> <span class="tp">ConfigManager</span> <span class="fn">getInstance</span>() {
+    <span class="kw">if</span> (<span class="vr">instance</span> <span class="op">==</span> <span class="kw">null</span>) <span class="vr">instance</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">ConfigManager</span>();
+    <span class="kw">return</span> <span class="vr">instance</span>;
+  }
+  <span class="kw">public</span> <span class="tp">String</span> <span class="fn">getDbUrl</span>()  { <span class="kw">return</span> <span class="vr">dbUrl</span>; }
+  <span class="kw">public</span> <span class="tp">int</span> <span class="fn">getTimeout</span>()   { <span class="kw">return</span> <span class="vr">timeout</span>; }
+  <span class="kw">public</span> <span class="tp">int</span> <span class="fn">getMaxConn</span>()   { <span class="kw">return</span> <span class="vr">maxConn</span>; }
+}
+<span class="cmt">// Module A</span>
+<span class="tp">ConfigManager</span> <span class="vr">cfg1</span> <span class="op">=</span> <span class="tp">ConfigManager</span>.<span class="fn">getInstance</span>(); <span class="cmt">// prints "Config loaded"</span>
+<span class="cmt">// Module B</span>
+<span class="tp">ConfigManager</span> <span class="vr">cfg2</span> <span class="op">=</span> <span class="tp">ConfigManager</span>.<span class="fn">getInstance</span>(); <span class="cmt">// no print — same instance</span>
+<span class="fn">print</span>(<span class="vr">cfg1</span> <span class="op">==</span> <span class="vr">cfg2</span>);  <span class="cmt">// true → both point to same object</span></pre>
+      <div style="margin-top:10px;padding:9px 12px;background:#111;border-radius:6px;font-size:.81rem;color:#bbb">The <code class="mono" style="color:#D97757">synchronized</code> keyword makes getInstance() thread-safe. The "Config loaded" message prints exactly once, proving the constructor runs only once regardless of how many times getInstance() is called.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ── ADAPTER ── -->
+<div style="margin-bottom:36px">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+    <div style="width:4px;height:26px;background:#60a5fa;border-radius:2px"></div>
+    <h3 style="font-weight:700;font-size:1.15rem">Adapter Pattern <span style="color:#666;font-size:.83rem;font-weight:400">(Structural)</span></h3>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:8px;font-size:.88rem">Intent</h4>
+      <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Converts the interface of a class into another interface that clients expect. Allows incompatible classes to collaborate.</p>
+      <p style="color:#bbb;font-size:.83rem"><strong style="color:#e5e5e5">Real analogy:</strong> A power plug adapter — UK plug (existing) → EU socket (expected interface). Same electricity, different connector.</p>
+      <div style="margin-top:10px;padding:8px 10px;background:#111;border-radius:6px;font-size:.79rem;color:#888"><strong style="color:#60a5fa">Use when:</strong> Integrating a third-party library with an incompatible interface, or reusing a legacy class in a new system.</div>
+    </div>
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Structure (UML)</h4>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">
+        <div class="pbox pbox-gr" style="min-width:85px;font-size:.72rem"><div class="ptitle">Client</div><div class="pf">uses →</div></div>
+        <div style="color:#60a5fa;font-size:1.1rem">→</div>
+        <div class="pbox pbox-b" style="min-width:100px;font-size:.72rem"><div class="ptitle">&lt;&lt;interface&gt;&gt;<br>Target</div><div class="pf">+request()</div></div>
+        <div style="color:#60a5fa;font-size:1.1rem">←</div>
+        <div class="pbox pbox-b" style="min-width:100px;font-size:.72rem"><div class="ptitle">Adapter</div><div class="pf">+request() {<br>&nbsp; adaptee.doIt()<br>}</div></div>
+        <div style="color:#60a5fa;font-size:1.1rem">→</div>
+        <div class="pbox pbox-gr" style="min-width:95px;font-size:.72rem"><div class="ptitle">Adaptee</div><div class="pf">+specificDoIt()</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Implementation Example — XML to JSON Adapter</h4>
+    <pre><span class="cmt">// Target interface (what new code expects)</span>
+<span class="kw">interface</span> <span class="tp">JsonAnalytics</span> {
+  <span class="kw">void</span> <span class="fn">analyzeJson</span>(<span class="tp">String</span> <span class="vr">json</span>);
+}
+<span class="cmt">// Adaptee (existing class with incompatible interface)</span>
+<span class="kw">class</span> <span class="tp">XmlDataSource</span> {
+  <span class="kw">public void</span> <span class="fn">loadXml</span>(<span class="tp">String</span> <span class="vr">xml</span>) { <span class="fn">print</span>(<span class="str">"Processing XML: "</span><span class="op">+</span><span class="vr">xml</span>); }
+}
+<span class="cmt">// Adapter — wraps Adaptee, implements Target</span>
+<span class="kw">class</span> <span class="tp">XmlToJsonAdapter</span> <span class="kw">implements</span> <span class="tp">JsonAnalytics</span> {
+  <span class="kw">private</span> <span class="tp">XmlDataSource</span> <span class="vr">src</span>;
+  <span class="fn">XmlToJsonAdapter</span>(<span class="tp">XmlDataSource</span> <span class="vr">s</span>) { <span class="vr">src</span> <span class="op">=</span> <span class="vr">s</span>; }
+  <span class="kw">public void</span> <span class="fn">analyzeJson</span>(<span class="tp">String</span> <span class="vr">json</span>) {
+    <span class="tp">String</span> <span class="vr">xml</span> <span class="op">=</span> <span class="fn">convertJsonToXml</span>(<span class="vr">json</span>); <span class="cmt">// translate</span>
+    <span class="vr">src</span>.<span class="fn">loadXml</span>(<span class="vr">xml</span>);
+  }
+  <span class="kw">private</span> <span class="tp">String</span> <span class="fn">convertJsonToXml</span>(<span class="tp">String</span> <span class="vr">j</span>) { <span class="kw">return</span> <span class="str">"&lt;data&gt;"</span><span class="op">+</span><span class="vr">j</span><span class="op">+</span><span class="str">"&lt;/data&gt;"</span>; }
+}
+<span class="cmt">// Client only knows JsonAnalytics — unaware of XmlDataSource</span>
+<span class="tp">JsonAnalytics</span> <span class="vr">analytics</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">XmlToJsonAdapter</span>(<span class="kw">new</span> <span class="fn">XmlDataSource</span>());
+<span class="vr">analytics</span>.<span class="fn">analyzeJson</span>(<span class="str">"{user:'Akhlak'}"</span>);</pre>
+  </div>
+  <div class="q-card">
+    <div class="q-hdr"><span class="badge bb">Q8</span><h3 style="font-weight:700;font-size:.97rem;flex:1">Adapter · Legacy Payment System</h3></div>
+    <div class="q-body">
+      <p style="color:#bbb;font-size:.87rem">You have an existing <code class="mono" style="color:#D97757">OldPaymentGateway</code> with method <code class="mono" style="color:#dcdcaa">makePayment(int cents)</code>. Your new checkout system expects a <code class="mono" style="color:#D97757">PaymentProcessor</code> interface with <code class="mono" style="color:#dcdcaa">processPayment(double dollars)</code>. Write an Adapter class.</p>
+      <div style="margin-top:14px"><button class="q-btn" onclick="tog(this,'a8')">▼ Show Answer</button></div>
+    </div>
+    <div id="a8" class="ans-body"><div class="ans-wrap">
+      <pre><span class="cmt">// Target interface (new system's expectation)</span>
+<span class="kw">interface</span> <span class="tp">PaymentProcessor</span> {
+  <span class="kw">void</span> <span class="fn">processPayment</span>(<span class="tp">double</span> <span class="vr">dollars</span>);
+}
+<span class="cmt">// Adaptee (legacy — cannot be changed)</span>
+<span class="kw">class</span> <span class="tp">OldPaymentGateway</span> {
+  <span class="kw">public void</span> <span class="fn">makePayment</span>(<span class="tp">int</span> <span class="vr">cents</span>) {
+    <span class="fn">print</span>(<span class="str">"Paid "</span><span class="op">+</span><span class="vr">cents</span><span class="op">+</span><span class="str">" cents via legacy gateway"</span>);
+  }
+}
+<span class="cmt">// Adapter — bridges the two interfaces</span>
+<span class="kw">class</span> <span class="tp">PaymentAdapter</span> <span class="kw">implements</span> <span class="tp">PaymentProcessor</span> {
+  <span class="kw">private</span> <span class="tp">OldPaymentGateway</span> <span class="vr">legacy</span>;
+  <span class="fn">PaymentAdapter</span>(<span class="tp">OldPaymentGateway</span> <span class="vr">g</span>) { <span class="vr">legacy</span> <span class="op">=</span> <span class="vr">g</span>; }
+  <span class="kw">public void</span> <span class="fn">processPayment</span>(<span class="tp">double</span> <span class="vr">dollars</span>) {
+    <span class="tp">int</span> <span class="vr">cents</span> <span class="op">=</span> (<span class="tp">int</span>)(<span class="vr">dollars</span> <span class="op">*</span> <span class="num">100</span>);  <span class="cmt">// convert dollars → cents</span>
+    <span class="vr">legacy</span>.<span class="fn">makePayment</span>(<span class="vr">cents</span>);
+  }
+}
+<span class="cmt">// New checkout system uses PaymentProcessor — doesn't know about OldPaymentGateway</span>
+<span class="tp">PaymentProcessor</span> <span class="vr">pay</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">PaymentAdapter</span>(<span class="kw">new</span> <span class="fn">OldPaymentGateway</span>());
+<span class="vr">pay</span>.<span class="fn">processPayment</span>(<span class="num">29.99</span>);  <span class="cmt">// → "Paid 2999 cents via legacy gateway"</span></pre>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.8rem">
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#60a5fa">Target:</strong> <span style="color:#bbb">PaymentProcessor (what new code expects)</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#60a5fa">Adaptee:</strong> <span style="color:#bbb">OldPaymentGateway (legacy, incompatible)</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#60a5fa">Adapter:</strong> <span style="color:#bbb">PaymentAdapter — translates dollars→cents</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#60a5fa">Client:</strong> <span style="color:#bbb">Checkout system — uses only PaymentProcessor</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ── BRIDGE ── -->
+<div style="margin-bottom:36px">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+    <div style="width:4px;height:26px;background:#4ade80;border-radius:2px"></div>
+    <h3 style="font-weight:700;font-size:1.15rem">Bridge Pattern <span style="color:#666;font-size:.83rem;font-weight:400">(Structural)</span></h3>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:8px;font-size:.88rem">Intent</h4>
+      <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Splits a large class into two separate hierarchies — <strong style="color:#4ade80">Abstraction</strong> and <strong style="color:#4ade80">Implementation</strong> — which can vary independently.</p>
+      <div style="padding:9px 11px;background:#111;border-radius:6px;font-size:.81rem;color:#bbb;margin-bottom:8px"><strong style="color:#e5e5e5">Problem it solves:</strong> Without Bridge, adding M shapes × N renderers = M×N classes. With Bridge: M + N classes.</div>
+      <div style="font-size:.8rem;color:#bbb"><strong style="color:#e5e5e5">Real analogy:</strong> A remote control (abstraction) works with any TV or Radio (implementation). The remote doesn't need to change when you buy a new device.</div>
+    </div>
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Structure</h4>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="pbox" style="min-width:110px;font-size:.72rem"><div class="ptitle">Abstraction</div><div class="pf">- impl: Implementation<br>+operation()</div></div>
+          <div style="color:#555;font-size:.8rem">contains →</div>
+          <div class="pbox pbox-g" style="min-width:110px;font-size:.72rem"><div class="ptitle">&lt;&lt;interface&gt;&gt;<br>Implementation</div><div class="pf">+operationImpl()</div></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding-left:0">
+          <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+            <div class="pbox" style="font-size:.7rem;border-color:#555"><div class="ptitle" style="color:#aaa">RefinedAbstraction</div><div class="pf">+extendedOp()</div></div>
+          </div>
+          <div style="width:10px"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+            <div class="pbox pbox-g" style="font-size:.7rem"><div class="ptitle">ConcreteImpl A</div><div class="pf">+operationImpl()</div></div>
+            <div class="pbox pbox-g" style="font-size:.7rem"><div class="ptitle">ConcreteImpl B</div><div class="pf">+operationImpl()</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Implementation — Remote Control + Device</h4>
+    <pre><span class="cmt">// Implementation hierarchy (Device side)</span>
+<span class="kw">interface</span> <span class="tp">Device</span> {
+  <span class="kw">void</span> <span class="fn">enable</span>(); <span class="kw">void</span> <span class="fn">disable</span>();
+  <span class="kw">int</span> <span class="fn">getVolume</span>(); <span class="kw">void</span> <span class="fn">setVolume</span>(<span class="tp">int</span> <span class="vr">v</span>);
+}
+<span class="kw">class</span> <span class="tp">TV</span> <span class="kw">implements</span> <span class="tp">Device</span> {
+  <span class="kw">public void</span> <span class="fn">enable</span>()  { <span class="fn">print</span>(<span class="str">"TV ON"</span>); }
+  <span class="kw">public void</span> <span class="fn">disable</span>() { <span class="fn">print</span>(<span class="str">"TV OFF"</span>); }
+  <span class="kw">public int</span>  <span class="fn">getVolume</span>()        { <span class="kw">return</span> <span class="vr">volume</span>; }
+  <span class="kw">public void</span> <span class="fn">setVolume</span>(<span class="tp">int</span> <span class="vr">v</span>)  { <span class="vr">volume</span> <span class="op">=</span> <span class="vr">v</span>; }
+}
+<span class="kw">class</span> <span class="tp">Radio</span> <span class="kw">implements</span> <span class="tp">Device</span> { <span class="cmt">/* similar */</span> }
+
+<span class="cmt">// Abstraction hierarchy (Remote side)</span>
+<span class="kw">class</span> <span class="tp">BasicRemote</span> {
+  <span class="kw">protected</span> <span class="tp">Device</span> <span class="vr">device</span>;  <span class="cmt">// ← the Bridge</span>
+  <span class="fn">BasicRemote</span>(<span class="tp">Device</span> <span class="vr">d</span>) { <span class="vr">device</span> <span class="op">=</span> <span class="vr">d</span>; }
+  <span class="kw">void</span> <span class="fn">power</span>() {
+    <span class="kw">if</span> (<span class="vr">device</span>.<span class="fn">isEnabled</span>()) <span class="vr">device</span>.<span class="fn">disable</span>();
+    <span class="kw">else</span> <span class="vr">device</span>.<span class="fn">enable</span>();
+  }
+  <span class="kw">void</span> <span class="fn">volUp</span>() { <span class="vr">device</span>.<span class="fn">setVolume</span>(<span class="vr">device</span>.<span class="fn">getVolume</span>() <span class="op">+</span> <span class="num">10</span>); }
+}
+<span class="kw">class</span> <span class="tp">AdvancedRemote</span> <span class="kw">extends</span> <span class="tp">BasicRemote</span> {  <span class="cmt">// extends Abstraction</span>
+  <span class="fn">AdvancedRemote</span>(<span class="tp">Device</span> <span class="vr">d</span>) { <span class="kw">super</span>(<span class="vr">d</span>); }
+  <span class="kw">void</span> <span class="fn">mute</span>() { <span class="vr">device</span>.<span class="fn">setVolume</span>(<span class="num">0</span>); }
+}
+<span class="cmt">// Mix-and-match freely:</span>
+<span class="kw">new</span> <span class="fn">BasicRemote</span>(<span class="kw">new</span> <span class="fn">TV</span>()).<span class="fn">power</span>();       <span class="cmt">// TV ON</span>
+<span class="kw">new</span> <span class="fn">AdvancedRemote</span>(<span class="kw">new</span> <span class="fn">Radio</span>()).<span class="fn">mute</span>(); <span class="cmt">// Radio muted</span></pre>
+  </div>
+  <div class="q-card">
+    <div class="q-hdr"><span class="badge bg">Q9</span><h3 style="font-weight:700;font-size:.97rem;flex:1">Bridge · Notification System</h3></div>
+    <div class="q-body">
+      <p style="color:#bbb;font-size:.87rem">You need a notification system. Notifications can be <strong>Urgent</strong> or <strong>Normal</strong> (abstraction side). Delivery channels are <strong>Email</strong> or <strong>SMS</strong> (implementation side). Without Bridge: 4 classes (UrgentEmail, NormalEmail, UrgentSMS, NormalSMS). Show how Bridge reduces this to 2 + 2 classes that scale much better. Implement it.</p>
+      <div style="margin-top:14px"><button class="q-btn" onclick="tog(this,'a9')">▼ Show Answer</button></div>
+    </div>
+    <div id="a9" class="ans-body"><div class="ans-wrap">
+      <div class="card-sm" style="margin-bottom:12px">
+        <p style="font-size:.82rem;color:#bbb;margin-bottom:8px"><strong style="color:#4ade80">Without Bridge:</strong> Adding a new channel (WhatsApp) needs 2 more classes (UrgentWhatsApp, NormalWhatsApp). Adding a new type (Emergency) needs 3 more. Scales as <strong style="color:#f87171">M × N</strong>.</p>
+        <p style="font-size:.82rem;color:#bbb"><strong style="color:#4ade80">With Bridge:</strong> Add WhatsApp → 1 new class only. Scales as <strong style="color:#4ade80">M + N</strong>.</p>
+      </div>
+      <pre><span class="cmt">// Implementation hierarchy (Channel)</span>
+<span class="kw">interface</span> <span class="tp">MessageChannel</span> {
+  <span class="kw">void</span> <span class="fn">send</span>(<span class="tp">String</span> <span class="vr">recipient</span>, <span class="tp">String</span> <span class="vr">message</span>);
+}
+<span class="kw">class</span> <span class="tp">EmailChannel</span> <span class="kw">implements</span> <span class="tp">MessageChannel</span> {
+  <span class="kw">public void</span> <span class="fn">send</span>(<span class="tp">String</span> <span class="vr">r</span>, <span class="tp">String</span> <span class="vr">m</span>) {
+    <span class="fn">print</span>(<span class="str">"Email to "</span><span class="op">+</span><span class="vr">r</span><span class="op">+</span><span class="str">": "</span><span class="op">+</span><span class="vr">m</span>);
+  }
+}
+<span class="kw">class</span> <span class="tp">SmsChannel</span> <span class="kw">implements</span> <span class="tp">MessageChannel</span> {
+  <span class="kw">public void</span> <span class="fn">send</span>(<span class="tp">String</span> <span class="vr">r</span>, <span class="tp">String</span> <span class="vr">m</span>) {
+    <span class="fn">print</span>(<span class="str">"SMS to "</span><span class="op">+</span><span class="vr">r</span><span class="op">+</span><span class="str">": "</span><span class="op">+</span><span class="vr">m</span>);
+  }
+}
+
+<span class="cmt">// Abstraction hierarchy (Notification type)</span>
+<span class="kw">abstract class</span> <span class="tp">Notification</span> {
+  <span class="kw">protected</span> <span class="tp">MessageChannel</span> <span class="vr">channel</span>;  <span class="cmt">// ← the Bridge</span>
+  <span class="fn">Notification</span>(<span class="tp">MessageChannel</span> <span class="vr">ch</span>) { <span class="vr">channel</span> <span class="op">=</span> <span class="vr">ch</span>; }
+  <span class="kw">abstract void</span> <span class="fn">notify</span>(<span class="tp">String</span> <span class="vr">recipient</span>, <span class="tp">String</span> <span class="vr">msg</span>);
+}
+<span class="kw">class</span> <span class="tp">UrgentNotification</span> <span class="kw">extends</span> <span class="tp">Notification</span> {
+  <span class="fn">UrgentNotification</span>(<span class="tp">MessageChannel</span> <span class="vr">ch</span>) { <span class="kw">super</span>(<span class="vr">ch</span>); }
+  <span class="kw">public void</span> <span class="fn">notify</span>(<span class="tp">String</span> <span class="vr">r</span>, <span class="tp">String</span> <span class="vr">m</span>) {
+    <span class="vr">channel</span>.<span class="fn">send</span>(<span class="vr">r</span>, <span class="str">"🚨 URGENT: "</span><span class="op">+</span><span class="vr">m</span>);
+  }
+}
+<span class="kw">class</span> <span class="tp">NormalNotification</span> <span class="kw">extends</span> <span class="tp">Notification</span> {
+  <span class="fn">NormalNotification</span>(<span class="tp">MessageChannel</span> <span class="vr">ch</span>) { <span class="kw">super</span>(<span class="vr">ch</span>); }
+  <span class="kw">public void</span> <span class="fn">notify</span>(<span class="tp">String</span> <span class="vr">r</span>, <span class="tp">String</span> <span class="vr">m</span>) {
+    <span class="vr">channel</span>.<span class="fn">send</span>(<span class="vr">r</span>, <span class="str">"ℹ Info: "</span><span class="op">+</span><span class="vr">m</span>);
+  }
+}
+<span class="cmt">// Mix freely — no extra classes needed!</span>
+<span class="kw">new</span> <span class="fn">UrgentNotification</span>(<span class="kw">new</span> <span class="fn">EmailChannel</span>()).<span class="fn">notify</span>(<span class="str">"admin"</span>, <span class="str">"Server down"</span>);
+<span class="cmt">// Email to admin: 🚨 URGENT: Server down</span>
+<span class="kw">new</span> <span class="fn">NormalNotification</span>(<span class="kw">new</span> <span class="fn">SmsChannel</span>()).<span class="fn">notify</span>(<span class="str">"user"</span>, <span class="str">"Your order shipped"</span>);
+<span class="cmt">// SMS to user: ℹ Info: Your order shipped</span></pre>
+    </div></div>
+  </div>
+</div>
+
+<!-- ── OBSERVER ── -->
+<div style="margin-bottom:36px">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+    <div style="width:4px;height:26px;background:#fbbf24;border-radius:2px"></div>
+    <h3 style="font-weight:700;font-size:1.15rem">Observer Pattern <span style="color:#666;font-size:.83rem;font-weight:400">(Behavioral)</span></h3>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:8px;font-size:.88rem">Intent</h4>
+      <p style="color:#bbb;font-size:.83rem;margin-bottom:10px">Defines a <strong style="color:#fbbf24">one-to-many</strong> subscription mechanism. When an object (Publisher/Subject) changes state, all dependents (Subscribers/Observers) are automatically notified.</p>
+      <p style="color:#bbb;font-size:.83rem"><strong style="color:#e5e5e5">Real analogy:</strong> A YouTube channel (Subject). Subscribers get notified when a new video (event) is uploaded. They can subscribe or unsubscribe any time.</p>
+    </div>
+    <div class="card">
+      <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Structure</h4>
+      <div style="display:flex;flex-direction:column;gap:7px;align-items:center">
+        <div class="pbox pbox-gr" style="width:100%;max-width:240px;font-size:.72rem">
+          <div class="ptitle" style="color:#fbbf24">&lt;&lt;interface&gt;&gt; Observer</div>
+          <div class="pf">+update(event)</div>
+        </div>
+        <div style="color:#555;font-size:.8rem">↑ implements</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <div class="pbox" style="min-width:85px;font-size:.7rem;border-color:#fbbf24"><div class="ptitle" style="color:#fbbf24">Observer A</div><div class="pf">+update()</div></div>
+          <div class="pbox" style="min-width:85px;font-size:.7rem;border-color:#fbbf24"><div class="ptitle" style="color:#fbbf24">Observer B</div><div class="pf">+update()</div></div>
+        </div>
+        <div style="color:#555;font-size:.75rem">↑ notifies ↑</div>
+        <div class="pbox pbox-gr" style="width:100%;max-width:240px;font-size:.72rem">
+          <div class="ptitle" style="color:#aaa">Subject (Publisher)</div>
+          <div class="pf">-observers: List<br>+subscribe(o)<br>+unsubscribe(o)<br>+notifyAll()</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h4 style="font-weight:700;margin-bottom:10px;font-size:.88rem">Implementation Example — Event Editor</h4>
+    <pre><span class="cmt">// Observer interface</span>
+<span class="kw">interface</span> <span class="tp">EventObserver</span> {
+  <span class="kw">void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">eventType</span>, <span class="tp">String</span> <span class="vr">data</span>);
+}
+<span class="cmt">// Concrete Observers</span>
+<span class="kw">class</span> <span class="tp">EmailAlert</span> <span class="kw">implements</span> <span class="tp">EventObserver</span> {
+  <span class="kw">public void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">t</span>, <span class="tp">String</span> <span class="vr">d</span>) { <span class="fn">print</span>(<span class="str">"Email: "</span><span class="op">+</span><span class="vr">t</span>); }
+}
+<span class="kw">class</span> <span class="tp">Dashboard</span> <span class="kw">implements</span> <span class="tp">EventObserver</span> {
+  <span class="kw">public void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">t</span>, <span class="tp">String</span> <span class="vr">d</span>) { <span class="fn">print</span>(<span class="str">"Dashboard refreshed: "</span><span class="op">+</span><span class="vr">d</span>); }
+}
+<span class="cmt">// Subject (Publisher)</span>
+<span class="kw">class</span> <span class="tp">EventManager</span> {
+  <span class="kw">private</span> <span class="tp">List</span>&lt;<span class="tp">EventObserver</span>&gt; <span class="vr">listeners</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">ArrayList</span>();
+  <span class="kw">public void</span> <span class="fn">subscribe</span>(<span class="tp">EventObserver</span> <span class="vr">o</span>)   { <span class="vr">listeners</span>.<span class="fn">add</span>(<span class="vr">o</span>); }
+  <span class="kw">public void</span> <span class="fn">unsubscribe</span>(<span class="tp">EventObserver</span> <span class="vr">o</span>) { <span class="vr">listeners</span>.<span class="fn">remove</span>(<span class="vr">o</span>); }
+  <span class="kw">public void</span> <span class="fn">notify</span>(<span class="tp">String</span> <span class="vr">type</span>, <span class="tp">String</span> <span class="vr">data</span>) {
+    <span class="kw">for</span> (<span class="tp">EventObserver</span> <span class="vr">o</span> : <span class="vr">listeners</span>) <span class="vr">o</span>.<span class="fn">update</span>(<span class="vr">type</span>, <span class="vr">data</span>);
+  }
+}</pre>
+  </div>
+  <div class="q-card">
+    <div class="q-hdr"><span class="badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3)">Q10</span><h3 style="font-weight:700;font-size:.97rem;flex:1">Observer · Stock Price Tracker</h3></div>
+    <div class="q-body">
+      <p style="color:#bbb;font-size:.87rem">A <strong>StockMarket</strong> object tracks a stock price. Three observers are registered: <strong>MobileApp</strong>, <strong>WebDashboard</strong>, and <strong>EmailAlert</strong>. Whenever the stock price changes, all three should be notified automatically. Implement using Observer pattern.</p>
+      <div style="margin-top:14px"><button class="q-btn" onclick="tog(this,'a10')">▼ Show Answer</button></div>
+    </div>
+    <div id="a10" class="ans-body"><div class="ans-wrap">
+      <pre><span class="cmt">// Observer interface</span>
+<span class="kw">interface</span> <span class="tp">StockObserver</span> {
+  <span class="kw">void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">symbol</span>, <span class="tp">double</span> <span class="vr">price</span>);
+}
+
+<span class="cmt">// Concrete Observers</span>
+<span class="kw">class</span> <span class="tp">MobileApp</span> <span class="kw">implements</span> <span class="tp">StockObserver</span> {
+  <span class="kw">public void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">s</span>, <span class="tp">double</span> <span class="vr">p</span>) {
+    <span class="fn">print</span>(<span class="str">"📱 Mobile: "</span><span class="op">+</span><span class="vr">s</span><span class="op">+</span><span class="str">" = $"</span><span class="op">+</span><span class="vr">p</span>);
+  }
+}
+<span class="kw">class</span> <span class="tp">WebDashboard</span> <span class="kw">implements</span> <span class="tp">StockObserver</span> {
+  <span class="kw">public void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">s</span>, <span class="tp">double</span> <span class="vr">p</span>) {
+    <span class="fn">print</span>(<span class="str">"🌐 Web chart updated: "</span><span class="op">+</span><span class="vr">s</span><span class="op">+</span><span class="str">" now $"</span><span class="op">+</span><span class="vr">p</span>);
+  }
+}
+<span class="kw">class</span> <span class="tp">EmailAlert</span> <span class="kw">implements</span> <span class="tp">StockObserver</span> {
+  <span class="kw">public void</span> <span class="fn">update</span>(<span class="tp">String</span> <span class="vr">s</span>, <span class="tp">double</span> <span class="vr">p</span>) {
+    <span class="fn">print</span>(<span class="str">"📧 Email: "</span><span class="op">+</span><span class="vr">s</span><span class="op">+</span><span class="str">" price alert $"</span><span class="op">+</span><span class="vr">p</span>);
+  }
+}
+
+<span class="cmt">// Subject (Publisher)</span>
+<span class="kw">class</span> <span class="tp">StockMarket</span> {
+  <span class="kw">private</span> <span class="tp">List</span>&lt;<span class="tp">StockObserver</span>&gt; <span class="vr">observers</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">ArrayList</span>();
+  <span class="kw">private</span> <span class="tp">String</span> <span class="vr">symbol</span>;
+  <span class="kw">private</span> <span class="tp">double</span> <span class="vr">price</span>;
+
+  <span class="fn">StockMarket</span>(<span class="tp">String</span> <span class="vr">sym</span>) { <span class="vr">symbol</span> <span class="op">=</span> <span class="vr">sym</span>; }
+
+  <span class="kw">public void</span> <span class="fn">addObserver</span>(<span class="tp">StockObserver</span> <span class="vr">o</span>)    { <span class="vr">observers</span>.<span class="fn">add</span>(<span class="vr">o</span>); }
+  <span class="kw">public void</span> <span class="fn">removeObserver</span>(<span class="tp">StockObserver</span> <span class="vr">o</span>) { <span class="vr">observers</span>.<span class="fn">remove</span>(<span class="vr">o</span>); }
+
+  <span class="kw">public void</span> <span class="fn">setPrice</span>(<span class="tp">double</span> <span class="vr">newPrice</span>) {  <span class="cmt">// triggers notification</span>
+    <span class="vr">price</span> <span class="op">=</span> <span class="vr">newPrice</span>;
+    <span class="fn">notifyAll</span>();
+  }
+  <span class="kw">private void</span> <span class="fn">notifyAll</span>() {
+    <span class="kw">for</span> (<span class="tp">StockObserver</span> <span class="vr">o</span> : <span class="vr">observers</span>) <span class="vr">o</span>.<span class="fn">update</span>(<span class="vr">symbol</span>, <span class="vr">price</span>);
+  }
+}
+
+<span class="cmt">// Usage</span>
+<span class="tp">StockMarket</span> <span class="vr">market</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">StockMarket</span>(<span class="str">"AAPL"</span>);
+<span class="vr">market</span>.<span class="fn">addObserver</span>(<span class="kw">new</span> <span class="fn">MobileApp</span>());
+<span class="vr">market</span>.<span class="fn">addObserver</span>(<span class="kw">new</span> <span class="fn">WebDashboard</span>());
+<span class="vr">market</span>.<span class="fn">addObserver</span>(<span class="kw">new</span> <span class="fn">EmailAlert</span>());
+
+<span class="vr">market</span>.<span class="fn">setPrice</span>(<span class="num">175.50</span>);
+<span class="cmt">// 📱 Mobile: AAPL = $175.5</span>
+<span class="cmt">// 🌐 Web chart updated: AAPL now $175.5</span>
+<span class="cmt">// 📧 Email: AAPL price alert $175.5</span></pre>
+      <div style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.8rem">
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#fbbf24">Subject:</strong><span style="color:#bbb"> StockMarket — holds observer list, triggers events</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#fbbf24">Observers:</strong><span style="color:#bbb"> MobileApp, WebDashboard, EmailAlert</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#fbbf24">Loose coupling:</strong><span style="color:#bbb"> Subject doesn't know concrete observer types</span></div>
+        <div style="padding:8px 10px;background:#111;border-radius:6px"><strong style="color:#fbbf24">Runtime subscribe:</strong><span style="color:#bbb"> Observers can be added/removed dynamically</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+</section>
+
+<!-- Quick Reference Summary -->
+<div style="margin-top:48px;padding:24px;background:#151515;border:1px solid #2a2a2a;border-radius:14px">
+  <h3 style="font-weight:700;margin-bottom:16px;font-size:1rem">📋 Quick Reference — Design Patterns Comparison</h3>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Pattern</th><th>Type</th><th>Problem Solved</th><th>Key Participants</th><th>Exam Clue</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Singleton</td><td>Creational</td><td style="text-align:left">Only one instance needed (shared resource)</td><td style="text-align:left" class="mono" style="font-size:.77rem">Singleton class</td><td style="text-align:left;font-size:.81rem;color:#bbb">private constructor + static getInstance()</td></tr>
+        <tr><td class="hi" style="color:#60a5fa">Adapter</td><td>Structural</td><td style="text-align:left">Incompatible interfaces need to work together</td><td style="text-align:left" class="mono" style="font-size:.77rem">Target, Adapter, Adaptee, Client</td><td style="text-align:left;font-size:.81rem;color:#bbb">Adapter wraps Adaptee, implements Target</td></tr>
+        <tr><td class="hi" style="color:#4ade80">Bridge</td><td>Structural</td><td style="text-align:left">Avoid class explosion (M×N → M+N)</td><td style="text-align:left" class="mono" style="font-size:.77rem">Abstraction, Implementation, Refined, Concrete</td><td style="text-align:left;font-size:.81rem;color:#bbb">Abstraction contains reference to Implementation</td></tr>
+        <tr><td class="hi" style="color:#fbbf24">Observer</td><td>Behavioral</td><td style="text-align:left">Many objects react to one object's state change</td><td style="text-align:left" class="mono" style="font-size:.77rem">Subject, Observer, ConcreteObserver</td><td style="text-align:left;font-size:.81rem;color:#bbb">subscribe/unsubscribe + notify all on event</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:40px 0 0;color:#444;font-size:.8rem">
+  Good luck tomorrow! 🎯 · CSE412 · All questions modelled on your lecture slides
+</div>
+
+</div><!-- end main container -->
+
+<script>
+function tog(btn, id) {
+  const el = document.getElementById(id);
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    btn.textContent = '▼ Show Answer';
+    btn.style.background = 'rgba(217,119,87,.1)';
+    btn.style.borderColor = 'rgba(217,119,87,.3)';
+    btn.style.color = '#D97757';
+  } else {
+    el.classList.add('open');
+    btn.textContent = '▲ Hide Answer';
+    btn.style.background = 'rgba(74,222,128,.1)';
+    btn.style.borderColor = 'rgba(74,222,128,.3)';
+    btn.style.color = '#4ade80';
+  }
+}
+</script>
+</body>
+</html>

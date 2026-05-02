@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Engineering Exam Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --accent: #00e5ff;
+    --accent2: #ff6b6b;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #1e3a5f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    margin: 0;
+  }
+  .mono { font-family: 'Space Mono', monospace; }
+  .glow { text-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent); }
+  .glow2 { text-shadow: 0 0 20px var(--accent2); }
+  .glow3 { text-shadow: 0 0 20px var(--accent3); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+  }
+  .card-red::before { background: linear-gradient(90deg, var(--accent2), #f97316); }
+  .card-green::before { background: linear-gradient(90deg, var(--accent4), #06b6d4); }
+  .card-purple::before { background: linear-gradient(90deg, var(--accent3), #ec4899); }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+  }
+  .tab-btn {
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+  }
+  .tab-btn.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border-color: var(--border);
+  }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* SVG graphs */
+  svg text { font-family: 'Space Mono', monospace; fill: var(--text); }
+  .node-circle { fill: var(--surface2); stroke: var(--accent); stroke-width: 2; }
+  .node-circle.red { stroke: var(--accent2); }
+  .node-circle.green { stroke: var(--accent4); }
+  .node-circle.purple { stroke: var(--accent3); }
+  .edge { stroke: var(--muted); stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+  .edge-back { stroke: var(--accent2); stroke-width: 1.5; fill: none; marker-end: url(#arrow-red); }
+
+  /* Q&A accordion */
+  details summary { cursor: pointer; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary .chevron { transform: rotate(180deg); }
+  .chevron { transition: transform 0.2s; display: inline-block; }
+
+  /* Table */
+  table { border-collapse: collapse; width: 100%; }
+  th { background: var(--surface2); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  td, th { padding: 0.6rem 0.9rem; border: 1px solid var(--border); font-size: 0.85rem; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .highlight-box {
+    background: rgba(0, 229, 255, 0.06);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .highlight-box.red {
+    background: rgba(255, 107, 107, 0.06);
+    border-color: rgba(255, 107, 107, 0.2);
+  }
+  .highlight-box.green {
+    background: rgba(52, 211, 153, 0.06);
+    border-color: rgba(52, 211, 153, 0.2);
+  }
+  .highlight-box.purple {
+    background: rgba(167, 139, 250, 0.06);
+    border-color: rgba(167, 139, 250, 0.2);
+  }
+  code {
+    background: var(--surface2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82em;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+  .formula {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent3);
+    padding: 0.5rem 1rem;
+    border-radius: 0 6px 6px 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+  }
+  .answer-box {
+    background: rgba(52, 211, 153, 0.05);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.75rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div style="background: linear-gradient(135deg, #0b0f1a 0%, #111827 50%, #0d1b2e 100%); border-bottom: 1px solid var(--border);" class="py-10 px-6 text-center relative overflow-hidden">
+  <div style="position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,229,255,0.08),transparent 70%);"></div>
+  <div style="position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(167,139,250,0.08),transparent 70%);"></div>
+  <p class="mono text-xs mb-2" style="color:var(--accent);letter-spacing:0.2em;">SOFTWARE ENGINEERING</p>
+  <h1 class="text-4xl font-extrabold mb-2 glow" style="color:var(--accent)">EXAM STUDY GUIDE</h1>
+  <p style="color:var(--muted)" class="text-sm">White Box · Black Box · OOP · Design Patterns</p>
+</div>
+
+<!-- Nav Tabs -->
+<div style="background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;" class="px-4 py-3 overflow-x-auto">
+  <div class="flex gap-2 min-w-max">
+    <button class="tab-btn active" onclick="showSection('whitebox')">⬜ White Box</button>
+    <button class="tab-btn" onclick="showSection('blackbox')">⬛ Black Box</button>
+    <button class="tab-btn" onclick="showSection('oop')">🔷 OOP</button>
+    <button class="tab-btn" onclick="showSection('patterns')">🔶 Design Patterns</button>
+    <button class="tab-btn" onclick="showSection('questions')">📝 Practice Questions</button>
+    <button class="tab-btn" onclick="showSection('sample')">🎯 Sample Questions</button>
+  </div>
+</div>
+
+<div class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+
+<!-- ===== WHITE BOX ===== -->
+<div id="whitebox" class="section active space-y-8">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(0,229,255,0.15);color:var(--accent)">White Box Testing</span>
+    <span style="color:var(--muted)" class="text-sm">Structure-based testing</span>
+  </div>
+
+  <!-- CFG -->
+  <div class="card">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent)">1. Control Flow Graph (CFG)</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">A directed graph representing all paths of execution through a program.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent3)">Key Elements</h3>
+        <div class="space-y-2 text-sm">
+          <div class="highlight-box"><strong>Node (Basic Block):</strong> Sequence of statements with one entry and one exit. No branches inside.</div>
+          <div class="highlight-box"><strong>Edge:</strong> Control flow transfer between nodes.</div>
+          <div class="highlight-box"><strong>Entry Node:</strong> Start of program.</div>
+          <div class="highlight-box"><strong>Exit Node:</strong> End of program.</div>
+          <div class="highlight-box purple"><strong>Predicate Node:</strong> A node with 2+ outgoing edges (decision point — IF, WHILE, SWITCH).</div>
+        </div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent3)">Key Formulas</h3>
+        <div class="formula">V(G) = E − N + 2P</div>
+        <div class="formula">V(G) = P + 1 (P = # predicate nodes)</div>
+        <div class="formula">V(G) = # independent paths</div>
+        <p class="text-xs mt-1" style="color:var(--muted)">E = edges, N = nodes, P = connected components (usually 1)</p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent3)">CFG Example — if-else</h3>
+        <svg viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-height:300px">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+            </marker>
+          </defs>
+          <!-- Nodes -->
+          <circle cx="110" cy="30" r="22" class="node-circle"/>
+          <text x="110" y="34" text-anchor="middle" font-size="11">1</text>
+          <diamond-shape/>
+          <!-- Decision diamond -->
+          <polygon points="110,70 140,90 110,110 80,90" fill="#1a2236" stroke="#00e5ff" stroke-width="2"/>
+          <text x="110" y="94" text-anchor="middle" font-size="10">if</text>
+          <!-- True path -->
+          <circle cx="60" cy="175" r="22" class="node-circle green"/>
+          <text x="60" y="179" text-anchor="middle" font-size="11">3</text>
+          <!-- False path -->
+          <circle cx="160" cy="175" r="22" class="node-circle red"/>
+          <text x="160" y="179" text-anchor="middle" font-size="11">4</text>
+          <!-- Merge -->
+          <circle cx="110" cy="270" r="22" class="node-circle"/>
+          <text x="110" y="274" text-anchor="middle" font-size="11">5</text>
+          <!-- Edges -->
+          <line x1="110" y1="52" x2="110" y2="68" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="82" y1="101" x2="72" y2="153" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="138" y1="101" x2="148" y2="153" stroke="#ff6b6b" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="75" y1="193" x2="98" y2="249" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="147" y1="193" x2="122" y2="249" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <!-- Labels -->
+          <text x="62" y="140" font-size="9" fill="#34d399">T</text>
+          <text x="152" y="140" font-size="9" fill="#ff6b6b">F</text>
+          <text x="110" y="20" text-anchor="middle" font-size="9" fill="#64748b">START</text>
+          <text x="110" y="300" text-anchor="middle" font-size="9" fill="#64748b">END</text>
+        </svg>
+        <p class="text-xs text-center mt-1" style="color:var(--muted)">V(G) = 5 edges − 4 nodes + 2 = <strong style="color:var(--accent)">3</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DD Graph -->
+  <div class="card card-red">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent2)">2. Data Flow Graph (DD Graph / Def-Use)</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Tracks where variables are <strong>defined</strong> (assigned) and <strong>used</strong> (read/referenced) across nodes.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent2)">Concepts</h3>
+        <div class="space-y-2 text-sm">
+          <div class="highlight-box red"><strong>def(v):</strong> Variable v is assigned a value (defined) at this node.</div>
+          <div class="highlight-box red"><strong>use(v):</strong> Variable v is read/used at this node.</div>
+          <div class="highlight-box red"><strong>p-use:</strong> Predicate use — variable used in a condition (affects branching).</div>
+          <div class="highlight-box red"><strong>c-use:</strong> Computational use — used in calculation.</div>
+          <div class="highlight-box red"><strong>du-pair:</strong> (def node d, use node u) where v reaches u without re-definition.</div>
+          <div class="highlight-box red"><strong>du-path:</strong> Path from def to use with no re-definition of v in between.</div>
+        </div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent2)">Coverage Criteria</h3>
+        <div class="space-y-1 text-sm">
+          <div class="formula" style="border-left-color:var(--accent2)">All-defs: each def reaches at least one use</div>
+          <div class="formula" style="border-left-color:var(--accent2)">All-uses: each du-pair is covered</div>
+          <div class="formula" style="border-left-color:var(--accent2)">All-du-paths: every du-path is covered</div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent2)">DD Graph Example</h3>
+        <pre style="font-size:0.75rem">
+Node 1: x = 5        ← def(x)
+Node 2: y = x + 1   ← use(x), def(y)
+Node 3: if (y > 3)  ← p-use(y)
+Node 4: z = y * 2   ← c-use(y), def(z)
+Node 5: print(z)    ← use(z)</pre>
+        <div class="answer-box mt-2 text-sm">
+          <strong style="color:var(--accent4)">DU Pairs for x:</strong><br>
+          (1,2) — x defined at 1, used at 2 ✓<br><br>
+          <strong style="color:var(--accent4)">DU Pairs for y:</strong><br>
+          (2,3) — p-use, (2,4) — c-use ✓<br><br>
+          <strong style="color:var(--accent4)">DU Pairs for z:</strong><br>
+          (4,5) ✓
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cyclomatic Complexity -->
+  <div class="card card-purple">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent3)">3. Cyclomatic Complexity (CC)</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">A software metric that measures the number of linearly independent paths through a program's source code.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent3)">Three Equivalent Formulas</h3>
+        <div class="formula">① V(G) = E − N + 2</div>
+        <div class="formula">② V(G) = P + 1 (P = predicate nodes)</div>
+        <div class="formula">③ V(G) = number of regions in CFG</div>
+
+        <div class="mt-4 space-y-2 text-sm">
+          <div class="highlight-box purple"><strong>E</strong> = number of edges in CFG</div>
+          <div class="highlight-box purple"><strong>N</strong> = number of nodes in CFG</div>
+          <div class="highlight-box purple"><strong>P</strong> = number of predicate (decision) nodes</div>
+        </div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent3)">Interpretation</h3>
+        <table>
+          <tr><th>CC Value</th><th>Risk Level</th></tr>
+          <tr><td>1 – 10</td><td style="color:var(--accent4)">Low — Simple, well structured</td></tr>
+          <tr><td>11 – 20</td><td style="color:#f59e0b">Medium — Moderate complexity</td></tr>
+          <tr><td>21 – 50</td><td style="color:#f97316">High — Complex, hard to test</td></tr>
+          <tr><td>&gt; 50</td><td style="color:var(--accent2)">Very High — Untestable</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent3)">CFG with Loop — CC Calculation</h3>
+        <svg viewBox="0 0 220 360" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-height:320px">
+          <defs>
+            <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+            </marker>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#ff6b6b"/>
+            </marker>
+          </defs>
+          <!-- Nodes -->
+          <circle cx="110" cy="30" r="20" class="node-circle"/><text x="110" y="35" text-anchor="middle" font-size="11">1</text>
+          <!-- while diamond -->
+          <polygon points="110,65 140,85 110,105 80,85" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+          <text x="110" y="89" text-anchor="middle" font-size="9">while</text>
+          <!-- body -->
+          <circle cx="110" cy="155" r="20" class="node-circle"/><text x="110" y="159" text-anchor="middle" font-size="11">3</text>
+          <!-- exit -->
+          <circle cx="110" cy="270" r="20" class="node-circle green"/><text x="110" y="274" text-anchor="middle" font-size="11">4</text>
+
+          <!-- Edges -->
+          <line x1="110" y1="50" x2="110" y2="63" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow2)"/>
+          <line x1="110" y1="105" x2="110" y2="133" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow2)"/>
+          <text x="116" y="122" font-size="9" fill="#34d399">T</text>
+          <!-- loop back -->
+          <path d="M90,155 Q30,155 30,85 Q30,65 78,75" stroke="#ff6b6b" stroke-width="1.5" fill="none" marker-end="url(#arrow-red)"/>
+          <!-- exit edge -->
+          <line x1="110" y1="107" x2="110" y2="248" stroke="#ff6b6b" stroke-width="1.5" marker-end="url(#arrow-red)" stroke-dasharray="4,3"/>
+          <text x="116" y="180" font-size="9" fill="#ff6b6b">F</text>
+          <!-- Labels -->
+          <text x="35" y="125" font-size="9" fill="#ff6b6b">back</text>
+          <text x="110" y="18" text-anchor="middle" font-size="9" fill="#64748b">START</text>
+          <text x="110" y="307" text-anchor="middle" font-size="9" fill="#64748b">END</text>
+        </svg>
+        <div class="text-xs text-center mt-1 space-y-1">
+          <p style="color:var(--muted)">E=4 edges, N=4 nodes</p>
+          <p style="color:var(--accent3)">V(G) = 4 − 4 + 2 = <strong>2</strong></p>
+          <p style="color:var(--muted)">Or: 1 predicate node + 1 = 2</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BLACK BOX ===== -->
+<div id="blackbox" class="section space-y-8">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(255,107,107,0.15);color:var(--accent2)">Black Box Testing</span>
+    <span style="color:var(--muted)" class="text-sm">Specification-based testing</span>
+  </div>
+
+  <!-- Decision Table -->
+  <div class="card card-red">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent2)">1. Decision Table Testing</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">A systematic way to represent complex business logic using combinations of conditions and actions.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent2)">Structure</h3>
+        <div class="space-y-2 text-sm">
+          <div class="highlight-box red"><strong>Conditions (Inputs):</strong> Factors that affect the system behavior. Can be T/F or multi-valued.</div>
+          <div class="highlight-box red"><strong>Actions (Outputs):</strong> Results or behaviors that occur based on conditions.</div>
+          <div class="highlight-box red"><strong>Rules (Columns):</strong> Each column = one test case = a unique combination of conditions.</div>
+          <div class="highlight-box red"><strong>—</strong> (dash) = "Don't care" — condition irrelevant to action.</div>
+        </div>
+        <div class="formula mt-4" style="border-left-color:var(--accent2)">Max rules = 2^n (n = number of binary conditions)</div>
+        <div class="mt-3 text-sm highlight-box red">
+          <strong>Simplified table</strong> uses dashes to merge redundant rules (reduces test cases).
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent2)">Example: Login System</h3>
+        <p class="text-xs mb-2" style="color:var(--muted)">Conditions: Valid User (VU), Valid Password (VP), Account Active (AA)</p>
+        <div class="overflow-x-auto">
+          <table>
+            <tr>
+              <th></th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>R5</th>
+            </tr>
+            <tr><td class="mono text-xs">Valid User</td><td>T</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
+            <tr><td class="mono text-xs">Valid Password</td><td>T</td><td>T</td><td>F</td><td>F</td><td>—</td></tr>
+            <tr><td class="mono text-xs">Account Active</td><td>T</td><td>F</td><td>T</td><td>F</td><td>—</td></tr>
+            <tr><td class="mono text-xs" style="color:var(--accent4)">✓ Login</td><td style="color:var(--accent4)">✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td class="mono text-xs" style="color:#f97316">⚠ Show Error</td><td>—</td><td style="color:#f97316">AA</td><td style="color:#f97316">PW</td><td style="color:#f97316">Both</td><td style="color:var(--accent2)">User</td></tr>
+          </table>
+        </div>
+        <p class="text-xs mt-2" style="color:var(--muted)">Each column (R1–R5) is one test case.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BVA -->
+  <div class="card card-green">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent4)">2. Boundary Value Analysis (BVA)</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Tests values at the <strong>edges</strong> of equivalence partitions, where bugs are most likely to occur.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent4)">BVC — Boundary Value Coverage</h3>
+        <p class="text-sm mb-2">Tests exactly <strong>ON</strong> the boundary values.</p>
+        <div class="highlight-box green text-sm">
+          For a range [a, b]: test <code>a</code> and <code>b</code> only.
+        </div>
+        <div class="formula mt-2" style="border-left-color:var(--accent4)">BVC test points: min, max (2 per variable)</div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent4)">BVA — Boundary Value Analysis (3-point)</h3>
+        <p class="text-sm mb-2">Tests ON, just-below, and just-above boundary.</p>
+        <div class="highlight-box green text-sm">
+          For range [a, b]: test <code>a-1</code>, <code>a</code>, <code>a+1</code>, <code>b-1</code>, <code>b</code>, <code>b+1</code>
+        </div>
+        <div class="formula mt-2" style="border-left-color:var(--accent4)">BVA test points: min-1, min, min+1, max-1, max, max+1 (6 per variable)</div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent4)">Equivalence Partitioning</h3>
+        <p class="text-sm">Divide input into partitions where system behaves identically. Pick one representative from each:</p>
+        <div class="space-y-1 mt-2 text-sm">
+          <div class="highlight-box green">Valid partition: values the system should accept</div>
+          <div class="highlight-box green">Invalid partition: values the system should reject</div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent4)">Visual: Age Input [18, 60]</h3>
+        <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-height:160px">
+          <!-- Number line -->
+          <line x1="20" y1="80" x2="280" y2="80" stroke="#64748b" stroke-width="2"/>
+          <!-- Regions -->
+          <rect x="20" y="60" width="80" height="40" fill="rgba(255,107,107,0.15)" rx="3"/>
+          <rect x="100" y="60" width="100" height="40" fill="rgba(52,211,153,0.15)" rx="3"/>
+          <rect x="200" y="60" width="80" height="40" fill="rgba(255,107,107,0.15)" rx="3"/>
+          <text x="60" y="83" text-anchor="middle" font-size="10" fill="#ff6b6b">Invalid</text>
+          <text x="150" y="83" text-anchor="middle" font-size="10" fill="#34d399">Valid</text>
+          <text x="240" y="83" text-anchor="middle" font-size="10" fill="#ff6b6b">Invalid</text>
+          <!-- Boundary markers -->
+          <line x1="100" y1="50" x2="100" y2="110" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <line x1="200" y1="50" x2="200" y2="110" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text x="100" y="125" text-anchor="middle" font-size="9" fill="#00e5ff">18</text>
+          <text x="200" y="125" text-anchor="middle" font-size="9" fill="#00e5ff">60</text>
+          <!-- BVA points -->
+          <circle cx="80" cy="80" r="5" fill="#ff6b6b"/><text x="80" y="48" text-anchor="middle" font-size="8" fill="#ff6b6b">17</text>
+          <circle cx="100" cy="80" r="5" fill="#34d399"/><text x="100" y="48" text-anchor="middle" font-size="8" fill="#34d399">18</text>
+          <circle cx="120" cy="80" r="5" fill="#34d399"/><text x="120" y="140" text-anchor="middle" font-size="8" fill="#34d399">19</text>
+          <circle cx="180" cy="80" r="5" fill="#34d399"/><text x="180" y="48" text-anchor="middle" font-size="8" fill="#34d399">59</text>
+          <circle cx="200" cy="80" r="5" fill="#34d399"/><text x="200" y="140" text-anchor="middle" font-size="8" fill="#34d399">60</text>
+          <circle cx="220" cy="80" r="5" fill="#ff6b6b"/><text x="220" y="48" text-anchor="middle" font-size="8" fill="#ff6b6b">61</text>
+        </svg>
+
+        <div class="mt-3 text-sm">
+          <strong style="color:var(--accent4)">BVC test values:</strong> 18, 60
+        </div>
+        <div class="mt-1 text-sm">
+          <strong style="color:var(--accent4)">BVA test values:</strong> 17, 18, 19, 59, 60, 61
+        </div>
+
+        <div class="answer-box mt-3 text-sm">
+          <strong style="color:var(--accent4)">Equivalence Partitions:</strong><br>
+          • Invalid: &lt; 18 → test with e.g. 10<br>
+          • Valid: 18–60 → test with e.g. 35<br>
+          • Invalid: &gt; 60 → test with e.g. 70
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OOP ===== -->
+<div id="oop" class="section space-y-8">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(0,229,255,0.15);color:var(--accent)">OOP Concepts</span>
+    <span style="color:var(--muted)" class="text-sm">Object-Oriented Programming</span>
+  </div>
+
+  <!-- Inheritance -->
+  <div class="card">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent)">1. Inheritance</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Mechanism where a class (<strong>child/subclass</strong>) acquires properties and behaviors of another class (<strong>parent/superclass</strong>).</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent)">Types of Inheritance</h3>
+        <div class="space-y-2 text-sm">
+          <div class="highlight-box"><strong>Single:</strong> Child → Parent (one parent)</div>
+          <div class="highlight-box"><strong>Multilevel:</strong> GrandChild → Child → Parent (chain)</div>
+          <div class="highlight-box"><strong>Hierarchical:</strong> Multiple children from one parent</div>
+          <div class="highlight-box"><strong>Multiple:</strong> One child, multiple parents (C++ / interfaces)</div>
+          <div class="highlight-box"><strong>Hybrid:</strong> Combination of above</div>
+        </div>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent)">Key Keywords</h3>
+        <pre style="font-size:0.75rem">class Animal {
+  String name;
+  void eat() { ... }
+}
+
+class Dog extends Animal {
+  void bark() { ... }
+  // Inherits: name, eat()
+  // Adds: bark()
+}</pre>
+        <div class="highlight-box mt-2 text-sm">
+          <strong>super</strong> keyword accesses parent class methods/constructors.<br>
+          <strong>is-a relationship:</strong> Dog <em>is-a</em> Animal ✓
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent)">Inheritance Hierarchy Diagram</h3>
+        <svg viewBox="0 0 260 280" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-height:260px">
+          <defs>
+            <marker id="arr-inherit" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <polygon points="0,0 10,5 0,10" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
+            </marker>
+          </defs>
+          <!-- Animal -->
+          <rect x="80" y="10" width="100" height="36" rx="6" fill="#1a2236" stroke="#00e5ff" stroke-width="1.5"/>
+          <text x="130" y="32" text-anchor="middle" font-size="11" fill="#00e5ff">Animal</text>
+          <!-- Lines to children -->
+          <line x1="130" y1="46" x2="60" y2="110" stroke="#00e5ff" stroke-width="1.5" marker-end="url(#arr-inherit)"/>
+          <line x1="130" y1="46" x2="200" y2="110" stroke="#00e5ff" stroke-width="1.5" marker-end="url(#arr-inherit)"/>
+          <!-- Dog -->
+          <rect x="20" y="112" width="80" height="36" rx="6" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+          <text x="60" y="134" text-anchor="middle" font-size="11" fill="#34d399">Dog</text>
+          <!-- Cat -->
+          <rect x="160" y="112" width="80" height="36" rx="6" fill="#1a2236" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="200" y="134" text-anchor="middle" font-size="11" fill="#a78bfa">Cat</text>
+          <!-- Poodle from Dog -->
+          <line x1="60" y1="148" x2="60" y2="200" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-inherit)"/>
+          <rect x="20" y="202" width="80" height="36" rx="6" fill="#1a2236" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="60" y="224" text-anchor="middle" font-size="11" fill="#34d399">Poodle</text>
+          <!-- Labels -->
+          <text x="30" y="88" font-size="8" fill="#64748b">extends</text>
+          <text x="155" y="88" font-size="8" fill="#64748b">extends</text>
+          <text x="65" y="180" font-size="8" fill="#64748b">extends</text>
+        </svg>
+        <p class="text-xs text-center" style="color:var(--muted)">Hierarchical (Animal→Dog/Cat) + Multilevel (Poodle→Dog→Animal)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Polymorphism -->
+  <div class="card card-purple">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent3)">2. Polymorphism</h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">"Many forms" — the ability of different objects to respond to the same method call in different ways.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent3)">Compile-time (Static) — Overloading</h3>
+        <div class="highlight-box purple text-sm mb-2">Same method name, different parameter list. Resolved at <strong>compile time</strong>.</div>
+        <pre style="font-size:0.75rem">class Calculator {
+  int add(int a, int b)
+  double add(double a, double b)
+  int add(int a, int b, int c)
+  // Same name, diff signatures!
+}</pre>
+
+        <h3 class="font-semibold mt-4 mb-2 text-sm uppercase mono" style="color:var(--accent3)">Runtime (Dynamic) — Overriding</h3>
+        <div class="highlight-box purple text-sm mb-2">Subclass redefines a parent method. Resolved at <strong>runtime</strong> via dynamic dispatch.</div>
+        <pre style="font-size:0.75rem">class Animal {
+  void sound() { print("..."); }
+}
+class Dog extends Animal {
+  @Override
+  void sound() { print("Woof"); }
+}
+class Cat extends Animal {
+  @Override
+  void sound() { print("Meow"); }
+}
+// Animal a = new Dog();
+// a.sound() → "Woof"</pre>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent3)">Polymorphism Diagram</h3>
+        <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-height:220px">
+          <!-- Animal base -->
+          <rect x="80" y="10" width="100" height="50" rx="6" fill="#1a2236" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="130" y="28" text-anchor="middle" font-size="10" fill="#a78bfa">Animal</text>
+          <text x="130" y="44" text-anchor="middle" font-size="9" fill="#64748b">sound(): ...</text>
+          <line x1="130" y1="60" x2="60" y2="120" stroke="#a78bfa" stroke-width="1.5"/>
+          <line x1="130" y1="60" x2="200" y2="120" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Dog -->
+          <rect x="20" y="122" width="80" height="50" rx="6" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+          <text x="60" y="140" text-anchor="middle" font-size="10" fill="#34d399">Dog</text>
+          <text x="60" y="156" text-anchor="middle" font-size="9" fill="#64748b">sound():"Woof"</text>
+          <!-- Cat -->
+          <rect x="160" y="122" width="80" height="50" rx="6" fill="#1a2236" stroke="#ff6b6b" stroke-width="1.5"/>
+          <text x="200" y="140" text-anchor="middle" font-size="10" fill="#ff6b6b">Cat</text>
+          <text x="200" y="156" text-anchor="middle" font-size="9" fill="#64748b">sound():"Meow"</text>
+          <!-- Runtime dispatch note -->
+          <rect x="60" y="190" width="140" height="24" rx="4" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.3)"/>
+          <text x="130" y="206" text-anchor="middle" font-size="9" fill="#a78bfa">a.sound() → runtime dispatch</text>
+        </svg>
+
+        <div class="mt-3 space-y-1 text-sm">
+          <div class="highlight-box purple"><strong>Key difference:</strong> Overloading = same class, different params. Overriding = different class (parent/child), same signature.</div>
+          <div class="highlight-box purple"><strong>Upcasting:</strong> <code>Animal a = new Dog();</code> — always safe.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DESIGN PATTERNS ===== -->
+<div id="patterns" class="section space-y-8">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(167,139,250,0.15);color:var(--accent3)">Design Patterns</span>
+    <span style="color:var(--muted)" class="text-sm">Reusable solutions to common problems</span>
+  </div>
+
+  <!-- Pattern type overview -->
+  <div class="card">
+    <h3 class="font-semibold mb-3 text-sm uppercase mono" style="color:var(--accent3)">Pattern Categories</h3>
+    <div class="grid grid-cols-3 gap-3 text-sm text-center">
+      <div class="highlight-box"><strong style="color:var(--accent)">Creational</strong><br><span class="text-xs" style="color:var(--muted)">Object creation</span><br><code>Singleton</code></div>
+      <div class="highlight-box purple"><strong style="color:var(--accent3)">Structural</strong><br><span class="text-xs" style="color:var(--muted)">Class/object composition</span><br><code>Adapter, Bridge</code></div>
+      <div class="highlight-box green"><strong style="color:var(--accent4)">Behavioral</strong><br><span class="text-xs" style="color:var(--muted)">Communication</span><br><code>Observer</code></div>
+    </div>
+  </div>
+
+  <!-- Singleton -->
+  <div class="card">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent)">1. Singleton Pattern <span class="text-sm font-normal ml-2 badge" style="background:rgba(0,229,255,0.15);color:var(--accent)">Creational</span></h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Ensures a class has <strong>only one instance</strong> and provides a global access point to it.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent)">When to Use</h3>
+        <div class="space-y-1 text-sm">
+          <div class="highlight-box">Database connection pool</div>
+          <div class="highlight-box">Logger / configuration manager</div>
+          <div class="highlight-box">Thread pool, cache</div>
+        </div>
+        <h3 class="font-semibold mt-3 mb-2 text-sm uppercase mono" style="color:var(--accent)">Key Characteristics</h3>
+        <div class="space-y-1 text-sm">
+          <div class="highlight-box">Private constructor (can't use <code>new</code>)</div>
+          <div class="highlight-box">Static instance variable</div>
+          <div class="highlight-box">Static <code>getInstance()</code> method</div>
+          <div class="highlight-box">Thread-safe (use synchronized/double-check locking)</div>
+        </div>
+      </div>
+      <div>
+        <pre style="font-size:0.75rem">class Singleton {
+  private static Singleton instance;
+
+  private Singleton() { }  // ← private!
+
+  public static Singleton getInstance() {
+    if (instance == null) {
+      instance = new Singleton();
+    }
+    return instance;
+  }
+}
+
+// Usage:
+Singleton s1 = Singleton.getInstance();
+Singleton s2 = Singleton.getInstance();
+// s1 == s2  → TRUE (same object)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adapter -->
+  <div class="card card-red">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent2)">2. Adapter Pattern <span class="text-sm font-normal ml-2 badge" style="background:rgba(255,107,107,0.15);color:var(--accent2)">Structural</span></h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Converts the interface of a class into another interface that clients expect. Like a power plug adapter.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent2)">Participants</h3>
+        <div class="space-y-2 text-sm">
+          <div class="highlight-box red"><strong>Target:</strong> Interface the client expects.</div>
+          <div class="highlight-box red"><strong>Adaptee:</strong> Existing class with incompatible interface.</div>
+          <div class="highlight-box red"><strong>Adapter:</strong> Wraps Adaptee, implements Target.</div>
+          <div class="highlight-box red"><strong>Client:</strong> Uses Target interface.</div>
+        </div>
+
+        <svg viewBox="0 0 280 120" class="w-full mt-3" style="max-height:110px">
+          <rect x="5" y="40" width="70" height="36" rx="5" fill="#1a2236" stroke="#ff6b6b" stroke-width="1.5"/>
+          <text x="40" y="62" text-anchor="middle" font-size="10" fill="#ff6b6b">Client</text>
+          <rect x="95" y="40" width="80" height="36" rx="5" fill="#1a2236" stroke="#64748b" stroke-width="1.5"/>
+          <text x="135" y="62" text-anchor="middle" font-size="10" fill="#64748b">«Target»</text>
+          <rect x="195" y="10" width="80" height="36" rx="5" fill="#1a2236" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="235" y="32" text-anchor="middle" font-size="10" fill="#a78bfa">Adapter</text>
+          <rect x="195" y="70" width="80" height="36" rx="5" fill="#1a2236" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="235" y="92" text-anchor="middle" font-size="10" fill="#ff6b6b">Adaptee</text>
+          <line x1="75" y1="58" x2="93" y2="58" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="175" y1="58" x2="193" y2="30" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="235" y1="46" x2="235" y2="68" stroke="#ff6b6b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        </svg>
+      </div>
+
+      <div>
+        <pre style="font-size:0.75rem">// Target interface
+interface MediaPlayer {
+  void play(String file);
+}
+
+// Adaptee (incompatible)
+class VLCPlayer {
+  void playVLC(String file) { ... }
+}
+
+// Adapter
+class MediaAdapter implements MediaPlayer {
+  VLCPlayer vlc = new VLCPlayer();
+
+  public void play(String file) {
+    vlc.playVLC(file);  // ← delegates
+  }
+}
+
+// Client uses Target interface only
+MediaPlayer mp = new MediaAdapter();
+mp.play("video.mp4");  // works!</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bridge -->
+  <div class="card card-purple">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent3)">3. Bridge Pattern <span class="text-sm font-normal ml-2 badge" style="background:rgba(167,139,250,0.15);color:var(--accent3)">Structural</span></h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Separates an abstraction from its implementation so they can vary independently. Avoids "class explosion".</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent3)">Problem Solved</h3>
+        <div class="highlight-box purple text-sm mb-3">
+          Without Bridge: 2 shapes × 3 colors = 6 subclasses.<br>
+          <strong>With Bridge: 2 + 3 = 5 classes total.</strong>
+        </div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent3)">Participants</h3>
+        <div class="space-y-1 text-sm">
+          <div class="highlight-box purple"><strong>Abstraction:</strong> High-level control (Shape).</div>
+          <div class="highlight-box purple"><strong>Implementation:</strong> Interface for implementations (Color).</div>
+          <div class="highlight-box purple"><strong>Refined Abstraction:</strong> Extends Abstraction (Circle).</div>
+          <div class="highlight-box purple"><strong>Concrete Impl:</strong> Implements Implementation (RedColor).</div>
+        </div>
+        <div class="highlight-box purple mt-3 text-sm">
+          <strong>Key:</strong> Abstraction holds a <em>reference</em> to Implementation (composition, not inheritance).
+        </div>
+      </div>
+
+      <div>
+        <pre style="font-size:0.75rem">interface Color {
+  String fill();
+}
+class Red implements Color {
+  public String fill() { return "Red"; }
+}
+class Blue implements Color {
+  public String fill() { return "Blue"; }
+}
+
+abstract class Shape {
+  protected Color color;  // ← bridge!
+  Shape(Color c) { this.color = c; }
+  abstract void draw();
+}
+class Circle extends Shape {
+  Circle(Color c) { super(c); }
+  void draw() {
+    print("Circle in " + color.fill());
+  }
+}
+
+// Usage:
+Shape s = new Circle(new Red());
+s.draw(); // "Circle in Red"
+// Add new color: just add class, no shape change!</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Observer -->
+  <div class="card card-green">
+    <h2 class="text-xl font-bold mb-1" style="color:var(--accent4)">4. Observer Pattern <span class="text-sm font-normal ml-2 badge" style="background:rgba(52,211,153,0.15);color:var(--accent4)">Behavioral</span></h2>
+    <p class="text-sm mb-4" style="color:var(--muted)">Defines a one-to-many dependency: when one object changes state, all dependents are notified automatically.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-semibold mb-2 text-sm uppercase mono" style="color:var(--accent4)">Participants</h3>
+        <div class="space-y-1 text-sm">
+          <div class="highlight-box green"><strong>Subject (Observable):</strong> Maintains list of observers. Notifies on state change.</div>
+          <div class="highlight-box green"><strong>Observer:</strong> Interface with <code>update()</code> method.</div>
+          <div class="highlight-box green"><strong>ConcreteSubject:</strong> Actual source of data.</div>
+          <div class="highlight-box green"><strong>ConcreteObserver:</strong> Reacts to notifications.</div>
+        </div>
+        <div class="highlight-box green mt-3 text-sm">
+          <strong>Real-world examples:</strong> Event listeners in UI, stock price alerts, news feed subscriptions, pub-sub messaging.
+        </div>
+
+        <svg viewBox="0 0 260 130" class="w-full mt-3" style="max-height:120px">
+          <rect x="90" y="10" width="80" height="36" rx="5" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+          <text x="130" y="32" text-anchor="middle" font-size="10" fill="#34d399">Subject</text>
+          <line x1="50" y1="46" x2="88" y2="30" stroke="#34d399" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <line x1="170" y1="28" x2="210" y2="46" stroke="#34d399" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <line x1="130" y1="46" x2="130" y2="80" stroke="#34d399" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <rect x="5" y="48" width="80" height="36" rx="5" fill="#1a2236" stroke="#64748b" stroke-width="1.5"/>
+          <text x="45" y="70" text-anchor="middle" font-size="9" fill="#64748b">Observer1</text>
+          <rect x="175" y="48" width="80" height="36" rx="5" fill="#1a2236" stroke="#64748b" stroke-width="1.5"/>
+          <text x="215" y="70" text-anchor="middle" font-size="9" fill="#64748b">Observer2</text>
+          <rect x="90" y="82" width="80" height="36" rx="5" fill="#1a2236" stroke="#64748b" stroke-width="1.5"/>
+          <text x="130" y="104" text-anchor="middle" font-size="9" fill="#64748b">Observer3</text>
+          <text x="130" y="5" text-anchor="middle" font-size="8" fill="#64748b">notifies →</text>
+        </svg>
+      </div>
+
+      <div>
+        <pre style="font-size:0.75rem">interface Observer {
+  void update(String event);
+}
+
+class EventSource {
+  List&lt;Observer&gt; observers = new ArrayList&lt;&gt;();
+
+  void subscribe(Observer o) {
+    observers.add(o);
+  }
+  void notifyAll(String event) {
+    for (Observer o : observers)
+      o.update(event);
+  }
+  void changeState(String newState) {
+    // ... change state ...
+    notifyAll(newState);  // auto-notify!
+  }
+}
+
+class Logger implements Observer {
+  public void update(String e) {
+    print("LOG: " + e);
+  }
+}
+class AlertSystem implements Observer {
+  public void update(String e) {
+    print("ALERT: " + e);
+  }
+}
+
+EventSource src = new EventSource();
+src.subscribe(new Logger());
+src.subscribe(new AlertSystem());
+src.changeState("PRICE_CHANGED");
+// Both Logger + AlertSystem auto-notified!</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUESTIONS ===== -->
+<div id="questions" class="section space-y-6">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(255,107,107,0.15);color:var(--accent2)">Practice Questions</span>
+    <span style="color:var(--muted)" class="text-sm">Click each question to reveal the answer</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="card">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(0,229,255,0.1);color:var(--accent)">CFG / CC</span>
+          <p class="font-semibold text-sm mt-1">Q1. Consider the following pseudocode. Draw the CFG and calculate the Cyclomatic Complexity.</p>
+          <pre class="mt-2" style="font-size:0.75rem">1. input x
+2. if (x > 0)
+3.   y = x * 2
+4. else
+5.   y = x + 10
+6. while (y < 100)
+7.   y = y + 5
+8. print(y)</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">CFG Nodes:</strong><br>
+        Node 1: input x → Node 2: if(x>0) → Node 3: y=x*2 OR Node 4: y=x+10 → Node 5 (merge) → Node 6: while(y&lt;100) → Node 7: y=y+5 → (back to Node 6) → Node 8: print(y)<br><br>
+        <strong style="color:var(--accent4)">Counting:</strong><br>
+        • N (nodes) = 7 (1, 2, 3/if-true, 4/if-false, merge, while, print)<br>
+        • E (edges) = 8 (1→2, 2→3, 2→4, 3→merge, 4→merge, merge→while, while→body, body→while, while→print)<br>
+        Wait — let's be precise: N=8 nodes, E=9 edges<br><br>
+        <strong style="color:var(--accent4)">Formula 1 (E−N+2):</strong> 9 − 8 + 2 = <strong style="color:var(--accent)">3</strong><br>
+        <strong style="color:var(--accent4)">Formula 2 (P+1):</strong> 2 predicates (if + while) → 2+1 = <strong style="color:var(--accent)">3</strong><br><br>
+        <strong style="color:var(--accent4)">Independent Paths:</strong><br>
+        P1: x&gt;0, y reaches 100 immediately (loop skipped)<br>
+        P2: x≤0, y reaches 100 immediately<br>
+        P3: loop executes at least once<br>
+        <strong>V(G) = 3</strong> ✓
+      </div>
+    </details>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card card-red">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(255,107,107,0.1);color:var(--accent2)">DD Graph</span>
+          <p class="font-semibold text-sm mt-1">Q2. Identify all def-use pairs for variable <code>sum</code> in the following:</p>
+          <pre class="mt-2" style="font-size:0.75rem">Node 1: sum = 0
+Node 2: i = 1
+Node 3: if (i <= n)       ← predicate
+Node 4:   sum = sum + i   ← in loop body
+Node 5:   i = i + 1
+Node 6: (back to Node 3)
+Node 7: print(sum)</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent2)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Definitions of sum:</strong><br>
+        • Node 1: def(sum) — initialized to 0<br>
+        • Node 4: def(sum) — sum = sum + i (also a c-use of sum!)<br><br>
+        <strong style="color:var(--accent4)">Uses of sum:</strong><br>
+        • Node 4: c-use(sum) in RHS expression<br>
+        • Node 7: c-use(sum) in print<br><br>
+        <strong style="color:var(--accent4)">DU Pairs:</strong><br>
+        (1, 4) — def at 1, first c-use at 4 ✓<br>
+        (1, 7) — def at 1, use at 7 (if loop never executes) ✓<br>
+        (4, 4) — def at 4 used again at 4 in next iteration ✓<br>
+        (4, 7) — def at 4 in last iteration, used at 7 ✓<br><br>
+        <strong style="color:var(--accent4)">Note:</strong> The path from def(1) to use(7) bypassing Node 4 is valid if n=0 (loop skipped).
+      </div>
+    </details>
+  </div>
+
+  <!-- Q3 -->
+  <div class="card card-green">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(52,211,153,0.1);color:var(--accent4)">BVA</span>
+          <p class="font-semibold text-sm mt-1">Q3. A function accepts a month number (1–12) and day number. For month input, identify: (a) equivalence partitions, (b) BVC test values, (c) BVA test values.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent4)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">(a) Equivalence Partitions for month:</strong><br>
+        • EP1 (Invalid): month &lt; 1 → e.g., 0, -5<br>
+        • EP2 (Valid): 1 ≤ month ≤ 12 → e.g., 6<br>
+        • EP3 (Invalid): month &gt; 12 → e.g., 13, 15<br><br>
+        <strong style="color:var(--accent4)">(b) BVC test values:</strong><br>
+        Test ON the boundaries: <code>1</code> and <code>12</code><br><br>
+        <strong style="color:var(--accent4)">(c) BVA test values (3-point):</strong><br>
+        Lower boundary: <code>0</code> (invalid), <code>1</code> (min valid), <code>2</code> (just above min)<br>
+        Upper boundary: <code>11</code> (just below max), <code>12</code> (max valid), <code>13</code> (invalid)<br>
+        Total = <strong>6 test values</strong>: {0, 1, 2, 11, 12, 13}
+      </div>
+    </details>
+  </div>
+
+  <!-- Q4 -->
+  <div class="card card-red">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(255,107,107,0.1);color:var(--accent2)">Decision Table</span>
+          <p class="font-semibold text-sm mt-1">Q4. Build a decision table for a discount system: If customer is Premium AND purchase > $100 → 20% discount. If Premium but purchase ≤ $100 → 10% discount. If not Premium but purchase > $100 → 5% discount. Otherwise → no discount.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent2)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm overflow-x-auto">
+        <table>
+          <tr><th>Condition / Action</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr>
+          <tr><td>Premium Customer</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+          <tr><td>Purchase &gt; $100</td><td>T</td><td>F</td><td>T</td><td>F</td></tr>
+          <tr><td style="color:var(--accent4)">20% Discount</td><td style="color:var(--accent4)">✓</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td style="color:#f59e0b">10% Discount</td><td>—</td><td style="color:#f59e0b">✓</td><td>—</td><td>—</td></tr>
+          <tr><td style="color:#f97316">5% Discount</td><td>—</td><td>—</td><td style="color:#f97316">✓</td><td>—</td></tr>
+          <tr><td style="color:var(--muted)">No Discount</td><td>—</td><td>—</td><td>—</td><td style="color:var(--muted)">✓</td></tr>
+        </table>
+        <br>
+        <strong style="color:var(--accent4)">Total test cases = 4</strong> (2 conditions × 2 values each = 2² = 4 rules, no merging needed here)<br>
+        Each column = one test case to design.
+      </div>
+    </details>
+  </div>
+
+  <!-- Q5 -->
+  <div class="card card-purple">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(167,139,250,0.1);color:var(--accent3)">OOP</span>
+          <p class="font-semibold text-sm mt-1">Q5. Explain the difference between method overloading and method overriding with examples. Which one is runtime polymorphism and why?</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent3)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <table class="mb-3">
+          <tr><th>Feature</th><th>Overloading</th><th>Overriding</th></tr>
+          <tr><td>Where</td><td>Same class</td><td>Parent + Child class</td></tr>
+          <tr><td>Signature</td><td>Different params</td><td>Same params</td></tr>
+          <tr><td>Return type</td><td>Can differ</td><td>Same (or covariant)</td></tr>
+          <tr><td>Resolution</td><td>Compile-time</td><td style="color:var(--accent4)">Runtime</td></tr>
+          <tr><td>Binding</td><td>Static</td><td>Dynamic</td></tr>
+          <tr><td>Keyword</td><td>None needed</td><td>@Override</td></tr>
+        </table>
+        <strong style="color:var(--accent3)">Overriding = Runtime Polymorphism</strong> because:<br>
+        The JVM doesn't know which method to call until runtime — it depends on the <em>actual object type</em>, not the reference type.<br>
+        Example: <code>Animal a = new Dog();</code> — at compile time, <code>a</code> looks like Animal, but at runtime it's a Dog, so Dog's <code>sound()</code> is called.
+      </div>
+    </details>
+  </div>
+
+  <!-- Q6 -->
+  <div class="card">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(0,229,255,0.1);color:var(--accent)">Design Patterns</span>
+          <p class="font-semibold text-sm mt-1">Q6. What is the difference between the Adapter and Bridge patterns? Both involve two classes — when would you choose one over the other?</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <table class="mb-3">
+          <tr><th>Feature</th><th>Adapter</th><th>Bridge</th></tr>
+          <tr><td>Purpose</td><td>Make incompatible interfaces work together</td><td>Separate abstraction from implementation</td></tr>
+          <tr><td>Design time</td><td>After the fact (retrofit)</td><td>Up front (design)</td></tr>
+          <tr><td>Changes</td><td>No structural change to Adaptee</td><td>Both sides can vary independently</td></tr>
+          <tr><td>Analogy</td><td>Travel plug adapter</td><td>TV remote + TV hardware</td></tr>
+          <tr><td>Relationship</td><td>Wrapper (single direction)</td><td>Composition bridge (bidirectional extension)</td></tr>
+        </table>
+        <strong style="color:var(--accent)">Use Adapter when:</strong> You have existing code that can't be changed and needs to fit a new interface.<br><br>
+        <strong style="color:var(--accent)">Use Bridge when:</strong> You're designing from scratch and want to avoid a class explosion (e.g., 3 shapes × 4 colors = 12 subclasses vs 7 with Bridge).
+      </div>
+    </details>
+  </div>
+
+  <!-- Q7 -->
+  <div class="card card-green">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(52,211,153,0.1);color:var(--accent4)">Design Patterns</span>
+          <p class="font-semibold text-sm mt-1">Q7. In the Observer pattern, what is "loose coupling" and how does Observer achieve it? Give a real-world analogy.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent4)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Loose Coupling:</strong> Objects interact through interfaces/abstractions rather than concrete classes, so they can change independently without breaking each other.<br><br>
+        <strong style="color:var(--accent4)">How Observer achieves it:</strong><br>
+        • Subject doesn't know the concrete type of its observers — it only knows they implement the <code>Observer</code> interface.<br>
+        • Observers don't know about each other.<br>
+        • You can add/remove observers at runtime without changing Subject code.<br><br>
+        <strong style="color:var(--accent4)">Real-world analogy:</strong> YouTube subscriptions.<br>
+        • YouTube channel = Subject<br>
+        • Subscribers = Observers<br>
+        • When a new video is posted (state change), ALL subscribers are notified (update()).<br>
+        • YouTube doesn't know what each subscriber does with the notification — they react independently.
+      </div>
+    </details>
+  </div>
+
+  <!-- Q8 -->
+  <div class="card card-purple">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(167,139,250,0.1);color:var(--accent3)">Singleton</span>
+          <p class="font-semibold text-sm mt-1">Q8. What problem does the Singleton pattern solve? Why must the constructor be private? What issue can arise in multi-threaded environments and how is it fixed?</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent3)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent3)">Problem solved:</strong> Ensures only one instance of a class is created (e.g., one DB connection, one config loader). Provides global access point.<br><br>
+        <strong style="color:var(--accent3)">Why private constructor:</strong> Prevents external code from calling <code>new ClassName()</code>, which would create multiple instances and break the pattern.<br><br>
+        <strong style="color:var(--accent3)">Multi-threading problem:</strong> Two threads could both pass the <code>if (instance == null)</code> check simultaneously and each create a new instance → two instances!<br><br>
+        <strong style="color:var(--accent3)">Fix — Double-Checked Locking:</strong>
+        <pre style="font-size:0.72rem;margin-top:0.5rem">public static Singleton getInstance() {
+  if (instance == null) {              // first check (no lock)
+    synchronized (Singleton.class) {
+      if (instance == null) {          // second check (with lock)
+        instance = new Singleton();
+      }
+    }
+  }
+  return instance;
+}</pre>
+        Also mark <code>instance</code> as <code>volatile</code> to ensure visibility across threads.
+      </div>
+    </details>
+  </div>
+
+</div><!-- end existing Q&A -->
+
+</div><!-- end questions section -->
+
+<!-- ===== SAMPLE QUESTIONS ===== -->
+<div id="sample" class="section space-y-6">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="badge" style="background:rgba(0,229,255,0.15);color:var(--accent)">Sample Questions</span>
+    <span style="color:var(--muted)" class="text-sm">One per topic — click to reveal answers</span>
+  </div>
+
+  <p class="text-sm" style="color:var(--muted)">Try answering each question before revealing the answer.</p>
+
+  <!-- SQ divider -->
+  <p class="mono text-xs uppercase tracking-widest mt-4 mb-2" style="color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;">White Box Testing</p>
+
+  <!-- SQ1: CFG & CC -->
+  <div class="card">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(0,229,255,0.1);color:var(--accent)">CFG &amp; Cyclomatic Complexity</span>
+          <p class="font-semibold text-sm mt-1">SQ1. Draw the CFG for the code below, then calculate Cyclomatic Complexity using two different methods.</p>
+          <pre style="font-size:0.75rem;margin-top:0.5rem">int classify(int x, int y) {
+    int result;
+    if (x > 0) {
+        if (y > 0)
+            result = 1;
+        else
+            result = 2;
+    } else {
+        result = 3;
+    }
+    return result;
+}</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Nodes:</strong> N1 (entry), N2 (if x&gt;0), N3 (if y&gt;0), N4 (result=1), N5 (result=2), N6 (result=3), N7 (return) = <strong>7 nodes</strong><br>
+        <strong style="color:var(--accent4)">Edges:</strong> N1→N2, N2→N3(T), N2→N6(F), N3→N4(T), N3→N5(F), N4→N7, N5→N7, N6→N7 = <strong>8 edges</strong><br><br>
+        <strong style="color:var(--accent4)">Method 1 — E − N + 2:</strong> 8 − 7 + 2 = <strong style="color:var(--accent)">3</strong><br>
+        <strong style="color:var(--accent4)">Method 2 — P + 1:</strong> 2 predicate nodes (N2, N3) → 2 + 1 = <strong style="color:var(--accent)">3</strong><br><br>
+        <strong style="color:var(--accent4)">3 Independent Paths:</strong><br>
+        P1: x&gt;0 &amp; y&gt;0 → result=1<br>
+        P2: x&gt;0 &amp; y≤0 → result=2<br>
+        P3: x≤0 → result=3
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ2: DD Graph -->
+  <div class="card card-red">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(255,107,107,0.1);color:var(--accent2)">DD Graph (Def-Use)</span>
+          <p class="font-semibold text-sm mt-1">SQ2. Identify all def-use pairs for variable <code>total</code> below and classify each use as c-use or p-use.</p>
+          <pre style="font-size:0.75rem;margin-top:0.5rem">Node 1: total = 0
+Node 2: for i = 1 to n
+Node 3:   if (total > 50)     ← predicate
+Node 4:     total = total + i * 2
+Node 5:   else
+Node 6:     total = total + i
+Node 7: print(total)</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent2)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Definitions of total:</strong> Node 1, Node 4, Node 6<br><br>
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:4px;">
+          <tr style="background:var(--surface2)"><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent);font-size:0.7rem;">DU Pair</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent);font-size:0.7rem;">Def Node</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent);font-size:0.7rem;">Use Node</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent);font-size:0.7rem;">Use Type</th></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(1,3)</td><td style="padding:5px 8px;border:1px solid var(--border)">1</td><td style="padding:5px 8px;border:1px solid var(--border)">3</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent3)">p-use (in condition)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(1,4)</td><td style="padding:5px 8px;border:1px solid var(--border)">1</td><td style="padding:5px 8px;border:1px solid var(--border)">4</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">c-use (RHS: total+i*2)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(1,6)</td><td style="padding:5px 8px;border:1px solid var(--border)">1</td><td style="padding:5px 8px;border:1px solid var(--border)">6</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">c-use (RHS: total+i)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(1,7)</td><td style="padding:5px 8px;border:1px solid var(--border)">1</td><td style="padding:5px 8px;border:1px solid var(--border)">7</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">c-use (loop never runs)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(4,3)</td><td style="padding:5px 8px;border:1px solid var(--border)">4</td><td style="padding:5px 8px;border:1px solid var(--border)">3</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent3)">p-use (next iteration)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(4,7)</td><td style="padding:5px 8px;border:1px solid var(--border)">4</td><td style="padding:5px 8px;border:1px solid var(--border)">7</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">c-use</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(6,3)</td><td style="padding:5px 8px;border:1px solid var(--border)">6</td><td style="padding:5px 8px;border:1px solid var(--border)">3</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent3)">p-use (next iteration)</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">(6,7)</td><td style="padding:5px 8px;border:1px solid var(--border)">6</td><td style="padding:5px 8px;border:1px solid var(--border)">7</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">c-use</td></tr>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <!-- Black Box divider -->
+  <p class="mono text-xs uppercase tracking-widest mt-4 mb-2" style="color:var(--accent2);border-bottom:1px solid var(--border);padding-bottom:6px;">Black Box Testing</p>
+
+  <!-- SQ3: BVA -->
+  <div class="card card-green">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(52,211,153,0.1);color:var(--accent4)">Boundary Value Analysis</span>
+          <p class="font-semibold text-sm mt-1">SQ3. A system accepts an exam score from 0 to 100. List all test values for (a) Equivalence Partitioning, (b) BVC, and (c) BVA (3-point). How many total test cases does each produce?</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent4)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+          <tr style="background:var(--surface2)"><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4);font-size:0.7rem;">Technique</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4);font-size:0.7rem;">Test Values</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4);font-size:0.7rem;">Count</th></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">Equivalence Partitioning</td><td style="padding:5px 8px;border:1px solid var(--border)">−5 (invalid), 50 (valid), 105 (invalid)</td><td style="padding:5px 8px;border:1px solid var(--border)">3</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">BVC (on-boundary)</td><td style="padding:5px 8px;border:1px solid var(--border)">0, 100</td><td style="padding:5px 8px;border:1px solid var(--border)">2</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">BVA (3-point)</td><td style="padding:5px 8px;border:1px solid var(--border)">−1, 0, 1, 99, 100, 101</td><td style="padding:5px 8px;border:1px solid var(--border)"><strong style="color:var(--accent4)">6</strong></td></tr>
+        </table>
+        <p class="mt-2" style="color:var(--muted)">Note: −1 and 101 are invalid (just outside). 0 and 100 are valid boundaries. 1 and 99 are just inside. EP uses one representative per partition.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ4: Decision Table -->
+  <div class="card card-red">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(255,107,107,0.1);color:var(--accent2)">Decision Table</span>
+          <p class="font-semibold text-sm mt-1">SQ4. A bank grants a loan if: applicant has good credit AND salary &gt; 30k — OR — applicant has collateral regardless of other factors. Build the complete decision table with all rules and actions.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent2)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm overflow-x-auto">
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+          <tr style="background:var(--surface2)"><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;"></th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;">R1</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;">R2</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;">R3</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;">R4</th><th style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2);font-size:0.7rem;">R5</th></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">Good Credit</td><td style="padding:5px 8px;border:1px solid var(--border)">T</td><td style="padding:5px 8px;border:1px solid var(--border)">T</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">—</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">Salary &gt; 30k</td><td style="padding:5px 8px;border:1px solid var(--border)">T</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">T</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">—</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border)">Has Collateral</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">F</td><td style="padding:5px 8px;border:1px solid var(--border)">T</td></tr>
+          <tr><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">✓ Grant Loan</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">Yes</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2)">No</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2)">No</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent2)">No</td><td style="padding:5px 8px;border:1px solid var(--border);color:var(--accent4)">Yes</td></tr>
+        </table>
+        <p class="mt-2" style="color:var(--muted)">R5 uses — (don't care) for credit &amp; salary since collateral alone is sufficient. Total = 5 test cases.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- OOP divider -->
+  <p class="mono text-xs uppercase tracking-widest mt-4 mb-2" style="color:var(--accent3);border-bottom:1px solid var(--border);padding-bottom:6px;">OOP</p>
+
+  <!-- SQ5: Inheritance -->
+  <div class="card">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(0,229,255,0.1);color:var(--accent)">Inheritance</span>
+          <p class="font-semibold text-sm mt-1">SQ5. Given <code>Vehicle → Car → ElectricCar</code>, write the class hierarchy with constructor chaining using <code>super()</code>. What type of inheritance is this, and what is the exact output when <code>new ElectricCar()</code> is called?</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <pre style="font-size:0.75rem">class Vehicle {
+    Vehicle() { System.out.println("Vehicle created"); }
+}
+class Car extends Vehicle {
+    Car() {
+        super();                // calls Vehicle()
+        System.out.println("Car created");
+    }
+}
+class ElectricCar extends Car {
+    ElectricCar() {
+        super();                // calls Car() → which calls Vehicle()
+        System.out.println("ElectricCar created");
+    }
+}</pre>
+        <strong style="color:var(--accent4)">Type:</strong> Multilevel inheritance (Vehicle → Car → ElectricCar)<br><br>
+        <strong style="color:var(--accent4)">Output when new ElectricCar() is called:</strong><br>
+        1. "Vehicle created"<br>
+        2. "Car created"<br>
+        3. "ElectricCar created"<br>
+        <span style="color:var(--muted)">Constructors fire from topmost parent downward.</span>
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ6: Polymorphism -->
+  <div class="card card-purple">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(167,139,250,0.1);color:var(--accent3)">Polymorphism</span>
+          <p class="font-semibold text-sm mt-1">SQ6. What is the output of the code below? Identify the type of polymorphism and explain why it works this way.</p>
+          <pre style="font-size:0.75rem;margin-top:0.5rem">class Shape {
+    void area() { System.out.println("Shape area"); }
+}
+class Circle extends Shape {
+    void area() { System.out.println("Circle: πr²"); }
+}
+class Square extends Shape {
+    void area() { System.out.println("Square: s²"); }
+}
+
+Shape s1 = new Circle();
+Shape s2 = new Square();
+Shape s3 = new Shape();
+s1.area();
+s2.area();
+s3.area();</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent3)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Output:</strong><br>
+        "Circle: πr²"<br>
+        "Square: s²"<br>
+        "Shape area"<br><br>
+        <strong style="color:var(--accent4)">Type:</strong> Runtime polymorphism (method overriding / dynamic dispatch).<br><br>
+        <strong style="color:var(--accent4)">Why:</strong> All three references are declared as type <code>Shape</code>, but the JVM resolves which <code>area()</code> to call based on the <em>actual object type</em> at runtime — Circle, Square, or Shape. This is late binding. The compiler sees <code>Shape</code>; the JVM sees the real object.
+      </div>
+    </details>
+  </div>
+
+  <!-- Design Patterns divider -->
+  <p class="mono text-xs uppercase tracking-widest mt-4 mb-2" style="color:#f59e0b;border-bottom:1px solid var(--border);padding-bottom:6px;">Design Patterns</p>
+
+  <!-- SQ7: Singleton -->
+  <div class="card">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(0,229,255,0.1);color:var(--accent)">Singleton</span>
+          <p class="font-semibold text-sm mt-1">SQ7. A developer writes the Singleton below. Identify two problems with this implementation and write the corrected version.</p>
+          <pre style="font-size:0.75rem;margin-top:0.5rem">class Config {
+    public static Config instance;
+
+    public Config() { }     // loads settings
+
+    public static Config get() {
+        if (instance == null)
+            instance = new Config();
+        return instance;
+    }
+}</pre>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent2)">Problem 1:</strong> Constructor is <code>public</code> — anyone can call <code>new Config()</code> and create multiple instances, breaking the pattern.<br><br>
+        <strong style="color:var(--accent2)">Problem 2:</strong> Not thread-safe — two threads can both pass <code>instance == null</code> simultaneously and each create a separate instance.<br><br>
+        <strong style="color:var(--accent4)">Corrected version:</strong>
+        <pre style="font-size:0.75rem;margin-top:6px">class Config {
+    private static volatile Config instance; // volatile!
+
+    private Config() { }           // ← private constructor
+
+    public static Config get() {
+        if (instance == null) {
+            synchronized (Config.class) {
+                if (instance == null)       // double-check
+                    instance = new Config();
+            }
+        }
+        return instance;
+    }
+}</pre>
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ8: Adapter -->
+  <div class="card card-red">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(255,107,107,0.1);color:var(--accent2)">Adapter Pattern</span>
+          <p class="font-semibold text-sm mt-1">SQ8. You have a <code>LegacyPrinter</code> with method <code>printOld(String text)</code>, but your system expects a <code>Printer</code> interface with <code>print(String text)</code>. Write the Adapter and name all four participants.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent2)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <pre style="font-size:0.75rem">// Target (what client expects)
+interface Printer {
+    void print(String text);
+}
+
+// Adaptee (existing, incompatible class)
+class LegacyPrinter {
+    void printOld(String text) {
+        System.out.println("[LEGACY] " + text);
+    }
+}
+
+// Adapter (bridges the gap)
+class PrinterAdapter implements Printer {
+    private LegacyPrinter legacy = new LegacyPrinter();
+
+    public void print(String text) {
+        legacy.printOld(text);   // delegates to Adaptee
+    }
+}
+
+// Client
+Printer p = new PrinterAdapter();
+p.print("Hello");   // works via adapter!</pre>
+        <strong style="color:var(--accent4)">Four participants:</strong><br>
+        Target = <code>Printer</code> · Adaptee = <code>LegacyPrinter</code> · Adapter = <code>PrinterAdapter</code> · Client = code calling <code>p.print()</code>
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ9: Bridge -->
+  <div class="card card-purple">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(167,139,250,0.1);color:var(--accent3)">Bridge Pattern</span>
+          <p class="font-semibold text-sm mt-1">SQ9. Without Bridge, a system has <code>Triangle</code> and <code>Rectangle</code> shapes, each in <code>Red</code>, <code>Blue</code>, <code>Green</code> variants. How many classes are needed without vs with Bridge? Sketch the Bridge solution.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent3)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <strong style="color:var(--accent4)">Without Bridge:</strong> 2 shapes × 3 colors = <strong>6 subclasses</strong> (RedTriangle, BlueTriangle, GreenTriangle, RedRectangle…)<br>
+        <strong style="color:var(--accent4)">With Bridge:</strong> 2 shape classes + 3 color classes = <strong>5 classes total</strong><br><br>
+        <pre style="font-size:0.75rem">interface Color { String fill(); }
+class Red   implements Color { public String fill(){return "Red";} }
+class Blue  implements Color { public String fill(){return "Blue";} }
+class Green implements Color { public String fill(){return "Green";} }
+
+abstract class Shape {
+    protected Color color;        // ← the bridge (composition)
+    Shape(Color c) { this.color = c; }
+    abstract void draw();
+}
+class Triangle extends Shape {
+    Triangle(Color c) { super(c); }
+    void draw() { System.out.println("Triangle in " + color.fill()); }
+}
+class Rectangle extends Shape {
+    Rectangle(Color c) { super(c); }
+    void draw() { System.out.println("Rectangle in " + color.fill()); }
+}
+
+// Usage
+new Triangle(new Red()).draw();    // Triangle in Red
+new Rectangle(new Blue()).draw();  // Rectangle in Blue
+// Add Green color: just add ONE class, no shape changes!</pre>
+      </div>
+    </details>
+  </div>
+
+  <!-- SQ10: Observer -->
+  <div class="card card-green">
+    <details>
+      <summary class="flex items-start justify-between gap-3">
+        <div>
+          <span class="badge mb-2" style="background:rgba(52,211,153,0.1);color:var(--accent4)">Observer Pattern</span>
+          <p class="font-semibold text-sm mt-1">SQ10. A stock price tracker must notify a <code>MobileApp</code> and an <code>EmailAlert</code> whenever the price changes. Implement this using the Observer pattern. Label the Subject, Observer interface, and both ConcreteObservers.</p>
+        </div>
+        <span class="chevron text-lg" style="color:var(--accent4)">▼</span>
+      </summary>
+      <div class="answer-box mt-4 text-sm">
+        <pre style="font-size:0.75rem">// Observer interface
+interface Observer {
+    void update(double newPrice);
+}
+
+// Subject (Observable)
+class StockTracker {
+    private List&lt;Observer&gt; observers = new ArrayList&lt;&gt;();
+    private double price;
+
+    void subscribe(Observer o)   { observers.add(o); }
+    void unsubscribe(Observer o) { observers.remove(o); }
+
+    void setPrice(double p) {
+        this.price = p;
+        notifyObservers();           // auto-notify on change
+    }
+    private void notifyObservers() {
+        for (Observer o : observers) o.update(price);
+    }
+}
+
+// ConcreteObserver 1
+class MobileApp implements Observer {
+    public void update(double p) {
+        System.out.println("Mobile alert: price = " + p);
+    }
+}
+
+// ConcreteObserver 2
+class EmailAlert implements Observer {
+    public void update(double p) {
+        System.out.println("Email: stock changed to " + p);
+    }
+}
+
+// Usage
+StockTracker tracker = new StockTracker();
+tracker.subscribe(new MobileApp());
+tracker.subscribe(new EmailAlert());
+tracker.setPrice(150.5);
+// Both observers notified automatically!</pre>
+        <strong style="color:var(--accent4)">Loose coupling:</strong> Subject only knows observers implement <code>Observer</code> — it never references <code>MobileApp</code> or <code>EmailAlert</code> directly. New observers can be added with zero changes to <code>StockTracker</code>.
+      </div>
+    </details>
+  </div>
+
+</div><!-- end sample section -->
+
+</div><!-- end max-w -->
+
+<footer style="border-top:1px solid var(--border);margin-top:3rem;padding:1.5rem;text-align:center;">
+  <p class="mono text-xs" style="color:var(--muted)">Good luck on your exam! 🎯 — CFG → DD → CC | Decision Table → BVA | Inheritance → Polymorphism | Singleton → Adapter → Bridge → Observer</p>
+</footer>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 80, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
