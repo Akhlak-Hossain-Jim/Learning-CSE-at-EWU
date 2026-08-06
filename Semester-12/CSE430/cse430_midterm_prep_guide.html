@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE430 Mid-Term Prep — Software Testing &amp; Quality Assurance</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  /* ---- Beginner primer box (zero-knowledge intro) ---- */
+  .primer { background: #FBFAF5; border: 1px solid var(--rule);
+    border-left: 4px solid var(--attempt); border-radius: 0 12px 12px 0;
+    padding: 16px 20px; margin: 18px 0; }
+  .primer .tag { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600; font-size: .72rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--attempt); display: block; margin-bottom: 6px; }
+  .primer p:last-child { margin-bottom: 0; }
+  .primer .analogy { font-style: italic; color: var(--ink); }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how-to-read">How the exam works</a></li>
+      <li><a href="#factors">Quality attributes &amp; factors</a></li>
+      <li><a href="#mccall">McCall's quality model</a></li>
+      <li><a href="#coq">Cost of Quality (CoQ)</a></li>
+      <li><a href="#sdlc">Quality across the SDLC (V&amp;V)</a></li>
+      <li><a href="#metrics">Software quality metrics</a></li>
+      <li><a href="#stlc">STLC &amp; Test Strategy</a></li>
+      <li><a href="#rtm">Requirements Traceability Matrix</a></li>
+      <li><a href="#ep-bva">Equivalence Partitioning &amp; BVA</a></li>
+      <li><a href="#dtt">Decision Table Testing</a></li>
+      <li><a href="#pairwise">Pairwise Testing</a></li>
+      <li><a href="#picker">Which technique? (decision guide)</a></li>
+      <li><a href="#cheat">Last-minute revision</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>Software Testing &amp; Quality Assurance — Mid-Term</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE430 (EWU)</span>
+      <span><b>Based on:</b> Lectures 1–5, 9–11 + Pairwise notes</span>
+      <span><b>Format:</b> Scenario analysis — apply the right technique</span>
+    </div>
+  </header>
+
+  <!-- ================= HOW TO READ ================= -->
+  <section class="topic" id="how-to-read">
+    <span class="topic-num">Start here</span>
+    <h2>How this exam actually works</h2>
+    <p class="subtitle">Read this before anything else — it changes how you should study.</p>
+
+    <div class="primer">
+      <span class="tag">If this is all brand new to you</span>
+      <p>Don't worry — this guide assumes you know nothing about software testing yet.
+      Here's the one-paragraph picture to hold in your head: software is written by
+      people, people make mistakes, and a mistake in software is called a
+      <em>defect</em> (or bug). <strong>Software testing</strong> is the work of
+      finding those defects before real users hit them, and <strong>software quality
+      assurance</strong> is the bigger job of setting up good habits so fewer defects
+      happen in the first place. Everything in this course is either (a) a way to
+      <em>measure</em> or <em>manage</em> quality, or (b) a clever <em>technique</em>
+      for choosing which tests to run so you find the most bugs with the least
+      effort. Each topic below starts with a plain-English "start from zero" box, so
+      you can read them in order and build up.</p>
+    </div>
+
+    <p>The faculty notice is unusually specific, and it tells you the exam is
+    <em>not</em> a definitions quiz. You'll be handed a short scenario — a login
+    system, an ATM, an online form, a project with some numbers — and asked to
+    <strong>analyse it, choose the right testing or quality concept, apply it, and
+    justify why</strong>. That last word matters: naming the technique earns you
+    little; showing <em>why it fits this scenario</em> earns the marks.</p>
+
+    <div class="callout key">
+      <span class="tag">The mindset that scores</span>
+      <p>For every scenario, silently ask three things: <b>(1)</b> What is the
+      scenario really testing — a single input range, a combination of rules, or a
+      pile of independent settings? <b>(2)</b> Which technique matches that shape?
+      <b>(3)</b> Can I produce the concrete artefact (the test values, the table,
+      the number) <em>and</em> one sentence justifying the choice?</p>
+    </div>
+
+    <p>Because of that, this guide is built around <strong>scenario questions with
+    fully worked solutions</strong>, not flashcards. Each solution shows every step
+    and why it follows the one before — so on exam day you can reproduce the
+    reasoning, not just recognise the answer. The final section is a
+    <a href="#picker">technique-picker</a>: given any scenario, how to decide which
+    tool to reach for. That decision is the single most examinable skill here.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The trap in every scenario question is answering with a definition instead
+      of an application. If the question gives you an ATM with four conditions and
+      you write "Decision Table Testing is a black-box technique for combinations…"
+      without <em>building the table for that ATM</em>, you've answered a different
+      question than the one asked.</p>
+    </div>
+  </section>
+
+  <!-- ================= QUALITY FACTORS ================= -->
+  <section class="topic" id="factors">
+    <span class="topic-num">Topic 01</span>
+    <h2>Quality attributes, factors, criteria, metrics</h2>
+    <p class="subtitle">The four-level ladder that turns a vague word like "reliable" into a number.</p>
+
+    <div class="primer">
+      <span class="tag">Start from zero</span>
+      <p class="analogy">Imagine you tell a builder "I want a <em>nice, comfortable</em>
+      house." That's useless to them — "nice" isn't something you can measure or
+      check off. A good builder would push back: "OK, comfortable how? Warm? Then
+      let's say the heating keeps every room at 21°C. Quiet? Then let's say outside
+      noise stays under 30 decibels." They're turning your fuzzy wish into concrete
+      numbers they can actually build toward and verify.</p>
+      <p>Software quality works exactly the same way. "The app should be reliable" is
+      the fuzzy wish. This topic is the four-step ladder that walks that wish down
+      into a checkable number: the broad quality (a <strong>factor</strong>) →
+      splits into specific things to check (<strong>criteria</strong>) → each of
+      which gets an actual number (<strong>metric</strong>). Learn the ladder once
+      and you can apply it to any quality word the exam throws at you.</p>
+    </div>
+
+    <p>Start with the problem this solves. A stakeholder says "the system should be
+    reliable and easy to use." That sentence is useless to a tester — you can't
+    <em>test</em> a wish. Software quality work is the discipline of walking that
+    fuzzy wish down a ladder until it becomes something you can measure and check.
+    Your faculty draws that ladder as four levels.</p>
+
+    <p>A <strong>quality attribute</strong> is an observable characteristic of the
+    software — reliability, usability, security, portability. It answers "what kind
+    of good are we talking about?" A <strong>quality factor</strong> is a
+    higher-level <em>category</em> that groups related attributes together for
+    specification and evaluation (your notes give the McCall groupings: operation,
+    revision, transition). A <strong>criterion</strong> is a specific, evaluable
+    condition under a factor — for reliability, that's things like "failure
+    frequency" and "recoverability." A <strong>metric</strong> is the quantitative
+    measure of a criterion — the actual number, like mean time between failures or
+    failures per 100 hours.</p>
+
+    <div class="formula">
+      <div class="label">The ladder (memorise the direction of travel)</div>
+      \[ \textbf{Factor} \;\longrightarrow\; \textbf{Criteria} \;\longrightarrow\; \textbf{Metrics} \]
+      <p style="margin:.6em 0 0; font-size:.9rem;">Management-oriented view (the
+      broad quality goal) on the left → quantitative measures on the right. Reading
+      right-to-left, numbers roll up into criteria, criteria roll up into a factor.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The worked example your faculty repeated</span>
+      <p><b>Factor:</b> Reliability → <b>Criteria:</b> failure frequency,
+      recoverability → <b>Metrics:</b> mean time between failures (MTBF), number of
+      failures per 100 hours. If you can reproduce exactly this chain, you can
+      reproduce it for usability, security, or any other factor they throw at you.</p>
+    </div>
+
+    <p>The other idea from this lecture is what a <strong>comprehensive quality
+    requirement</strong> looks like. A weak requirement states only <em>what</em>
+    the software does. A strong one also states <em>how well</em>: it is specific,
+    verifiable, and measurable. Your notes contrast these directly.</p>
+
+    <div class="callout watch">
+      <span class="tag">Weak vs improved (this is exam gold)</span>
+      <p><b>Weak:</b> "The system should be reliable and easy to use."<br>
+      <b>Improved:</b> "The system shall be available 99.5% of the time during
+      office hours, recover from failure within 5 minutes, and let a new user
+      complete registration within 3 minutes." Notice the improvement is just the
+      ladder in action — vague factor turned into measurable criteria.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· scenario · short answer</span></span></div>
+      <div class="qbody">
+        <p>A hospital's appointment-booking system has this requirement in its SRS:
+        <em>"The system should be fast and dependable."</em> Rewrite it as a
+        comprehensive quality requirement, and for the "dependable" part, trace it
+        down the factor → criteria → metric ladder.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests whether you can turn a vague requirement into a
+            <b>measurable, verifiable</b> one (Lecture 2, "Comprehensive Quality
+            Requirements") <em>and</em> walk the <b>factor → criteria → metric</b>
+            ladder (Lecture 2, Slides 6–7). The examiner wants the vague word
+            decomposed into numbers, not a restatement.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">"Fast" and "dependable" are <em>factors</em>, not testable statements.</p>
+              <p class="why"><b>Diagnose:</b> both are top-of-ladder categories — no number to check against, so they fail the "verifiable" test from Slide 8.</p>
+            </li>
+            <li>
+              <p class="math-line">"Fast" → efficiency → response time → <em>respond within 2 seconds under normal load</em>.</p>
+              <p class="why"><b>Descend the ladder:</b> pick the criterion (response time) and attach a metric (2 s). Mirrors the faculty's "respond within 2 seconds" example.</p>
+            </li>
+            <li>
+              <p class="math-line">"Dependable" → <b>Reliability</b> (factor) → failure frequency + recoverability (<b>criteria</b>).</p>
+              <p class="why"><b>Apply the exact chain the faculty repeated:</b> reliability splits into how often it fails and how fast it recovers.</p>
+            </li>
+            <li>
+              <p class="math-line">Criteria → metrics: <em>available 99.5% during clinic hours; MTBF ≥ 200 h; recover within 5 min</em>.</p>
+              <p class="why"><b>Attach numbers:</b> availability % and MTBF measure failure frequency; the 5-minute target measures recoverability.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Model rewrite</span>
+            <p>"The system shall respond within 2 seconds under normal load, be
+            available 99.5% of the time during clinic hours, and recover from any
+            failure within 5 minutes." <br><b>Ladder for "dependable":</b>
+            Reliability → {failure frequency, recoverability} → {99.5% availability
+            / MTBF, 5-min recovery}. The justification is what earns marks: each
+            number is the measurable form of a named criterion.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= McCALL ================= -->
+  <section class="topic" id="mccall">
+    <span class="topic-num">Topic 02</span>
+    <h2>McCall's quality model</h2>
+    <p class="subtitle">Three questions that sort every quality factor into a box.</p>
+
+    <p>McCall's model exists because "software quality" is not one property — it's
+    several, and they pull in different directions. The model's insight is that
+    every quality factor answers one of three questions about the software's life:
+    how it <em>runs</em> now, how easily you can <em>change</em> it, and how easily
+    you can <em>move</em> it somewhere new. Those three questions are the three
+    categories, and your faculty uses these exact names.</p>
+
+    <div class="formula">
+      <div class="label">McCall's three categories — learn the question, then the factors follow</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.92rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;">
+          <th style="padding:6px 8px;">Category</th><th style="padding:6px 8px;">Its question</th><th style="padding:6px 8px;">Factors</th>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Product Operation</b></td>
+          <td style="padding:6px 8px;">How well does it run <em>now</em>?</td>
+          <td style="padding:6px 8px;">Correctness, Reliability, Efficiency, Integrity, Usability</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Product Revision</b></td>
+          <td style="padding:6px 8px;">How easily can it be <em>changed / fixed / tested</em>?</td>
+          <td style="padding:6px 8px;">Maintainability, Flexibility, Testability</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;"><b>Product Transition</b></td>
+          <td style="padding:6px 8px;">How easily can it <em>move</em> to new environments / systems?</td>
+          <td style="padding:6px 8px;">Portability, Reusability, Interoperability</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Memory hook</span>
+      <p><b>Operation = run, Revision = change, Transition = move.</b> Five factors
+      in Operation, three in Revision, three in Transition. If you can place a
+      factor in the right box <em>and say which question it answers</em>, you've got
+      the McCall question.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Two factors are easy to misfile. <b>Testability</b> lives in
+      <em>Revision</em> (it's about how easily you can change-and-check the code),
+      not Operation. <b>Interoperability</b> (works <em>with</em> other systems) and
+      <b>Portability</b> (moves <em>to</em> other environments) both sit in
+      Transition — don't confuse either with Integrity/Usability, which are about
+      running now (Operation).</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· scenario · medium</span></span></div>
+      <div class="qbody">
+        <p>An online banking system has these concerns. Assign each to a McCall
+        category and name the factor, then justify:</p>
+        <ol>
+          <li>Login, balance check and fund transfer must produce correct, secure results.</li>
+          <li>A new transaction-limit rule must be easy to modify and re-test.</li>
+          <li>The system must integrate with mobile apps and third-party payment gateways.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the exact online-banking example from Lecture 2 (Slides 10–11).
+            It tests whether you map a real concern to the right McCall category
+            <b>by the question it answers</b>, not by rote.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(1) → <b>Product Operation</b> — Correctness &amp; Integrity.</p>
+              <p class="why"><b>Ask "how well does it run now?"</b> Producing correct, secure results at runtime is exactly Operation; "secure" points to Integrity, "correct results" to Correctness.</p>
+            </li>
+            <li>
+              <p class="math-line">(2) → <b>Product Revision</b> — Maintainability &amp; Testability.</p>
+              <p class="why"><b>Ask "how easily can it be changed?"</b> "Easy to modify" = Maintainability; "easy to re-test" = Testability. Both are Revision factors.</p>
+            </li>
+            <li>
+              <p class="math-line">(3) → <b>Product Transition</b> — Interoperability (&amp; Portability).</p>
+              <p class="why"><b>Ask "how easily can it move / connect?"</b> Integrating with other systems is Interoperability, a Transition factor.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Operation (Correctness, Integrity) · Revision (Maintainability,
+            Testability) · Transition (Interoperability). The justification —
+            naming which of the three questions each concern answers — is the part
+            that scores.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= COST OF QUALITY ================= -->
+  <section class="topic" id="coq">
+    <span class="topic-num">Topic 03</span>
+    <h2>Cost of Quality (CoQ)</h2>
+    <p class="subtitle">Four buckets — and the golden rule that prevention is the cheapest.</p>
+
+    <p>Here's the motivating idea: quality isn't free, but <em>poor</em> quality is
+    far more expensive than good quality — you just pay for it later, and to
+    different people. Cost of Quality is the accounting that makes this visible. It
+    splits every quality-related dollar into four buckets, and the whole point is to
+    show that spending early (left side) saves far more later (right side).</p>
+
+    <p>The four buckets split along two lines. First, <strong>conformance</strong>
+    costs (money spent to <em>achieve</em> quality) versus <strong>non-conformance</strong>
+    costs (money lost <em>because</em> quality failed). Then each side splits again:</p>
+
+    <div class="formula">
+      <div class="label">The four CoQ buckets — the "when did we catch it?" ladder</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;">
+          <th style="padding:6px 8px;">Bucket</th><th style="padding:6px 8px;">Spent to…</th><th style="padding:6px 8px;">Examples from your notes</th>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Prevention</b><br><span style="color:var(--muted)">conformance</span></td>
+          <td style="padding:6px 8px;">stop defects ever happening</td>
+          <td style="padding:6px 8px;">SQA planning, training, coding standards, checklists/templates, requirement &amp; design reviews, process improvement, config management</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Appraisal</b><br><span style="color:var(--muted)">conformance</span></td>
+          <td style="padding:6px 8px;">detect defects (inspection)</td>
+          <td style="padding:6px 8px;">formal design reviews, peer reviews/inspections &amp; walkthroughs, all testing levels (unit, integration, system, acceptance)</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Internal failure</b><br><span style="color:var(--muted)">non-conformance</span></td>
+          <td style="padding:6px 8px;">fix defects found <em>before</em> delivery</td>
+          <td style="padding:6px 8px;">re-design, re-programming, regression re-testing, rework, delays, downtime — caught by <em>our</em> reviews/tests</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;"><b>External failure</b><br><span style="color:var(--muted)">non-conformance</span></td>
+          <td style="padding:6px 8px;">fix failures found <em>after</em> delivery</td>
+          <td style="padding:6px 8px;">warranty repairs, customer complaints, bug fixes in operation, customers' bad will, lost sales</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The one distinction the exam will probe</span>
+      <p><b>Internal vs External failure = who found the defect.</b> If <em>you</em>
+      caught it (design review, your own testing, before the customer had it) →
+      <b>internal</b>. If the <em>customer or maintenance team</em> caught it after
+      installation → <b>external</b>. Same bug, wildly different cost — external
+      failure adds bad will and lost sales on top of the fix.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the classic mix-up</span>
+      <p><b>Appraisal is detecting; Internal failure is fixing.</b> Running a test is
+      appraisal. <em>Correcting</em> the bug that test found is internal failure. A
+      code <em>review</em> is appraisal (prevention-flavoured detection); the
+      <em>re-programming</em> after it is internal failure. If the activity finds a
+      problem it's appraisal; if it repairs one it's failure cost.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· scenario · medium</span></span></div>
+      <div class="qbody">
+        <p>A team building an e-commerce checkout logs these five activities.
+        Classify each into one of the four CoQ buckets and justify in a phrase:</p>
+        <ol style="list-style:lower-alpha;">
+          <li>Running a two-day workshop teaching developers the secure-coding standard.</li>
+          <li>A peer inspection of the payment module before it's merged.</li>
+          <li>Re-coding the discount engine after that inspection found a rounding bug.</li>
+          <li>A customer reports being double-charged in production; support issues a refund and hotfix.</li>
+          <li>Regression-testing the whole checkout after the discount engine was re-coded.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Tests whether you can <b>classify real activities</b> into Prevention /
+            Appraisal / Internal / External failure (Lecture 2, Slides 12–19) using
+            the "when/who caught it" logic — not just recite the four names.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) Training workshop → <b>Prevention</b>.</p>
+              <p class="why"><b>Purpose test:</b> it reduces the number of defects before any exist. Training is a named prevention example in the notes.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) Peer inspection → <b>Appraisal</b>.</p>
+              <p class="why"><b>It detects</b>, doesn't fix. Peer reviews/inspections are listed under appraisal (Slide 17).</p>
+            </li>
+            <li>
+              <p class="math-line">(c) Re-coding after the inspection → <b>Internal failure</b>.</p>
+              <p class="why"><b>Fixing a defect we caught ourselves before delivery.</b> Re-programming in response to review findings is the textbook internal-failure example.</p>
+            </li>
+            <li>
+              <p class="math-line">(d) Double-charge in production + refund + hotfix → <b>External failure</b>.</p>
+              <p class="why"><b>Customer found it after installation.</b> Complaint handling + operational bug fix = external failure (and note the "bad will" it carries).</p>
+            </li>
+            <li>
+              <p class="math-line">(e) Regression testing after the re-code → <b>Internal failure</b>.</p>
+              <p class="why"><b>Trap:</b> testing is usually appraisal, but the notes explicitly list "repeated design review and <em>re-testing</em> (regression tests)" under internal failure because it's rework triggered by an already-found defect. Tie it to the fix, not to fresh detection.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>a = Prevention · b = Appraisal · c = Internal failure · d = External
+            failure · e = Internal failure. Item (e) is the discriminator — most
+            people reflexively say "appraisal" for anything with the word test in
+            it. The justification (rework from a known defect) is what wins it.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= SDLC / V&V ================= -->
+  <section class="topic" id="sdlc">
+    <span class="topic-num">Topic 04</span>
+    <h2>Software quality across the SDLC — Verification vs Validation</h2>
+    <p class="subtitle">Why testing at the end is not enough, and the two questions that split all quality work.</p>
+
+    <p>The core message of this lecture is a warning: <strong>testing alone cannot
+    guarantee quality</strong>. Defects are born early — in requirements, in design,
+    in process decisions — but testing only catches them late, after the flawed work
+    is already built on top of. The later you catch a defect, the more it costs to
+    fix (this connects straight back to Cost of Quality). So quality must be
+    <em>built into</em> every phase, not inspected only at the end. That's what SQA
+    is: planned, preventive, quality activities across the whole life cycle.</p>
+
+    <div class="callout key">
+      <span class="tag">The registration-system illustration your faculty used</span>
+      <p>Suppose the requirement forgets that students must clear prerequisites
+      before advanced courses. Caught at <b>requirements review</b> → fix one
+      document. At <b>design review</b> → add validation logic before coding. At
+      <b>system testing</b> → change code and re-test. <b>After release</b> →
+      students register wrongly, records corrupt, emergency fixes. Same defect,
+      exploding cost. That escalation <em>is</em> the argument for early SQA.</p>
+    </div>
+
+    <p>The most examinable idea here is the split between <strong>Verification</strong>
+    and <strong>Validation</strong>. They sound alike but ask opposite questions.</p>
+
+    <div class="formula">
+      <div class="label">V &amp; V — learn the two questions first, everything else follows</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;">
+          <th style="padding:6px 8px;"></th><th style="padding:6px 8px;">Verification</th><th style="padding:6px 8px;">Validation</th>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Question</b></td>
+          <td style="padding:6px 8px;">Are we building the product <em>right</em>?</td>
+          <td style="padding:6px 8px;">Are we building the <em>right</em> product?</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Checks against</b></td>
+          <td style="padding:6px 8px;">specs, standards, design</td>
+          <td style="padding:6px 8px;">user needs, business goals, real use</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>When</b></td>
+          <td style="padding:6px 8px;">throughout SDLC, before execution</td>
+          <td style="padding:6px 8px;">once executable software exists</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Activities</b></td>
+          <td style="padding:6px 8px;">reviews, inspections, walkthroughs, static analysis</td>
+          <td style="padding:6px 8px;">system testing, acceptance testing, UAT, beta</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;"><b>Evidence</b></td>
+          <td style="padding:6px 8px;">review report, checklist, traceability matrix</td>
+          <td style="padding:6px 8px;">test results, user feedback, acceptance sign-off</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The one-line memory aid: <b>Verification = "right" is an adverb (built
+      correctly); Validation = "right" is an adjective (the correct thing).</b>
+      Anything you do by <em>reading/reviewing</em> artefacts is verification;
+      anything you do by <em>running</em> the software against real user needs is
+      validation. A design review is verification even though it happens "during
+      development"; UAT is validation even if the requirement was written perfectly.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· scenario · medium</span></span></div>
+      <div class="qbody">
+        <p>For the course-registration system, label each activity as
+        <b>Verification</b> or <b>Validation</b>, and justify with the question it
+        answers:</p>
+        <ol style="list-style:lower-alpha;">
+          <li>Reviewing the SRS to confirm the prerequisite rules are written clearly and completely.</li>
+          <li>A real student attempts to register for a course without the prerequisite, and the system blocks it.</li>
+          <li>Inspecting whether test cases exist for valid registration, prerequisite failure, seat-full, and clash.</li>
+          <li>A department officer confirms the workflow matches real advising and approval practice.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Straight from Lecture 3/4, Slides 18–22 (registration-system V&amp;V
+            examples). It tests whether you sort activities by <b>which question
+            they answer</b>, not by when they happen.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) Reviewing the SRS → <b>Verification</b>.</p>
+              <p class="why"><b>Reading an artefact against its spec</b> ("are we building it right?"). A review is the archetypal verification activity.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) Real student blocked from invalid registration → <b>Validation</b>.</p>
+              <p class="why"><b>Running the system against a real user need</b> ("is this the right product?"). Executable + real use = validation.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) Inspecting test-case coverage → <b>Verification</b>.</p>
+              <p class="why"><b>Trap:</b> it involves the word "test," but you're <em>inspecting whether cases exist</em>, not running them. Reviewing test cases against requirements is verification (listed explicitly in the notes).</p>
+            </li>
+            <li>
+              <p class="math-line">(d) Officer confirms workflow fits real advising → <b>Validation</b>.</p>
+              <p class="why"><b>Checking against business/real-world need</b>, done by a user/stakeholder. That's validation's home turf.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>a = V · b = Val · c = V · d = Val. Item (c) is the discriminator —
+            "test cases" tempts you toward validation, but <em>reviewing</em> them
+            is verification.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= METRICS ================= -->
+  <section class="topic" id="metrics">
+    <span class="topic-num">Topic 05</span>
+    <h2>Software quality metrics</h2>
+    <p class="subtitle">Turning "is it good?" into numbers — and the formulas the exam will make you compute.</p>
+
+    <p>The premise: you cannot manage what you cannot measure. Metrics convert
+    quality from opinion into evidence. Your faculty sorts them into three families
+    by <em>what</em> they measure — the product, the process, or the project — and
+    this classification is itself examinable.</p>
+
+    <div class="formula">
+      <div class="label">Three metric families</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;">
+          <th style="padding:6px 8px;">Family</th><th style="padding:6px 8px;">Measures</th><th style="padding:6px 8px;">Examples</th>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Product</b></td><td style="padding:6px 8px;">the software artefact itself</td><td style="padding:6px 8px;">LOC, defect density, cyclomatic complexity, failure rate, MTBF</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--rule);">
+          <td style="padding:6px 8px;"><b>Process</b></td><td style="padding:6px 8px;">how well the dev/test process works</td><td style="padding:6px 8px;">Defect Removal Efficiency, defect leakage, review effectiveness, test pass rate</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;"><b>Project</b></td><td style="padding:6px 8px;">planning &amp; management health</td><td style="padding:6px 8px;">schedule variance, effort variance, productivity, requirement volatility</td>
+        </tr>
+      </table>
+    </div>
+
+    <p>Also know the three-word vocabulary the faculty distinguishes: a
+    <strong>measure</strong> is a raw value (45 defects found); a
+    <strong>metric</strong> is an interpreted measurement (4.5 defects/KLOC); an
+    <strong>indicator</strong> is a decision (Module A is high-risk). Now the
+    formulas — these are the ones you will be asked to <em>compute</em>.</p>
+
+    <div class="formula">
+      <div class="label">The formulas to memorise</div>
+      \[ \text{Defect Density} = \frac{\text{Number of defects}}{\text{Size (KLOC)}} \qquad \text{KLOC} = \frac{\text{LOC}}{1000} \]
+      \[ \text{DRE} = \frac{\text{Defects found before release}}{\text{Defects found before release} + \text{Defects found after release}} \times 100\% \]
+      \[ \text{Defect Leakage} = \frac{\text{Defects escaped to later phase / production}}{\text{Total defects}} \times 100\% \]
+      \[ \text{Schedule Variance} = \text{Actual duration} - \text{Planned duration} \qquad \text{Effort Variance} = \text{Actual effort} - \text{Planned effort} \]
+      \[ \text{MTBF} = \frac{\text{Total operating time}}{\text{Number of failures}} \qquad \text{Requirement Volatility} = \frac{\text{Changed requirements}}{\text{Total requirements}}\times 100\% \]
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Why defect density beats raw defect count</span>
+      <p>Module A: 5,000 LOC, 20 defects → 4 defects/KLOC. Module B: 20,000 LOC, 40
+      defects → 2 defects/KLOC. B has <em>more</em> defects but A is
+      <em>more defect-prone per unit size</em>. Raw counts punish big modules
+      unfairly; density normalises by size so you compare fairly. This exact example
+      is in the notes — expect to defend it.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — DRE denominator</span>
+      <p>DRE's denominator is <b>total</b> defects = before-release + after-release,
+      <em>not</em> just before-release. A high DRE means your process removed most
+      defects before shipping. Its mirror image is defect leakage (what escaped) —
+      if DRE = 82%, leakage ≈ 18%.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· scenario · hard · full computation</span></span></div>
+      <div class="qbody">
+        <p>This is the faculty's own classroom problem. A system has:</p>
+        <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif; margin:0 0 8px;">
+          <tr style="border-bottom:1px solid var(--rule); text-align:left;"><th style="padding:5px 8px;">Module</th><th style="padding:5px 8px;">LOC</th><th style="padding:5px 8px;">Pre-release defects</th><th style="padding:5px 8px;">Post-release defects</th></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">A</td><td style="padding:5px 8px;">5,000</td><td style="padding:5px 8px;">20</td><td style="padding:5px 8px;">5</td></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">B</td><td style="padding:5px 8px;">10,000</td><td style="padding:5px 8px;">25</td><td style="padding:5px 8px;">5</td></tr>
+          <tr><td style="padding:5px 8px;">C</td><td style="padding:5px 8px;">20,000</td><td style="padding:5px 8px;">30</td><td style="padding:5px 8px;">10</td></tr>
+        </table>
+        <p style="margin:0;">Project: planned duration 8 weeks, actual 10 weeks;
+        planned effort 60 person-days, actual 75. <b>Find:</b> (1) defect density
+        per module, (2) overall DRE, (3) schedule variance, (4) effort variance,
+        (5) the major quality risk.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>Try it first, then check each line — the right column says <b>why</b>
+          the line follows.</p>
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{DD}_A = \dfrac{20}{5000/1000} = \dfrac{20}{5} = 4 \) defects/KLOC</p>
+              <p class="why"><b>Apply defect density:</b> defects ÷ KLOC. 5,000 LOC = 5 KLOC. Use <em>pre-release</em> defects — density describes the artefact as built/tested.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{DD}_B = \dfrac{25}{10} = 2.5,\quad \text{DD}_C = \dfrac{30}{20} = 1.5 \) defects/KLOC</p>
+              <p class="why"><b>Same formula, each module.</b> 10,000 LOC = 10 KLOC; 20,000 LOC = 20 KLOC.</p>
+            </li>
+            <li>
+              <p class="math-line">Pre-release total \(= 20+25+30 = 75\); post-release total \(= 5+5+10 = 20\).</p>
+              <p class="why"><b>Sum each column</b> to get project-wide figures — DRE is computed over the whole system, not per module.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{DRE} = \dfrac{75}{75 + 20}\times 100 = \dfrac{75}{95}\times 100 \)</p>
+              <p class="why"><b>Apply DRE:</b> before ÷ (before + after). Denominator is <em>all</em> defects = 95, not 75.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{DRE} \approx 78.9\% \)</p>
+              <p class="why"><b>Divide:</b> 75/95 = 0.789. Interpretation: ~21% of defects leaked to production — moderate removal, not great.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SV} = 10 - 8 = +2 \) weeks</p>
+              <p class="why"><b>Schedule variance = actual − planned.</b> Positive = delay.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{EV} = 75 - 60 = +15 \) person-days</p>
+              <p class="why"><b>Effort variance = actual − planned.</b> Positive = overrun (25% more effort than planned).</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer &amp; the "major risk" justification</span>
+            <p>DD: A = 4, B = 2.5, C = 1.5 defects/KLOC · DRE ≈ 78.9% · SV = +2
+            weeks · EV = +15 person-days.<br>
+            <b>Major quality risk = Module A.</b> Justify it: A has the highest
+            defect density (4/KLOC — most defect-prone per unit size), the project
+            is both late (+2 wk) and over-effort (+15 pd), and DRE is only ~79% so
+            defects are already leaking. Module A concentrates the product risk
+            while the schedule/effort overrun raises the chance testing gets rushed.
+            <b>Sanity check:</b> C is largest but lowest density — size alone
+            doesn't equal risk, which is exactly the density lesson.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· scenario · short answer</span></span></div>
+      <div class="qbody">
+        <p>A manager boasts: "Our test pass rate is 98% and our module has only 3
+        reported defects — quality is excellent." Give two reasons, from the
+        limitations of metrics, why this conclusion may be wrong.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Lecture 5, "Misuse and Limitations of Metrics" (Slide 23). The examiner
+            wants you to show a metric can be <b>gamed or misread</b>, not to
+            compute anything.
+          </div>
+          <p><b>Reason 1 — a low defect count may mean weak testing, not high
+          quality.</b> If the test cases are shallow, few defects get <em>found</em>;
+          the defects are still there. "3 reported defects" measures detection, not
+          absence.</p>
+          <p><b>Reason 2 — a high pass rate can hide weak test cases.</b> If the
+          suite mostly checks easy, happy-path inputs, nearly everything passes while
+          the risky boundary and combination cases go untested. The notes state
+          plainly that one metric alone should never decide release readiness.</p>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Both numbers describe the <em>testing effort's</em> behaviour, not the
+            product's real quality. Read together with coverage and defect density
+            they might mean something; alone they're an opinion dressed as evidence.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= STLC & TEST STRATEGY ================= -->
+  <section class="topic" id="stlc">
+    <span class="topic-num">Topic 06</span>
+    <h2>STLC &amp; Test Strategy vs Test Plan</h2>
+    <p class="subtitle">Testing has its own life cycle — and "strategy" and "plan" are not the same word.</p>
+
+    <p>People imagine testing as a single burst at the end. The <strong>Software
+    Testing Life Cycle (STLC)</strong> reframes it as its own structured sequence
+    that runs in parallel with development, so testing is planned, measurable, and
+    documented rather than random button-clicking. Your faculty lists these phases:</p>
+
+    <div class="formula">
+      <div class="label">STLC phases (in order)</div>
+      <p style="margin:0; font-family:'Space Grotesk',sans-serif; font-size:.95rem;">
+      Requirement Analysis → Test Planning → Test Case Design → Test Environment
+      Setup → Test Execution → Defect Reporting &amp; Tracking → Test Closure</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Strategy vs Plan — the distinction the exam loves</span>
+      <p><b>Test Strategy = the general approach</b> (high-level, organisation- or
+      product-wide, relatively stable): <em>how</em> testing will generally be done.
+      <b>Test Plan = that approach applied to one specific project/module/release</b>
+      (what to test, when, by whom, with what data; changes per project). Strategy is
+      the policy; plan is the project-specific document that follows the policy.</p>
+    </div>
+
+    <p>The assignment-submission example makes it concrete. <strong>Strategy:</strong>
+    "use requirement-based testing for major functions, boundary value analysis for
+    file-size limits, negative testing for invalid types/late submissions,
+    regression after fixes." <strong>Plan:</strong> "test login, course selection,
+    upload, deadline validation, confirmation on Chrome and Firefox with valid and
+    invalid accounts; finish functional testing before release." The strategy names
+    techniques; the plan names the exact features, tools, and schedule.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't confuse a <b>test plan</b> (scope, approach, schedule, resources,
+      entry/exit criteria, risks, deliverables for a project) with a <b>test
+      case</b> (one documented set of steps, data, and expected result). Also know
+      <b>entry criteria</b> (conditions needed <em>before</em> testing starts, e.g.
+      requirements finalised, module available) vs <b>exit criteria</b> (conditions
+      to <em>stop</em>, e.g. all critical cases passed, no open high-severity defect).</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· scenario · short answer</span></span></div>
+      <div class="qbody">
+        <p>A team is testing an online food-delivery app. For each statement below,
+        say whether it belongs in the <b>Test Strategy</b> or the <b>Test Plan</b>,
+        and justify:</p>
+        <ol style="list-style:lower-alpha;">
+          <li>"For all products, use risk-based testing and automate regression."</li>
+          <li>"Test the cart, checkout and payment modules in Sprint 4 using Selenium on Chrome and Safari, with two test accounts."</li>
+          <li>"Apply boundary value analysis wherever an input has a numeric range."</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Lecture 9/10, Slides 9–10. Tests whether you sort statements by
+            <b>scope and stability</b>: general+stable = strategy, project-specific =
+            plan.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) → <b>Test Strategy</b>.</p>
+              <p class="why"><b>"For all products" = organisation-wide, stable policy.</b> That's the definition of strategy.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) → <b>Test Plan</b>.</p>
+              <p class="why"><b>Names specific modules, a sprint, tools, browsers, accounts</b> — the concrete, project-specific detail that defines a plan.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) → <b>Test Strategy</b>.</p>
+              <p class="why"><b>A general technique rule</b> ("wherever a range exists") independent of any one project = strategy. The plan would say <em>which</em> field, in <em>which</em> module.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>a = Strategy · b = Plan · c = Strategy. Rule of thumb: if you could
+            copy the sentence to a different project unchanged, it's strategy; if it
+            only makes sense for <em>this</em> project, it's the plan.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= RTM ================= -->
+  <section class="topic" id="rtm">
+    <span class="topic-num">Topic 07</span>
+    <h2>Requirements Traceability Matrix (RTM)</h2>
+    <p class="subtitle">One table that answers "has every requirement been tested?"</p>
+
+    <p>Imagine a system with 40 requirements and 200 test cases. How do you <em>prove</em>
+    nothing slipped through — that every requirement has at least one test, and you
+    know its result? You build an <strong>RTM</strong>: a table that maps each
+    requirement to the test case(s) that check it, plus each case's status. It's a
+    coverage ledger.</p>
+
+    <div class="formula">
+      <div class="label">RTM shape (from the assignment-submission example)</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.88rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;"><th style="padding:5px 8px;">Req ID</th><th style="padding:5px 8px;">Requirement</th><th style="padding:5px 8px;">Test Case ID</th><th style="padding:5px 8px;">Status</th></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">REQ-AS-01</td><td style="padding:5px 8px;">Submit valid assignment before deadline</td><td style="padding:5px 8px;">TC-AS-001</td><td style="padding:5px 8px;">Passed</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">REQ-AS-02</td><td style="padding:5px 8px;">Reject submission after deadline</td><td style="padding:5px 8px;">TC-AS-002</td><td style="padding:5px 8px;">Failed</td></tr>
+        <tr><td style="padding:5px 8px;">REQ-AS-03</td><td style="padding:5px 8px;">Accept only allowed file types</td><td style="padding:5px 8px;">TC-AS-003, 004</td><td style="padding:5px 8px;">Not Run</td></tr>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">What RTM buys you (say these when asked "why use it")</span>
+      <p>Prevents <b>missing requirements</b>, shows <b>test coverage</b>, exposes
+      <b>untested features</b>, supports <b>change-impact analysis</b> (change a
+      requirement → the matrix shows which test cases to revisit), and provides
+      audit/review evidence. In short: it connects requirements, test cases, and
+      results in one traceable line.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>An RTM's power is in the <em>links and statuses</em>, not the table itself.
+      A requirement with <b>no</b> test case is the whole point of building one — the
+      empty cell is the finding. And a "Failed" or "Not Run" status flags exactly
+      where release risk sits.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· scenario · short answer</span></span></div>
+      <div class="qbody">
+        <p>Late in a project, a stakeholder asks a tester to <em>prove</em> that
+        every requirement in the SRS has been tested and to identify anything that
+        hasn't. Which document answers this, and how does it do so? Then explain how
+        the same document helps when REQ-05 is changed after a client request.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Lecture 9/10, Slides 26–28. Two skills: naming the RTM as the coverage
+            tool, and applying it to <b>change-impact analysis</b> — a favourite
+            second-half-of-question twist.
+          </div>
+          <p><b>Document: the Requirements Traceability Matrix.</b> It maps every
+          requirement ID to the test case(s) verifying it and each case's status. To
+          prove full coverage, you scan the matrix: any requirement row with a test
+          case ID and a Passed status is covered; any row with a <em>blank</em> test
+          case column, or a Not-Run/Failed status, is exactly the untested or
+          at-risk item you surface.</p>
+          <p><b>When REQ-05 changes:</b> you look up REQ-05's row, read off the test
+          cases linked to it, and know precisely which cases must be updated and
+          re-run — that's change-impact analysis. Without the RTM you'd guess; with
+          it, the affected tests are one lookup away.</p>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>RTM — because it traces requirement → test case → result, coverage
+            gaps become visible empty cells and change impact becomes a single-row
+            lookup.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= EP & BVA ================= -->
+  <section class="topic" id="ep-bva">
+    <span class="topic-num">Topic 08</span>
+    <h2>Equivalence Partitioning &amp; Boundary Value Analysis</h2>
+    <p class="subtitle">You can't test every input — so test one from each group, and both edges of every group.</p>
+
+    <div class="primer">
+      <span class="tag">Start from zero</span>
+      <p class="analogy">Imagine a nightclub with a "must be 18–25" entry rule and a
+      bouncer at the door. To check the bouncer is doing the job, you don't need to
+      send a person of every single age from 1 to 100 through the door. That would
+      take all night. Instead you think: "everyone under 18 should be turned away —
+      they're all treated <em>the same</em>, so one under-age person is enough to
+      test that group. Everyone 18–25 should get in — again, one is enough. Everyone
+      over 25 turned away — one is enough."</p>
+      <p>That "group people who get treated the same, then test one from each group"
+      idea is <strong>Equivalence Partitioning</strong>. Now, where does a lazy
+      bouncer most likely slip up? Right at the edges — letting in a 17-year-old, or
+      wrongly turning away someone who just turned 18. So you also send people
+      <em>right at the boundary</em>: 17, 18, 25, 26. That edge-checking is
+      <strong>Boundary Value Analysis</strong>. Two simple ideas, and together they
+      shrink a hundred tests down to about six without losing coverage.</p>
+    </div>
+
+    <p>Now the same idea in testing language. The problem both techniques attack: a
+    field that accepts, say, 1 to 100 has a hundred-plus possible inputs. You can't
+    test all of them (exhaustive testing is impossible under real time and budget),
+    so you need a smart way to pick a small set of inputs that still covers all the
+    behaviours. Two techniques do this, and they work together.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/P1Hv2sUPKeM" title="Boundary Value Analysis and Equivalence Partitioning tutorial"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=P1Hv2sUPKeM" target="_blank" rel="noopener">Boundary Value Analysis &amp; Equivalence Partitioning: Software Testing Tutorial</a> — Guru99. Why it helps: a slow, beginner-paced walk through the exact pizza-style range example your faculty uses, showing how the partitions and boundary values are picked step by step.</p>
+    </div>
+
+    <p><strong>Equivalence Partitioning (EP)</strong> divides the input into groups —
+    <em>equivalence classes</em> — where the system is expected to behave the same
+    for every value in the group. The hypothesis (your faculty states it exactly
+    like this): <em>if one value in a partition passes, all others in it will pass;
+    if one fails, all fail.</em> So you pick just <strong>one representative from
+    each partition</strong>. That collapses a hundred inputs into a handful.</p>
+
+    <p><strong>Boundary Value Analysis (BVA)</strong> adds the observation that
+    defects cluster at the <em>edges</em> of partitions — off-by-one errors, wrong
+    &lt; vs ≤. So instead of one value per partition, BVA tests the values right at
+    the boundaries between partitions. Your faculty's checklist of points to pick:
+    <em>minimum, just above minimum, a nominal value, just below maximum,
+    maximum</em> — and crucially, test both the valid and the invalid side of each
+    boundary (also called range checking).</p>
+
+    <div class="callout key">
+      <span class="tag">The pizza example your faculty worked</span>
+      <p>Order Pizza accepts 1–10 (valid, success message); 11–99 is invalid ("Only
+      10 Pizza can be ordered"); 0 or below is invalid. <b>EP</b> gives three
+      partitions: {≤0 invalid}, {1–10 valid}, {≥11 invalid} — one value each, e.g.
+      −5, 5, 50. <b>BVA</b> tests the edges instead: <b>0, 1, 10, 11</b> (and often
+      2 and 9 for "just inside"). Notice BVA deliberately straddles each boundary —
+      1 is the first valid, 0 the last invalid; 10 the last valid, 11 the first
+      invalid.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The single most common mistake: forgetting the <b>invalid-side</b> boundary.
+      For a 1–10 range, testing 1 and 10 is <em>not</em> boundary testing — you must
+      also test 0 and 11. The boundary is the <em>line between</em> two partitions,
+      so both sides of the line get a value. Also: EP and BVA don't replace each
+      other — BVA <em>comes after</em> EP (you need the partitions before you can
+      find their boundaries).</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· scenario · medium · derive the values</span></span></div>
+      <div class="qbody">
+        <p>A university portal accepts a student's age for a scholarship only if it
+        is between <b>18 and 25 inclusive</b>. Ages below 18 or above 25 are
+        rejected. <b>(a)</b> Give the equivalence partitions with one representative
+        each. <b>(b)</b> Give the full set of boundary values to test. <b>(c)</b>
+        Justify why 17 and 26 must be included.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Lecture 11 (BVA &amp; EP). Directly mirrors the pizza example and the
+            "Age: 17, 18, 19, 59, 60, 61" pattern the faculty shows in the technique
+            comparison. Tests whether you can <b>generate</b> the values, not define
+            the terms.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">Partitions: P1 = age &lt; 18 (invalid), P2 = 18–25 (valid), P3 = age &gt; 25 (invalid).</p>
+              <p class="why"><b>Divide by expected behaviour:</b> the rule creates one valid band and two invalid bands — three equivalence classes.</p>
+            </li>
+            <li>
+              <p class="math-line">(a) One representative each: e.g. <b>15</b> (P1), <b>21</b> (P2), <b>30</b> (P3).</p>
+              <p class="why"><b>EP hypothesis:</b> any value inside a partition behaves like the others, so one each suffices. Pick clearly-interior values.</p>
+            </li>
+            <li>
+              <p class="math-line">Boundaries sit at 18 (bottom of valid) and 25 (top of valid).</p>
+              <p class="why"><b>BVA targets the lines between partitions</b> — here the 18-line (P1/P2) and the 25-line (P2/P3).</p>
+            </li>
+            <li>
+              <p class="math-line">(b) Values: <b>17, 18, 19, 24, 25, 26</b>.</p>
+              <p class="why"><b>Straddle each boundary:</b> just-below/at/just-above. Lower edge → 17 (last invalid), 18 (first valid), 19 (just inside). Upper edge → 24 (just inside), 25 (last valid), 26 (first invalid). This is exactly the faculty's min / just-above-min / … / max pattern.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) 17 and 26 are the <em>invalid-side</em> boundaries.</p>
+              <p class="why"><b>Justify:</b> off-by-one bugs live here — a coder who wrote \(age &gt; 18\) instead of \(age \ge 18\) would wrongly reject 18, and \(age \le 25\) vs \(&lt; 25\) decides 25. Testing only 18 and 25 can't catch a boundary written one step too wide; you need 17 and 26 to confirm the reject side fires correctly.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><b>(a)</b> {15 invalid, 21 valid, 30 invalid}. <b>(b)</b> 17, 18, 19,
+            24, 25, 26. <b>(c)</b> 17 and 26 verify the system correctly
+            <em>rejects</em> values one step outside the range — the exact spot
+            off-by-one defects hide. <b>Sanity check:</b> every boundary has a value
+            on both its valid and invalid side. ✓</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= DECISION TABLE ================= -->
+  <section class="topic" id="dtt">
+    <span class="topic-num">Topic 09</span>
+    <h2>Decision Table Testing</h2>
+    <p class="subtitle">When the output depends on a combination of conditions, not one input.</p>
+
+    <div class="primer">
+      <span class="tag">Start from zero</span>
+      <p class="analogy">Think about an ATM. It only gives you cash if a whole chain
+      of things is true at once: your card is valid, AND your PIN is right, AND you
+      have enough money, AND you're under your daily limit. If <em>any</em> one of
+      those is wrong, you get a different message. So the machine's behaviour isn't
+      about one input — it's about the <em>combination</em>.</p>
+      <p>A <strong>decision table</strong> is just a tidy grid for writing out every
+      such combination and what the system should do for each. You list the yes/no
+      questions down the side (card valid? PIN correct?), and each column across the
+      top is one scenario: "card valid = yes, PIN = yes, balance = yes, limit = yes →
+      give cash." The clever bit is a "don't care" mark (a dash, –): once the card is
+      invalid, it doesn't matter what the PIN is — the machine rejects it either way,
+      so you don't write out every PIN possibility. That's how a scary-looking 16
+      combinations shrinks to just 5 rows. Each row then becomes one test case.</p>
+    </div>
+
+    <p>Now in testing language. EP and BVA handle <em>one</em> input at a time. But
+    real systems decide based on <em>combinations</em>: a login depends on username
+    AND password AND account status AND OTP; an ATM on card AND PIN AND balance AND
+    limit. Testing each input alone misses defects that only appear when conditions
+    interact. <strong>Decision Table Testing</strong> lays every relevant combination
+    out as a table so no rule is forgotten.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/TSbIDrx_KVY" title="What is Decision Table Testing? Software Testing Tutorial"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=TSbIDrx_KVY" target="_blank" rel="noopener">What is Decision Table Testing? Software Testing Tutorial</a> — Guru99. Why it helps: builds a decision table from scratch for a simple login/upload example, so you can watch conditions, rules, and the "don't care" dash come together before you tackle the ATM problem below.</p>
+    </div>
+
+    <p>A decision table has four parts: <strong>conditions</strong> (the yes/no
+    questions that drive the decision), <strong>condition values</strong> (Y = true,
+    N = false, and <strong>"–" = don't care</strong>, meaning that condition is
+    irrelevant for this rule), <strong>actions</strong> (the system responses), and
+    <strong>rules</strong> (each column = one specific combination of condition
+    values and its resulting action). <em>One rule usually becomes one test case.</em></p>
+
+    <div class="callout key">
+      <span class="tag">The "don't care" (–) is the whole trick</span>
+      <p>If the card is invalid, the ATM rejects it <em>regardless</em> of PIN,
+      balance, or limit — so those conditions are "–" for that rule. The "–"
+      collapses many combinations into one rule. This is how the faculty reduces a
+      table from \(2^4 = 16\) raw combinations down to just 5 rules: once an early
+      condition fails, the later ones don't matter.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">The ATM reduced decision table (memorise this shape)</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;"><th style="padding:5px 8px;">Conditions ↓ / Rules →</th><th style="padding:5px 8px;">R1</th><th style="padding:5px 8px;">R2</th><th style="padding:5px 8px;">R3</th><th style="padding:5px 8px;">R4</th><th style="padding:5px 8px;">R5</th></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">C1 Card valid?</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">N</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">Y</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">C2 PIN correct?</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">N</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">Y</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">C3 Sufficient balance?</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">N</td><td style="padding:5px 8px;">Y</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;">C4 Within daily limit?</td><td style="padding:5px 8px;">Y</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">–</td><td style="padding:5px 8px;">N</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:5px 8px;"><b>Action</b></td><td style="padding:5px 8px;">Dispense</td><td style="padding:5px 8px;">Reject card</td><td style="padding:5px 8px;">PIN error</td><td style="padding:5px 8px;">Bal. error</td><td style="padding:5px 8px;">Limit error</td></tr>
+      </table>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Common mistakes the faculty flags: <b>missing a condition</b>, <b>mixing a
+      condition with an action</b> (conditions are yes/no <em>questions</em>; actions
+      are <em>responses</em>), <b>writing test cases before the table is finished</b>,
+      <b>ignoring "don't care" values</b>, and <b>forgetting negative rules</b>. The
+      "checked in sequence" assumption (card → PIN → balance → limit) is what lets
+      you use "–" — state it explicitly in your answer.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· scenario · hard · build the table</span></span></div>
+      <div class="qbody">
+        <p>An online assignment system accepts a submission only if <b>all</b> hold,
+        checked in this order: (1) student is enrolled, (2) deadline still open,
+        (3) file type is PDF, (4) file size within limit. Otherwise it rejects with
+        the matching message. <b>Build the reduced decision table</b> and
+        <b>derive the test cases</b>. State your assumption.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Lecture 11.2, Slides 19–22 — the faculty's own practice problem. Tests
+            whether you can go from a worded rule set to a <b>reduced</b> table (using
+            "–") and then to test cases.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line"><b>Assumption:</b> conditions checked in sequence Enrollment → Deadline → File Type → File Size; a failed earlier condition makes later ones "don't care."</p>
+              <p class="why"><b>State it first</b> — this assumption is what licenses every "–" and reduces \(2^4=16\) combinations to a handful.</p>
+            </li>
+            <li>
+              <p class="math-line">Conditions: C1 enrolled? C2 deadline open? C3 PDF? C4 size within limit? Actions: A1 accept, A2–A5 reject with the specific reason.</p>
+              <p class="why"><b>Separate conditions (yes/no questions) from actions (responses)</b> before drawing anything — avoids the "mixing" mistake.</p>
+            </li>
+            <li>
+              <p class="math-line">R1: Y Y Y Y → accept. R2: N – – – → reject (not enrolled).</p>
+              <p class="why"><b>R1 is the all-pass rule; R2 fails the first condition</b>, so C2–C4 are "–". First reject rule done.</p>
+            </li>
+            <li>
+              <p class="math-line">R3: Y N – – → reject (deadline over). R4: Y Y N – → reject (invalid type). R5: Y Y Y N → reject (size exceeds).</p>
+              <p class="why"><b>Walk the sequence:</b> each later rule passes all earlier conditions (Y) then fails exactly one, with everything after it "–". One reject rule per condition.</p>
+            </li>
+            <li>
+              <p class="math-line">Count = 1 accept + 4 reject = <b>5 rules → 5 test cases</b>.</p>
+              <p class="why"><b>One rule → one test case.</b> The sequential assumption caps it at 5 instead of 16.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer — the test cases</span>
+            <p><b>TC1 (R1):</b> enrolled, deadline open, PDF, size OK → <em>accepted</em>.<br>
+            <b>TC2 (R2):</b> not enrolled → reject "student not enrolled".<br>
+            <b>TC3 (R3):</b> enrolled, deadline over → reject "deadline is over".<br>
+            <b>TC4 (R4):</b> enrolled, open, non-PDF → reject "invalid file type".<br>
+            <b>TC5 (R5):</b> enrolled, open, PDF, size too big → reject "file size
+            exceeds limit".<br>
+            <b>Sanity check:</b> each reject rule fails exactly one condition and the
+            failing condition matches its message. ✓</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= PAIRWISE ================= -->
+  <section class="topic" id="pairwise">
+    <span class="topic-num">Topic 10</span>
+    <h2>Pairwise (All-Pairs) Testing</h2>
+    <p class="subtitle">When there are too many settings to combine — test every pair, not every combination.</p>
+
+    <div class="primer">
+      <span class="tag">Start from zero</span>
+      <p class="analogy">Suppose you're testing a website that has to work on 4
+      browsers, 3 operating systems, and 2 languages. If you tried every single
+      combination it's 4 × 3 × 2 = 24 tests — and real apps have far more knobs, so
+      the number quickly becomes thousands. Nobody has time for that.</p>
+      <p>Here's the shortcut, and it's based on a real observation: <strong>most bugs
+      that only show up in combinations are caused by just <em>two</em> settings
+      clashing</strong> — say, "Chrome + Spanish" breaks, no matter the operating
+      system. So instead of testing every full combination, you build a smaller set
+      of tests where <em>every pair</em> of settings (every browser paired with every
+      OS, every browser with every language, and so on) shows up at least once. You
+      still catch the two-setting bugs, but with a fraction of the tests. That's
+      <strong>pairwise (all-pairs) testing</strong> — cover all the pairs, skip the
+      redundant full combinations.</p>
+    </div>
+
+    <p>Now in testing language. Decision tables work when you have a few conditions.
+    But some systems have <em>many</em> independent parameters, each with several
+    values — browsers, payment methods, coupon types, locations — and the full
+    combination count explodes. The bookstore example in your notes reaches 96
+    combinations from six variables; a real config space can hit thousands.
+    Exhaustive testing is impossible. <strong>Pairwise testing</strong> is the smart
+    sample.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/husQ7bqxVc8" title="Software Testing Tutorial - What is pairwise testing? YouTube Example"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=husQ7bqxVc8" target="_blank" rel="noopener">Software Testing Tutorial — What is pairwise testing? (with example)</a>. Why it helps: walks through why the combinations explode and how picking all-pairs shrinks the test set, with a worked example much like the bookstore one in your notes.</p>
+    </div>
+
+    <p>Its justification is an empirical fact your faculty quotes: <strong>most
+    defects (experimentally 60–95%) come from the interaction of just
+    <em>two</em> parameters</strong>, not from three or four at once. So instead of
+    covering every full combination, you design a much smaller set of test cases in
+    which <strong>every possible pair of values (across any two parameters) appears
+    at least once</strong>. You catch the two-way interaction faults while
+    discarding the redundant higher-order combinations.</p>
+
+    <div class="callout key">
+      <span class="tag">Interaction fault — the thing pairwise catches</span>
+      <p>An <b>interaction fault</b> is when each value works fine alone but a
+      specific <em>pair</em> fails together. The faculty's example: Chrome works,
+      Credit Card works, Discount Coupon works — but <b>Chrome + Credit Card +
+      Discount Coupon → payment failure</b>. Pairwise guarantees the Chrome+CreditCard,
+      Chrome+Coupon, and CreditCard+Coupon pairs are each tested, so such a fault
+      surfaces.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — what pairwise does NOT do</span>
+      <p>Pairwise only guarantees <b>2-way</b> coverage. A fault that needs
+      <em>three specific values together</em> can slip through. Other limits your
+      notes list: it can produce <b>unrealistic combinations</b> users never hit, it
+      may miss faults that only show in logs (not the UI), it doesn't find back-end
+      bugs, and it's useless if you pick the wrong variables. So it reduces effort
+      dramatically but isn't a guarantee of correctness.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· scenario · medium · count &amp; justify</span></span></div>
+      <div class="qbody">
+        <p>A checkout page has three parameters: <b>Browser</b> {Chrome, Firefox},
+        <b>Payment</b> {Card, Wallet}, <b>Coupon</b> {Yes, No}. <b>(a)</b> How many
+        combinations does exhaustive testing need? <b>(b)</b> Why might pairwise be
+        chosen instead, and what does it guarantee? <b>(c)</b> Name one fault type
+        pairwise could still miss here.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Pairwise notes (Slides 2–5, 15–17). Tests whether you can compute the
+            combination explosion, state the <b>2-way guarantee</b>, and name the
+            <b>3-way blind spot</b> — the balanced "when to use it" judgement the
+            faculty wants.
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) \( 2 \times 2 \times 2 = 2^3 = 8 \) combinations.</p>
+              <p class="why"><b>Multiply the value counts</b> across parameters — the same \(2^3=8\) the faculty computes for the A,B,C example.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) Pairwise picks a subset covering every value-pair at least once.</p>
+              <p class="why"><b>Rationale:</b> ~60–95% of defects are two-parameter interactions, so covering all pairs catches most faults with far fewer tests. Here it can drop from 8 toward ~4–5 while keeping all pairs.</p>
+            </li>
+            <li>
+              <p class="math-line">Guarantee: every pair — e.g. Chrome+Card, Firefox+Wallet, Card+Coupon-Yes, etc. — appears in some test.</p>
+              <p class="why"><b>State the guarantee precisely:</b> all 2-way combinations covered, not all 3-way.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) A fault needing <em>all three</em> specific values at once (e.g. Chrome + Wallet + Coupon-Yes) can be missed.</p>
+              <p class="why"><b>Name the blind spot:</b> pairwise only assures 2-way coverage, so a genuine 3-way interaction fault may not be exercised.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><b>(a)</b> 8. <b>(b)</b> Fewer tests while covering every value-pair,
+            because most defects are two-way interactions; it guarantees 2-way
+            coverage. <b>(c)</b> A three-way interaction fault. <b>Note:</b> with
+            only 8 total here pairwise saves little — its real payoff is when the
+            product blows up (the bookstore's 96), which is exactly "when to use it."</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= TECHNIQUE PICKER ================= -->
+  <section class="topic" id="picker">
+    <span class="topic-num">Topic 11</span>
+    <h2>Which technique? — the decision the exam is really testing</h2>
+    <p class="subtitle">The faculty said "identify the appropriate technique." This is how you decide, fast.</p>
+
+    <p>Nearly every scenario question reduces to one choice: given this system,
+    <em>which</em> test-design technique fits? The trick is to read the
+    <strong>shape of the input</strong> in the scenario. Three shapes, three tools.</p>
+
+    <div class="formula">
+      <div class="label">The picker — match the scenario's shape to the technique</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.9rem; font-family:'Space Grotesk',sans-serif;">
+        <tr style="border-bottom:1px solid var(--rule); text-align:left;"><th style="padding:6px 8px;">If the scenario is about…</th><th style="padding:6px 8px;">Use</th><th style="padding:6px 8px;">Tell-tale words</th></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:6px 8px;">a single input with a <b>range or valid/invalid classes</b></td><td style="padding:6px 8px;"><b>EP</b> (one per class), then <b>BVA</b> (the edges)</td><td style="padding:6px 8px;">"between X and Y", "age 18–60", "1 to 100", "max file size"</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:6px 8px;">a decision driven by a <b>combination of conditions / business rules</b></td><td style="padding:6px 8px;"><b>Decision Table Testing</b></td><td style="padding:6px 8px;">"only if all of…", "depends on card AND PIN AND…", "if/then rules"</td></tr>
+        <tr><td style="padding:6px 8px;">many <b>independent parameters</b>, each with several values, combinations exploding</td><td style="padding:6px 8px;"><b>Pairwise / All-Pairs</b></td><td style="padding:6px 8px;">"browsers × payment × coupon × OS", "too many configurations"</td></tr>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">One-line justifications to have ready</span>
+      <p><b>EP/BVA:</b> "The input is a numeric range, so defects cluster at class
+      boundaries — I partition then test edges." <b>Decision table:</b> "The output
+      depends on a combination of conditions, so I enumerate the rules to avoid
+      missing an interaction." <b>Pairwise:</b> "There are too many independent
+      configurations to test exhaustively, and most faults are two-way, so I cover
+      all value-pairs."</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">The distinction that trips people</span>
+      <p><b>Decision table vs pairwise</b> both handle "combinations," so which?
+      Decision table when conditions are <em>logically linked business rules</em>
+      (card valid AND PIN correct → dispense) and the number is small enough to
+      enumerate. Pairwise when parameters are <em>independent settings</em> (browser,
+      OS, payment) and the full product is too large to enumerate. Rules → table;
+      configurations → pairs.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· scenario · hard · pick &amp; justify</span></span></div>
+      <div class="qbody">
+        <p>For each mini-scenario, name the single best technique and justify in one
+        sentence:</p>
+        <ol style="list-style:lower-alpha;">
+          <li>A withdrawal field accepts amounts from ৳500 to ৳50,000.</li>
+          <li>A loan is approved only if the applicant is employed, has a credit score above threshold, and provides collateral.</li>
+          <li>A web app must be tested across 4 browsers, 3 operating systems, 2 screen sizes and 2 languages.</li>
+          <li>A discount applies only when membership is Gold AND the cart total exceeds ৳2000 AND a valid coupon is entered.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the whole exam in miniature — the "identify the appropriate
+            technique and justify" skill from the faculty notice, drawing on Lecture
+            11 and the pairwise notes' comparison table (Slide 15).
+          </div>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) → <b>BVA + EP</b>.</p>
+              <p class="why"><b>Single numeric range</b> (500–50,000). Partition valid/invalid, then test edges 499/500 and 50,000/50,001 where off-by-one bugs hide.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) → <b>Decision Table Testing</b>.</p>
+              <p class="why"><b>Combination of logical conditions</b> (employed AND score AND collateral) driving one decision — enumerate the rules so no condition-mix is missed.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) → <b>Pairwise Testing</b>.</p>
+              <p class="why"><b>Independent configuration parameters</b>; \(4\times3\times2\times2=48\) full combos is too many, and faults are mostly two-way, so cover all value-pairs.</p>
+            </li>
+            <li>
+              <p class="math-line">(d) → <b>Decision Table Testing</b>.</p>
+              <p class="why"><b>Linked business rule</b> (Gold AND total&gt;2000 AND valid coupon). Note the ৳2000 threshold could <em>also</em> invite BVA on the cart-total condition — a strong answer mentions the table for the rule and BVA for that one numeric boundary.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>a = BVA+EP · b = Decision Table · c = Pairwise · d = Decision Table
+            (with BVA on the ৳2000 boundary). The marks are in the justification —
+            each one names the <em>shape of the input</em> that forces the choice.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= CHEAT SHEET ================= -->
+  <div class="cheat" id="cheat">
+    <h2>Last-minute revision</h2>
+    <div class="grid">
+      <div class="item"><h4>Defect density</h4><p>\( \frac{\text{defects}}{\text{KLOC}} \) — normalises by size; compares modules fairly.</p></div>
+      <div class="item"><h4>DRE</h4><p>\( \frac{\text{before}}{\text{before}+\text{after}}\times100\% \). Denominator = ALL defects.</p></div>
+      <div class="item"><h4>Variances</h4><p>Schedule/Effort = Actual − Planned. Positive = delay / overrun.</p></div>
+      <div class="item"><h4>Factor → Criteria → Metric</h4><p>Reliability → failure freq. + recoverability → MTBF, failures/100h.</p></div>
+      <div class="item"><h4>McCall's 3</h4><p>Operation (run) · Revision (change) · Transition (move). Testability ∈ Revision.</p></div>
+      <div class="item"><h4>CoQ 4 buckets</h4><p>Prevention · Appraisal (detect) · Internal (fix, we found) · External (fix, customer found).</p></div>
+      <div class="item"><h4>V vs V</h4><p>Verification = building it right (reviews). Validation = right product (running, UAT).</p></div>
+      <div class="item"><h4>Strategy vs Plan</h4><p>Strategy = general + stable approach. Plan = this project's what/when/who.</p></div>
+      <div class="item"><h4>EP + BVA</h4><p>One value per class, then both sides of every boundary (incl. the invalid side!).</p></div>
+      <div class="item"><h4>Decision Table</h4><p>Conditions × values (Y/N/–) → rules → one test case per rule. "–" collapses combos.</p></div>
+      <div class="item"><h4>Pairwise</h4><p>Cover every value-pair; ~60–95% faults are 2-way. Misses 3-way faults.</p></div>
+      <div class="item"><h4>RTM</h4><p>Requirement → test case → status. Empty cell = untested. Enables change-impact.</p></div>
+      <div class="item"><h4>Technique picker</h4><p>Range → BVA/EP. Rules → Decision Table. Many configs → Pairwise.</p></div>
+      <div class="item"><h4>Golden CoQ rule</h4><p>Prevention is cheapest; external failure (bad will + lost sales) is dearest.</p></div>
+      <div class="item"><h4>Exam mindset</h4><p>Don't define — apply. Produce the artefact + one sentence of justification.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from the CSE430 lecture material (Lectures 1–5, 9–11 and the
+    Pairwise Testing notes). Grounded in the faculty's own examples and notation —
+    verify against your slides and the official syllabus before the exam. Good luck.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
