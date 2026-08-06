@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE495 Midterm Prep — Project Management &amp; Entrepreneurship</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+
+  /* ---- Data tables (added for this guide) ---- */
+  table.dtable { border-collapse: collapse; width: 100%; margin: 18px 0;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .84rem; }
+  table.dtable th, table.dtable td { border: 1px solid var(--rule); padding: 7px 9px; text-align: center; }
+  table.dtable th { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+  table.dtable td.l, table.dtable th.l { text-align: left; }
+  table.dtable tr.crit td { background: var(--solve-soft); font-weight: 600; }
+  p.small, .small { font-size: .84rem; color: var(--muted); }
+  @media print { table.dtable { break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#agile">Agile, Scrum &amp; XP</a></li>
+      <li><a href="#wbs">Work Breakdown Structure</a></li>
+      <li><a href="#cpm">Critical Path Method</a></li>
+      <li><a href="#pert">PERT</a></li>
+      <li><a href="#ccpm">Critical Chain (CCPM)</a></li>
+      <li><a href="#estimating">Analogous Estimating</a></li>
+      <li><a href="#bmc">Business Model Canvas</a></li>
+      <li><a href="#bmtypes">Business Model Types</a></li>
+      <li><a href="#pastpaper">Fall 2025 Paper — Worked</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <!-- ================= MASTHEAD ============================================= -->
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>IT Project Management &amp; Entrepreneurship — Midterm Review</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE495 (Sec-1), EWU</span>
+      <span><b>Instructor:</b> Proma Chowdhury</span>
+      <span><b>Based on:</b> Full lecture set + Fall 2025 midterm</span>
+      <span><b>Format:</b> mirrors the Fall 2025 paper (25 marks, 3 questions, 1h30)</span>
+    </div>
+  </header>
+
+  <div class="callout key">
+    <span class="tag">How to use this guide</span>
+    <p>The Fall 2025 paper tells you exactly what the exam looks like: <b>one Agile
+    scenario</b> you diagnose and fix (theory), <b>one Activity-on-Node scheduling
+    problem</b> with a twist (calculation), and <b>one estimating problem</b>
+    (calculation). So every topic below is taught from zero, and the last section
+    works that whole paper line by line. Attempt each question before opening the
+    solution — the right-hand "why" on each step tells you which rule licenses the
+    move, so you can rebuild the answer from the reasons alone.</p>
+  </div>
+
+  <!-- ============================ TOPIC 1: AGILE ========================= -->
+  <section class="topic" id="agile">
+    <span class="topic-num">Topic 01</span>
+    <h2>Agile, Scrum &amp; XP</h2>
+    <p class="subtitle">This is the Q1 territory: a team "trying to be Agile" badly, and you have to name what they're doing, say what's wrong, and fix it.</p>
+
+    <p>Imagine you're building a house but the client keeps changing their mind —
+    move the kitchen, add a room, swap the roof — all while the walls are going up.
+    A rigid "draw the full blueprint once, then build for two years and hand over"
+    plan (the classic <b>Waterfall</b> approach) collapses under that kind of change,
+    because by the time you finish, the plan is wrong. <b>Agile</b> is the response:
+    instead of one huge delivery at the end, you build the software in small pieces,
+    show each piece to the customer quickly, and let their feedback steer the next
+    piece. Change stops being a disaster and becomes the normal input.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Agile = <b>rapid, incremental delivery</b> + <b>welcoming change</b> +
+      <b>the customer working alongside the team</b>. You trade "big plan up front"
+      for "short cycles and constant course-correction."</p>
+    </div>
+
+    <p>Agile is a <i>philosophy</i>, not a single recipe. The two recipes your
+    faculty taught are <b>Scrum</b> and <b>Extreme Programming (XP)</b>. A rough
+    way to hold them apart: <b>Scrum manages the process</b> (who does what, in what
+    rhythm), while <b>XP manages the code</b> (engineering habits that keep quality
+    high). Real teams often use both at once.</p>
+
+    <h3>Scrum — the management rhythm</h3>
+    <p>Scrum runs the project in fixed-length cycles called <b>Sprints</b> (1–4
+    weeks). Each Sprint takes a slice of work and turns it into something usably
+    finished. It has exactly three roles, three artifacts, and five events — learn
+    these as a set, because the exam scenario is basically a list of these pieces
+    done wrong.</p>
+
+    <h3>The three roles</h3>
+    <ul>
+      <li><b>Product Owner (PO):</b> owns the <i>what</i>. Keeps the Product Backlog,
+      prioritises it for business value, and speaks for the customer. Exactly one
+      per product.</li>
+      <li><b>Scrum Master (SM):</b> a servant-leader / coach. Makes sure Scrum is
+      followed, <b>removes impediments</b>, and <b>shields the team</b> from outside
+      pressure. Explicitly <i>not</i> a traditional boss handing out tasks.</li>
+      <li><b>Development Team:</b> 5–9 cross-functional, self-organising people who
+      actually build the increment. No fixed job titles inside the team.</li>
+    </ul>
+
+    <h3>The three artifacts</h3>
+    <ul>
+      <li><b>Product Backlog:</b> the master, prioritised list of everything that
+      might be built. Owned by the PO, continuously refined.</li>
+      <li><b>Sprint Backlog:</b> the items pulled from the Product Backlog for this
+      Sprint, plus the tasks to finish them. Owned and updated daily by the team.</li>
+      <li><b>Increment / Definition of Done (DoD):</b> the tested, documented,
+      potentially shippable result. "Done" means <i>done</i> — nothing left to test
+      or fix later.</li>
+    </ul>
+
+    <h3>The five events</h3>
+    <ul>
+      <li><b>Sprint</b> — the container: a fixed 1–4 week iteration producing a usable increment.</li>
+      <li><b>Sprint Planning</b> — decide <i>what</i> to deliver and <i>how</i>.</li>
+      <li><b>Daily Scrum</b> — a 15-minute stand-up to sync and plan the next 24 hours.</li>
+      <li><b>Sprint Review</b> — show the increment to stakeholders and gather feedback.</li>
+      <li><b>Sprint Retrospective</b> — inspect the <i>process</i> and decide what to improve.</li>
+    </ul>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/n6q62DsxYXQ" title="What is Scrum? Agile Scrum Methodology Explained"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=n6q62DsxYXQ" target="_blank" rel="noopener">What is Scrum? Roles, Artifacts &amp; Events</a> — Invensis Learning. Why it helps: it walks the roles → artifacts → events loop as one moving system, which is exactly how the exam expects you to reason about a broken Scrum team.</p>
+    </div>
+
+    <h3>XP — the engineering habits</h3>
+    <p>XP focuses on keeping the code clean and changeable through disciplined
+    practices. The ones the faculty listed, in plain terms:</p>
+    <ul>
+      <li><b>Pair Programming:</b> two developers, one keyboard — a "driver" types, a "navigator" reviews every line live.</li>
+      <li><b>Test-Driven Development (TDD):</b> write the automated test <i>before</i> the code it checks.</li>
+      <li><b>Continuous Integration (CI):</b> merge everyone's code into a shared repo many times a day; each merge auto-builds and auto-tests.</li>
+      <li><b>Refactoring:</b> restructure existing code without changing what it does, to keep it readable.</li>
+      <li><b>Collective Code Ownership:</b> nobody "owns" a file; the whole team is responsible for all of it.</li>
+      <li><b>Incremental Development, Planning Game, On-site Customer:</b> build in small value-adding steps; customers and developers plan/prioritise together; a customer rep sits with the team daily.</li>
+      <li><b>User Story / Metaphor / Spike:</b> a User Story is a plain-language feature description from the user; a Metaphor is a shared vision of how the system works; a Spike is a tiny throwaway program built to test whether a proposed solution is feasible (like a prototype).</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the exam's favourite trap</span>
+      <p>Symptoms map to <i>specific</i> missing pieces. "Tasks never finish" → no
+      timeboxed Sprint + no Definition of Done. "Modules don't integrate" → no
+      Continuous Integration / collective ownership. "Testing left to the end" → no
+      TDD / testing inside the Sprint. "Meetings go nowhere" → ceremonies run
+      without a Scrum Master or a Sprint Goal. Don't answer "they should be more
+      Agile" — name the exact practice each symptom violates.</p>
+    </div>
+
+    <h3>Scrum vs XP — the comparison they may ask directly</h3>
+    <table class="dtable">
+      <tr><th class="l">Aspect</th><th class="l">Scrum</th><th class="l">XP</th></tr>
+      <tr><td class="l">Main focus</td><td class="l">Managing process &amp; teamwork</td><td class="l">Code quality &amp; adaptability</td></tr>
+      <tr><td class="l">Iteration</td><td class="l">Sprint, 1–4 weeks, fixed scope</td><td class="l">Iteration, 1–2 weeks, flexible scope</td></tr>
+      <tr><td class="l">Customer role</td><td class="l">Product Owner represents them</td><td class="l">On-site Customer works with team daily</td></tr>
+      <tr><td class="l">Engineering practices</td><td class="l">Not prescribed (team decides)</td><td class="l">Strict: TDD, Pair Programming, CI</td></tr>
+      <tr><td class="l">Feedback</td><td class="l">After each Sprint</td><td class="l">Continuous (daily)</td></tr>
+      <tr><td class="l">Best for</td><td class="l">Managing complex delivery flow</td><td class="l">Technical excellence &amp; flexibility</td></tr>
+    </table>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 1.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>Give three concrete differences between Scrum and XP, and state one situation where you'd prefer each.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This checks whether you can separate <b>process management</b> from
+            <b>engineering discipline</b> — the Scrum vs XP table in the Agile
+            lecture. The examiner wants contrasts, not two separate definitions.
+          </div>
+          <p>Three differences: (1) <b>Focus</b> — Scrum organises <i>who does what
+          and when</i> through roles and ceremonies, whereas XP prescribes <i>how to
+          write the code</i> through practices like TDD and pair programming. (2)
+          <b>Engineering rules</b> — Scrum leaves technical practices to the team;
+          XP mandates them. (3) <b>Feedback cadence</b> — Scrum inspects at Sprint
+          boundaries (every 1–4 weeks); XP builds feedback in continuously (daily
+          CI, on-site customer). Prefer <b>Scrum</b> when the challenge is
+          coordinating a complex delivery across stakeholders; prefer <b>XP</b> when
+          the risk is technical — messy, fragile, hard-to-change code. In practice
+          teams layer XP practices inside a Scrum rhythm.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 2: WBS ========================= -->
+  <section class="topic" id="wbs">
+    <span class="topic-num">Topic 02</span>
+    <h2>Work Breakdown Structure (WBS)</h2>
+    <p class="subtitle">The tool that turns a vague project into a list of things you can actually assign, cost, and track.</p>
+
+    <p>A big project ("build a university portal") is too large to manage as one
+    lump — you can't estimate it, assign it, or tell when it's done. A <b>Work
+    Breakdown Structure</b> chops the whole project into a tree of smaller and
+    smaller pieces until each leaf is a <b>work package</b>: a chunk small enough
+    that one person or team can own it, estimate it, and finish it. Think of it as
+    taking one impossible question and splitting it into a hundred answerable ones.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>A WBS is a <b>hierarchical, deliverable-oriented</b> decomposition:
+      Project → Task → Sub-task → Work Package. Each leaf should be a
+      <b>measurable deliverable</b>, not a vague activity.</p>
+    </div>
+
+    <h3>The 100% Rule (the thing they test)</h3>
+    <p>The single rule that governs a valid WBS: it must capture <b>100% of the
+    work — no more, no less</b>. Concretely that means: (1) <b>every</b> deliverable
+    needed to finish the project appears somewhere in the WBS (nothing missing);
+    (2) <b>no</b> work outside the WBS counts as part of the project (nothing extra);
+    and (3) <b>no overlap</b> — each piece belongs to exactly one parent, so no two
+    boxes secretly cover the same work.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Two failure modes the faculty's CampusConnect example drilled: <b>missing
+      deliverable</b> (the client asked for "user training" but it's nowhere in the
+      draft → violates completeness) and <b>overlap</b> ("Frontend Development" and
+      "Mobile App Development" both doing UI; "API Development" and "Backend
+      Development" both doing the logic layer → double-counted work). If asked to
+      critique a WBS, hunt for exactly these two.</p>
+    </div>
+
+    <h3>Levels and types</h3>
+    <p>The levels run <b>1</b> = whole project, <b>2</b> = major deliverables/phases,
+    <b>3</b> = sub-deliverables/tasks, <b>4</b> = work packages. There are three
+    ways to organise the tree, and you pick based on what you care about:</p>
+    <ul>
+      <li><b>Deliverable-based</b> — organised by the things you produce ("what we produce"). Use when the outputs are concrete and clear.</li>
+      <li><b>Phase-based</b> — organised by life-cycle stages (Initiation → Design → Development → Implementation → Closure). Use when the <i>process</i> matters more than the product.</li>
+      <li><b>Function-based</b> — organised by department (Design, Engineering, Marketing, Finance). Use in organisations with distinct teams.</li>
+    </ul>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 2.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>A draft WBS for a food-delivery app lists: 1.1 UI Design, 1.2 Frontend, 1.3 Mobile App, 1.4 Backend, 1.5 API, 1.6 Payment, 1.7 Testing, 1.8 Deployment. The client also asked for staff onboarding and a user manual. Identify the 100%-Rule violations.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct reuse of the 100% Rule and the CampusConnect critique pattern
+            from the WBS lecture. The examiner wants the two named violation types.
+          </div>
+          <p><b>Missing deliverables (incompleteness):</b> "staff onboarding /
+          training" and "user manual / documentation" were requested but appear
+          nowhere — the WBS fails to capture 100% of the required work. <b>Overlap
+          (double-counting):</b> "Frontend" (1.2) and "Mobile App" (1.3) both cover
+          UI work, and "Backend" (1.4) and "API" (1.5) both cover the server logic
+          layer — the same work sits under two parents, violating the
+          "each piece belongs to exactly one parent" clause. Fix by adding the two
+          missing branches and merging or clearly separating the overlapping ones.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 3: CPM ========================= -->
+  <section class="topic" id="cpm">
+    <span class="topic-num">Topic 03</span>
+    <h2>Critical Path Method (CPM)</h2>
+    <p class="subtitle">The single most exam-heavy calculation in this course. Q2 is a CPM problem — master the forward/backward pass and you own it.</p>
+
+    <p>Some tasks in a project can wait; others can't. If you delay picking a paint
+    colour, no harm done — but if you delay pouring the foundation, everything after
+    it slips. CPM is the method that finds, out of all the chains of dependent
+    tasks, the <b>longest one</b> — because that longest chain is what actually sets
+    the project's finish date. That chain is the <b>critical path</b>: every task on
+    it is a task where a one-day slip is a one-day slip for the whole project.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>The <b>critical path</b> is the <i>longest</i> path through the network,
+      and its length is the <i>shortest possible</i> project duration. Tasks on it
+      have <b>zero float</b> — no slack at all.</p>
+    </div>
+
+    <h3>The four numbers on every task</h3>
+    <p>For each activity you compute four times. Learn them as two pairs. The
+    <b>forward pass</b> (left → right) gives the "earliest" pair; the <b>backward
+    pass</b> (right → left) gives the "latest" pair.</p>
+    <div class="formula">
+      <div class="label">Forward pass — earliest times</div>
+      \[ \text{ES} = \max(\text{EF of all predecessors}) \qquad \text{EF} = \text{ES} + \text{duration} \]
+    </div>
+    <div class="formula">
+      <div class="label">Backward pass — latest times</div>
+      \[ \text{LF} = \min(\text{LS of all successors}) \qquad \text{LS} = \text{LF} - \text{duration} \]
+    </div>
+    <div class="formula">
+      <div class="label">Float (slack) and the critical test</div>
+      \[ \text{Float} = \text{LS} - \text{ES} = \text{LF} - \text{EF}, \qquad \text{Float}=0 \;\Rightarrow\; \text{critical} \]
+    </div>
+    <ul>
+      <li><b>ES</b> (Early Start): earliest a task can begin. No predecessors → <b>ES = 0</b>. Otherwise <b>ES = the largest EF</b> among its predecessors (you must wait for the slowest one).</li>
+      <li><b>EF</b> (Early Finish): <b>EF = ES + duration</b>.</li>
+      <li><b>LF</b> (Late Finish): latest a task can finish without delaying the project. Last task → <b>LF = project EF</b>. Otherwise <b>LF = the smallest LS</b> among its successors.</li>
+      <li><b>LS</b> (Late Start): <b>LS = LF − duration</b>.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — max vs min</span>
+      <p>Forward pass at a merge point takes the <b>maximum</b> predecessor EF (a
+      task waits for <i>all</i> its inputs). Backward pass at a branch point takes
+      the <b>minimum</b> successor LS (a task must not delay <i>any</i> of the paths
+      that depend on it). Flip these and every float comes out wrong.</p>
+    </div>
+
+    <h3>Worked example (the faculty's own)</h3>
+    <p>Tasks: A(2), B(4, after A), C(3, after A), D(2, after B &amp; C), E(1, after D).</p>
+    <table class="dtable">
+      <tr><th class="l">Task</th><th>Pred</th><th>Dur</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>Float</th><th>Critical?</th></tr>
+      <tr class="crit"><td class="l">A</td><td>—</td><td>2</td><td>0</td><td>2</td><td>0</td><td>2</td><td>0</td><td>Yes</td></tr>
+      <tr class="crit"><td class="l">B</td><td>A</td><td>4</td><td>2</td><td>6</td><td>2</td><td>6</td><td>0</td><td>Yes</td></tr>
+      <tr><td class="l">C</td><td>A</td><td>3</td><td>2</td><td>5</td><td>3</td><td>6</td><td>1</td><td>No</td></tr>
+      <tr class="crit"><td class="l">D</td><td>B,C</td><td>2</td><td>6</td><td>8</td><td>6</td><td>8</td><td>0</td><td>Yes</td></tr>
+      <tr class="crit"><td class="l">E</td><td>D</td><td>1</td><td>8</td><td>9</td><td>8</td><td>9</td><td>0</td><td>Yes</td></tr>
+    </table>
+    <p class="small">D waits for the larger of EF(B)=6 and EF(C)=5, so ES(D)=6. C has 1 day of float because its path (A-C-D) is shorter than A-B-D. <b>Critical path: A → B → D → E, duration 9 days.</b></p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/ijZ8AISuYZo" title="Critical Path Method Made Simple"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=ijZ8AISuYZo" target="_blank" rel="noopener">Critical Path Method (CPM) Made Simple</a> — a full worked network. Why it helps: seeing the forward and backward passes animate across a diagram makes the max/min rule click far faster than a static table.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 3.1 <span class="diff">· medium — this is the faculty's own practice table</span></span></div>
+      <div class="qbody"><p>Find the critical path and duration. A(3, —), B(2, —), C(4, A), D(3, A), E(2, B), F(3, C&amp;E), G(2, D&amp;F), H(1, G).</p></div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>Do the forward pass first, then the backward pass, then float.</p>
+          <ol class="steps">
+            <li><p class="math-line">\( \text{ES}(A)=0,\ \text{EF}(A)=3;\quad \text{ES}(B)=0,\ \text{EF}(B)=2 \)</p><p class="why">A and B have no predecessors, so <b>ES = 0</b>; \( \text{EF}=\text{ES}+\text{dur} \).</p></li>
+            <li><p class="math-line">\( \text{ES}(C)=3,\ \text{EF}(C)=7;\quad \text{ES}(D)=3,\ \text{EF}(D)=6 \)</p><p class="why">C, D follow A, so their ES = EF(A) = 3.</p></li>
+            <li><p class="math-line">\( \text{ES}(E)=2,\ \text{EF}(E)=4 \)</p><p class="why">E follows B, so ES = EF(B) = 2.</p></li>
+            <li><p class="math-line">\( \text{ES}(F)=\max(7,4)=7,\ \text{EF}(F)=10 \)</p><p class="why"><b>Merge:</b> F waits for C(7) and E(4); take the <b>max</b>.</p></li>
+            <li><p class="math-line">\( \text{ES}(G)=\max(6,10)=10,\ \text{EF}(G)=12 \)</p><p class="why"><b>Merge:</b> G waits for D(6) and F(10); take the max.</p></li>
+            <li><p class="math-line">\( \text{ES}(H)=12,\ \text{EF}(H)=13 \)</p><p class="why">H follows G. Project duration = 13 (the last EF).</p></li>
+            <li><p class="math-line">\( \text{LF}(H)=13,\ \text{LS}(H)=12;\ \text{LF}(G)=12,\ \text{LS}(G)=10;\ \text{LF}(F)=10,\ \text{LS}(F)=7;\ \text{LF}(C)=7,\ \text{LS}(C)=3 \)</p><p class="why"><b>Backward pass:</b> last task LF = 13; each earlier LF = min LS of successors, LS = LF − dur.</p></li>
+            <li><p class="math-line">\( \text{Float}: D=6,\ E=3,\ B=3;\quad A,C,F,G,H=0 \)</p><p class="why">\( \text{Float}=\text{LS}-\text{ES} \). Zero-float tasks are critical.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><b>Critical path: A → C → F → G → H = 3+4+3+2+1 = 13 days.</b> Sanity check: the other route A-D-G-H = 3+3+2+1 = 9 &lt; 13, and B-E-F-G-H = 2+2+3+2+1 = 10 &lt; 13, so 13 is genuinely the longest. ✓</p></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 4: PERT ========================= -->
+  <section class="topic" id="pert">
+    <span class="topic-num">Topic 04</span>
+    <h2>PERT — scheduling under uncertainty</h2>
+    <p class="subtitle">CPM assumes you know each duration exactly. PERT is for when you don't — and it lets you answer "what's the chance we finish by the deadline?"</p>
+
+    <p>For a brand-new task (R&amp;D, novel software) you can't name one honest
+    duration. So instead of pretending, PERT asks for <b>three</b> guesses per task:
+    a best case, a worst case, and a most-likely case. It then blends them into a
+    single expected time and, crucially, a measure of how <i>uncertain</i> that time
+    is. That uncertainty is what lets PERT do something CPM can't: attach a
+    probability to hitting a deadline.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>PERT = CPM + probability. Same critical-path logic, but each duration is a
+      weighted blend of three estimates, and each task carries a variance so you can
+      compute the odds of finishing on time.</p>
+    </div>
+
+    <p>The faculty's symbols: optimistic <b>a</b>, most likely <b>m</b>, pessimistic
+    <b>b</b>.</p>
+    <div class="formula">
+      <div class="label">Expected time (weighted toward the most likely)</div>
+      \[ T_E = \frac{a + 4m + b}{6} \]
+    </div>
+    <div class="formula">
+      <div class="label">Variance of one task (how spread-out its duration is)</div>
+      \[ \sigma^2 = \left(\frac{b - a}{6}\right)^2 \]
+    </div>
+    <div class="formula">
+      <div class="label">Finishing on time — the Z-score</div>
+      \[ Z = \frac{T - T_{E,\text{project}}}{\sigma_{\text{project}}}, \qquad \sigma_{\text{project}} = \sqrt{\textstyle\sum \sigma^2 \text{ on the critical path}} \]
+    </div>
+    <p>Then look Z up in the standard normal (Z) table to get the probability of
+    finishing by deadline \(T\).</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Two classic slips: (1) the <b>4</b> multiplies <i>m</i> only, and you divide
+      by <b>6</b>, not 3 — it's a weighted average, not a plain one. (2) Project
+      variance sums the variances of the tasks <b>on the critical path only</b>, then
+      \( \sigma=\sqrt{\text{that sum}} \). Don't add standard deviations directly, and
+      don't include off-path tasks.</p>
+    </div>
+
+    <h3>Worked example (the faculty's Example 1)</h3>
+    <table class="dtable">
+      <tr><th class="l">Task</th><th>a</th><th>m</th><th>b</th><th>\(T_E\)</th><th>Var</th><th>Pred</th></tr>
+      <tr class="crit"><td class="l">A</td><td>1</td><td>2</td><td>3</td><td>2.00</td><td>0.11</td><td>—</td></tr>
+      <tr class="crit"><td class="l">B</td><td>2</td><td>3</td><td>8</td><td>3.67</td><td>1.00</td><td>A</td></tr>
+      <tr><td class="l">C</td><td>1</td><td>1</td><td>1</td><td>1.00</td><td>0.00</td><td>A</td></tr>
+      <tr class="crit"><td class="l">D</td><td>3</td><td>4</td><td>5</td><td>4.00</td><td>0.11</td><td>B,C</td></tr>
+    </table>
+    <ol class="steps">
+      <li><p class="math-line">\( T_E(B)=\frac{2+4(3)+8}{6}=\frac{22}{6}=3.67 \)</p><p class="why">Apply \( (a+4m+b)/6 \) to each task (B shown).</p></li>
+      <li><p class="math-line">\( \text{Var}(B)=\left(\frac{8-2}{6}\right)^2 = 1^2 = 1.00 \)</p><p class="why">Apply \( ((b-a)/6)^2 \) to each task (B shown).</p></li>
+      <li><p class="math-line">\( \text{A-B-D}=2+3.67+4=9.67;\quad \text{A-C-D}=2+1+4=7.0 \)</p><p class="why">Sum \(T_E\) along each path; the larger is critical.</p></li>
+      <li><p class="math-line">\( \sigma=\sqrt{0.11+1.00+0.11}=\sqrt{1.22}\approx 1.10 \)</p><p class="why">Sum variances on the critical path A-B-D, then square-root.</p></li>
+      <li><p class="math-line">\( Z=\frac{11-9.67}{1.10}=1.21 \Rightarrow P\approx 0.887 \)</p><p class="why">Z-score for deadline \(T=11\); look up 1.21 in the Z-table.</p></li>
+    </ol>
+    <div class="callout key"><span class="tag">Answer</span><p>Critical path <b>A-B-D = 9.67 weeks</b>; ~<b>88.7% chance</b> of finishing by week 11. Sanity check: the deadline (11) is above the expected finish (9.67), so a probability above 50% is expected. ✓</p></div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 4.1 <span class="diff">· medium</span></span></div>
+      <div class="qbody"><p>A(2,3,4; —), B(1,2,9; A), C(2,4,6; A), D(1,3,5; B&amp;C). Find each \(T_E\) and variance, the critical path, and the probability of finishing by day 12.</p></div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">\( T_E: A=\tfrac{2+12+4}{6}=3,\ B=\tfrac{1+8+9}{6}=3,\ C=\tfrac{2+16+6}{6}=4,\ D=\tfrac{1+12+5}{6}=3 \)</p><p class="why">Apply \( (a+4m+b)/6 \) to each.</p></li>
+            <li><p class="math-line">\( \text{Var}: A=0.11,\ B=(\tfrac{8}{6})^2=1.78,\ C=0.44,\ D=0.44 \)</p><p class="why">Apply \( ((b-a)/6)^2 \) to each.</p></li>
+            <li><p class="math-line">\( \text{A-B-D}=3+3+3=9;\quad \text{A-C-D}=3+4+3=10 \)</p><p class="why">Sum \(T_E\) per path; larger wins.</p></li>
+            <li><p class="math-line">\( \sigma=\sqrt{0.11+0.44+0.44}=\sqrt{0.99}\approx 1.0 \)</p><p class="why">Variances of the critical path A-C-D only, then root.</p></li>
+            <li><p class="math-line">\( Z=\frac{12-10}{1.0}=2.0 \Rightarrow P\approx 0.977 \)</p><p class="why">Z for \(T=12\); look up 2.0 (≈97.7%).</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p>Critical path <b>A-C-D = 10 days</b>; ~<b>97.7%</b> chance of finishing by day 12. Note B is <i>not</i> on the critical path, so its large variance (1.78) is correctly excluded. ✓</p></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 5: CCPM ========================= -->
+  <section class="topic" id="ccpm">
+    <span class="topic-num">Topic 05</span>
+    <h2>Critical Chain Project Management (CCPM)</h2>
+    <p class="subtitle">CPM's successor: it fixes two things CPM ignores — shared resources, and the padding hidden inside every estimate.</p>
+
+    <p>CPM has a blind spot: it assumes that if two tasks <i>can</i> run in parallel,
+    they <i>will</i> — even if both need the same one senior developer. CCPM starts
+    by respecting resources. Then it notices a human habit: people pad their
+    estimates for safety, and when padded tasks run back-to-back the padding piles
+    up and gets wasted (work expands to fill the time). CCPM strips the padding out
+    of each task and pools it into one shared buffer at the end. Result: a shorter
+    <i>planned</i> schedule that is still protected.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>CCPM = the resource-feasible longest chain (the <b>critical chain</b>), with
+      per-task safety removed and reinserted as a single shared <b>project buffer</b>
+      (typically 50% of the chain length).</p>
+    </div>
+
+    <h3>The workflow, and why the order of resource-sharing tasks matters</h3>
+    <p>First find the CPM schedule. Then resolve resource conflicts: if two tasks
+    share a person, one must go first — and the two orderings usually give
+    <i>different</i> total durations, so you pick the shorter one. Then cut each
+    estimate (the lectures assume ~50% is padding) and add the buffer.</p>
+    <p class="small">In the faculty's example the unconstrained CPM schedule was 38
+    days; forcing the shared Senior Developer to run sequentially pushed it to 42 or
+    48 depending on order; cutting the padding and adding an 11-day project buffer
+    brought the protected finish down to 32 days.</p>
+
+    <h3>The three buffer types (a favourite short-answer)</h3>
+    <ul>
+      <li><b>Project Buffer (PB):</b> sits at the <i>end</i> of the critical chain; absorbs delays on the chain so the promised finish date holds. ≈ 50% of the chain.</li>
+      <li><b>Feeding Buffer (FB):</b> sits where a <i>side path merges into</i> the critical chain; absorbs delays on the feeding path so the chain itself isn't hit. ≈ 50% of the feeding path.</li>
+      <li><b>Resource Buffer (RB):</b> <i>not</i> time — it's an advance <b>alert</b> that a needed resource (e.g. an external DevOps engineer) must be ready exactly when a chain task begins. Adds zero days.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The Resource Buffer adds <b>no days</b> to the schedule — it's a
+      notification, not a time allowance. Marking it as "X days" is a classic error.
+      Also: the critical <i>chain</i> can differ from the critical <i>path</i>,
+      because the chain accounts for the shared resource, not just dependencies.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 5.1 <span class="diff">· medium</span></span></div>
+      <div class="qbody"><p>A critical chain is Design(4) → Build(6) → Deploy(4). A feeding chain Content(4) → Review(2) merges in before Deploy. Size the project buffer and feeding buffer, and give the protected finish.</p></div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">\( \text{chain}=4+6+4=14 \)</p><p class="why">Sum the critical-chain task durations.</p></li>
+            <li><p class="math-line">\( \text{PB}=0.5\times14=7 \)</p><p class="why">Project buffer ≈ 50% of the critical chain.</p></li>
+            <li><p class="math-line">\( \text{feeding path}=4+2=6,\quad \text{FB}=0.5\times6=3 \)</p><p class="why">Feeding buffer ≈ 50% of the feeding path length.</p></li>
+            <li><p class="math-line">\( \text{protected finish}=14+7=21 \)</p><p class="why">Chain length plus project buffer. The feeding chain (6+3=9) finishes before Deploy, so it doesn't push the finish.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><b>PB = 7 days, FB = 3 days, protected finish = 21 days.</b> If a DevOps engineer were needed at Deploy, you'd also flag a Resource Buffer — an alert, adding 0 days. ✓</p></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 6: ESTIMATING ========================= -->
+  <section class="topic" id="estimating">
+    <span class="topic-num">Topic 06</span>
+    <h2>Cost Estimation — Analogous Estimating</h2>
+    <p class="subtitle">This is Q3. It wasn't in the uploaded lecture notes, so treat this section as the supplementary background you need to solve that question.</p>
+    <div class="callout watch">
+      <span class="tag">Note on scope</span>
+      <p>The uploaded lectures don't cover estimating, but the Fall 2025 paper's Q3
+      tests it — so it's clearly on the syllabus. This section gives the minimum you
+      need; check it against your own class notes in case your faculty used slightly
+      different wording.</p>
+    </div>
+
+    <p>Suppose you've built three houses and someone asks the cost of a fourth.
+    Rather than pricing every brick from scratch, you find the <i>most similar</i>
+    past house and adjust its known cost for the differences. That's <b>analogous
+    estimating</b> (also called top-down): use a comparable finished project as the
+    anchor, then nudge its actual cost up or down for whatever differs — size,
+    quality grade, design tier.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Pick the <b>most similar past project</b> (fewest differences), then apply
+      each difference as a multiplier. Fewer adjustments = less error, which is
+      exactly <i>why</i> you choose the closest analogue.</p>
+    </div>
+
+    <p>Handle each stated difference as a factor on the known cost:</p>
+    <div class="formula">
+      <div class="label">General form</div>
+      \[ \text{Cost}_{\text{new}} = \text{Cost}_{\text{ref}} \times \frac{\text{Area}_{\text{new}}}{\text{Area}_{\text{ref}}} \times (\text{design factor}) \times (\text{material factor}) \]
+    </div>
+    <p>A "+20%" difference is a ×1.20 factor when adding it, or ÷1.20 when removing
+    it from the reference; "−10%" is ×0.90 or ÷0.90. Area scales directly
+    (proportional). The whole game is deciding which factors you need — and picking
+    a reference that needs as few as possible.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Estimating the same new project from different references gives slightly
+      different numbers, because percentage adjustments don't compose perfectly.
+      That's not a mistake — it's the reason the method insists on the <i>closest</i>
+      analogue. If your chosen reference already matches on design and material, you
+      only scale for area, and the estimate is at its most trustworthy.</p>
+    </div>
+    <p class="small">Full worked application is in the past-paper section (Q3) below.</p>
+  </section>
+
+  <!-- ============================ TOPIC 7: BMC ========================= -->
+  <section class="topic" id="bmc">
+    <span class="topic-num">Topic 07</span>
+    <h2>The Business Model Canvas (9 blocks)</h2>
+    <p class="subtitle">The entrepreneurship half of the course: how a business creates, delivers, and captures value — on one page.</p>
+
+    <p>A business model is simply <i>how a company creates, delivers, and captures
+    value</i>. Alexander Osterwalder's <b>Business Model Canvas</b> lays that logic
+    out as nine linked blocks on a single sheet, so you can design or pivot a whole
+    business at a glance. A useful mental split: the <b>right side is the "show"</b>
+    (what the customer sees), the <b>left side is the "factory"</b> (what happens
+    backstage), and the <b>bottom is the "wallet"</b> (money in vs money out).</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Nine blocks: Customer Segments, Value Propositions, Channels, Customer
+      Relationships, Revenue Streams (the right/"show" + wallet), and Key Resources,
+      Key Activities, Key Partners, Cost Structure (the left/"factory" + wallet).</p>
+    </div>
+
+    <ol>
+      <li><b>Customer Segments</b> — who you serve. B2C segmentation: <i>demographic</i> (age, income), <i>psychographic</i> (values, lifestyle — the "why"), <i>behavioural</i> (usage, loyalty). Remember <b>user ≠ customer</b>: the child uses the toy, the parent pays; you (searcher) use Google, the advertiser pays.</li>
+      <li><b>Value Propositions</b> — why they pick you. Quantitative value (price, performance, cost/risk reduction) vs qualitative (newness, design, convenience, brand, "getting the job done"). Tool: the Value Proposition Canvas pairs the <i>Customer Profile</i> (jobs, pains, gains) with the <i>Value Map</i> (products, pain relievers, gain creators).</li>
+      <li><b>Channels</b> — how you reach them, across five phases: Awareness → Evaluation → Purchase → Delivery → After-sales.</li>
+      <li><b>Customer Relationships</b> — the connection type, driven by three goals: acquisition, retention, and boosting sales (up/cross-sell).</li>
+      <li><b>Revenue Streams</b> — how you capture value: <i>transactional</i> (one-off sales) vs <i>recurring</i> (subscriptions, high lifetime value). Pricing can be fixed (list, feature/segment/volume-based) or dynamic (negotiation, yield management, real-time market).</li>
+      <li><b>Key Resources</b> — the assets you need: physical, intellectual (brands, patents), human, financial.</li>
+      <li><b>Key Activities</b> — the actions that use those resources: production, problem-solving, platform/network. (Resources are the <i>things</i>; activities are the <i>doing</i>.)</li>
+      <li><b>Key Partners</b> — the network you rely on, motivated by: optimisation/economies of scale, reducing risk/uncertainty, acquiring resources you lack, or <i>co-opetition</i> (partnering with a competitor).</li>
+      <li><b>Cost Structure</b> — what it all costs: fixed vs variable costs, and a strategic tilt that's either <i>cost-driven</i> (Ryanair, Walmart) or <i>value-driven</i> (Rolex).</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't confuse <b>Key Resources</b> (the assets — a patent, a factory) with
+      <b>Key Activities</b> (the actions — manufacturing, R&amp;D). And keep the
+      user-vs-customer distinction sharp; it's a favourite one-mark trap.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Practice 7.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>For a free ad-supported mobile game, identify the Customer Segments (note user vs customer), the main Revenue Stream type, and the likely Cost Structure orientation.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Applies three specific blocks — Segments (with user≠customer), Revenue
+            Streams, Cost orientation — from the BMC lecture to a concrete case.
+          </div>
+          <p><b>Segments:</b> two-sided — the <i>players</i> are the users (they don't
+          pay), the <i>advertisers</i> are the paying customers; this is a
+          multi-sided platform. <b>Revenue Stream:</b> primarily
+          <i>advertising</i> (with possible recurring in-app purchases), so a mix
+          leaning on ad revenue rather than one-off transactional sales.
+          <b>Cost Structure:</b> likely <i>cost-driven</i> with high automation and a
+          low-touch automated channel (the app store), since the free game must
+          scale to huge volume cheaply.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ TOPIC 8: BM TYPES ========================= -->
+  <section class="topic" id="bmtypes">
+    <span class="topic-num">Topic 08</span>
+    <h2>Business Model Types</h2>
+    <p class="subtitle">The short taxonomy: who is transacting with whom. Easy marks if you can tell them apart with an example each.</p>
+
+    <p>These label <i>who sells to whom</i>. Learn each by its one-line example — the
+    exam usually asks you to name the type from a scenario or vice versa.</p>
+    <ul>
+      <li><b>B2B (Business-to-Business):</b> firms trade with firms. Types: supplier-, buyer-, and intermediary-oriented. <i>Example:</i> a carmaker buying tyres, glass, and hoses.</li>
+      <li><b>B2C (Business-to-Consumer):</b> a company sells directly to end-users. <i>Example:</i> that same carmaker selling the finished car to you.</li>
+      <li><b>C2C (Consumer-to-Consumer):</b> consumers transact via a third-party platform. <i>Example:</i> an online auction where people bid on each other's items.</li>
+      <li><b>B2G (Business-to-Government):</b> a firm serves a government agency. <i>Example:</i> an IT consultancy keeping a ministry's systems current without it hiring full-time staff.</li>
+      <li><b>C2B (Consumer-to-Business):</b> individuals create value that businesses consume. <i>Example:</i> a consumer writing a review or suggesting a product idea the company adopts.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>One real-world flow can contain several types. The carmaker's supply chain
+      is a stack of <b>B2B</b> transactions; only the final sale to the driver is
+      <b>B2C</b>. Read the scenario for <i>who pays whom</i> at each step.</p>
+    </div>
+  </section>
+
+  <!-- ============================ PAST PAPER ========================= -->
+  <section class="topic" id="pastpaper">
+    <span class="topic-num">Exam</span>
+    <h2>Fall 2025 Midterm — Fully Worked</h2>
+    <p class="subtitle">The real paper, solved end to end. This is your highest-value practice: the coming exam mirrors this shape almost exactly.</p>
+
+    <!-- Q1 -->
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Q1 — Agile scenario <span class="diff">· 10 marks (1+4+5), CO1</span></span></div>
+      <div class="qbody">
+        <p>An online ticketing system is built by cross-functional teams under tight
+        deadlines using a "flexible and collaborative" approach. Symptoms: tasks
+        start but rarely finish on time; members work in isolation causing
+        integration problems; requirements change with no structured handling;
+        meetings lack focus and clear outcomes; testing is left to the end of each
+        release causing recurring bugs; developers are overworked and PO↔team
+        communication is strained. (a) Name the methodology being attempted.
+        (b) Analyse the key mistakes. (c) As PM, what would you do?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Whole-scenario diagnosis against the <b>Agile / Scrum</b> lecture, plus
+            <b>XP practices</b> for the engineering symptoms. The examiner wants each
+            symptom mapped to a <i>specific</i> missing Scrum/XP element, then a
+            concrete fix — not "be more Agile."
+          </div>
+          <p><b>(a) The methodology [1 mark].</b> They are attempting <b>Agile</b>,
+          specifically <b>Scrum</b> — "flexible and collaborative," cross-functional
+          teams, iterative "development cycles" (Sprints), and a "product lead"
+          (a Product Owner). But it's Scrum in name only: the framework's discipline
+          is absent.</p>
+
+          <p><b>(b) The key mistakes [4 marks]</b> — each symptom is a specific
+          violation:</p>
+          <ul>
+            <li><i>Tasks never finish on time</i> → no timeboxed Sprint with a committed Sprint Goal and no <b>Definition of Done</b>, so work has no closing line.</li>
+            <li><i>Isolation → integration problems</i> → no <b>Continuous Integration</b> and no <b>collective code ownership</b>; the daily sync isn't functioning.</li>
+            <li><i>Requirements change with no structure</i> → no prioritised <b>Product Backlog</b> and no backlog refinement, so change hits mid-flow instead of being queued and re-prioritised.</li>
+            <li><i>Meetings lack focus/outcomes</i> → ceremonies run without a <b>Scrum Master</b> facilitating and without timeboxes or goals (a Daily Scrum that isn't 15 minutes and forward-looking).</li>
+            <li><i>Testing left to the end</i> → no <b>TDD</b> / no testing inside the Sprint, so bugs accumulate and the increment is never truly "done."</li>
+            <li><i>Burnout + strained PO↔team communication</i> → no Scrum Master to remove impediments and shield the team, no sustainable pace, and a broken feedback loop between the Product Owner and developers.</li>
+          </ul>
+
+          <p><b>(c) What I'd do as PM [5 marks]</b> — install real Scrum, reinforced
+          with XP engineering practices:</p>
+          <ul>
+            <li><b>Define the roles:</b> a single Product Owner (owns/prioritises the backlog), a Scrum Master (removes impediments, shields the team, facilitates), and a self-organising Dev Team.</li>
+            <li><b>Stand up a prioritised Product Backlog</b> and route <i>all</i> changing requirements through backlog refinement and re-prioritisation, instead of absorbing them mid-Sprint.</li>
+            <li><b>Run fixed-length Sprints</b> with a clear Sprint Goal and a strict <b>Definition of Done that includes testing</b>, so work actually closes.</li>
+            <li><b>Fix the ceremonies:</b> focused Sprint Planning, a 15-minute forward-looking Daily Scrum, a Sprint Review with stakeholders, and a Retrospective to improve the process.</li>
+            <li><b>Add XP practices</b> to kill the technical symptoms: Continuous Integration and collective ownership (integration), TDD / test-within-Sprint (bugs), and pair programming (isolation, knowledge sharing).</li>
+            <li><b>Protect the people:</b> the Scrum Master enforces a sustainable pace and repairs the PO↔team communication channel to end the burnout.</li>
+          </ul>
+          <div class="callout key"><span class="tag">Answer shape</span><p>Name it (Scrum), map every symptom to a missing Scrum/XP element, then fix each with a concrete practice. Full marks come from the one-to-one mapping, not from general Agile praise.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Q2 -->
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Q2 — Activity-on-Node scheduling <span class="diff">· 10 marks (2+2+3+3), CO1/CO2</span></span></div>
+      <div class="qbody">
+        <p>A(3, —), B(6, A), C(8, A), D(4, B), E(5, C), F(3, B&amp;C), G(4, D&amp;E&amp;F).
+        (a) Compute ES/EF for all activities. (b) Does ES of G depend only on the
+        latest predecessor? Justify. (c) New policy: "G can begin once 80% of its
+        input branches (D,E,F) have finished, provided the unfinished branch has
+        ≤1 day of work remaining." Show the effect on total duration. (d) Merge-point
+        delay risk: D (p=0.1, +1 day), E (p=0.3, +2 days), F (p=0.2, +1 day).
+        (I) Estimate the expected total delay at G. (II) Compare with the time saved
+        in (c): credible net benefit, or trading reliability for nominal speed?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p><b>(a) Forward pass [2 marks].</b></p>
+          <ol class="steps">
+            <li><p class="math-line">\( \text{ES}(A)=0,\ \text{EF}(A)=3 \)</p><p class="why">No predecessor → ES = 0; EF = 0+3.</p></li>
+            <li><p class="math-line">\( \text{ES}(B)=3,\ \text{EF}(B)=9;\quad \text{ES}(C)=3,\ \text{EF}(C)=11 \)</p><p class="why">B, C follow A, so ES = EF(A) = 3.</p></li>
+            <li><p class="math-line">\( \text{ES}(D)=9,\ \text{EF}(D)=13 \)</p><p class="why">D follows B: ES = EF(B) = 9.</p></li>
+            <li><p class="math-line">\( \text{ES}(E)=11,\ \text{EF}(E)=16 \)</p><p class="why">E follows C: ES = EF(C) = 11.</p></li>
+            <li><p class="math-line">\( \text{ES}(F)=\max(9,11)=11,\ \text{EF}(F)=14 \)</p><p class="why"><b>Merge:</b> F waits for B(9) and C(11) → max = 11.</p></li>
+            <li><p class="math-line">\( \text{ES}(G)=\max(13,16,14)=16,\ \text{EF}(G)=20 \)</p><p class="why"><b>Merge:</b> G waits for D(13), E(16), F(14) → max = 16.</p></li>
+          </ol>
+          <table class="dtable">
+            <tr><th class="l">Act</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            <tr><td class="l">ES</td><td>0</td><td>3</td><td>3</td><td>9</td><td>11</td><td>11</td><td>16</td></tr>
+            <tr><td class="l">EF</td><td>3</td><td>9</td><td>11</td><td>13</td><td>16</td><td>14</td><td>20</td></tr>
+          </table>
+          <p class="small"><b>Project duration = 20 days.</b> Critical path (from a quick backward pass): A → C → E → G = 3+8+5+4 = 20. ✓</p>
+
+          <p><b>(b) Does ES(G) depend only on the latest predecessor? [2 marks].</b></p>
+          <p><b>Yes — here it does.</b> ES(G) = max(EF(D), EF(E), EF(F)) = max(13, 16,
+          14) = 16 = EF(E). A merge node can't start until <i>all</i> its inputs are
+          done, so the binding constraint is whichever finishes <i>last</i> — E, at
+          day 16. D (13) and F (14) finish earlier, so they have slack and don't
+          affect G's start. <b>Caveat to state for full marks:</b> "latest" means
+          latest <i>finish</i> (largest EF), not longest duration — you must still
+          compute all three EFs to know which one is latest; you can't eyeball it
+          from durations alone.</p>
+
+          <p><b>(c) The 80% merge relaxation [3 marks].</b></p>
+          <p>Read the operative clause: G may start when the branches are essentially
+          done — the straggler needs only <b>≤1 day of work remaining</b>. The
+          latest branch is E, finishing at 16. So instead of waiting for 16, G can
+          start when E has 1 day left, i.e. at day <b>15</b> (by then D finished at
+          13 and F at 14, so two of three branches are complete and E is within one
+          day).</p>
+          <ol class="steps">
+            <li><p class="math-line">\( \text{new ES}(G)=16-1=15 \)</p><p class="why">Start one day before the last branch (E) finishes, per the ≤1-day clause.</p></li>
+            <li><p class="math-line">\( \text{new duration}=15+4=19 \)</p><p class="why">EF(G) = ES + 4. <b>Time saved = 20 − 19 = 1 day.</b></p></li>
+          </ol>
+          <div class="callout watch"><span class="tag">State your interpretation</span><p>"80% of 3 branches" is loose (2 of 3 = 67%). Say so explicitly and lean on the precise, testable clause ("unfinished branch ≤1 day remaining"), which fixes the early start at day 15. Examiners reward flagging the ambiguity rather than hiding it.</p></div>
+
+          <p><b>(d-I) Expected total delay at G [part of 3 marks].</b> Expected delay
+          per branch = probability × impact; sum them.</p>
+          <ol class="steps">
+            <li><p class="math-line">\( D:\ 0.1\times1=0.1 \)</p><p class="why">p(delay) × schedule impact.</p></li>
+            <li><p class="math-line">\( E:\ 0.3\times2=0.6 \)</p><p class="why">Same rule; E is the big contributor.</p></li>
+            <li><p class="math-line">\( F:\ 0.2\times1=0.2 \)</p><p class="why">Same rule.</p></li>
+            <li><p class="math-line">\( \text{Expected total delay}=0.1+0.6+0.2=0.9 \text{ days} \)</p><p class="why">Sum of expected contributions across the three inputs.</p></li>
+          </ol>
+
+          <p><b>(d-II) Credible benefit, or trading reliability for speed?</b> The rule
+          saves a nominal <b>1 day</b> but the merge point carries an expected
+          <b>0.9 days</b> of delay — a net expected gain of only ~<b>0.1 day</b>, and
+          that's before accounting for variance. Worse, the whole relaxation
+          <i>bets on E finishing on schedule</i>, yet E is precisely the riskiest
+          input (highest probability 0.3 <i>and</i> largest impact 2 days, ≈0.6 of
+          the total risk) and it sits on the critical path. So the rule pays out a
+          near-zero net time saving in exchange for real schedule reliability.</p>
+          <div class="callout key"><span class="tag">Verdict</span><p><b>Not a credible net benefit.</b> ~0.1 day expected gain vs a fragile bet on the single most delay-prone, critical-path branch (E). It trades away reliability for nominal speed.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Q3 -->
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Q3 — Analogous estimating <span class="diff">· 10 marks (5+5), CO2</span></span></div>
+      <div class="qbody">
+        <p>Past projects: A (1,200 sq.m, Standard, Medium, 15M BDT); B (1,500, Luxury,
+        High, 22M); C (1,000, Standard, Low, 11M). Rules: Luxury +20% over Standard;
+        High materials +15% over Medium, Low −10% under Medium; cost ∝ floor area.
+        New Project D: 1,300 sq.m, Standard, Medium. (a) Which past project is most
+        similar to D — justify. (b) Estimate D's cost.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p><b>(a) Most similar project [5 marks].</b> D is <b>Standard + Medium</b>.
+          Compare: A is Standard + Medium (matches <i>both</i>), C is Standard + Low
+          (material differs), B is Luxury + High (both differ). So <b>Project A is
+          the closest analogue</b> — identical design tier and material grade, with
+          only floor area differing (1,200 vs 1,300). Choosing A means <b>no design or
+          material adjustment is needed</b>, only a simple area scaling, which
+          minimises adjustment error — the whole point of picking the nearest match.</p>
+
+          <p><b>(b) Estimate D's cost [5 marks].</b> Since A and D share design and
+          material, only floor area changes, and cost is directly proportional to
+          area.</p>
+          <ol class="steps">
+            <li><p class="math-line">\( \text{Cost}_D = 15 \times \dfrac{1300}{1200} \)</p><p class="why">Scale A's known 15M by the area ratio; no design/material factor because they're identical.</p></li>
+            <li><p class="math-line">\( = 15 \times 1.0833\ldots \)</p><p class="why">\( 1300/1200 = 13/12 \approx 1.0833 \).</p></li>
+            <li><p class="math-line">\( = 16.25 \text{ million BDT} \)</p><p class="why">\( 15 \times 13/12 = 195/12 = 16.25 \).</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><b>≈ 16.25 million BDT.</b></p></div>
+          <p class="small"><b>Cross-check for confidence (optional, earns credit):</b>
+          estimate from C instead (Standard, one material step away):
+          \( 11 \times \tfrac{1}{0.90} \times \tfrac{1300}{1000} = 11 \times 1.111 \times 1.3 \approx 15.9\text{M} \)
+          — close to 16.25M, so the estimate is robust around ~16M. Estimating from
+          B (Luxury, High — two adjustments) would give ≈13.8M, an outlier: proof
+          that the least-similar analogue is the least reliable, which is exactly why
+          A was chosen.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================ CHEAT SHEET ========================= -->
+  <div class="cheat">
+    <h2>Last-minute revision</h2>
+    <div class="grid">
+      <div class="item"><h4>CPM forward pass</h4><p>ES = max(EF of preds); EF = ES + dur. Merge = <b>max</b>.</p></div>
+      <div class="item"><h4>CPM backward pass</h4><p>LF = min(LS of succs); LS = LF − dur. Branch = <b>min</b>.</p></div>
+      <div class="item"><h4>Critical test</h4><p>Float = LS − ES = LF − EF. Float 0 ⇒ critical. Critical path = longest path.</p></div>
+      <div class="item"><h4>PERT time</h4><p>\( T_E=\frac{a+4m+b}{6} \) — 4 on m, ÷6.</p></div>
+      <div class="item"><h4>PERT variance</h4><p>\( \sigma^2=\left(\frac{b-a}{6}\right)^2 \); \( \sigma=\sqrt{\sum\sigma^2_{\text{crit}}} \).</p></div>
+      <div class="item"><h4>PERT probability</h4><p>\( Z=\frac{T-T_E}{\sigma} \), then read the Z-table.</p></div>
+      <div class="item"><h4>CCPM buffers</h4><p>PB (chain end, 50%), FB (feeder merge, 50%), RB (alert, 0 days).</p></div>
+      <div class="item"><h4>Scrum 3-3-5</h4><p>Roles: PO, SM, Dev. Artifacts: Product/Sprint Backlog, Increment. Events: Sprint, Planning, Daily, Review, Retro.</p></div>
+      <div class="item"><h4>Scrum vs XP</h4><p>Scrum = manage process; XP = manage code (TDD, CI, pair programming).</p></div>
+      <div class="item"><h4>WBS 100% rule</h4><p>All work in, no extra work, no overlap. Traps: missing deliverable + double-count.</p></div>
+      <div class="item"><h4>Analogous estimate</h4><p>Pick closest past project; multiply by area ratio × design × material factors.</p></div>
+      <div class="item"><h4>Expected delay</h4><p>Σ (probability × impact). Compare with nominal time saved.</p></div>
+      <div class="item"><h4>BMC 9 blocks</h4><p>Segments, Value Prop, Channels, Relationships, Revenue | Resources, Activities, Partners, Costs.</p></div>
+      <div class="item"><h4>User ≠ Customer</h4><p>The user uses it; the customer pays. (Child/parent, searcher/advertiser.)</p></div>
+      <div class="item"><h4>Model types</h4><p>B2B, B2C, C2C, B2G, C2B — read who pays whom.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from Prof. Proma Chowdhury's CSE495 lecture material and the
+    Fall 2025 midterm. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
