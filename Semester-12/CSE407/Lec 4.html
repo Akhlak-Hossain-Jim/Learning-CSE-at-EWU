@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 4 — Cooling Strategies</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#0a3d5c;--c2:#0e6090;--c3:#1b9ac4;--c4:#7dd8f0;--c5:#d4f3fc;
+  --ink:#0d1e26;--ink2:#2d4a5a;--ink3:#5a7a8a;--ink4:#9ab4c0;
+  --paper:#f0f7fa;--card:#ffffff;--card2:#f5fbfd;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --orange:#d4540a;--orange-l:#fdeee4;
+  --border:#cce4ef;--border2:#a8ccdc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,247,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--c1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--c1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--c3)}
+.prog-dot.active{background:var(--c1);box-shadow:0 0 0 2px var(--c5)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d2f4a 60%,#0a1e30 100%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:500px;height:500px;top:-160px;right:-120px;background:rgba(27,154,196,0.12)}
+.hero-c2{width:260px;height:260px;bottom:-90px;left:14%;background:rgba(125,216,240,0.08)}
+.hero-c3{width:140px;height:140px;top:50px;left:55%;background:rgba(27,154,196,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-c{background:rgba(125,216,240,0.2);color:#7dd8f0;border:1px solid rgba(125,216,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--c4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--c4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--c1);border-bottom-color:var(--c2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--c1);color:#fff}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--c1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--c3)}
+.sb-item.active .sb-dot{background:var(--c1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--c1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--c3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-c{background:var(--c5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-o{background:var(--orange-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--c5);color:var(--c1);border:1px solid rgba(27,154,196,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--c3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.section.done .mark-done-btn{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-c{background:var(--c5);border-color:var(--c2);color:var(--c1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-orange{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--c5);border:1px solid rgba(27,154,196,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--c1);line-height:1}
+.stat-u{font-size:13px;color:var(--c2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--c2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--c1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--c5)}
+
+/* COOLING DIAGRAM - SVG based */
+.diagram-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.diagram-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* TECHNIQUE TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--c3);color:var(--c1)}
+.fw-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--c1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* PUE CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--c1);min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--c2)}
+.result-box{background:var(--c1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.result-big{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--c4)}
+.result-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.result-rating{font-size:13px;color:rgba(255,255,255,0.7)}
+.result-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.result-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* FREE COOLING SIMULATOR */
+.fc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.fc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:540px){.fc-grid{grid-template-columns:1fr}}
+.fc-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.fc-n{font-family:'Fraunces',serif;font-size:28px;color:var(--c1);transition:all .3s}
+.fc-l{font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.4}
+.temp-display{background:var(--c1);color:#fff;text-align:center;border-radius:10px;padding:16px;margin-top:12px}
+.temp-big{font-family:'Fraunces',serif;font-size:48px;color:var(--c4);line-height:1}
+.temp-label{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px}
+.cooling-mode{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700}
+.mode-free{background:#e8f5ee;color:#0e3d2a}
+.mode-mixed{background:#fdf3e0;color:#7a4800}
+.mode-mechanical{background:#fdecea;color:#6b1010}
+
+/* HOT/COLD AISLE SVG */
+.aisle-diagram{width:100%;max-width:600px;margin:18px auto 0;display:block}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--c1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c4);margin-bottom:8px}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--c3)}
+.qp-dot.active{background:var(--c2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--c3);background:var(--c5);color:var(--c1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--c1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--c2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--c1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--c5);color:var(--c1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1)}
+.f-btn.primary:hover{background:var(--c2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 4 — Cooling Strategies</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-c">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 4 of 22</span>
+      <span class="chip chip-gray">Jun 15, 2025 · Sunday · 1h 30min</span>
+    </div>
+    <h1>Cooling Strategies<br><em>Keeping Data Centers Cool — Efficiently</em></h1>
+    <p class="hero-sub">How heat is generated, where it goes, and the full spectrum of cooling technologies from basic air handling to cutting-edge liquid immersion.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.4 pp.63–75</span>
+      <span class="ref">📗 Lamb Ch.8 (all)</span>
+      <span class="ref">🎯 CO1</span>
+      <span class="ref">🧠 EP1, EP2</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">40<span style="font-size:18px">%</span></div><div class="h-stat-lbl">Of data center energy consumed by cooling systems</div></div>
+      <div class="h-stat"><div class="h-stat-num">1.58</div><div class="h-stat-lbl">Global average PUE — 0.58W overhead per 1W compute</div></div>
+      <div class="h-stat"><div class="h-stat-num">45°C</div><div class="h-stat-lbl">Max safe inlet temperature for most servers (ASHRAE A2)</div></div>
+      <div class="h-stat"><div class="h-stat-num">1,000×</div><div class="h-stat-lbl">Better heat capacity of water vs air — why liquid cooling wins</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Heat Basics</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Hot/Cold Aisle</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Cooling Techniques</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Free Cooling</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>PUE Deep Dive</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; homework review</div>
+        <div class="sec-subtitle">Power minimization recap + laptop battery homework debrief</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Last class we went inside the machine — DVFS, C-states, energy proportionality, and the race-to-idle principle. Today we zoom out to the data center level: once all those chips generate heat, how do we remove it efficiently?</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">📐 P = C·V²·f</div><p>Dynamic CPU power scales with voltage squared. Reducing voltage by 10% saves ~19% power — quadratic, not linear.</p></div>
+      <div class="card-b"><div class="card-b-title">💤 C-states</div><p>CPU idle states (C0–C7+) allow near-zero power consumption when the processor has nothing to do. The OS balances depth vs. wake latency.</p></div>
+      <div class="card-b"><div class="card-b-title">📊 Energy proportionality</div><p>Real servers draw ~50% power at 0% load. Consolidation via virtualization is the primary fix — pushing utilization into the efficient 60–80% zone.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">What was your estimated power draw from the simulator? How did it compare to your laptop's manufacturer-claimed battery life? What was your hypothesis for the discrepancy?</div><div class="discuss-time">2–3 students share findings</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: HEAT BASICS -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">🔥</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">Why cooling matters — heat in data centers</div>
+        <div class="sec-subtitle">How electrical energy becomes heat, and why it must be removed</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Every watt of electrical power consumed by a computer is ultimately converted to heat. This is a fundamental consequence of thermodynamics — useful work (computation) and waste heat are inseparable. In a data center, removing that heat reliably and efficiently is as critical as supplying the electricity in the first place.</p>
+
+    <div class="callout callout-orange">
+      <div class="callout-label">🔥 The first law — energy in = energy out</div>
+      A 1 MW data center (IT load) generates 1 MW of heat continuously, 24/7. That heat must be removed or the servers overheat within minutes. The cooling system that removes it consumes additional electricity on top — this overhead is what PUE measures. A PUE of 1.5 means 0.5 MW of cooling energy for every 1 MW of computing.
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">85°C</div><div class="stat-l">Typical CPU junction temperature limit — exceeded temps cause throttling and hardware damage</div></div>
+      <div class="stat"><div class="stat-n">27°C</div><div class="stat-l">ASHRAE recommended server inlet air temperature (raised from 20°C in 2011 to save cooling energy)</div></div>
+      <div class="stat"><div class="stat-n">1kW/m²</div><div class="stat-l">Typical floor-level heat density in traditional data centers — high-density racks can exceed 30kW/rack</div></div>
+      <div class="stat"><div class="stat-n">3,500W</div><div class="stat-l">Heat output of a typical fully loaded 1U server — equivalent to 35 incandescent light bulbs</div></div>
+    </div>
+
+    <p class="prose" style="margin-top:18px">Heat is removed from data centers through a cascade: <strong>chip → heatsink → air (or liquid) → room → exterior environment</strong>. Each transfer step has efficiency losses. The goal of cooling engineering is to move heat from hot chips to the outside environment using as little additional energy as possible.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🌡️ ASHRAE thermal envelopes</div>
+        <p>ASHRAE (American Society of Heating, Refrigerating and AC Engineers) defines server inlet temperature classes. Class A1: 15–32°C. Class A2: 10–35°C. Class A3: 5–40°C. Class A4: 5–45°C. Higher class = more flexible cooling design = cheaper/greener cooling systems. Most modern servers support A2 or A3.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">⚠️ Heat density challenge</div>
+        <p>Traditional data centers were designed for ~3–5 kW/rack. Modern GPU clusters for AI training can exceed 100 kW/rack — an order of magnitude denser. Air cooling struggles above ~25–30 kW/rack, which is why liquid cooling is becoming mainstream rather than niche.</p>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: HOT/COLD AISLE -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🏭</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Concept · 15 min</div>
+        <div class="sec-title">Hot aisle / cold aisle containment</div>
+        <div class="sec-subtitle">The single most impactful layout change for air-cooled data centers</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Before hot/cold aisle layouts, server rooms were simply filled with cool air everywhere. Servers could exhaust hot air that was immediately re-ingested by neighboring servers — mixing hot and cold air and dramatically reducing efficiency. Hot/cold aisle containment eliminates this mixing.</p>
+
+    <div class="callout callout-c">
+      <div class="callout-label">💡 The core principle</div>
+      Servers take in cool air from the <strong>front face (cold aisle)</strong> and exhaust hot air from the <strong>rear face (hot aisle)</strong>. By alternating rack orientations so all fronts face one aisle and all rears face the adjacent aisle, cool and hot air streams are separated. Containment panels then physically seal the aisles to prevent mixing.
+    </div>
+
+    <!-- SVG HOT/COLD AISLE DIAGRAM -->
+    <div class="diagram-wrap">
+      <div class="diagram-title">🗺️ Hot Aisle / Cold Aisle Layout — Interactive Diagram</div>
+      <svg class="aisle-diagram" viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg" style="border-radius:8px;background:#f8f9fa">
+        <!-- Floor -->
+        <rect x="0" y="0" width="580" height="260" fill="#f0f7fa" rx="8"/>
+        <!-- Cold aisle labels -->
+        <rect x="10" y="100" width="80" height="60" fill="#d4f3fc" rx="6" stroke="#1b9ac4" stroke-width="1.5"/>
+        <text x="50" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#0a3d5c">COLD</text>
+        <text x="50" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#0a3d5c">AISLE</text>
+        <text x="50" y="153" text-anchor="middle" font-size="9" fill="#1b9ac4">≈27°C</text>
+        <!-- Hot aisle label center -->
+        <rect x="250" y="100" width="80" height="60" fill="#fdecd8" rx="6" stroke="#d4540a" stroke-width="1.5"/>
+        <text x="290" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#7a2a00">HOT</text>
+        <text x="290" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#7a2a00">AISLE</text>
+        <text x="290" y="153" text-anchor="middle" font-size="9" fill="#d4540a">≈40°C</text>
+        <!-- Cold aisle right -->
+        <rect x="490" y="100" width="80" height="60" fill="#d4f3fc" rx="6" stroke="#1b9ac4" stroke-width="1.5"/>
+        <text x="530" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#0a3d5c">COLD</text>
+        <text x="530" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#0a3d5c">AISLE</text>
+        <text x="530" y="153" text-anchor="middle" font-size="9" fill="#1b9ac4">≈27°C</text>
+        <!-- Rack row 1 -->
+        <rect x="100" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <rect x="140" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <rect x="180" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <!-- Rack row 2 -->
+        <rect x="370" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <rect x="410" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <rect x="450" y="40" width="30" height="180" fill="#334155" rx="4"/>
+        <!-- Cool air arrows (into front of racks from cold aisle) -->
+        <defs>
+          <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1b9ac4"/>
+          </marker>
+          <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#d4540a"/>
+          </marker>
+        </defs>
+        <!-- cool into left rack row from left cold aisle -->
+        <line x1="92" y1="90" x2="102" y2="90" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <line x1="92" y1="130" x2="102" y2="130" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <line x1="92" y1="170" x2="102" y2="170" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <!-- hot out right side of left racks into hot aisle -->
+        <line x1="210" y1="90" x2="248" y2="90" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <line x1="210" y1="130" x2="248" y2="130" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <line x1="210" y1="170" x2="248" y2="170" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <!-- hot out left side of right racks into hot aisle -->
+        <line x1="370" y1="90" x2="332" y2="90" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <line x1="370" y1="130" x2="332" y2="130" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <line x1="370" y1="170" x2="332" y2="170" stroke="#d4540a" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <!-- cool into right racks from right cold aisle -->
+        <line x1="490" y1="90" x2="480" y2="90" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <line x1="490" y1="130" x2="480" y2="130" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <line x1="490" y1="170" x2="480" y2="170" stroke="#1b9ac4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+        <!-- Server labels -->
+        <text x="115" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 115 138)">SERVERS</text>
+        <text x="155" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 155 138)">SERVERS</text>
+        <text x="195" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 195 138)">SERVERS</text>
+        <text x="385" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 385 138)">SERVERS</text>
+        <text x="425" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 425 138)">SERVERS</text>
+        <text x="465" y="138" text-anchor="middle" font-size="8" fill="#94a3b8" transform="rotate(-90 465 138)">SERVERS</text>
+        <!-- Legend -->
+        <circle cx="30" cy="230" r="5" fill="#1b9ac4"/>
+        <text x="40" y="234" font-size="10" fill="#0a3d5c">Cool air intake</text>
+        <circle cx="160" cy="230" r="5" fill="#d4540a"/>
+        <text x="170" y="234" font-size="10" fill="#7a2a00">Hot air exhaust</text>
+        <rect x="290" y="224" width="14" height="12" fill="#334155" rx="2"/>
+        <text x="310" y="234" font-size="10" fill="#334155">Server racks</text>
+      </svg>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+      <div class="card-b">
+        <div class="card-b-title">✅ With containment — what improves</div>
+        <ul>
+          <li>Cool air reaches servers at design temperature (27°C) reliably</li>
+          <li>Hot exhaust goes straight to cooling unit without mixing</li>
+          <li>Can raise cooling supply temperature → less refrigeration energy</li>
+          <li>Enables "free cooling" at lower ambient temps</li>
+          <li>Typical PUE improvement: 1.8 → 1.3 (significant)</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">❌ Without containment — the problems</div>
+        <ul>
+          <li>Hot exhaust recirculates into neighboring server intakes</li>
+          <li>Servers run hotter → throttle more → do less useful work</li>
+          <li>Must over-cool entire room to ensure hottest spots stay safe</li>
+          <li>Cold air short-circuits directly to hot aisle (bypasses servers)</li>
+          <li>Wasteful over-cooling of already-cool areas</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">📗 From Lamb Ch.8</div>
+      Hot/cold aisle containment is one of the <strong>highest ROI investments</strong> in data center energy efficiency — often costing tens of thousands of dollars but saving hundreds of thousands per year in electricity. For existing data centers, it's the first physical modification to implement before considering any other cooling technology.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: COOLING TECHNIQUES -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">❄️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Content · 15 min</div>
+        <div class="sec-title">Cooling technologies — from air to immersion</div>
+        <div class="sec-subtitle">Explore the full spectrum — tap each technique to learn more</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Cooling technology has evolved dramatically as server heat densities have risen. Each technique has a sweet spot in terms of heat density, cost, and green credentials. Understanding all of them allows you to match the right solution to the specific scenario.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showFW('crac')">🌬️ CRAC/CRAH</div>
+      <div class="fw-tab" onclick="showFW('inrow')">🏗️ In-Row Cooling</div>
+      <div class="fw-tab" onclick="showFW('reardoor')">🚪 Rear-Door HX</div>
+      <div class="fw-tab" onclick="showFW('direct')">💧 Direct Liquid</div>
+      <div class="fw-tab" onclick="showFW('immersion')">🛁 Immersion</div>
+    </div>
+
+    <div class="fw-panel active" id="fw-crac">
+      <div class="fw-header"><div class="fw-badge">CRAC / CRAH</div><div><div class="fw-name">Computer Room Air Conditioning / Air Handler</div><div class="fw-org">Traditional air cooling — most widely deployed globally</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Large air conditioning units placed around the perimeter (or under raised floors) of the data center push cool air through the room. CRAC units use refrigeration compressors (less efficient). CRAH units use chilled water from external chillers (more efficient at scale). Both are air-based and suitable up to ~10–15 kW/rack.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Max heat density</div><div class="fw-item-text">~10–15 kW/rack comfortably. Above this, hot spots form even with good aisle containment.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical PUE contribution</div><div class="fw-item-text">Cooling overhead of 0.4–0.8 PUE points. CRAH + chiller is more efficient than CRAC standalone.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Green credential</div><div class="fw-item-text">Poor to moderate. Refrigerant-based cooling uses significant energy. CRAH with economizer/free-cooling mode is better.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Legacy data centers, mixed-density environments, where capital investment for newer tech is constrained.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-inrow">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">In-Row Cooling</div><div><div class="fw-name">Rack-Row-Level Air Cooling Units</div><div class="fw-org">Targeted air delivery — reduces distribution losses</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Cooling units placed directly within server rows — between or beside racks — deliver cool air to the exact point of heat generation rather than relying on room-level air distribution. Dramatically reduces the distance (and energy) needed to move cool air to hot equipment.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Max heat density</div><div class="fw-item-text">~20–30 kW/rack — a significant step up from perimeter CRAC/CRAH units.</div></div>
+        <div class="fw-item"><div class="fw-item-title">PUE improvement</div><div class="fw-item-text">Typically 0.1–0.2 PUE improvement over perimeter cooling in the same facility, due to shorter air paths and better targeting.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Green credential</div><div class="fw-item-text">Moderate to good. Still air-based but far more targeted. Often paired with hot-aisle containment for best results.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">High-density zones within mixed data centers, colocation facilities adding dense GPU racks to existing air-cooled spaces.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-reardoor">
+      <div class="fw-header"><div class="fw-badge" style="background:#5a3aab">Rear-Door HX</div><div><div class="fw-name">Rear-Door Heat Exchanger</div><div class="fw-org">Rack-level passive liquid cooling — no fans added</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">A heat exchanger replaces the rear door of a server rack. Chilled water circulates through the door panel, capturing the hot exhaust air directly as it leaves the rack — before it can reach the hot aisle. The air entering the hot aisle is effectively already cooled. This is a retrofit-friendly solution that works with existing server fan infrastructure.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Max heat density</div><div class="fw-item-text">~25–30 kW/rack in passive mode (using server fans), up to ~40 kW with supplemental fans.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Key advantage</div><div class="fw-item-text">Retrofit: installs in hours on existing racks without reconfiguring servers or networking. No server modifications needed.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Green credential</div><div class="fw-item-text">Good — uses server's existing fans (no extra fan energy), chilled water loop is efficient, can capture >100% of rack heat.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Existing data centers with pockets of high-density equipment (GPU servers, HPC) that can't be fully re-fitted for liquid cooling.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-direct">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e6090">Direct Liquid Cooling</div><div><div class="fw-name">Cold Plates on CPU/GPU</div><div class="fw-org">Chip-level liquid cooling — mainstream in hyperscale &amp; HPC</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Liquid (water or dielectric fluid) circulates through metal cold plates attached directly to CPUs and GPUs — the primary heat sources. Because water has ~1,000× the heat capacity of air, cold plates can remove vastly more heat from a small area. This is now the standard approach for AI training clusters (NVIDIA H100/H200, AMD MI300) which can exceed 700W per chip.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Max heat density</div><div class="fw-item-text">~50–100 kW/rack and beyond — orders of magnitude above what air cooling can handle.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Efficiency</div><div class="fw-item-text">Can achieve PUE of 1.03–1.10 with warm water (up to 45°C supply) enabling economizer-only cooling in moderate climates.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Green credential</div><div class="fw-item-text">Excellent — waste heat can be warm enough (40–60°C) for heat recovery (district heating, process heat), turning a cost into a resource.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">AI/ML training clusters, HPC supercomputers, hyperscale cloud (Google, Microsoft, Meta all deploying extensively).</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-immersion">
+      <div class="fw-header"><div class="fw-badge" style="background:#0a3d5c">Immersion Cooling</div><div><div class="fw-name">Single &amp; Two-Phase Immersion</div><div class="fw-org">Servers submerged in dielectric fluid — the frontier of cooling tech</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Servers are fully submerged in thermally conductive, electrically non-conductive (dielectric) fluid. In single-phase systems, the fluid circulates to an external heat exchanger. In two-phase systems, the fluid boils at low temperatures, rising as vapor to condensers that cool it back to liquid. Eliminates server fans entirely.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Max heat density</div><div class="fw-item-text">Effectively unlimited at rack scale — currently deployed at 200+ kW/rack. Bitcoin mining farms were early adopters due to extreme density needs.</div></div>
+        <div class="fw-item"><div class="fw-item-title">PUE achievable</div><div class="fw-item-text">1.02–1.05 — world-class. Server fans (10–15% of server power) are eliminated entirely, adding another efficiency layer.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Challenges</div><div class="fw-item-text">High upfront cost, vendor lock-in (specialized tanks), two-phase fluid phase-out concerns (some fluids are potent greenhouse gases), maintenance complexity.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Green credential</div><div class="fw-item-text">Excellent efficiency, but some two-phase fluids (e.g., 3M Novec) have high GWP — a sustainability concern under EU F-Gas Regulation. Single-phase mineral oil or engineered fluids are more benign.</div></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="styled" style="margin-top:20px">
+        <thead><tr><th>Technology</th><th>Max Density (kW/rack)</th><th>Typical PUE Range</th><th>Water usage</th><th>Retrofit difficulty</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CRAC/CRAH</strong></td><td>10–15</td><td>1.4–1.8</td><td style="color:var(--red)">High (evaporative)</td><td style="color:var(--green)">Easy</td></tr>
+          <tr><td><strong>In-row cooling</strong></td><td>20–30</td><td>1.3–1.5</td><td style="color:var(--amber)">Medium</td><td style="color:var(--green)">Moderate</td></tr>
+          <tr><td><strong>Rear-door HX</strong></td><td>25–40</td><td>1.2–1.4</td><td style="color:var(--amber)">Medium</td><td style="color:var(--green)">Easy</td></tr>
+          <tr><td><strong>Direct liquid</strong></td><td>50–100+</td><td>1.03–1.15</td><td style="color:var(--green)">Low</td><td style="color:var(--red)">Hard</td></tr>
+          <tr><td><strong>Immersion</strong></td><td>100–200+</td><td>1.02–1.05</td><td style="color:var(--green)">Very low</td><td style="color:var(--red)">Very hard</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: FREE COOLING -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🌿</div>
+      <div class="sec-meta">
+        <div class="sec-label">Key Technique · 15 min</div>
+        <div class="sec-title">Free cooling — nature does the work</div>
+        <div class="sec-subtitle">Using ambient air or water to cool data centers without mechanical refrigeration</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose"><strong>Free cooling</strong> (also called an economizer mode) uses ambient outdoor air or outdoor water bodies to cool the data center — eliminating or reducing the energy-intensive refrigeration compressor cycle. When the outdoor temperature is low enough, nature provides the cooling for free; the data center only runs pumps and fans, not compressors.</p>
+
+    <div class="callout callout-green">
+      <div class="callout-label">💡 Economic impact</div>
+      A chiller compressor can consume 0.3–0.5 kW per kW of cooling delivered. Free cooling (pumps + fans only) consumes 0.03–0.08 kW per kW of cooling — roughly a <strong>10× improvement</strong>. For a 10 MW data center, every additional hour of free cooling per year saves approximately $800 in electricity (at $0.10/kWh). At 3,000 hours/year of free cooling, that's $2.4M saved annually.
+    </div>
+
+    <!-- FREE COOLING SIMULATOR -->
+    <div class="fc-wrap">
+      <div class="calc-title">🌡️ Interactive: Free Cooling Availability Simulator</div>
+      <div class="calc-subtitle">Adjust outdoor temperature and server inlet target. See which cooling mode is active and the energy impact.</div>
+      <div class="calc-row" style="margin-top:12px">
+        <span class="calc-lbl">Outdoor ambient temperature (°C)</span>
+        <input type="range" id="ambientTemp" min="-5" max="45" value="22" step="1" oninput="calcFreeCooling()">
+        <span class="calc-val" id="ambientVal">22°C</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Server inlet target (°C)</span>
+        <input type="range" id="inletTarget" min="18" max="35" value="27" step="1" oninput="calcFreeCooling()">
+        <span class="calc-val" id="inletVal">27°C</span>
+      </div>
+      <div class="temp-display">
+        <div class="temp-big" id="deltaTemp">5°C</div>
+        <div class="temp-label">Temperature headroom (inlet target − ambient)</div>
+        <div class="cooling-mode" id="coolingMode">Mixed mode — partial free cooling</div>
+      </div>
+      <div class="fc-grid">
+        <div class="fc-stat"><div class="fc-n" id="freePct">60%</div><div class="fc-l">Free cooling fraction — % of load handled without compressors</div></div>
+        <div class="fc-stat"><div class="fc-n" id="compPct">40%</div><div class="fc-l">Mechanical cooling fraction — compressor in use</div></div>
+        <div class="fc-stat"><div class="fc-n" id="coolingPUE">1.28</div><div class="fc-l">Cooling-only PUE contribution (overhead per kW IT load)</div></div>
+        <div class="fc-stat"><div class="fc-n" id="annualSaving">$1.4M</div><div class="fc-l">Est. annual saving vs. full mechanical cooling (10 MW data center)</div></div>
+      </div>
+    </div>
+
+    <p class="prose" style="margin-top:18px">Three types of free cooling are used in practice:</p>
+    <ul class="big-list">
+      <li><div class="bl-icon">💨</div><div><strong>Air-side economizer</strong> — Outdoor air is filtered and drawn directly into the data center when it's cool and dry enough. Used by Facebook (now Meta) in their Luleå, Sweden data center where sub-zero winters provide nearly year-round free cooling. Requires careful humidity and particulate management.</div></li>
+      <li><div class="bl-icon">💧</div><div><strong>Water-side economizer</strong> — A cooling tower rejects heat to the atmosphere via evaporative cooling, with the cooled water looped through the data center. Works at higher ambient temps than air-side but uses water (WUE — Water Usage Effectiveness becomes an important metric).</div></li>
+      <li><div class="bl-icon">🌊</div><div><strong>Natural water body cooling</strong> — Using nearby rivers, lakes, or seawater as a heat sink. Google's Hamina, Finland data center uses seawater from the Gulf of Finland. Microsoft's Project Natick tested underwater data centers. Extremely efficient but geographically limited.</div></li>
+    </ul>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">⚠️ Free cooling and climate — a design constraint</div>
+      Free cooling availability depends heavily on local climate. A data center in Dhaka, Bangladesh (average temp 26°C, high humidity) has far fewer hours of free cooling available than one in Helsinki, Finland (average temp 6°C). This is a key reason why hyperscale data centers cluster in Nordic countries, the Pacific Northwest US, and other cool, dry climates — <strong>geography is a cooling strategy</strong>.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: PUE DEEP DIVE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">📊</div>
+      <div class="sec-meta">
+        <div class="sec-label">Deep Dive · 10 min</div>
+        <div class="sec-title">PUE deep dive — measuring cooling efficiency</div>
+        <div class="sec-subtitle">Beyond the single number — what PUE captures and what it misses</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">We introduced PUE in Class 1. Now that we understand cooling deeply, let's revisit it — breaking down exactly what's inside the "overhead" fraction and exploring where PUE falls short as a metric.</p>
+
+    <!-- PUE BREAKDOWN CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">🔧 PUE Breakdown Calculator</div>
+      <div class="calc-subtitle">Adjust each overhead component — see how they combine to form total PUE and where to focus improvement effort.</div>
+      <div class="calc-row">
+        <span class="calc-lbl">IT equipment load (kW)</span>
+        <input type="range" id="itLoad" min="100" max="2000" value="1000" step="50" oninput="calcPUEBreakdown()">
+        <span class="calc-val" id="itLoadVal">1000 kW</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Cooling overhead (%)</span>
+        <input type="range" id="coolingPct" min="5" max="80" value="35" step="1" oninput="calcPUEBreakdown()">
+        <span class="calc-val" id="coolingPctVal">35%</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Power distribution losses (%)</span>
+        <input type="range" id="pdPct" min="2" max="20" value="8" step="1" oninput="calcPUEBreakdown()">
+        <span class="calc-val" id="pdPctVal">8%</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Lighting &amp; misc (%)</span>
+        <input type="range" id="miscPct" min="1" max="10" value="3" step="1" oninput="calcPUEBreakdown()">
+        <span class="calc-val" id="miscPctVal">3%</span>
+      </div>
+      <div class="result-box">
+        <div>
+          <div class="result-label">PUE =</div>
+          <div class="result-big" id="pueResult">1.46</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="pueBreakText">Cooling: 350kW · PDU: 80kW · Misc: 30kW</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="result-rating" id="pueClass">Industry average range — significant improvement possible</div>
+          <div class="result-bar"><div class="result-fill" id="pueFill" style="width:55%;background:#c2640f"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:4px"><span>1.0 (perfect)</span><span>2.0 (very poor)</span></div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7" id="pueWasteText">460 kW overhead<br>31% of total power wasted</div>
+      </div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:16px">
+      <div class="callout-label">⚠️ PUE limitations — what it doesn't measure</div>
+      <strong>PUE only measures facility overhead, not IT efficiency.</strong> A data center with a PUE of 1.0 where all servers run at 5% utilization is massively inefficient — but PUE won't reveal that. PUE also ignores: water consumption (needs WUE), carbon intensity of electricity source, server hardware embodied carbon, or whether useful work is actually being done. This is why frameworks like the European Commission's data center KPIs add utilization rate, renewable energy fraction, and WUE alongside PUE.
+    </div>
+
+    <div class="table-wrap">
+      <table class="styled">
+        <thead><tr><th>Operator</th><th>Reported PUE</th><th>Cooling approach</th><th>Location advantage</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Google</strong></td><td style="color:var(--green);font-weight:700">1.10</td><td>Custom liquid cooling, free cooling, AI-optimised HVAC control</td><td>Multi-region, selects cool sites</td></tr>
+          <tr><td><strong>Microsoft</strong></td><td style="color:var(--green);font-weight:700">1.12</td><td>Direct liquid, rear-door HX, underwater (Project Natick)</td><td>Nordic + Pacific NW sites</td></tr>
+          <tr><td><strong>Meta (Facebook)</strong></td><td style="color:var(--green);font-weight:700">1.10</td><td>Air-side economizer (outdoor air), Open Compute designs</td><td>Luleå, Sweden — near-zero ambient</td></tr>
+          <tr><td><strong>Global average</strong></td><td style="color:var(--amber);font-weight:700">1.58</td><td>CRAC/CRAH, partial aisle containment</td><td>Mixed</td></tr>
+          <tr><td><strong>Typical BD DC</strong></td><td style="color:var(--red);font-weight:700">1.8–2.2</td><td>CRAC, minimal containment, diesel backup heavy</td><td>Hot/humid climate, limited free cooling</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Context · 10 min</div>
+        <div class="sec-title">Cooling challenges in Bangladesh</div>
+        <div class="sec-subtitle">Hot, humid, unreliable grid — designing cooling for a difficult climate</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">The cooling strategies discussed above were largely developed for temperate climates. Bangladesh's climate presents unique engineering challenges — and constraints — that change which techniques are practical and which are not.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🌡️ Climate challenge</div>
+        <p>Dhaka averages 26°C annually, reaching 35–40°C in April–May. High year-round humidity (80%+) makes air-side economizers impractical — moisture control would consume more energy than it saves. Free cooling hours per year: very limited (maybe 200–400h vs. 6,000+ hours in Nordic countries).</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔌 Grid reliability</div>
+        <p>Load shedding and voltage fluctuations mean data centers must maintain large diesel generator capacity — adding to both capital cost and carbon footprint (Scope 1 emissions). Cooling systems must be designed to restart gracefully after generator switchover without temperature spikes.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">💧 Water-side cooling tradeoff</div>
+        <p>Water-side economizers and cooling towers are viable and widely used. However, water scarcity is a growing concern in Dhaka — WUE (Water Usage Effectiveness) matters alongside PUE. Closed-loop water systems minimize consumption versus evaporative open towers.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">✅ What works here</div>
+        <p>Hot/cold aisle containment (immediate ROI regardless of climate), in-row cooling for density, rear-door HX for hybrid zones, and high-efficiency CRAH units with chilled water plants. Geothermal cooling has unexplored potential in Bangladesh's alluvial geography.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:16px">
+      <div class="callout-label">🔧 Engineering opportunity</div>
+      Bangladesh's National Data Center (Kaliakoir Hi-Tech Park) and growing private data center market represent a significant design opportunity. Engineers who can specify and implement efficient cooling for tropical climates — where most solutions were designed for temperate ones — are solving a genuinely hard and underserved problem with global applicability (entire tropical belt faces the same challenge).
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Design scenario</div><div class="sc-q">A new 2 MW data center is planned in Dhaka. The architect proposes an air-side economizer "to save cooling energy." Should you approve?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">No — air-side economizers are impractical in Dhaka's hot, humid climate. The outdoor air is too warm and too humid for most of the year. Recommend instead: hot/cold aisle containment + high-efficiency CRAH units + chilled water plant + water-side economizer for the limited cool-season hours.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Upgrade scenario</div><div class="sc-q">An existing Dhaka data center has a PUE of 2.1. Management approves a BDT 50 lakh budget. What's the single highest-ROI investment?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Hot/cold aisle containment — lowest cost, fastest ROI, no server downtime required. Physical blanking panels for empty rack spaces (stops bypass airflow) cost almost nothing. Combined, these typically cut PUE from 2.1 toward 1.6–1.7 for a fraction of the budget.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">GPU cluster scenario</div><div class="sc-q">A Bangladeshi AI company imports 40 NVIDIA H100 GPUs (700W each, 28 kW/rack). Their existing air-cooled racks max at 10 kW. What do they do?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">28 kW/rack far exceeds air-cooling limits. Options: (1) rear-door heat exchangers retrofitted to existing racks — easiest, (2) direct liquid cooling cold plates on the H100s if server vendor supports it, (3) co-locate in a facility already equipped for high-density liquid cooling. Option 1 is fastest; Option 2 is most efficient long-term.</div></div>
+      </div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Class Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">1</div>
+        <div><div class="discuss-text">If Bangladesh builds a major data center hub in the future, where in the country would you locate it and why? Think: climate, water access, grid reliability, connectivity, land cost.</div><div class="discuss-time">Open discussion — pairs first, then class</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — cooling strategies</div>
+        <div class="sec-subtitle">6 questions covering today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 5 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🔥</div><div class="sum-title">Every watt → heat</div><div class="sum-text">All IT power becomes heat that must be removed. Cooling can consume up to 40% of total data center energy — it's not a side concern.</div></div>
+      <div class="sum-card"><div class="sum-icon">🏭</div><div class="sum-title">Hot/cold aisle first</div><div class="sum-text">Containment is the highest-ROI, lowest-cost first step for any data center. Eliminates hot/cold air mixing and allows supply temperature to rise.</div></div>
+      <div class="sum-card"><div class="sum-icon">❄️</div><div class="sum-title">Cooling spectrum</div><div class="sum-text">CRAC → In-row → Rear-door HX → Direct liquid → Immersion. Higher density needs → higher cooling tech sophistication required.</div></div>
+      <div class="sum-card"><div class="sum-icon">🌿</div><div class="sum-title">Free cooling = ~10× efficiency</div><div class="sum-text">Using ambient conditions instead of compressors cuts cooling energy by up to 90%. Geography is a cooling strategy — cool climates have a massive advantage.</div></div>
+      <div class="sum-card"><div class="sum-icon">📊</div><div class="sum-title">PUE has limits</div><div class="sum-text">PUE measures facility overhead but not IT utilization, water use, or carbon intensity. WUE, renewable %, and server utilization rate must accompany it.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Tropical challenge</div><div class="sum-text">Hot/humid Bangladesh limits free cooling to ~200–400h/year. Hot/cold aisle + chilled water + water-side economizer is the practical stack here.</div></div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 5 (Jun 18, Wednesday)</div>
+      <strong>Business Process Reengineering for Sustainability.</strong> We shift from hardware to business — how do organizations redesign their processes to reduce energy footprint? We also cover the term paper proposal deadline (due today — ensure your topic is submitted). Read: <em>Velete Ch.5 (all)</em> and <em>Lamb Ch.3 (all)</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 5 — Term Paper Deadline!</div>
+      Your <strong>term paper topic proposal is due June 18 (Class 5 day)</strong>. Submit: (1) proposed topic title, (2) 2–3 sentence problem statement, (3) planned methodology, (4) expected outcomes. Topics must be Green IT research — check with the instructor if unsure.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--c2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 4: pp.63–75</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 8: all</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Cooling Density Guide</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>🌬️ CRAC/CRAH → 10–15 kW/rack</div>
+      <div>🏗️ In-row → 20–30 kW/rack</div>
+      <div>🚪 Rear-door HX → 25–40 kW/rack</div>
+      <div>💧 Direct liquid → 50–100+ kW/rack</div>
+      <div>🛁 Immersion → 100–200+ kW/rack</div>
+    </div>
+  </div>
+  <div class="sb-card" style="border:1.5px solid #fdecd8;background:#fff9f5">
+    <div class="sb-title" style="color:var(--orange)">⚠️ Deadline Reminder</div>
+    <div style="font-size:12px;color:var(--ink2);line-height:1.6"><strong>Term paper topic proposal</strong> due <strong>Jun 18</strong> (Class 5). Don't miss it!</div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 3: Minimizing Power Usage (Part 1)\nDate: Jun 11, 2025 (Wednesday)')">← Class 3</button>
+    <button class="f-btn primary" onclick="alert('Class 5: Business Process Reengineering\nDate: Jun 18, 2025 (Wednesday)\nReading: Velete Ch.5 | Lamb Ch.3\n⚠️ Term paper proposal due!')">Class 5: BPR →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & homework',time:'5 min'},
+  {title:'Why cooling matters',time:'10 min'},
+  {title:'Hot/cold aisle containment',time:'15 min'},
+  {title:'Cooling technologies',time:'15 min'},
+  {title:'Free cooling',time:'15 min'},
+  {title:'PUE deep dive',time:'10 min'},
+  {title:'Bangladesh context',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'A data center runs its servers with no hot/cold aisle containment. Hot exhaust air from one server row is mixing with the cool intake air of the adjacent row. What is the most direct consequence?',ctx:'',opts:['Servers run cooler than expected because more air is circulating','Servers risk overheating because their intake air is warmer than the cooling system designed for — potentially causing throttling or shutdown','PUE automatically improves because more air is being moved','The cooling system can be turned off to save energy'],ans:1,ex:'Without containment, hot exhaust air recirculates into server intakes — raising the effective inlet temperature above design. Servers respond by throttling (doing less work per watt) or triggering thermal alarms. The cooling system must then over-cool the entire room to ensure the hottest spots are safe, wasting enormous energy on areas that don\'t need it.'},
+  {q:'Water has approximately 1,000× the volumetric heat capacity of air. What does this mean for liquid cooling vs. air cooling?',ctx:'',opts:['Liquid cooling is always more expensive and should be avoided','A much smaller volume of liquid can remove the same heat as a large volume of air — enabling far higher heat densities in a smaller space','Water conducts electricity so it must never enter a data center','Liquid cooling only works for very small devices like phones'],ans:1,ex:'Heat capacity determines how much thermal energy a substance can absorb per unit volume. Water\'s ~1,000× advantage means a pipe the diameter of your finger can carry as much cooling capacity as a large air duct. This is why liquid cooling enables 50–100+ kW/rack while air maxes out around 20–30 kW/rack — the physics fundamentally favors liquid at high heat densities.'},
+  {q:'What is "free cooling" and what is its primary energy advantage over mechanical refrigeration?',ctx:'',opts:['Cooling using discarded heat from nearby factories — which is free','Using ambient outdoor air or water when cool enough — eliminating energy-intensive compressors and reducing cooling energy by up to 90%','Using solar panels to power conventional CRAC units','Free cooling refers to open-source cooling system software'],ans:1,ex:'Free cooling (economizer mode) uses ambient conditions as the heat sink instead of running refrigeration compressors. Compressors consume 0.3–0.5 kW per kW of cooling; free cooling (fans and pumps only) uses 0.03–0.08 kW per kW — roughly a 10× efficiency improvement. This is why data center operators in Nordic countries achieve PUEs of 1.1 while tropical operators typically can\'t go below 1.4–1.5 without heroic investment.'},
+  {q:'A data center reports a PUE of 1.05 — world-class efficiency. However, its servers run at 8% average CPU utilization. Is this data center genuinely energy-efficient?',ctx:'',opts:['Yes — PUE of 1.05 is excellent and proves energy efficiency','No — PUE only measures facility overhead, not IT work done. 8% utilization means the servers are largely idle despite consuming near-full power — PUE cannot capture this waste','Yes — server utilization doesn\'t affect energy efficiency','No — PUE of 1.05 is actually a very bad score'],ans:1,ex:'PUE is purely a facility-level metric: it measures what fraction of total power reaches IT equipment, but says nothing about whether that IT equipment is doing useful work. A PUE of 1.05 with 8% utilization is actually terrible overall efficiency — the facility overhead is minimal, but the IT equipment itself is wasting ~92% of its capacity. This is why the EU\'s data center KPI framework adds server utilization rate alongside PUE.'},
+  {q:'Which cooling technology would you specify for a new AI training cluster with NVIDIA H100 GPUs generating 28 kW per rack in an existing data center?',ctx:'CRAC/CRAH units in the existing facility are rated for 10 kW/rack maximum.',opts:['Add more CRAC units — increasing air volume will handle the extra heat','Rear-door heat exchangers or direct liquid cooling — both can handle 25–40+ kW/rack without requiring full facility redesign','Move all servers outdoors for natural air cooling','Reduce GPU load to stay under the 10 kW/rack limit'],ans:1,ex:'At 28 kW/rack, the existing air cooling is far exceeded (rated for 10 kW/rack). Adding CRAC units doesn\'t fix the fundamental issue — air simply can\'t carry enough heat away at this density within the rack. Rear-door heat exchangers retrofit onto existing racks and handle 25–40 kW passively; direct liquid cold plates on the GPUs are more efficient but require server modifications. Both are correct approaches here — the answer rejects the incorrect alternatives.'},
+  {q:'Why is Bangladesh\'s climate particularly challenging for data center cooling efficiency, and what is the most practical first investment to improve it?',ctx:'',opts:['Bangladesh is too cold — chillers can\'t function properly','High ambient temperatures and humidity limit free cooling hours to ~200–400/year (vs 6,000+ in Nordic climates), making economizer mode rarely available. Best first investment: hot/cold aisle containment — highest ROI, lowest cost, no climate dependency','Bangladesh has no electricity so cooling is impossible','The best investment is immersion cooling, which is unaffected by outdoor temperature'],ans:1,ex:'Bangladesh\'s hot, humid climate (26°C annual average, 80%+ humidity) means outdoor conditions are rarely suitable for free cooling — unlike Nordic data centers that run economizer mode for 6,000+ hours/year. This forces year-round mechanical refrigeration, pushing PUEs to 1.8–2.2. The highest-ROI first step regardless of climate is hot/cold aisle containment — it reduces mixing inefficiency, allows higher chilled water supply temperatures (reducing compressor work), and costs a fraction of any other intervention.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcFreeCooling();calcPUEBreakdown()}
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--c3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showFW(id){
+  const order=['crac','inrow','reardoor','direct','immersion'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('fw-'+id).classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+// Free cooling simulator
+function calcFreeCooling(){
+  const ambient=parseInt(document.getElementById('ambientTemp').value);
+  const inlet=parseInt(document.getElementById('inletTarget').value);
+  document.getElementById('ambientVal').textContent=ambient+'°C';
+  document.getElementById('inletVal').textContent=inlet+'°C';
+  const delta=inlet-ambient;
+  document.getElementById('deltaTemp').textContent=delta+'°C headroom';
+  let freePct,coolingPUE,mode,modeClass,annualSaving;
+  if(delta>=10){freePct=100;coolingPUE=1.04;mode='✅ Full free cooling active — no compressors running';modeClass='mode-free';annualSaving=2.8}
+  else if(delta>=5){freePct=Math.round(60+delta*4);coolingPUE=+(1.04+(10-delta)*0.024).toFixed(2);mode='🟡 Mixed mode — partial free cooling';modeClass='mode-mixed';annualSaving=+(freePct/100*2.8).toFixed(1)}
+  else if(delta>=0){freePct=Math.round(delta*12);coolingPUE=+(1.24+(5-delta)*0.04).toFixed(2);mode='🟡 Partial free cooling — mostly mechanical';modeClass='mode-mixed';annualSaving=+(freePct/100*2.8).toFixed(1)}
+  else{freePct=0;coolingPUE=1.44;mode='🔴 Full mechanical cooling — ambient too hot';modeClass='mode-mechanical';annualSaving=0}
+  document.getElementById('freePct').textContent=freePct+'%';
+  document.getElementById('compPct').textContent=(100-freePct)+'%';
+  document.getElementById('coolingPUE').textContent=coolingPUE;
+  document.getElementById('annualSaving').textContent='$'+annualSaving.toFixed(1)+'M';
+  const modeEl=document.getElementById('coolingMode');
+  modeEl.textContent=mode;
+  modeEl.className='cooling-mode '+modeClass;
+}
+
+// PUE breakdown calculator
+function calcPUEBreakdown(){
+  const it=parseInt(document.getElementById('itLoad').value);
+  const coolP=parseInt(document.getElementById('coolingPct').value)/100;
+  const pdP=parseInt(document.getElementById('pdPct').value)/100;
+  const miscP=parseInt(document.getElementById('miscPct').value)/100;
+  document.getElementById('itLoadVal').textContent=it+' kW';
+  document.getElementById('coolingPctVal').textContent=Math.round(coolP*100)+'%';
+  document.getElementById('pdPctVal').textContent=Math.round(pdP*100)+'%';
+  document.getElementById('miscPctVal').textContent=Math.round(miscP*100)+'%';
+  const coolKW=Math.round(it*coolP);
+  const pdKW=Math.round(it*pdP);
+  const miscKW=Math.round(it*miscP);
+  const total=it+coolKW+pdKW+miscKW;
+  const pue=(total/it).toFixed(2);
+  document.getElementById('pueResult').textContent=pue;
+  document.getElementById('pueBreakText').textContent=`Cooling: ${coolKW}kW · PDU: ${pdKW}kW · Misc: ${miscKW}kW`;
+  document.getElementById('pueWasteText').innerHTML=`${total-it} kW overhead<br>${Math.round((total-it)/total*100)}% of total power overhead`;
+  let rating,color,pct;
+  const p=parseFloat(pue);
+  if(p<=1.1){rating='World-class — top 1% globally';color='#1a7a50';pct=5}
+  else if(p<=1.2){rating='Excellent — best practice';color='#2d9e6b';pct=15}
+  else if(p<=1.4){rating='Good — above average';color='#5aa86a';pct=30}
+  else if(p<=1.6){rating='Industry average — room to improve';color='#c2640f';pct=55}
+  else if(p<=1.8){rating='Below average — significant inefficiency';color='#d4540a';pct=75}
+  else{rating='Poor — urgent intervention needed';color:'#c0392b';pct=90}
+  document.getElementById('pueClass').textContent=rating;
+  document.getElementById('pueFill').style.width=pct+'%';
+  document.getElementById('pueFill').style.background=color;
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review heat basics and aisle containment — try the sections again.','Good start — focus on cooling technologies and free cooling.','Decent! Review PUE limitations and Bangladesh context.','Solid understanding — check any questions you missed.','Strong performance! Well prepared on cooling strategies.','Perfect — outstanding grasp of data center cooling!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c4_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c4_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

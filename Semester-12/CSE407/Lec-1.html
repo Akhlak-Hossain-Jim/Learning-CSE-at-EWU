@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 1 — The Importance of Green IT</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g1:#0d4a30;--g2:#1a7a50;--g3:#2db87a;--g4:#7ee8b5;--g5:#d0f5e6;
+  --ink:#111a14;--ink2:#374840;--ink3:#6b7d74;--ink4:#a8b8b0;
+  --paper:#f4f2ed;--card:#ffffff;--card2:#f8f7f3;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --red:#c0392b;--red-l:#fdecea;
+  --blue:#1a5fa8;--blue-l:#e8f0fb;
+  --border:#e0ddd5;--border2:#ccc8be;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+/* ─── TOP BAR ─────────────────────────────── */
+#topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(244,242,237,0.95);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:52px;gap:12px;
+}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--g1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--g1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--g5);border-color:var(--g3);color:var(--g1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--g3)}
+.prog-dot.active{background:var(--g1);box-shadow:0 0 0 2px var(--g5)}
+
+/* ─── HERO ─────────────────────────────── */
+.hero{
+  background:var(--g1);
+  padding:56px 40px 48px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%;background:rgba(45,184,122,0.12)}
+.hero-c1{width:400px;height:400px;top:-120px;right:-80px}
+.hero-c2{width:220px;height:220px;bottom:-60px;left:20%}
+.hero-c3{width:100px;height:100px;top:30px;left:60%}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-green{background:rgba(126,232,181,0.2);color:#7ee8b5;border:1px solid rgba(126,232,181,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--g4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:700px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:32px;color:var(--g4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* ─── OUTLINE NAV ─────────────────────────────── */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--g1);border-bottom-color:var(--g2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--g1);color:#fff}
+.ol-item.done .ol-num{background:var(--g4);color:var(--g1)}
+
+/* ─── MAIN LAYOUT ─────────────────────────────── */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* ─── SIDEBAR ─────────────────────────────── */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--g1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--g3)}
+.sb-item.active .sb-dot{background:var(--g1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--g1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--g2),var(--g3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--g3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--g5);border-color:var(--g3);color:var(--g1)}
+
+/* ─── SECTIONS ─────────────────────────────── */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-g{background:var(--g5)} .si-r{background:#fdecea} .si-b{background:var(--blue-l)} .si-a{background:var(--amber-l)} .si-p{background:#f0ecfd} .si-teal{background:#e1f5f5}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--g5);color:var(--g1);border:1px solid rgba(45,184,122,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--g3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--g5);border-color:var(--g3);color:var(--g1)}
+.section.done .mark-done-btn{background:var(--g5);border-color:var(--g3);color:var(--g1)}
+
+/* ─── CONTENT BLOCKS ─────────────────────────────── */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose + .prose{margin-top:10px}
+.prose strong{color:var(--ink);font-weight:700}
+
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-green{background:var(--g5);border-color:var(--g2);color:var(--g1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-blue{background:var(--blue-l);border-color:var(--blue);color:#0c2d6e}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--g5);border:1px solid rgba(45,184,122,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:34px;color:var(--g1);line-height:1}
+.stat-u{font-size:13px;color:var(--g2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--g2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col{grid-template-columns:1fr}}
+
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;padding-left:16px;margin:6px 0 0}
+
+.timeline{margin-top:18px;position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border2);border-radius:2px}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--g2);transition:var(--t)}
+.tl-item:hover .tl-dot{background:var(--g3)}
+.tl-year{font-size:10px;font-weight:700;color:var(--g2);text-transform:uppercase;letter-spacing:0.05em}
+.tl-text{font-size:13.5px;color:var(--ink2);line-height:1.6;margin-top:2px}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13.5px}
+table.styled th{background:var(--g1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--g5)}
+
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.term-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:12px;color:var(--ink2);cursor:pointer;transition:var(--t)}
+.term-pill:hover{border-color:var(--g3);background:var(--g5);color:var(--g1)}
+.term-pill.open{border-color:var(--g2);background:var(--g5);color:var(--g1)}
+.term-def{display:none;margin-top:10px;padding:12px 16px;background:var(--g5);border-radius:var(--r-sm);font-size:13px;color:var(--g1);line-height:1.6;border-left:2px solid var(--g2)}
+.term-def.show{display:block}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:24px;height:24px;border-radius:6px;background:var(--g5);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+/* ─── INTERACTIVE: PUE CALCULATOR ─────────────────────────────── */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:160px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--g1);min-width:55px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--g2)}
+.pue-result{background:var(--g1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.pue-number{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--g4)}
+.pue-rating{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5}
+.pue-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.pue-fill{height:100%;border-radius:4px;transition:width 0.3s ease,background 0.3s ease}
+
+/* ─── INTERACTIVE: ENERGY IMPACT SLIDER ─────────────────────────────── */
+.impact-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:500px){.impact-grid{grid-template-columns:1fr}}
+.imp-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.imp-n{font-family:'Fraunces',serif;font-size:26px;color:var(--g1);transition:all 0.3s}
+.imp-l{font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.4}
+
+/* ─── INTERACTIVE: TRACK EXPLORER ─────────────────────────────── */
+.track-tabs{display:flex;gap:0;margin-top:18px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.track-tab{flex:1;padding:13px 16px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:var(--t);color:var(--ink3);background:var(--card2)}
+.track-tab:first-child{border-right:1px solid var(--border)}
+.track-tab.active{background:var(--g1);color:#fff}
+.track-content{display:none;padding:20px;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r)}
+.track-content.active{display:block}
+.track-examples{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:14px}
+.te{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--ink2);line-height:1.5}
+.te-icon{font-size:20px;margin-bottom:6px}
+.te-title{font-weight:700;color:var(--ink);font-size:12px}
+
+/* ─── INTERACTIVE: SCENARIO CARDS ─────────────────────────────── */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card)}
+.sc-back{display:none;padding:16px;background:var(--g1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,0.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--g4);margin-bottom:8px}
+
+/* ─── DISCUSSION PROMPTS ─────────────────────────────── */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--g1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* ─── QUIZ ─────────────────────────────── */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--g3)}
+.qp-dot.active{background:var(--g2)}
+.q-block{display:none}
+.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--g2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.opt:hover:not(.locked){border-color:var(--g3);background:var(--g5);color:var(--g1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--g2);background:var(--g5);color:var(--g1)}
+.opt.correct .opt-letter{background:var(--g2);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.45}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--g5);color:var(--g1);border-left:3px solid var(--g2)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--g1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--g2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--g1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--g5);color:var(--g1)}
+
+/* ─── SUMMARY BLOCK ─────────────────────────────── */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+/* ─── FOOTER ─────────────────────────────── */
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:0.4;pointer-events:none}
+.f-btn.primary{background:var(--g1);color:#fff;border-color:var(--g1)}
+.f-btn.primary:hover{background:var(--g2)}
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.section{animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:0.05s}
+.section:nth-child(3){animation-delay:0.1s}
+.section:nth-child(4){animation-delay:0.15s}
+.section:nth-child(5){animation-delay:0.2s}
+.section:nth-child(6){animation-delay:0.25s}
+.section:nth-child(7){animation-delay:0.3s}
+.section:nth-child(8){animation-delay:0.35s}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 1 — The Importance of Green IT</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">
+      ⏱ <span id="timer">00:00</span>
+      <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button>
+    </div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="hero-circle hero-c1"></div>
+    <div class="hero-circle hero-c2"></div>
+    <div class="hero-circle hero-c3"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-green">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 1 of 22</span>
+      <span class="chip chip-gray">Jun 4, 2025 · Wednesday · 1h 30min</span>
+    </div>
+    <h1>The Importance of<br><em>Green Information Technologies</em></h1>
+    <p class="hero-sub">Why energy efficiency in computing is no longer optional — and how engineers at every level can make a measurable difference.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.1</span>
+      <span class="ref">📗 Lamb Ch.1 &amp; Ch.2 pp.15–30</span>
+      <span class="ref">🎯 CO1</span>
+      <span class="ref">🧠 EP1, EP2</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">~2<span style="font-size:18px">%</span></div><div class="h-stat-lbl">Global electricity consumed by data centers</div></div>
+      <div class="h-stat"><div class="h-stat-num">4<span style="font-size:18px">×</span></div><div class="h-stat-lbl">Faster IT energy demand growth vs. grid supply</div></div>
+      <div class="h-stat"><div class="h-stat-num">40<span style="font-size:18px">%</span></div><div class="h-stat-lbl">Data center energy wasted on cooling alone</div></div>
+      <div class="h-stat"><div class="h-stat-num">3<span style="font-size:18px">%</span></div><div class="h-stat-lbl">Share of global greenhouse gas emissions from IT</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE NAV -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Overview</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>IT's Energy Problem</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Two Tracks</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Key Concepts</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Real-World Drivers</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Engineer's Role</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+<div class="content-col">
+
+<!-- ══ SECTION 1: OVERVIEW ══ -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🌿</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 10 min</div>
+        <div class="sec-title">Course overview &amp; today's learning goals</div>
+        <div class="sec-subtitle">What green computing is, and why you need to care about it</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 10 min</span>
+      <span class="sc sc-co">CO1</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Welcome to <strong>CSE407 Green Computing</strong>. This is not just another elective — it may be one of the most practically relevant courses in your degree. The systems you will build as engineers will consume real energy, produce real carbon emissions, and generate real e-waste. This course teaches you how to think about, measure, and minimize that impact.</p>
+
+    <div class="callout callout-green">
+      <div class="callout-label">Today's Learning Goals</div>
+      After this class you should be able to: (1) explain why IT energy consumption is a global problem, (2) describe the two-track structure of green computing, (3) define key terms like PUE and carbon footprint, and (4) identify concrete actions engineers can take.
+    </div>
+
+    <p class="prose">The course runs across <strong>22 classes</strong> and is structured in two complementary tracks. We use two main textbooks — Velete's <em>Green IT</em> and Lamb's <em>The Greening of IT</em>. Today we cover Velete Chapter 1 and Lamb Chapters 1 and 2 (pages 15–30).</p>
+
+    <div class="discuss-list">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px">🗣 Opening Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div>
+          <div class="discuss-text">Before we dive in — <strong>how many devices do you own that are plugged in or charging right now?</strong> Phone, laptop, router, earbuds, smart watch… Add it up mentally. Now multiply that by 4 billion people.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 2: IT'S ENERGY PROBLEM ══ -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">⚡</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Content · 20 min</div>
+        <div class="sec-title">IT's growing energy problem</div>
+        <div class="sec-subtitle">From idle laptops to hyperscale data centers — where the energy goes</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 20 min</span>
+      <span class="sc sc-co">CO1</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Computing has become one of the world's largest energy consumers — yet most of that energy is <strong>wasted</strong>. Not because computers are necessarily inefficient by design, but because of how they are deployed, configured, and managed.</p>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">200<span class="stat-u">TWh</span></div><div class="stat-l">Electricity used by global data centers per year (IEA)</div></div>
+      <div class="stat"><div class="stat-n">10–20<span class="stat-u">%</span></div><div class="stat-l">Typical server CPU utilization — yet draws 60–70% peak power</div></div>
+      <div class="stat"><div class="stat-n">50<span class="stat-u">bn+</span></div><div class="stat-l">IoT devices projected by 2030 — all consuming power</div></div>
+      <div class="stat"><div class="stat-n">1.5<span class="stat-u">kg CO₂</span></div><div class="stat-l">Carbon emitted to manufacture one smartphone</div></div>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:18px">
+      <div class="callout-label">📖 From Velete Ch.1</div>
+      Computing power doubles roughly every two years (Moore's Law) — but energy efficiency has not kept the same pace. The result: each generation of hardware is faster, but data centers collectively consume more energy than ever because we deploy so many more of them.
+    </div>
+
+    <p class="prose" style="margin-top:18px">Let's look at where energy is consumed across the IT stack:</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">End-user devices</div>
+        <div class="tl-text">Smartphones, laptops, desktops, TVs, routers. Billions of units each consuming 5W–400W. Mostly idle but rarely fully powered down. Collectively enormous.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Network infrastructure</div>
+        <div class="tl-text">Routers, switches, fiber repeaters, mobile base stations. Always-on, globally distributed. The internet's backbone uses roughly 250 TWh/year.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Data centers</div>
+        <div class="tl-text">Servers, storage, cooling, UPS, lighting. PUE averages 1.58 globally — meaning for every 1W of compute, 0.58W is wasted on overhead. Best-in-class (Google, Microsoft) achieve 1.1–1.2.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">Emerging: AI &amp; crypto</div>
+        <div class="tl-text">Training a single large AI model (like GPT-4) can emit as much CO₂ as 5 cars over their full lifetime. Bitcoin mining uses ~150 TWh/year — more than Argentina.</div>
+      </div>
+    </div>
+
+    <!-- PUE INTERACTIVE CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">⚙️ Interactive: PUE Calculator — understand your data center efficiency</div>
+      <div class="calc-row">
+        <span class="calc-lbl">Total facility power (kW)</span>
+        <input type="range" id="facilityPower" min="100" max="2000" value="500" step="10" oninput="calcPUE()">
+        <span class="calc-val" id="fpVal">500 kW</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">IT equipment power (kW)</span>
+        <input type="range" id="itPower" min="50" max="1800" value="300" step="10" oninput="calcPUE()">
+        <span class="calc-val" id="ipVal">300 kW</span>
+      </div>
+      <div class="pue-result">
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">PUE =</div>
+          <div class="pue-number" id="pueNum">1.67</div>
+        </div>
+        <div style="flex:1;min-width:140px">
+          <div class="pue-rating" id="pueRating">Industry average — significant room for improvement</div>
+          <div class="pue-bar"><div class="pue-fill" id="pueFill" style="width:60%;background:#EF9F27"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.4);margin-top:4px"><span>1.0 (perfect)</span><span>3.0 (poor)</span></div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6" id="pueWaste"></div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:16px">
+      <div class="callout-label">💡 Real Example</div>
+      Google's global PUE is approximately <strong>1.10</strong> — meaning only 10% overhead. For a 500 MW data center, that saves ~45 MW compared to the 1.58 industry average. That's 45,000 homes worth of electricity saved — every hour.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 3: TWO TRACKS ══ -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">🗺️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Course Structure · 15 min</div>
+        <div class="sec-title">The two tracks of green computing</div>
+        <div class="sec-subtitle">How this course is organized — and why both tracks matter equally</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 15 min</span>
+      <span class="sc sc-co">CO1–CO3</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Green computing isn't a single discipline — it splits into two complementary approaches. Understanding both is essential because the biggest sustainability gains come from combining them.</p>
+
+    <div class="track-tabs">
+      <div class="track-tab active" onclick="switchTrack(1)">⚡ Track 1 — Energy-efficient computing</div>
+      <div class="track-tab" onclick="switchTrack(2)">🌍 Track 2 — Computing for sustainability</div>
+    </div>
+    <div class="track-content active" id="track1">
+      <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:14px"><strong>Making computers themselves use less energy.</strong> This is about the hardware, software, and infrastructure of IT systems — reducing the energy they consume while maintaining or improving performance.</p>
+      <div class="track-examples">
+        <div class="te"><div class="te-icon">💻</div><div class="te-title">CPU power management</div>Dynamic voltage scaling, sleep states, turbo boost management</div>
+        <div class="te"><div class="te-icon">🏗️</div><div class="te-title">Data center cooling</div>Hot/cold aisle containment, liquid cooling, free cooling</div>
+        <div class="te"><div class="te-icon">☁️</div><div class="te-title">Virtualization</div>Consolidating workloads onto fewer physical servers</div>
+        <div class="te"><div class="te-icon">📡</div><div class="te-title">Network efficiency</div>Energy-proportional networking, sleep on idle links</div>
+        <div class="te"><div class="te-icon">💾</div><div class="te-title">Storage tiering</div>Moving cold data to low-power storage automatically</div>
+        <div class="te"><div class="te-icon">🔋</div><div class="te-title">Mobile optimization</div>Reducing app battery drain, efficient wake locks</div>
+      </div>
+    </div>
+    <div class="track-content" id="track2">
+      <p style="font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:14px"><strong>Using computers to help the world use less energy.</strong> This is about leveraging IT as a tool — building systems that monitor, model, and reduce energy consumption in buildings, cities, industry, and everyday life.</p>
+      <div class="track-examples">
+        <div class="te"><div class="te-icon">🏢</div><div class="te-title">Smart buildings</div>Automated lighting, HVAC, and occupancy-based control</div>
+        <div class="te"><div class="te-icon">⚡</div><div class="te-title">Smart grids</div>Demand-response systems, renewable integration</div>
+        <div class="te"><div class="te-icon">📄</div><div class="te-title">Paperless workflows</div>Eliminating print, physical mail, paper-based processes</div>
+        <div class="te"><div class="te-icon">🏭</div><div class="te-title">Industrial IoT</div>Real-time monitoring of factory energy consumption</div>
+        <div class="te"><div class="te-icon">🚗</div><div class="te-title">Smart transport</div>Traffic optimization, EV charging coordination</div>
+        <div class="te"><div class="te-icon">🌾</div><div class="te-title">Precision agriculture</div>Sensor-driven irrigation, reducing water and fertilizer waste</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <strong>Key insight:</strong> These tracks compound. A Track 1 improvement (more efficient server) deployed in a Track 2 application (smart building management) multiplies the impact. The most impactful engineers understand both.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 4: KEY CONCEPTS ══ -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">📖</div>
+      <div class="sec-meta">
+        <div class="sec-label">Vocabulary · 15 min</div>
+        <div class="sec-title">Key concepts &amp; terminology</div>
+        <div class="sec-subtitle">Tap each term to reveal its definition — quiz yourself!</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 15 min</span>
+      <span class="sc sc-co">CO1</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">These terms appear throughout the course. Use this as a self-test — try to recall the definition before clicking each term.</p>
+
+    <div class="pill-row">
+      <div class="term-pill" onclick="toggleTerm('pue')">⚙️ PUE</div>
+      <div class="term-pill" onclick="toggleTerm('carbon')">🌫️ Carbon footprint</div>
+      <div class="term-pill" onclick="toggleTerm('ewaste')">♻️ E-waste</div>
+      <div class="term-pill" onclick="toggleTerm('virt')">💿 Virtualization</div>
+      <div class="term-pill" onclick="toggleTerm('esg')">📊 ESG</div>
+      <div class="term-pill" onclick="toggleTerm('lifecycle')">🔄 Lifecycle assessment</div>
+      <div class="term-pill" onclick="toggleTerm('renew')">☀️ Renewable energy</div>
+      <div class="term-pill" onclick="toggleTerm('scope')">📐 Scope 1/2/3 emissions</div>
+    </div>
+
+    <div class="term-def" id="def-pue"><strong>PUE — Power Usage Effectiveness.</strong> The ratio of total data center energy to energy used by IT equipment only. Formula: PUE = Total facility power ÷ IT equipment power. PUE = 1.0 is theoretically perfect (zero overhead). Industry average is ~1.58. World-class is 1.1–1.2. Used to benchmark and compare data center efficiency.</div>
+    <div class="term-def" id="def-carbon"><strong>Carbon Footprint.</strong> The total greenhouse gas emissions caused directly or indirectly by an individual, organization, event, or product — expressed in CO₂-equivalent (CO₂e). For IT systems this includes manufacturing emissions (embodied carbon), operational electricity, and end-of-life disposal.</div>
+    <div class="term-def" id="def-ewaste"><strong>E-waste (Electronic waste).</strong> Discarded electrical or electronic devices — including phones, computers, servers, batteries, and peripherals. One of the world's fastest-growing waste streams (~57 million tonnes/year). Contains toxic materials (lead, mercury, cadmium) but also valuable recoverable metals (gold, copper, rare earths).</div>
+    <div class="term-def" id="def-virt"><strong>Virtualization.</strong> Technology that allows multiple virtual machines (VMs) to run on a single physical server simultaneously. Increases utilization from typical 10–20% to 60–80%, drastically cutting the number of physical servers needed — and therefore the energy consumed by idle hardware.</div>
+    <div class="term-def" id="def-esg"><strong>ESG — Environmental, Social, and Governance.</strong> A framework investors and regulators use to evaluate how companies manage sustainability risks and opportunities. The "E" in ESG covers carbon emissions, energy efficiency, e-waste, and resource use. Companies with poor ESG scores increasingly face higher capital costs and reputational risk.</div>
+    <div class="term-def" id="def-lifecycle"><strong>Lifecycle Assessment (LCA).</strong> A methodology for assessing the total environmental impact of a product "from cradle to grave" — including raw material extraction, manufacturing, use, and disposal. For IT equipment, manufacturing often accounts for 70–80% of the total carbon footprint, not the use phase.</div>
+    <div class="term-def" id="def-renew"><strong>Renewable Energy.</strong> Energy from naturally replenishing sources — solar, wind, hydro, geothermal. Major data center operators (Google, Microsoft, Amazon) have committed to 100% renewable energy. In Bangladesh, renewables are expanding via SREDA (Sustainable and Renewable Energy Development Authority).</div>
+    <div class="term-def" id="def-scope"><strong>Scope 1/2/3 Emissions.</strong> Scope 1: direct emissions (fuel burned on-site). Scope 2: indirect from purchased electricity. Scope 3: all other indirect emissions (supply chain, product use, employee travel). For a tech company, Scope 3 — including hardware manufacturing and user devices — often dwarfs Scope 1+2 combined.</div>
+
+    <div class="table-wrap">
+      <table class="styled" style="margin-top:20px">
+        <thead><tr><th>Metric</th><th>Poor</th><th>Average</th><th>Best-in-class</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PUE</strong></td><td style="color:var(--red)">2.0+</td><td style="color:var(--amber)">1.5–1.8</td><td style="color:var(--g2)">1.1–1.2</td></tr>
+          <tr><td><strong>Server utilization</strong></td><td style="color:var(--red)">&lt;10%</td><td style="color:var(--amber)">20–40%</td><td style="color:var(--g2)">60–80%</td></tr>
+          <tr><td><strong>Renewable energy %</strong></td><td style="color:var(--red)">0%</td><td style="color:var(--amber)">20–50%</td><td style="color:var(--g2)">100%</td></tr>
+          <tr><td><strong>E-waste recycled</strong></td><td style="color:var(--red)">&lt;20%</td><td style="color:var(--amber)">40–60%</td><td style="color:var(--g2)">90%+</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 5: REAL-WORLD DRIVERS ══ -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🌍</div>
+      <div class="sec-meta">
+        <div class="sec-label">Context · 10 min</div>
+        <div class="sec-title">Why organizations adopt Green IT</div>
+        <div class="sec-subtitle">The four forces making sustainability a business priority</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 10 min</span>
+      <span class="sc sc-co">CO2</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Green IT adoption is rarely driven by altruism alone. Four converging forces are making it economically and strategically unavoidable for organizations:</p>
+
+    <div class="three-col">
+      <div class="card-b">
+        <div class="card-b-title">💰 Cost savings</div>
+        <p>Energy is a top-3 operational cost for any data center. A 10% reduction in PUE for a 10 MW facility saves ~$800K/year at $0.10/kWh. Green IT pays for itself.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">⚖️ Regulation</div>
+        <p>EU Energy Efficiency Directive, EPA Energy Star, ISO 14001, and local regulations mandate reporting and improvement. Non-compliance means fines and reputational damage.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">📈 ESG pressure</div>
+        <p>Institutional investors (BlackRock, Vanguard) now screen on ESG metrics. Companies with poor sustainability scores face higher cost of capital and exclusion from indices.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔌 Energy scarcity</div>
+        <p>Grid instability and energy shortages in many markets make efficient systems more resilient. A system needing half the power can stay online when others can't.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">👥 Talent & brand</div>
+        <p>Engineers increasingly choose employers based on sustainability commitments. Companies like Patagonia and Apple attract top talent partly through genuine green commitments.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">⚠️ Risk management</div>
+        <p>Climate change creates physical risks (flooding data centers, heat waves disrupting cooling). Sustainable infrastructure is lower-risk infrastructure over a 20-year horizon.</p>
+      </div>
+    </div>
+
+    <!-- FLIP CARDS: SCENARIOS -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-top:22px;margin-bottom:10px">🃏 Scenario Cards — tap to reveal the outcome</div>
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front">
+          <div class="sc-cat">Cost scenario</div>
+          <div class="sc-q">A bank runs 500 servers at 8% average utilization. What's the most impactful green IT action?</div>
+          <div class="sc-hint">Tap to see answer</div>
+        </div>
+        <div class="sc-back">
+          <div class="sc-back-lbl">Answer</div>
+          <div class="sc-a">Consolidate via virtualization. Running 500 servers at 8% = enormous waste. Consolidating to 80 servers at 50% utilization cuts power, cooling, and floor space costs by ~84% — saving millions annually.</div>
+        </div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front">
+          <div class="sc-cat">Regulation scenario</div>
+          <div class="sc-q">A Dhaka startup's EU client demands a sustainability report. They've never measured their carbon footprint. Where do they start?</div>
+          <div class="sc-hint">Tap to see answer</div>
+        </div>
+        <div class="sc-back">
+          <div class="sc-back-lbl">Answer</div>
+          <div class="sc-a">Start with Scope 2 — measure electricity consumption and convert using Bangladesh's grid emission factor (~0.6 kg CO₂/kWh). Then Scope 3 for hardware manufacturing. Tools: GHG Protocol, AWS Carbon Footprint Tool.</div>
+        </div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front">
+          <div class="sc-cat">Engineering scenario</div>
+          <div class="sc-q">A mobile app's background sync is draining user batteries 30% faster. What green computing principle applies?</div>
+          <div class="sc-hint">Tap to see answer</div>
+        </div>
+        <div class="sc-back">
+          <div class="sc-back-lbl">Answer</div>
+          <div class="sc-a">Energy-proportional computing — a device should consume energy proportional to its useful work. Batching syncs, using push instead of polling, and respecting Doze mode are all Track 1 green engineering practices.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 6: BANGLADESH CONTEXT ══ -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-teal">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Relevance · 5 min</div>
+        <div class="sec-title">Green IT in the Bangladesh context</div>
+        <div class="sec-subtitle">Why this matters especially for engineers here</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 5 min</span>
+      <span class="sc sc-co">CO2</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Green computing is not just a concern for Silicon Valley hyperscalers. For Bangladesh — and for you as engineers working here — it is directly and immediately relevant.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🔌 Grid constraints</div>
+        <p>Bangladesh's power grid faces load shedding, generation shortfalls, and distribution losses. Efficient systems reduce demand on a constrained grid — keeping your services running when others go down.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🌡️ Climate vulnerability</div>
+        <p>Bangladesh is among the world's most climate-vulnerable nations. Flooding, heat, and cyclones already threaten infrastructure. Engineers here have extra motivation to reduce IT's contribution to climate change.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">📱 Digital Bangladesh</div>
+        <p>The government's Digital Bangladesh initiative is rapidly expanding IT infrastructure. Designing it green from the start — rather than retrofitting later — is vastly more cost-effective.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏭 IT export sector</div>
+        <p>Bangladesh's IT/ITES export sector serves EU and US clients who increasingly require suppliers to meet sustainability standards. Green IT is becoming a market-entry requirement.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">💡 Opportunity</div>
+      <strong>SREDA</strong> (Sustainable and Renewable Energy Development Authority) is actively building Bangladesh's renewable energy capacity. Engineers with green IT knowledge are positioned to work at the intersection of the digital and energy transitions — one of the most in-demand skill combinations of the next decade.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 7: ENGINEER'S ROLE ══ -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🛠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practical Application · 10 min</div>
+        <div class="sec-title">The engineer's role in Green IT</div>
+        <div class="sec-subtitle">Every specialization has a green lever — what's yours?</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 10 min</span>
+      <span class="sc sc-co">CO1</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Engineers are the ones who design, build, and operate the systems consuming all this energy. Every architectural decision has an energy consequence — and every engineer has levers to pull.</p>
+
+    <ul class="big-list">
+      <li><div class="bl-icon">💻</div><div><strong>Software engineer</strong> — Write efficient algorithms (O(n) vs O(n²) at scale can mean megawatts). Avoid polling; use event-driven architecture. Reduce dependency bloat. Profile and fix CPU-hot paths. Green code is often faster code.</div></li>
+      <li><div class="bl-icon">🖥️</div><div><strong>Systems / infrastructure engineer</strong> — Right-size hardware. Enable power management (C-states, P-states). Use IPMI/DCIM tools to monitor real consumption. Consolidate underutilized servers before buying new ones.</div></li>
+      <li><div class="bl-icon">🏗️</div><div><strong>Data center engineer</strong> — Target PUE ≤ 1.3. Use hot/cold aisle containment. Consider free cooling when outside air is ≤18°C. Optimize UPS efficiency curves. Choose high-efficiency PDUs.</div></li>
+      <li><div class="bl-icon">📡</div><div><strong>IoT / embedded engineer</strong> — Design for microwatt budgets. Use energy harvesting (solar, RF, vibration) where possible. Duty-cycle radios aggressively. Choose low-power MCUs (ARM Cortex-M0+, RISC-V).</div></li>
+      <li><div class="bl-icon">☁️</div><div><strong>Cloud architect</strong> — Schedule batch workloads in low-carbon grid regions. Use spot/preemptible instances. Autoscale to zero. Choose regions powered by renewables (AWS eu-north-1, GCP europe-north1).</div></li>
+      <li><div class="bl-icon">📊</div><div><strong>Business analyst / IT manager</strong> — Build the business case for Green IT investments. Track energy KPIs alongside performance KPIs. Procure Energy Star equipment. Implement device lifecycle policies.</div></li>
+    </ul>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">📗 From Velete Ch.1 — Top-down AND bottom-up</div>
+      Sustainable IT transformation requires leadership commitment (top-down) AND engineering practice (bottom-up). A CEO can mandate carbon neutrality, but it's the engineers who actually achieve it. Neither alone is sufficient — which is why this course bridges both perspectives.
+    </div>
+
+    <div class="discuss-list">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px">🗣 Class Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">1</div>
+        <div><div class="discuss-text">Which engineering role above do you plan to work in? What would be your <strong>first concrete green IT action</strong> in that role?</div><div class="discuss-time">Share with the person next to you, then one pair to the class</div></div>
+      </div>
+      <div class="discuss-item">
+        <div class="discuss-num">2</div>
+        <div><div class="discuss-text">Can green computing and business performance <strong>conflict</strong>? Give a real example where making a system greener might hurt performance or cost more upfront.</div><div class="discuss-time">Open class discussion</div></div>
+      </div>
+    </div>
+
+    <!-- IMPACT CALCULATOR -->
+    <div class="impact-wrap">
+      <div class="calc-title">📊 Energy savings impact calculator — scale your actions</div>
+      <div class="calc-row" style="margin-top:12px">
+        <span class="calc-lbl">Number of servers consolidated</span>
+        <input type="range" id="serversSlider" min="1" max="500" value="50" step="1" oninput="calcImpact()">
+        <span class="calc-val" id="srvVal">50</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Avg power per server (W)</span>
+        <input type="range" id="wattsSlider" min="100" max="500" value="250" step="10" oninput="calcImpact()">
+        <span class="calc-val" id="wattVal">250 W</span>
+      </div>
+      <div class="impact-grid">
+        <div class="imp-stat"><div class="imp-n" id="impKW">12.5 kW</div><div class="imp-l">Power saved continuously</div></div>
+        <div class="imp-stat"><div class="imp-n" id="impMWh">110 MWh</div><div class="imp-l">Energy saved per year</div></div>
+        <div class="imp-stat"><div class="imp-n" id="impCO2">44 tonnes</div><div class="imp-l">CO₂ avoided per year</div></div>
+        <div class="imp-stat"><div class="imp-n" id="impUSD">$11,000</div><div class="imp-l">Annual cost saving ($0.10/kWh)</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 8: QUIZ ══ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — test your understanding</div>
+        <div class="sec-subtitle">6 questions covering today's material</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 10 min</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 9: SUMMARY ══ -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Class summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and what's coming in Class 2</div>
+      </div>
+    </div>
+    <div class="sec-chips">
+      <span class="sc sc-time">⏱ 5 min</span>
+    </div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">⚡</div><div class="sum-title">IT energy is a crisis</div><div class="sum-text">Data centers, networks, and devices together consume ~10% of global electricity — and growing faster than supply.</div></div>
+      <div class="sum-card"><div class="sum-icon">🗺️</div><div class="sum-title">Two tracks</div><div class="sum-text">Track 1: make IT use less energy. Track 2: use IT to make the world use less energy. Both are needed.</div></div>
+      <div class="sum-card"><div class="sum-icon">📐</div><div class="sum-title">PUE is your baseline</div><div class="sum-text">Power Usage Effectiveness measures data center efficiency. Target 1.0 (perfect). Industry average is 1.58. Best-in-class: 1.1.</div></div>
+      <div class="sum-card"><div class="sum-icon">💼</div><div class="sum-title">Business + environment</div><div class="sum-text">Green IT is driven by cost, regulation, ESG pressure, and risk — not just ethics. It's a business imperative.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Local relevance</div><div class="sum-text">Grid constraints, climate vulnerability, Digital Bangladesh, and export market demands make this especially critical here.</div></div>
+      <div class="sum-card"><div class="sum-icon">🛠️</div><div class="sum-title">Engineers are key</div><div class="sum-text">Every architectural decision has an energy consequence. Top-down policy needs bottom-up engineering to succeed.</div></div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 2 (Jun 8, Sunday)</div>
+      <strong>Governance &amp; Regulatory Issues.</strong> We cover environmental law, international frameworks (ISO 14001, Energy Star, EU EED), and how regulatory compliance shapes Green IT strategy. Read: <em>Velete Ch.2 (all)</em> and <em>Lamb Ch.3 &amp; Ch.4 (all)</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Next Class</div>
+      Look up the PUE of any one data center (Google, Facebook, EWU, or a Bangladeshi telco). Write down: (1) the PUE value, (2) what the operator is doing to improve it, and (3) one thing you would do differently. We'll discuss in Class 2.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--g2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.7">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 1: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 1: all<br>Chapter 2: pp.15–30</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<!-- FOOTER -->
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" disabled>← Class 0</button>
+    <button class="f-btn primary" onclick="alert('Class 2: Governance & Regulatory Issues\nDate: Jun 8, 2025 (Sunday)\nReading: Velete Ch.2 | Lamb Ch.3 & Ch.4')">Class 2: Governance →</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const SECTIONS = [
+  {title:'Course overview & goals',time:'10 min'},
+  {title:"IT's energy problem",time:'20 min'},
+  {title:'The two tracks',time:'15 min'},
+  {title:'Key concepts',time:'15 min'},
+  {title:'Real-world drivers',time:'10 min'},
+  {title:'Bangladesh context',time:'5 min'},
+  {title:"Engineer's role",time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+
+const QUIZ = [
+  {
+    q:'A data center uses 1,000 kW total. Its servers use 600 kW. What is its PUE?',
+    ctx:'',
+    opts:['1.40','1.67','0.60','2.00'],
+    ans:1,
+    ex:'PUE = Total facility power ÷ IT equipment power = 1000 ÷ 600 = 1.67. This is slightly above the global average of ~1.58, indicating significant room for improvement. A world-class facility would target 1.1–1.2.'
+  },
+  {
+    q:'Which of the following is a Track 2 (Computing FOR Sustainability) application?',
+    ctx:'Remember: Track 1 = making IT itself greener. Track 2 = using IT to make the world greener.',
+    opts:['Reducing CPU voltage during low load','Consolidating 10 servers onto 2 VMs','Building a smart building energy dashboard','Switching to solid-state drives to save power'],
+    ans:2,
+    ex:'A smart building energy dashboard is Track 2 — it uses computing as a tool to reduce energy use in the built environment. The others are all Track 1 (making IT infrastructure itself more efficient).'
+  },
+  {
+    q:'A server runs at 8% CPU utilization but draws 65% of its peak power. What does this illustrate?',
+    ctx:'',
+    opts:['Servers are designed to be energy-proportional','The server needs hardware repairs','Servers are NOT energy-proportional — they draw significant power even when mostly idle','The cooling system is too powerful'],
+    ans:2,
+    ex:'This is the energy-proportionality problem: ideal hardware should consume energy proportional to its useful work (8% work = ~8% power), but real servers draw 60–70% of peak power even when nearly idle. This is why virtualization (consolidating workloads) is such a powerful green IT strategy.'
+  },
+  {
+    q:'Google achieves a PUE of ~1.10. If the industry average is 1.58, and Google\'s facility uses 500 MW of IT load, roughly how much power does Google save compared to an average operator?',
+    ctx:'Calculate: Average operator total power = IT load × PUE. Google total power = IT load × 1.10.',
+    opts:['About 24 MW saved','About 240 MW saved','About 2.4 MW saved','They use the same — PUE only measures cooling'],
+    ans:1,
+    ex:'Average operator: 500 MW × 1.58 = 790 MW total. Google: 500 MW × 1.10 = 550 MW total. Difference = 240 MW saved. That\'s enough electricity to power roughly 200,000 homes — every single hour.'
+  },
+  {
+    q:'Which of the following is NOT primarily a driver of Green IT adoption?',
+    ctx:'',
+    opts:['Reducing operational electricity costs','Compliance with environmental regulations','Making software run deliberately slower to reduce heat','ESG pressure from institutional investors'],
+    ans:2,
+    ex:'Intentionally slowing software is not a recognized Green IT strategy — performance and energy efficiency usually align (faster algorithms do less work). The other three — cost, regulation, and ESG — are all genuine and significant forces driving green computing adoption.'
+  },
+  {
+    q:'For Bangladesh specifically, which combination of factors makes Green IT particularly urgent?',
+    ctx:'Think about the local context discussed in class.',
+    opts:['High PUE data centers and excess electricity supply','Grid constraints, climate vulnerability, and export market ESG requirements','Only regulation — Bangladesh has no other pressures','Lack of engineers who understand sustainability'],
+    ans:1,
+    ex:'Bangladesh faces a unique combination: frequent load shedding and grid constraints (making efficiency a resilience issue), extreme climate vulnerability (motivating emissions reduction), and EU/US client demands for ESG compliance (making it a market-access issue). All three simultaneously drive the urgency of Green IT here.'
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────
+const done = new Array(9).fill(false);
+let timerInterval = null, timerSecs = 0, timerRunning = false;
+let curQ = 0, score = 0;
+
+// ── INIT ──────────────────────────────────────────────────────────────
+function init(){
+  buildSidebar();
+  buildQuiz();
+  buildProgDots();
+  loadNotes();
+  calcPUE();
+  calcImpact();
+}
+
+function buildSidebar(){
+  const list = document.getElementById('sbList');
+  list.innerHTML = SECTIONS.map((s,i)=>`
+    <div class="sb-item" id="sb${i}" onclick="goTo(${i})">
+      <div class="sb-dot"></div>
+      <div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div>
+    </div>`).join('');
+}
+
+function buildProgDots(){
+  const c = document.getElementById('progMini');
+  c.innerHTML = SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})" title="${SECTIONS[i].title}"></div>`).join('');
+}
+
+function buildQuiz(){
+  const prog = document.getElementById('qprogress');
+  prog.innerHTML = QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  const con = document.getElementById('qContainer');
+  con.innerHTML = QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">
+        ${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}
+      </div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+function toggleSec(i){
+  const sec = document.getElementById('sec'+i);
+  sec.classList.toggle('open');
+  updateNav();
+}
+
+function goTo(i){
+  const sec = document.getElementById('sec'+i);
+  if(!sec.classList.contains('open')) sec.classList.add('open');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  updateNav();
+  // update outline active
+  document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+}
+
+function updateNav(){
+  const sections = document.querySelectorAll('.section');
+  sections.forEach((sec,i)=>{
+    const isOpen = sec.classList.contains('open');
+    const sbItem = document.getElementById('sb'+i);
+    if(sbItem) sbItem.classList.toggle('active', isOpen);
+  });
+}
+
+// ── MARK DONE ──────────────────────────────────────────────────────────────
+function markDone(i){
+  done[i] = !done[i];
+  const sec = document.getElementById('sec'+i);
+  const btn = sec.querySelector('.mark-done-btn');
+  sec.classList.toggle('done', done[i]);
+  btn.textContent = done[i] ? '✓ Done!' : '✓ Mark section done';
+
+  const sbItem = document.getElementById('sb'+i);
+  if(sbItem){
+    sbItem.classList.toggle('done', done[i]);
+    sbItem.querySelector('.sb-dot').style.background = done[i] ? 'var(--g3)' : '';
+  }
+
+  const pd = document.getElementById('pd'+i);
+  if(pd) pd.classList.toggle('done', done[i]);
+
+  const count = done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width = (count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent = count+' / 9 done';
+  const remaining = SECTIONS.slice(i+1).filter((_,idx)=>!done[i+1+idx]).reduce((a,s)=>a+parseInt(s.time),0);
+  document.getElementById('sbTimeLeft').textContent = '~'+remaining+' min left';
+}
+
+// ── TIMER ──────────────────────────────────────────────────────────────
+function toggleTimer(){
+  if(timerRunning){
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerBtn').textContent = 'Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = 'Pause';
+    timerInterval = setInterval(()=>{
+      timerSecs++;
+      const m = String(Math.floor(timerSecs/60)).padStart(2,'0');
+      const s = String(timerSecs%60).padStart(2,'0');
+      document.getElementById('timer').textContent = m+':'+s;
+      if(timerSecs >= 90*60) document.getElementById('timer').style.color = 'var(--red)';
+      else if(timerSecs >= 75*60) document.getElementById('timer').style.color = 'var(--amber)';
+    }, 1000);
+  }
+}
+
+// ── TRACK EXPLORER ──────────────────────────────────────────────────────────────
+function switchTrack(n){
+  document.querySelectorAll('.track-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  document.getElementById('track1').classList.toggle('active',n===1);
+  document.getElementById('track2').classList.toggle('active',n===2);
+}
+
+// ── TERM GLOSSARY ──────────────────────────────────────────────────────────────
+function toggleTerm(id){
+  const def = document.getElementById('def-'+id);
+  const pill = event.currentTarget;
+  const wasOpen = def.classList.contains('show');
+  document.querySelectorAll('.term-def').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.term-pill').forEach(p=>p.classList.remove('open'));
+  if(!wasOpen){ def.classList.add('show'); pill.classList.add('open'); }
+}
+
+// ── FLIP CARDS ──────────────────────────────────────────────────────────────
+function flipCard(el){ el.classList.toggle('flipped'); }
+
+// ── PUE CALCULATOR ──────────────────────────────────────────────────────────────
+function calcPUE(){
+  const fp = parseInt(document.getElementById('facilityPower').value);
+  const ip = parseInt(document.getElementById('itPower').value);
+  const safeIp = Math.min(ip, fp-1);
+  document.getElementById('facilityPower').value = fp;
+  document.getElementById('itPower').max = fp - 1;
+  document.getElementById('fpVal').textContent = fp+' kW';
+  document.getElementById('ipVal').textContent = safeIp+' kW';
+  const pue = fp/safeIp;
+  document.getElementById('pueNum').textContent = pue.toFixed(2);
+  const waste = fp - safeIp;
+  document.getElementById('pueWaste').innerHTML = `${waste} kW overhead<br>${Math.round(waste/fp*100)}% wasted on cooling etc.`;
+  let rating, color, pct;
+  if(pue <= 1.1){rating='World-class (Google-tier)';color='#2db87a';pct=5}
+  else if(pue <= 1.3){rating='Excellent — best-practice facility';color='#56c490';pct=20}
+  else if(pue <= 1.5){rating='Good — above industry average';color='#a0d870';pct=40}
+  else if(pue <= 1.8){rating='Average — significant room to improve';color='#EF9F27';pct=65}
+  else if(pue <= 2.2){rating='Poor — major inefficiency';color='#e07030';pct=80}
+  else{rating='Very poor — urgent redesign needed';color='#c0392b';pct=95}
+  document.getElementById('pueRating').textContent = rating;
+  document.getElementById('pueFill').style.width = pct+'%';
+  document.getElementById('pueFill').style.background = color;
+}
+
+// ── IMPACT CALCULATOR ──────────────────────────────────────────────────────────────
+function calcImpact(){
+  const servers = parseInt(document.getElementById('serversSlider').value);
+  const watts = parseInt(document.getElementById('wattsSlider').value);
+  document.getElementById('srvVal').textContent = servers;
+  document.getElementById('wattVal').textContent = watts+' W';
+  const kw = (servers * watts / 1000 * 0.5).toFixed(1);
+  const mwh = Math.round(servers * watts / 1000 * 0.5 * 8760);
+  const co2 = Math.round(mwh * 0.4);
+  const usd = Math.round(mwh * 0.10);
+  document.getElementById('impKW').textContent = kw+' kW';
+  document.getElementById('impMWh').textContent = mwh.toLocaleString()+' MWh';
+  document.getElementById('impCO2').textContent = co2.toLocaleString()+' t';
+  document.getElementById('impUSD').textContent = '$'+usd.toLocaleString();
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────
+function answerQ(qi, oi){
+  const q = QUIZ[qi];
+  const opts = document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans ? 'correct' : 'wrong');
+  if(oi===q.ans) opts[oi].classList.add('correct');
+  else opts[q.ans].classList.add('correct');
+  if(oi===q.ans) score++;
+  const exp = document.getElementById('exp'+qi);
+  exp.textContent = (oi===q.ans ? '✓ Correct! ' : '✗ Not quite. ') + q.ex;
+  exp.className = 'q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi < QUIZ.length-1){
+    document.getElementById('qb'+(qi+1)).classList.add('active');
+    document.getElementById('qpd'+(qi+1)).classList.add('active');
+    curQ = qi+1;
+  } else {
+    document.getElementById('qResult').style.display='block';
+    document.getElementById('qScore').textContent = score;
+    const msgs = ['Keep studying — review the sections above and try again!','Good effort! Re-read the energy problem and PUE sections.','Solid understanding! Review any questions you missed.','Great work! You have a strong grasp of today\'s material.','Excellent! You are well prepared for this course.','Perfect score! Outstanding understanding of Class 1.'];
+    document.getElementById('qMsg').textContent = msgs[Math.min(score, 5)];
+  }
+}
+
+function resetQuiz(){
+  score=0; curQ=0;
+  document.getElementById('qResult').style.display='none';
+  buildQuiz();
+}
+
+// ── NOTES ──────────────────────────────────────────────────────────────
+function saveNote(){
+  try{ localStorage.setItem('cse407_c1_notes', document.getElementById('noteArea').value); }catch(e){}
+  const el = document.getElementById('noteSaved');
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none', 2000);
+}
+function loadNotes(){
+  try{
+    const n = localStorage.getItem('cse407_c1_notes');
+    if(n) document.getElementById('noteArea').value = n;
+  }catch(e){}
+}
+
+// ── SCROLL SPY ──────────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id = e.target.id;
+      const i = parseInt(id.replace('sec',''));
+      document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+      document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+
+init();
+</script>
+</body>
+</html>

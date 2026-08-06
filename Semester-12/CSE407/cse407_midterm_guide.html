@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam Prep Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#l1">L1 · Why Green IT</a></li>
+      <li><a href="#l2">L2 · Governance &amp; Regulation</a></li>
+      <li><a href="#l3">L3 · Minimizing Power</a></li>
+      <li><a href="#l4">L4 · Cooling Strategies</a></li>
+      <li><a href="#pue">★ The PUE / cost / carbon problem</a></li>
+      <li><a href="#l5">L5 · Process Reengineering</a></li>
+      <li><a href="#l6">L6 · Going Paperless</a></li>
+      <li><a href="#l7">L7 · Recycling &amp; E-Waste</a></li>
+      <li><a href="#mixed">Mixed-topic questions</a></li>
+      <li><a href="#cheat">Last-minute revision</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Midterm Preparation Guide</p>
+    <h1>CSE407 Green Computing — Full Midterm Review (Lectures 1–7)</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE407 · EWU</span>
+      <span><b>Covers:</b> Classes 1–7</span>
+      <span><b>Format:</b> Mixed — theory, definitions, laws &amp; calculations</span>
+    </div>
+  </header>
+
+  <p style="font-size:.98rem;color:var(--muted);font-style:italic;margin-bottom:8px;">How to use this guide: work top to bottom — each lecture is explained from scratch, then tested with practice questions whose solutions are hidden until you click. The starred <b>PUE / cost / carbon problem</b> (your quiz question, fully worked) sits between Lectures 4 and 5, where it belongs. The maths lives in Lectures 1, 3, 4 and 6; the rest is theory and short-answer, which is exactly the mix your faculty signalled. Numbers in worked problems are illustrative round figures so the method is visible — swap in the real exam figures and the steps are identical.</p>
+  <!-- ================= LECTURE 1 ================= -->
+  <section class="topic" id="l1">
+    <span class="topic-num">Lecture 01</span>
+    <h2>The Importance of Green IT</h2>
+    <p class="subtitle">Why any of this exists: IT uses real energy, makes real carbon, and the field has a two-track answer.</p>
+
+    <p>Start with the problem. Every server, phone, and network switch runs on electricity, and generating that electricity usually burns something that releases carbon dioxide. IT as a whole draws roughly 2–4% of the world's electricity, and it's growing fast. Green computing is the discipline of measuring and shrinking that footprint.</p>
+
+    <p>Your faculty frames the whole course around <b>two tracks</b>, and knowing this split is worth easy marks because it organises everything after it:</p>
+    <div class="callout key">
+      <span class="tag">The two-track structure (memorise this)</span>
+      <p><b>Track 1 — Energy-efficient computing:</b> make the IT itself use less energy (Lectures 1–4: chips, servers, data centers, cooling). <b>Track 2 — Computing for sustainability:</b> use IT as a tool to make the whole organisation greener (Lectures 5–7: process redesign, paperless, e-waste). Track 1 makes IT greener; Track 2 uses IT to make everything else greener.</p>
+    </div>
+
+    <h3>Three definitions the exam will lean on</h3>
+    <p>These three come straight from Class 1 and reappear all course. Learn them in the faculty's words.</p>
+
+    <div class="callout key">
+      <span class="tag">Carbon footprint</span>
+      <p>The total greenhouse-gas emissions caused directly or indirectly by an activity, organisation, or product, expressed in <b>CO₂-equivalent (CO₂e)</b>. For IT it includes manufacturing (embodied carbon), operational electricity, and end-of-life disposal. Note the faculty's emphasis: for IT hardware, <b>manufacturing is often 70–80%</b> of the total footprint — not the use phase.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Scope 1 / 2 / 3 emissions (GHG Protocol)</span>
+      <p><b>Scope 1</b> — direct emissions from sources you own (diesel generators, company vehicles). <b>Scope 2</b> — indirect, from purchased electricity/heat. <b>Scope 3</b> — everything else in the value chain (hardware manufacturing, employee travel, use of sold products). For a tech company Scope 3 usually dwarfs 1 and 2 combined.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">The one calculation introduced in Class 1 — Scope 2 electricity emissions</div>
+      \[ \text{Scope 2 emissions} = \text{Electricity consumed (kWh)} \times \text{Grid emission factor (kg CO}_2/\text{kWh)} \]
+    </div>
+    <p>Your faculty gives Bangladesh's grid emission factor as roughly <b>0.6 kg CO₂ per kWh</b>. This single factor is the bridge from "energy used" to "carbon emitted", and it recurs in the big PUE problem later.</p>
+
+    <p>PUE (Power Usage Effectiveness) is also introduced here as the course's headline efficiency metric — but since Class 4 does the deep dive and your quiz problem lives there, its full treatment is in the <a href="#pue">starred PUE section</a> below. For now just hold the one-liner: PUE = total facility power ÷ IT power, perfect = 1.0, global average ≈ 1.58.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L1.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>Explain the "two-track" structure of green computing, and classify each of these under the correct track: (a) enabling CPU idle states, (b) digitising a paper approval workflow, (c) hot/cold aisle containment, (d) an e-waste take-back scheme.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>This tests the <b>two-track framework</b> from <b>Class 1</b>. The examiner wants you to connect the abstract definition to concrete examples across the whole syllabus — proving you see how the course is organised.</div>
+        <p>Track 1 (energy-efficient computing) is about making the IT itself draw less power; Track 2 (computing for sustainability) is about using IT and process redesign to cut the wider organisation's footprint. Classifying: (a) CPU idle states → <b>Track 1</b> (power inside the machine, Class 3); (c) hot/cold aisle containment → <b>Track 1</b> (data-center energy, Class 4). (b) digitising an approval workflow → <b>Track 2</b> (process reengineering, Class 5); (d) e-waste take-back → <b>Track 2</b> (end-of-life, Class 7). The dividing line is always: is it making the computer greener (Track 1) or using the computer to make something else greener (Track 2)?</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L1.2 <span class="diff">· medium · calculation</span></span></div>
+      <div class="qbody"><p>This was the Class 2 pre-work: a 10-server office, each server drawing <b>500 W</b>, running <b>12 hours/day for 365 days</b>. Using Bangladesh's grid factor of <b>0.6 kg CO₂/kWh</b>, find the annual Scope 2 emissions.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Total power} = 10 \times 500\text{ W} = 5000\text{ W} = 5\text{ kW} \)</p><p class="why"><b>Sum the load</b> and convert W→kW (÷1000), because the emission factor is per kWh.</p></li>
+          <li><p class="math-line">\( \text{Hours/year} = 12 \times 365 = 4380\text{ h} \)</p><p class="why"><b>Running time</b>: this office is not always-on, so use 12 h/day, not 24.</p></li>
+          <li><p class="math-line">\( \text{Energy} = 5 \times 4380 = 21{,}900\text{ kWh} \)</p><p class="why"><b>Energy = power × time</b> (kW × h = kWh).</p></li>
+          <li><p class="math-line">\( \text{Emissions} = 21{,}900 \times 0.6 = 13{,}140\text{ kg CO}_2 \)</p><p class="why"><b>Scope 2 formula</b>: energy × grid factor. ≈ 13.1 tonnes CO₂/year.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p>≈ <b>13,140 kg CO₂ (13.1 t) per year</b>. Sanity check: 5 kW for ~half a day all year is ~22 MWh — a small office, and ~13 t is a believable annual figure for that.</p></div>
+        <div class="callout watch"><span class="tag">Watch out</span><p>The classic slip is using 24 h/day when the problem says 12, or forgetting the W→kW conversion. Always read the running hours literally and keep units consistent.</p></div>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 2 ================= -->
+  <section class="topic" id="l2">
+    <span class="topic-num">Lecture 02</span>
+    <h2>Governance &amp; Regulatory Issues</h2>
+    <p class="subtitle">Who sets the rules for Green IT, why rules are needed at all, and the frameworks you must be able to name.</p>
+
+    <p>Class 1 showed that Green IT often saves money — so why don't companies just do it? Class 2 answers that, and the answer is the reason regulation exists.</p>
+
+    <h3>Why voluntary action isn't enough — market failures</h3>
+    <p>A <b>market failure</b> is a situation where people acting in their own interest produce a bad outcome for everyone. Your faculty gives four reasons voluntary green action falls short:</p>
+    <div class="callout key">
+      <span class="tag">The four market failures (a favourite exam list)</span>
+      <p><b>Short-termism</b> — firms chase quarterly results, so a 3-year-payback efficiency project loses to a 3-month-payback marketing spend. <b>Free-rider problem</b> — if rivals don't go green, the one who does is at a cost disadvantage; regulation levels the field. <b>Externalities</b> — CO₂ harms everyone, not just the emitter, so the emitter under-pays for the damage unless forced to. <b>Information asymmetry</b> — outsiders can't judge a firm's true environmental performance without standardised, mandated reporting.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Governance vs. Regulation — know the distinction</span>
+      <p><b>Governance</b> = the internal, voluntary systems and policies an organisation uses to manage its impact (shapes culture). <b>Regulation</b> = externally imposed legal requirements with penalties for non-compliance (enforces minimums). Governance shapes; regulation enforces.</p>
+    </div>
+
+    <h3>The frameworks — what each one is and whether it's binding</h3>
+    <p>This is pure recall, and the exam loves it. The trick is remembering, for each, <i>who runs it</i> and <i>whether it's voluntary or legally binding</i>.</p>
+    <ul>
+      <li><b>ISO 14001</b> — international, <i>voluntary</i>. A framework for building an Environmental Management System (EMS) via the Plan-Do-Check-Act cycle. Doesn't set targets; sets up the process. No legal penalty, but losing certification can lose you contracts.</li>
+      <li><b>Energy Star</b> — US EPA, <i>voluntary</i> labelling for energy-efficient products (top ~25% of a category). US federal agencies must buy Energy Star.</li>
+      <li><b>GHG Protocol</b> — WRI/WBCSD, the accounting standard that <i>defines Scope 1/2/3</i>. Underpins almost every carbon footprint measurement.</li>
+      <li><b>TCFD</b> — climate-related financial disclosure; originally voluntary, now <i>mandatory</i> in UK/EU/NZ. Four pillars: governance, strategy, risk management, metrics &amp; targets.</li>
+      <li><b>EU EED</b> — EU Energy Efficiency Directive, <i>legally binding</i>. Since Sept 2024, EU data centers above 500 kW must report PUE, WUE, renewable share, and utilisation.</li>
+      <li><b>WEEE Directive</b> — EU, <i>legally binding</i> e-waste rule making producers responsible for end-of-life collection/recycling. Its partner <b>RoHS</b> restricts toxic substances (lead, mercury, cadmium, etc.) in electronics from the start.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Bangladesh — the two local rules to name</span>
+      <p><b>E-Waste Management Rules 2021</b> — modeled on WEEE, sets up Extended Producer Responsibility (EPR): manufacturers/importers must register, collect, and recycle. <b>SREDA Act 2012</b> — Sustainable and Renewable Energy Development Authority; renewable targets (40% by 2041). Both exist but are weakly enforced — your faculty calls this the "compliance gap", and frames early compliance as a competitive advantage.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L2.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>Using the concept of market failure, explain why energy-efficiency regulation is needed even though efficiency saves companies money.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>market-failure argument</b> from <b>Class 2</b> (Lamb Ch.3). The examiner wants you to connect the paradox (efficiency saves money, yet firms under-invest) to the specific failures that cause it.</div>
+        <p>Even profitable efficiency gets under-invested in because of market failures. <b>Short-termism</b> means a project with a 3-year payback loses internal funding to one with a faster payback, even if the efficiency project is more valuable long-term. The <b>free-rider problem</b> means a firm that invests while competitors don't carries extra cost, so nobody wants to move first. <b>Externalities</b> mean the emitter doesn't pay for the climate damage its energy use causes, so the private incentive is weaker than the social benefit. Regulation corrects all three by making the longer horizon, the level playing field, and the true cost mandatory — which is why the savings alone don't produce the behaviour.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L2.2 <span class="diff">· medium · short answer</span></span></div>
+      <div class="qbody"><p>A Dhaka software firm exports to a German client. Name three frameworks/regulations that could affect it and briefly say why — even though most are not Bangladeshi law.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the frameworks table plus the <b>"trickle-down" idea</b> from Class 2 — that EU/UK rules reach Bangladeshi suppliers through contracts. The examiner wants you to link a local firm to global regulation via the supply chain.</div>
+        <p>(1) <b>GHG Protocol</b> — the German client may require Scope 2 carbon reporting, which uses the Bangladesh grid factor. (2) <b>ISO 14001</b> — often demanded of suppliers in EU procurement as proof of environmental management. (3) <b>EU EED / WEEE</b> — if the firm runs data centers or handles hardware for the client, EU rules on reporting and e-waste can flow down contractually. The key point from Class 2: these aren't Bangladeshi law, but export-market clients extend their own regulations to their suppliers, so a Dhaka firm is effectively bound by them through the contract.</p>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 3 ================= -->
+  <section class="topic" id="l3">
+    <span class="topic-num">Lecture 03</span>
+    <h2>Minimizing Power Usage — Inside the Machine</h2>
+    <p class="subtitle">Where power goes in a computer, the law that governs CPU power, idle states, and why real servers waste so much.</p>
+
+    <p>Before you can save power you must know where it goes. In any device the CPU is the biggest single consumer (~35%), followed by memory, storage, display, and network. Two kinds of power add up inside a chip: <b>static (leakage) power</b>, drawn even when idle because transistor insulation is imperfect, and <b>dynamic power</b>, drawn when transistors actively switch.</p>
+
+    <div class="callout key">
+      <span class="tag">Power vs. energy — the distinction the whole lecture hinges on</span>
+      <p><b>Power</b> (watts) is the <i>rate</i> of energy use. <b>Energy</b> (joules, or kWh) is <b>power × time</b>. A device at 10 W for 1 hour uses the same energy as one at 5 W for 2 hours. This matters because some "power-saving" tricks lower instantaneous power but stretch the task longer — and can end up using <i>more</i> total energy.</p>
+    </div>
+
+    <h3>The CPU dynamic power law — the one formula to memorise</h3>
+    <div class="formula">
+      <div class="label">Dynamic CPU power (faculty's headline formula)</div>
+      \[ P_{\text{dynamic}} = C \cdot V^2 \cdot f \]
+    </div>
+    <p>where \(C\) is capacitance, \(V\) is voltage, and \(f\) is frequency. The crucial reading: power scales with <b>voltage squared</b> but only <b>linearly</b> with frequency. So lowering voltage buys you a <i>quadratic</i> saving, while lowering frequency buys only a <i>linear</i> one. That's why modern CPUs use <b>DVFS</b> (Dynamic Voltage and Frequency Scaling) to drop voltage and frequency together, rather than throttling frequency alone.</p>
+
+    <div class="callout key">
+      <span class="tag">Two pillars of CPU power management</span>
+      <p><b>DVFS</b> handles the CPU while it's <i>working</i> — adjusting V and f to the workload (these are P-states, P0 = max performance … Pn = min). <b>C-states</b> handle the CPU while it's <i>idle</i>: C0 = active, then C1 (halt) → C2 → C3 → C6 (deep power down) → C7+ (package sleep). Deeper C-states save more power but take longer to wake — the OS trades depth against wake latency.</p>
+    </div>
+
+    <h3>Energy-proportional computing — the central Green IT challenge</h3>
+    <p>An ideal <b>energy-proportional</b> system would draw power exactly in proportion to work done: 0% load → 0% power, 50% → 50%. Real servers don't: fans, memory, and baseline circuits draw power regardless of load. Your faculty (from Lamb Ch.2) approximates a real server as:</p>
+    <div class="formula">
+      <div class="label">Real-server power model (Lamb Ch.2)</div>
+      \[ \text{Power} = \underbrace{50\%}_{\text{idle floor}} + 50\% \times \text{utilisation} \]
+    </div>
+    <p>So a server at 0% load still burns ~50% of its peak power — the "idle floor". Most data-center servers run at 10–50% utilisation, squarely in the wasteful zone. The two fixes: <b>consolidation</b> (use virtualization to pack workloads onto fewer servers running at 60–80%, so fewer machines pay the idle floor) and, for battery devices, <b>race to idle</b> (finish fast at high power, then drop into deep sleep, since idle power is so low).</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L3.1 <span class="diff">· easy · calculation</span></span></div>
+      <div class="qbody"><p>Using \(P = C\,V^2 f\): if a CPU cuts its voltage by 10% (frequency unchanged), what percentage of its original dynamic power remains? What if instead it cut frequency by 10%?</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( V_{\text{new}} = 0.9\,V \)</p><p class="why"><b>"Cut by 10%" = keep 90%.</b></p></li>
+          <li><p class="math-line">\( P \propto V^2 \Rightarrow \text{factor} = 0.9^2 = 0.81 \)</p><p class="why"><b>Voltage enters squared</b>, so the power multiplier is \(0.9^2\), not \(0.9\).</p></li>
+          <li><p class="math-line">\( \Rightarrow 81\% \text{ remains, i.e. } \sim19\% \text{ saved} \)</p><p class="why">Matches the faculty's "10% voltage cut ≈ 19% power saving".</p></li>
+          <li><p class="math-line">\( \text{Frequency: } P \propto f \Rightarrow 0.9 = 90\% \text{ remains, } 10\% \text{ saved} \)</p><p class="why"><b>Frequency is linear</b>, so a 10% cut saves exactly 10%.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p>Voltage cut → <b>81% remains (19% saved)</b>; frequency cut → <b>90% remains (10% saved)</b>. This is the whole reason DVFS prioritises voltage.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L3.2 <span class="diff">· medium · calculation + concept</span></span></div>
+      <div class="qbody"><p>Using the real-server model \(\text{Power} = 50\% + 50\%\times\text{utilisation}\): what power (as % of peak) does a server draw at 20% utilisation? What's its efficiency (useful work ÷ power)? Why does this justify consolidation?</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Power} = 50\% + 50\%\times 0.20 = 50\% + 10\% = 60\% \)</p><p class="why"><b>Substitute</b> utilisation = 0.20 into the model.</p></li>
+          <li><p class="math-line">\( \text{Efficiency} = \dfrac{\text{work}}{\text{power}} = \dfrac{20}{60} = 0.33 \)</p><p class="why"><b>Definition</b>: useful work (20%) over power drawn (60%). Only a third of the power does proportional work.</p></li>
+          <li><p class="math-line">\( \text{At } 70\%: \text{Power}=85\%,\ \text{Eff}=70/85=0.82 \)</p><p class="why"><b>Compare</b> a consolidated server at 70% — efficiency more than doubles.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer &amp; reasoning</span><p>At 20% load: <b>60% power, efficiency 0.33</b>. Consolidation packs work onto fewer servers at 60–80% (efficiency ~0.8+), so fewer machines pay the 50% idle floor. Same work, far less wasted power — the single biggest Green IT lever in a data center.</p></div>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 4 ================= -->
+  <section class="topic" id="l4">
+    <span class="topic-num">Lecture 04</span>
+    <h2>Cooling Strategies</h2>
+    <p class="subtitle">Every watt becomes heat; removing it can eat 40% of a data center's energy. The techniques, and the law behind them.</p>
+
+    <p>Here's the physics that starts the lecture: <b>every watt of electrical power a computer uses is ultimately converted to heat</b> (first law of thermodynamics — energy in equals energy out). A 1 MW data center produces 1 MW of heat continuously, and it must be removed or servers overheat in minutes. The cooling that removes it consumes <i>extra</i> electricity on top — and that overhead is what PUE measures.</p>
+
+    <div class="callout key">
+      <span class="tag">Hot aisle / cold aisle containment — the highest-ROI first step</span>
+      <p>Arrange racks so all fronts face one aisle (cold, ~27°C) and all rears face the next (hot, ~40°C), then physically seal the aisles so hot exhaust can't recirculate into server intakes. Result: you can raise the cooling supply temperature (less refrigeration energy) and enable free cooling. Typical improvement your faculty cites: <b>PUE 1.8 → 1.3</b>.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/qzTpqpHnRdU" title="Hot Aisle vs Cold Aisle Containment Explained"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=qzTpqpHnRdU" target="_blank" rel="noopener">Hot Aisle vs Cold Aisle Containment Explained</a> — MEP Academy. Why it helps: airflow is genuinely easier to grasp in motion than in a static diagram — this shows exactly how sealing the aisles stops hot/cold mixing.</p>
+    </div>
+
+    <h3>The cooling spectrum — matched to heat density</h3>
+    <p>As racks get denser (kW per rack), you climb this ladder. Know the order and roughly where each tops out:</p>
+    <ul>
+      <li><b>CRAC / CRAH</b> — perimeter air conditioning. CRAC uses refrigeration compressors; CRAH uses chilled water (more efficient at scale). Good to ~10–15 kW/rack. PUE range 1.4–1.8.</li>
+      <li><b>In-row cooling</b> — units placed between racks, shorter air paths. ~20–30 kW/rack.</li>
+      <li><b>Rear-door heat exchanger</b> — a chilled-water door captures exhaust as it leaves the rack; retrofit-friendly. ~25–40 kW/rack.</li>
+      <li><b>Direct liquid cooling</b> — cold plates on CPU/GPU. Water has ~1,000× the heat capacity of air. ~50–100+ kW/rack, PUE 1.03–1.15. Standard for AI clusters.</li>
+      <li><b>Immersion cooling</b> — servers submerged in dielectric fluid, no fans. 100–200+ kW/rack, PUE 1.02–1.05 (world-class).</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Free cooling (economizer) — nature does the work</span>
+      <p>When outdoor air/water is cold enough, skip the refrigeration compressor and just run pumps and fans. A chiller compressor draws ~0.3–0.5 kW per kW of cooling; free cooling draws ~0.03–0.08 kW per kW — roughly a <b>10× improvement</b>. Three types: air-side economizer, water-side economizer, and natural water-body cooling. <b>Geography is a cooling strategy</b>: Dhaka (26°C, humid) gets maybe 200–400 free-cooling hours/year vs. 6,000+ in the Nordics — which is why hyperscalers cluster in cold, dry climates.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Bangladesh angle (easy exam target)</span>
+      <p>Dhaka's heat and 80%+ humidity make <b>air-side economizers impractical</b> — moisture control would cost more than it saves. The practical stack here: hot/cold aisle containment + high-efficiency CRAH + chilled-water plant + water-side economizer for the few cool hours. Typical BD data center PUE: 1.8–2.2.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L4.1 <span class="diff">· short answer + law</span></span></div>
+      <div class="qbody"><p>State the thermodynamic principle that means a data center's heat output equals its IT power, and use it to explain why a 2 MW (IT load) data center needs to remove 2 MW of heat.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>first law of thermodynamics</b> as applied in Class 4's cooling foundation. The examiner wants the law <i>named</i> and then <i>applied</i> to a number.</div>
+        <p>By the <b>first law of thermodynamics</b> (conservation of energy — energy in equals energy out), the electrical energy a computer consumes cannot vanish; essentially all of it is converted to heat, since computation produces no significant stored or exported energy. So a data center with a 2 MW IT load converts that 2 MW into 2 MW of heat, continuously and 24/7. That heat must be removed at the same rate it's produced, or the temperature rises until servers throttle or fail. This is exactly why cooling capacity must match IT load — and why the cooling energy needed on top is what PUE captures.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L4.2 <span class="diff">· medium · scenario</span></span></div>
+      <div class="qbody"><p>A Bangladeshi AI startup imports GPU servers at 28 kW/rack, but their existing air-cooled racks max out at ~10 kW/rack. Give two viable cooling options and justify using the density ladder.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>cooling-density ladder</b> from Class 4. The examiner wants you to match a heat density (28 kW/rack) to the technologies that can handle it, ruling out ones that can't.</div>
+        <p>28 kW/rack is far above the ~10–15 kW ceiling of perimeter air cooling (CRAC/CRAH), so plain air won't work. Two viable options from the ladder: (1) <b>Rear-door heat exchangers</b> — they handle ~25–40 kW/rack and are retrofit-friendly, installing on existing racks in hours without reconfiguring servers, which makes them the fastest fix. (2) <b>Direct liquid cooling</b> (cold plates on the GPUs) — handles 50–100+ kW/rack and is the most efficient long-term (PUE ~1.03–1.15), suited to exactly these high-wattage AI chips. Rear-door is fastest; direct liquid is best long-term. Air cooling and even in-row (20–30 kW, marginal) are ruled out by the density.</p>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= STARRED PUE PROBLEM ================= -->
+  <section class="topic" id="pue">
+    <span class="topic-num">★ Core problem · Lectures 1 &amp; 4</span>
+    <h2>PUE, energy cost, tax &amp; carbon — the full calculation</h2>
+    <p class="subtitle">Your quiz problem, worked end to end. This is the most calculation-heavy thing in the course, so it gets the most space.</p>
+
+    <h3>What PUE means</h3>
+    <p>Imagine a \$100 electricity bill: if \$65 powered servers and \$35 powered cooling and lights, you spent \$100 to get \$65 of real computing. The overhead ratio is \(100 \div 65 = 1.54\) — that's PUE. Your faculty's exact definition: PUE is the ratio of total facility energy to the energy used by IT equipment only.</p>
+
+    <div class="formula">
+      <div class="label">Definition (Class 1 &amp; Class 4)</div>
+      \[ \text{PUE} = \frac{\text{Total facility power}}{\text{IT equipment power}} = 1 + \frac{\text{non-IT}}{\text{IT}} \]
+    </div>
+
+    <p>Anchor values: <b>PUE = 1.0</b> is theoretically perfect (never below it); global average ≈ <b>1.58</b>; best-in-class 1.1–1.2; typical Bangladeshi data center 1.8–2.2. If you ever compute below 1.0, you flipped the fraction.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/aqarnC8Gnzw" title="Data Center PUE Explained in 40 Seconds"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/shorts/aqarnC8Gnzw" target="_blank" rel="noopener">Data Center PUE Explained in 40 Seconds</a> — a quick visual recap of total-power ÷ IT-power. If the embed doesn't play (it's a short-form clip), tap the title to open it on YouTube.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The one mental model for the whole problem</span>
+      <p>Everything downstream — cost, tax, carbon — is just <b>energy (kWh) × a rate</b>. Cost = kWh × price. Tax = kWh × tax rate. Carbon = kWh × emission factor. The only real skill is finding the right kWh number; then you multiply by three different rates.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">The three multiplications + the split</div>
+      \[ \text{Total} = \text{IT} + \text{non-IT} \qquad \text{Energy} = \text{Power}\times\text{Hours} \]
+      \[ \text{Cost}=\text{kWh}\times\text{price},\quad \text{Tax}=\text{kWh}\times\text{tax rate},\quad \text{Carbon}=\text{kWh}\times\text{factor} \]
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question ★.1 — the main problem <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>A data center runs <b>8,760 h/year</b>. Total yearly electricity cost is <b>\$2,000,000</b>. The <b>IT components</b> account for <b>\$1,000,000</b> of it; the rest is <b>non-IT</b> (cooling, lighting, losses). Electricity is <b>\$0.10/kWh</b>; a tax of <b>\$0.02</b> is charged on every kWh; the grid emits <b>0.6 kg CO₂/kWh</b>. Find (a) PUE, (b) the yearly tax on the non-IT electricity, (c) the carbon from the non-IT load.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <h3>Part (a) — PUE</h3>
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Total}=\$2{,}000{,}000,\ \text{IT}=\$1{,}000{,}000 \)</p><p class="why"><b>Read off</b> the two piles.</p></li>
+          <li><p class="math-line">\( \text{Non-IT}=2{,}000{,}000-1{,}000{,}000=\$1{,}000{,}000 \)</p><p class="why"><b>Total = IT + non-IT</b>, so non-IT = total − IT.</p></li>
+          <li><p class="math-line">\( \text{PUE}=\dfrac{2{,}000{,}000}{1{,}000{,}000}=2.0 \)</p><p class="why"><b>Definition:</b> total ÷ IT. Cost is proportional to energy at one price, so the dollar ratio equals the energy ratio — no kWh conversion needed for PUE. 2.0 sits in the realistic BD band.</p></li>
+        </ol>
+        <h3>Part (b) — Tax on non-IT electricity</h3>
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Non-IT energy}=\dfrac{1{,}000{,}000}{0.10}=10{,}000{,}000\text{ kWh} \)</p><p class="why"><b>Cost = energy × price ⇒ energy = cost ÷ price.</b> Dollars ÷ (dollars/kWh) = kWh.</p></li>
+          <li><p class="math-line">\( \text{Tax}=10{,}000{,}000\times 0.02=\$200{,}000 \)</p><p class="why"><b>Tax = energy × tax rate.</b> Check: \$0.02 is ⅕ of \$0.10, and \$200k is ⅕ of the \$1M non-IT bill. Consistent.</p></li>
+        </ol>
+        <h3>Part (c) — Non-IT carbon</h3>
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Emissions}=10{,}000{,}000\times 0.6=6{,}000{,}000\text{ kg} \)</p><p class="why"><b>Carbon = energy × factor</b>, reusing the same non-IT kWh. = 6,000 tonnes CO₂.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answers</span><p>(a) PUE = <b>2.0</b> · (b) non-IT tax = <b>\$200,000/yr</b> · (c) non-IT carbon = <b>6,000,000 kg = 6,000 t/yr</b>.</p></div>
+        <div class="callout watch"><span class="tag">If the paper gives power + hours instead of cost</span><p>Then get energy from <b>power × hours</b> first (that's why 8,760 h is provided), then apply the same three multiplications. Both routes reach the same kWh — start from whatever the paper hands you.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question ★.2 — the 40% optimization <span class="diff">· hard · follow-up</span></span></div>
+      <div class="qbody"><p>An efficiency upgrade cuts the <b>non-IT</b> consumption by <b>40%</b>. Recalculate (a) the new PUE, (b) the new non-IT tax, (c) the new non-IT carbon.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <div class="callout key"><span class="tag">Key realization</span><p>Optimizations (better cooling, containment, free cooling) attack the <b>non-IT / overhead</b> pile only. The IT pile is untouched — the servers do the same work. So multiply <b>only non-IT</b> by 0.60; leave IT alone.</p></div>
+        <ol class="steps">
+          <li><p class="math-line">\( \text{IT unchanged}=\$1{,}000{,}000\ (10{,}000{,}000\text{ kWh}) \)</p><p class="why"><b>IT untouched</b> — the upgrade is on overhead.</p></li>
+          <li><p class="math-line">\( \text{New non-IT energy}=10{,}000{,}000\times 0.60=6{,}000{,}000\text{ kWh} \)</p><p class="why"><b>"Reduce by 40%" = keep 60%.</b> New non-IT cost = \$600,000.</p></li>
+          <li><p class="math-line">\( \text{New total}=1{,}000{,}000+600{,}000=\$1{,}600{,}000 \)</p><p class="why"><b>Rebuild total</b> from unchanged IT + reduced non-IT.</p></li>
+          <li><p class="math-line">\( \text{New PUE}=\dfrac{1{,}600{,}000}{1{,}000{,}000}=1.6 \)</p><p class="why"><b>PUE definition.</b> Fell from 2.0 → 1.6, exactly what an efficiency upgrade should do.</p></li>
+          <li><p class="math-line">\( \text{New tax}=6{,}000{,}000\times 0.02=\$120{,}000 \)</p><p class="why"><b>Tax on new non-IT energy</b> — 60% of the old \$200k.</p></li>
+          <li><p class="math-line">\( \text{New carbon}=6{,}000{,}000\times 0.6=3{,}600{,}000\text{ kg} \)</p><p class="why"><b>Carbon on new non-IT energy</b> = 3,600 t — 60% of the old 6,000 t.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answers</span><p>(a) new PUE = <b>1.6</b> · (b) new tax = <b>\$120,000</b> (saved \$80k) · (c) new carbon = <b>3,600,000 kg = 3,600 t</b> (saved 2,400 t).</p></div>
+        <div class="callout watch"><span class="tag">Exam shortcut</span><p>Tax and carbon are both "non-IT energy × fixed rate", so a 40% non-IT cut drops <b>both</b> by exactly 40% (new = old × 0.6) — no need to recompute from scratch. Only PUE needs the rebuild, because IT sits in its denominator and doesn't shrink.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question ★.3 — stretch, starts from power <span class="diff">· hard</span></span></div>
+      <div class="qbody"><p>A data center's <b>IT load is 500 kW</b>, measured <b>PUE is 1.8</b>, running <b>8,760 h/yr</b>. Electricity \$0.12/kWh, tax \$0.03/kWh, grid 0.6 kg CO₂/kWh. Find the <b>non-IT</b> annual energy, its cost + tax, and its carbon. Then a cooling upgrade cuts non-IT energy 40% — give the new PUE.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Total power}=\text{PUE}\times\text{IT}=1.8\times 500=900\text{ kW} \)</p><p class="why"><b>Rearrange</b> PUE = total ÷ IT ⇒ total = PUE × IT.</p></li>
+          <li><p class="math-line">\( \text{Non-IT}=900-500=400\text{ kW} \)</p><p class="why"><b>Total = IT + non-IT.</b></p></li>
+          <li><p class="math-line">\( \text{Energy}=400\times 8760=3{,}504{,}000\text{ kWh} \)</p><p class="why"><b>Energy = power × hours</b> — now we need the hours, since we started from power.</p></li>
+          <li><p class="math-line">\( \text{Cost}=3{,}504{,}000\times 0.12=\$420{,}480 \)</p><p class="why"><b>Cost = energy × price.</b></p></li>
+          <li><p class="math-line">\( \text{Tax}=3{,}504{,}000\times 0.03=\$105{,}120 \)</p><p class="why"><b>Tax = energy × tax rate.</b> Cost+tax = \$525,600.</p></li>
+          <li><p class="math-line">\( \text{Carbon}=3{,}504{,}000\times 0.6=2{,}102{,}400\text{ kg} \)</p><p class="why"><b>Carbon = energy × factor</b> ≈ 2,102 t.</p></li>
+          <li><p class="math-line">\( \text{New non-IT}=400\times 0.6=240\text{ kW};\ \text{new total}=740\text{ kW} \)</p><p class="why"><b>Keep 60%</b> of non-IT; IT stays 500.</p></li>
+          <li><p class="math-line">\( \text{New PUE}=740/500=1.48 \)</p><p class="why"><b>PUE definition</b>; dropped 1.8 → 1.48.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answers</span><p>Non-IT: 3,504,000 kWh; \$420,480 + \$105,120 tax; 2,102,400 kg. New PUE = <b>1.48</b>.</p></div>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 5 ================= -->
+  <section class="topic" id="l5">
+    <span class="topic-num">Lecture 05</span>
+    <h2>Business Process Reengineering for Sustainability</h2>
+    <p class="subtitle">Track 2 begins: redesigning how an organisation works — not its servers — to cut waste at the process level.</p>
+
+    <p><b>Business Process Reengineering (BPR)</b> is the fundamental rethinking and radical redesign of business processes to achieve dramatic improvements in cost, quality, service, and speed. The term comes from Hammer &amp; Champy (1993). The key distinction your faculty stresses:</p>
+    <div class="callout key">
+      <span class="tag">BPR vs. incremental improvement</span>
+      <p>Ordinary improvement asks "how can we do this step <i>faster</i>?" BPR asks "<b>why are we doing this step at all?</b>" It questions a step's existence, not just its speed. For sustainability this is decisive: speeding up a wasteful paper approval still leaves the waste; BPR asks whether the paper approval should exist. True reengineering usually <b>removes</b> whole steps, not just digitises them.</p>
+    </div>
+
+    <h3>The core method — AS-IS → TO-BE</h3>
+    <p>Every BPR project: document the <b>AS-IS</b> (current state) in detail, find the waste, then design the <b>TO-BE</b> (future state) that eliminates it. The faculty's warning: don't just digitise the AS-IS one-for-one — that's digitization, not reengineering. Real BPR eliminates the walking-around, the manual re-entry, the physical storage.</p>
+
+    <div class="callout key">
+      <span class="tag">BPMN 2.0 notation — the symbols you must recognise</span>
+      <p><b>Start event</b> = thin circle; <b>Task/activity</b> = rounded rectangle; <b>Gateway/decision</b> = diamond; <b>End event</b> = thick circle; <b>Swimlane</b> = a band grouping steps by role/department; <b>Data object</b> = document icon. In green BPR, every <i>physical</i> data object (paper) is a target for elimination, and every <b>handoff between swimlanes</b> is a potential point of delay, error, or waste. (The uploaded BPMN image — the Globex order process — is a worked example of exactly this notation: swimlanes per department, a diamond gateway for "stock available?", parallel gateways splitting shipping/billing.)</p>
+    </div>
+
+    <h3>The sustainability waste lens</h3>
+    <p>Adapted from lean manufacturing's wastes, your faculty gives four environmental waste categories to audit any process against: <b>Material</b> (paper, printouts, copies), <b>Transport/travel</b> (moving documents or people when digital would do), <b>Waiting/storage</b> (documents in cabinets, idle equipment, climate-controlled archives), and <b>Redundancy</b> (re-entering the same data, duplicate approvals, print-then-rescan).</p>
+
+    <div class="callout watch">
+      <span class="tag">The paper footprint number to remember</span>
+      <p>From Lamb Ch.3: one A4 sheet ≈ <b>4.7 g CO₂e</b> (production + transport), and ~8,333 sheets ≈ one tree's pulp. Small per sheet, but at thousands of forms a month it's significant — and entirely avoidable by redesign.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L5.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>Distinguish "digitization" from "true reengineering", using a paper-based approval workflow as your example. Why does the distinction matter for sustainability?</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>BPR-vs-incremental distinction</b> and the AS-IS/TO-BE method from Class 5. The examiner wants the specific insight that digitising ≠ reengineering.</div>
+        <p><b>Digitization</b> takes each existing step and does it with a digital tool — e.g. emailing a scanned approval form instead of walking it around — but keeps the same sequence of steps. <b>True reengineering</b> redesigns the process: it asks whether steps should exist at all, and typically eliminates 1–2 entirely (the physical walking, the manual re-entry into accounting, the 7-year physical filing). For sustainability this matters because digitising a wasteful process only removes the paper from those steps, whereas reengineering removes the steps — cutting material, transport, waiting, and redundancy waste together. As Class 5 puts it, BPR asks "should this step exist?", not just "how do we speed it up?"</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L5.2 <span class="diff">· medium · calculation</span></span></div>
+      <div class="qbody"><p>An office processes <b>500 forms/month</b>, averaging <b>3 sheets each</b> (with copies). Using the faculty's figure of ~4.7 g CO₂e per A4 sheet, estimate the annual sheets used and the paper's annual carbon footprint.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Sheets/year}=500\times 3\times 12=18{,}000 \)</p><p class="why"><b>Forms × sheets each × 12 months.</b></p></li>
+          <li><p class="math-line">\( \text{Carbon}=18{,}000\times 4.7\text{ g}=84{,}600\text{ g} \)</p><p class="why"><b>Sheets × per-sheet footprint.</b></p></li>
+          <li><p class="math-line">\( =84.6\text{ kg CO}_2\text{e/year} \)</p><p class="why"><b>Convert g→kg</b> (÷1000). Matches the ~86 kg the faculty's calculator shows.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>18,000 sheets ≈ 84.6 kg CO₂e/year</b> from paper alone — and this ignores printing energy, toner, storage, and retrieval, which multiply the true cost (see Lecture 6).</p></div>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 6 ================= -->
+  <section class="topic" id="l6">
+    <span class="topic-num">Lecture 06</span>
+    <h2>Going Paperless</h2>
+    <p class="subtitle">One specific BPR application, deep: the true cost of paper, the roadmap, the technology, e-signature law, and ROI.</p>
+
+    <div class="callout key">
+      <span class="tag">The headline insight: real cost is ~10× perceived</span>
+      <p>Paper looks cheap, but from Velete Ch.6: for every <b>\$1</b> on paper itself, an organisation spends about <b>\$6</b> on printing (toner, maintenance, energy), <b>\$10</b> on storage (cabinets, floor space, retrieval time), and up to <b>\$20</b> managing errors and lost files. The paper is the cheapest part. Gartner puts direct paper cost at ~\$725/office worker/year, and printing a page emits ~5–17 g CO₂e.</p>
+    </div>
+
+    <h3>The six-phase roadmap (Velete Ch.6)</h3>
+    <p>Going paperless is an organisational transformation, not a one-off purchase. Trying to go fully paperless on day one fails; the phased approach succeeds. Learn the six phases in order:</p>
+    <ul>
+      <li><b>1 · Audit &amp; baseline</b> — map every paper process (AS-IS), count pages, storage, retention needs. Prioritise: highest volume × highest frequency = highest ROI.</li>
+      <li><b>2 · Legal &amp; compliance review</b> — which documents legally need paper (very few), which can use e-signatures (ICT Act 2006 in BD). Output: a document classification matrix.</li>
+      <li><b>3 · Technology selection</b> — deploy a DMS, an e-signature platform, and workflow automation. Cloud vs on-premise, integration, access control.</li>
+      <li><b>4 · Pilot</b> — one process only (the highest-ROI one), measure before/after rigorously to prove ROI.</li>
+      <li><b>5 · Phased rollout</b> — remaining processes in priority order, with a parallel-running period then a paper cutoff; back-scan archives via OCR.</li>
+      <li><b>6 · Monitor &amp; improve</b> — track pages printed, cost/CO₂e saved; feed into GHG Protocol Scope 3 reporting.</li>
+    </ul>
+    <div class="callout watch">
+      <span class="tag">Exam trap</span>
+      <p>Never skip Phase 2 (legal) or Phase 4 (pilot) — the faculty flags both as the phases whose omission causes expensive failures/rollbacks.</p>
+    </div>
+
+    <h3>Document Management Systems &amp; e-signatures</h3>
+    <p>A <b>DMS</b> is the central digital repository (create, store, version, search, retrieve). Options: <b>Cloud</b> (Google/Microsoft — fast, PUE ~1.1, but data-sovereignty concerns for BD government), <b>On-premise</b> (SharePoint Server/OpenText — full data control, higher overhead, preferred by BD banks/government), <b>Open source</b> (Nextcloud/Alfresco/Paperless-ngx — zero licence cost, good for budget-constrained universities/NGOs). <b>Workflow automation</b> (Power Automate, n8n, Camunda) connects them and removes the "walking documents around" step.</p>
+
+    <div class="callout key">
+      <span class="tag">E-signature tiers (and the technical vs legal distinction)</span>
+      <p><b>SES (Simple)</b> — any electronic intent (typed name, "I agree"); valid for most business docs. <b>AES (Advanced)</b> — uniquely linked to signer, detects changes, uses PKI (DocuSign, Adobe Sign). <b>QES (Qualified)</b> — uses a qualified certificate + device; <i>legally equal to a handwritten signature under EU eIDAS</i>. A <b>digital signature</b> is the cryptographic mechanism (asymmetric key pair) — the technical implementation; "e-signature" is the legal concept. In Bangladesh the <b>ICT Act 2006</b> recognises e-signatures, but PKI/certifying-authority infrastructure is still immature, so many agencies still demand physical signatures in practice.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L6.1 <span class="diff">· medium · calculation (ROI)</span></span></div>
+      <div class="qbody"><p>A 200-person organisation's paperless project saves an estimated <b>\$85,800/year</b>. The DMS costs <b>\$50,000</b> upfront. Find the break-even time and the first-year net ROI.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Break-even}=\dfrac{50{,}000}{85{,}800}=0.58\text{ years} \)</p><p class="why"><b>Cost ÷ annual saving</b> gives the fraction of a year to recoup the outlay.</p></li>
+          <li><p class="math-line">\( 0.58\times 12\approx 7\text{ months} \)</p><p class="why"><b>Convert years→months.</b></p></li>
+          <li><p class="math-line">\( \text{Year-1 net}=85{,}800-50{,}000=\$35{,}800 \)</p><p class="why"><b>Saving − cost</b> in the first year.</p></li>
+          <li><p class="math-line">\( \text{ROI}=\dfrac{35{,}800}{50{,}000}\approx 72\% \)</p><p class="why"><b>Net gain ÷ investment.</b> (The faculty's slide quotes ~171% if you count gross saving ÷ cost; either is defensible if you state which you mean.)</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p>Break-even ≈ <b>7 months</b>; first-year net gain <b>\$35,800</b> (≈72% net ROI). After year one the \$85,800/year is nearly pure saving. Most DMS projects break even in 6–18 months.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L6.2 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>A manager claims paper "only costs \$200/month in printer paper" for a 50-person team. Explain what this estimate misses, and why.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>"real cost is ~10× perceived"</b> breakdown from Class 6 (Velete Ch.6). The examiner wants the hidden cost categories named.</div>
+        <p>The \$200 is only the paper itself — roughly 10–15% of the true cost. Missing, per the Class 6 breakdown: <b>printing</b> (toner, maintenance, printer energy — about \$6 per \$1 of paper), <b>storage</b> (filing cabinets and the office floor space they occupy, plus retrieval time — about \$10 per \$1), and <b>error/loss management</b> (misfiled and lost documents cost ~\$120 each to retrieve — up to \$20 per \$1). Adding these, the true cost is roughly \$2,300/month, an ~11× underestimate. The lesson: any paperless business case must include the hidden storage, retrieval, and error costs, or it drastically understates the saving.</p>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= LECTURE 7 ================= -->
+  <section class="topic" id="l7">
+    <span class="topic-num">Lecture 07</span>
+    <h2>Recycling &amp; E-Waste Management</h2>
+    <p class="subtitle">The end of the IT lifecycle: the crisis scale, what's inside devices, EPR, the recycling process, and the circular economy.</p>
+
+    <p><b>E-waste</b> is any discarded electrical/electronic device. It's the world's fastest-growing waste stream — <b>62 million tonnes</b> in 2023, of which only <b>~17%</b> is formally recycled. The other 83% is dumped, landfilled, or informally processed (open burning of wires for copper, acid baths for gold) with severe toxic consequences.</p>
+
+    <div class="callout key">
+      <span class="tag">The urban mine — the concept that reframes e-waste</span>
+      <p>E-waste isn't just waste; it's a mineable resource. One tonne of smartphones holds ~300 g of gold — <b>40–80× richer than gold ore</b>. The annual global "urban mine" is worth over <b>\$57 billion</b>, mostly burned or buried. Urban mining (recovering metals from e-waste) can be 6–13× more economical than primary mining. But it also contains toxics — lead, mercury, cadmium — so <i>both</i> the value and the hazard drive the case for formal recycling.</p>
+    </div>
+
+    <h3>Extended Producer Responsibility (EPR) — why it changes engineering</h3>
+    <div class="callout key">
+      <span class="tag">EPR (memorise the mechanism)</span>
+      <p>EPR is the policy that makes <b>manufacturers responsible for the whole lifecycle</b> of their products, including end-of-life collection and recycling. The mechanism your faculty stresses: when the maker pays for recycling, they gain a financial incentive to <b>design for recyclability</b> — fewer materials, fewer toxics, easier disassembly. This is how <b>RoHS</b> (restricts hazardous substances) + <b>WEEE</b> (producer take-back) together transformed European electronics design. Bangladesh's <b>E-Waste Rules 2021</b> establish EPR locally (registration, take-back, certified recyclers), though enforcement is weak.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Embodied vs operational carbon (ties back to Lecture 1)</span>
+      <p>Manufacturing a smartphone emits ~70 kg CO₂e — <b>70–80% of its lifetime footprint, before it's even switched on</b>. Use-phase energy is only 20–30%. This is why <b>extending device lifespan</b> (2→4 years halves per-year manufacturing emissions) beats use-phase efficiency tweaks — the single most impactful consumer action.</p>
+    </div>
+
+    <h3>The circular economy — recycling is the <i>last</i> resort</h3>
+    <div class="callout key">
+      <span class="tag">The preferred hierarchy (highest → lowest value retention)</span>
+      <p><b>Reuse → Repair → Refurbish → Remanufacture → Recycle</b> (and only then landfill/burn, which should be avoided). The counter-intuitive point the faculty drives home: recycling is the <i>last resort</i>, not the goal, because it destroys the embodied value that reuse/repair preserve. Engineers who enable the earlier stages — through repairability, modularity, accessible batteries, longevity — create far more value than optimising the recycling process alone. (This is why glued-in batteries are a design failure: they push a device from "Repair" straight to "Recycle".)</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Bangladesh context</span>
+      <p>BD generates ~200,000–400,000 t of e-waste/year, ~100,000 informal workers (Dhaka's Nimtoli, Islampur, Mitford), documented lead poisoning from informal CRT/battery recycling. Framework: E-Waste Rules 2021 (EPR) + Basel Convention (bans hazardous e-waste export developed→developing). Enforcement is weak — a large engineering/entrepreneurial opportunity to formalise the informal sector.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L7.1 <span class="diff">· short answer</span></span></div>
+      <div class="qbody"><p>Explain how Extended Producer Responsibility (EPR) creates a feedback loop that improves product <i>design</i>, not just disposal.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>EPR mechanism</b> from Class 7 (Velete Ch.7). The examiner wants the causal chain from end-of-life cost back to design decisions — not just the definition.</div>
+        <p>EPR makes the manufacturer financially responsible for collecting and recycling its products at end of life. Because the maker now <i>pays</i> those recycling costs, it has a direct incentive to make recycling cheaper — which means designing products with fewer materials, fewer material types, fewer toxic substances, and easier disassembly. So end-of-life economics feed directly back into design choices: this is the feedback loop. The faculty's evidence is Europe, where RoHS (restricting hazardous substances) and WEEE (producer take-back) together reshaped how electronics are designed, not just how they're thrown away. Without EPR, disposal cost falls on governments/consumers and the designer has no reason to change.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question L7.2 <span class="diff">· medium · scenario</span></span></div>
+      <div class="qbody"><p>An employee is about to bin 30 old-but-functional smartphones. Apply the circular-economy hierarchy to say what they should do instead, in order.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Tests the <b>circular hierarchy</b> (Reuse → Repair → Refurbish → Remanufacture → Recycle) from Class 7. The examiner wants it <i>applied</i> in priority order, not just recited.</div>
+        <p>Work down the hierarchy, using the recycling bin only as a last resort. <b>Reuse</b> first: are any usable as-is — for security staff, student loan devices, or IoT sensors? If not, <b>refurbish</b> them for donation to schools or NGOs. If they need work, <b>repair</b> the minor faults to bring them back into use. Only the phones that genuinely cannot be reused or repaired go to a <b>certified recycler</b> — and even then the process should be documented for the organisation's Scope 3 e-waste reporting. The whole point of Class 7's hierarchy is that recycling destroys embodied value, so it comes after every reuse/repair option is exhausted.</p>
+      </div></details>
+    </div>
+  </section>
+  <!-- ================= MIXED-TOPIC QUESTIONS ================= -->
+  <section class="topic" id="mixed">
+    <span class="topic-num">Cross-cutting</span>
+    <h2>Mixed-topic questions</h2>
+    <p class="subtitle">Your faculty said questions may combine slides. These deliberately span two or more lectures — the kind most students find hardest.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question M.1 <span class="diff">· hard · L1 + L4</span></span></div>
+      <div class="qbody"><p>Two data centers burn identical kWh at identical PUE — one in Dhaka, one in Helsinki. Explain why the Dhaka one emits more CO₂, and why PUE alone fails to capture this.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Connects the <b>carbon calculation</b> (Class 1 Scope 2, grid factor) with the <b>limits of PUE</b> (Class 4: "PUE ignores carbon intensity of the electricity source"). The examiner wants you to separate <i>how much</i> energy from <i>how dirty</i> it is.</div>
+        <p>Emissions = energy × grid emission factor (Class 1). PUE measures only how efficiently the <i>building</i> uses electricity — it says nothing about where that electricity comes from (a limitation stated explicitly in Class 4). Identical kWh at identical PUE means identical efficiency, but Bangladesh's grid factor (~0.6 kg CO₂/kWh, fossil-heavy) is far higher than a Nordic grid's (hydro/nuclear, near-zero), so the same kWh multiplies by a bigger number in Dhaka and produces more CO₂. PUE can't see this because it's a pure power-ratio; that's why Class 4 argues it must be reported alongside carbon intensity, renewable fraction, and WUE.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question M.2 <span class="diff">· hard · L3 + L4</span></span></div>
+      <div class="qbody"><p>A data center consolidates workloads via virtualization, cutting its number of active servers. Explain the energy benefit (using the idle-floor model) — and the surprising effect this can have on PUE.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Connects <b>energy proportionality / consolidation</b> (Class 3) with <b>PUE mechanics</b> (Class 1/4). The examiner wants both the benefit and the counter-intuitive twist.</div>
+        <p>By the real-server model (Class 3), every server draws ~50% of peak power even at 0% load — the idle floor. Running many servers at low utilisation means many machines each paying that floor. Consolidation packs the same work onto fewer servers at 60–80% utilisation, so fewer machines pay the idle floor and total IT energy falls — the biggest Green IT lever. The twist: PUE = total ÷ IT. Consolidation cuts the <i>IT</i> load (the denominator), while the facility's fixed cooling and power-distribution overhead doesn't shrink as fast — so PUE can actually <i>rise</i> even though the data center now uses less total energy and is more efficient overall. This is exactly why the faculty warns PUE must be read with utilisation, not alone.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question M.3 <span class="diff">· medium · L2 + L5 + L6</span></span></div>
+      <div class="qbody"><p>A Dhaka firm digitises its paper approval workflow. Identify (a) which "track" this is, (b) which waste categories it targets, and (c) one governance/regulatory driver that might push it to do so.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Spans the <b>two-track model</b> (Class 1), the <b>BPR waste lens</b> (Class 5), and <b>governance drivers</b> (Class 2). The examiner wants you to weave three lectures into one coherent answer.</div>
+        <p>(a) This is <b>Track 2</b> — using IT/process redesign to cut the organisation's footprint, not making the IT itself greener. (b) It targets <b>material</b> waste (paper, copies), <b>transport</b> waste (physically walking forms between desks/departments), <b>waiting/storage</b> waste (forms sitting in inboxes and filing cabinets), and <b>redundancy</b> waste (re-entering the same data into the accounting system) — the four categories from Class 5. (c) A governance/regulatory driver (Class 2): a German or EU export client may require <b>GHG Protocol Scope 3 reporting</b> or ISO 14001, and paper reduction is a measurable, reportable emission cut — so the client's regulation effectively pushes the Dhaka firm to digitise, even though no Bangladeshi law compels it.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question M.4 <span class="diff">· hard · L1 + L7</span></span></div>
+      <div class="qbody"><p>Using the embodied-vs-operational carbon split, explain why buying a new "energy-efficient" laptop to replace a working one can be worse for the climate than keeping the old one.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>Connects <b>embodied carbon</b> (Class 1: manufacturing is 70–80% of IT footprint; Class 7: ~70 kg CO₂e per smartphone before switch-on) with the <b>longevity</b> argument (Class 7). The examiner wants the counter-intuitive conclusion defended with the numbers.</div>
+        <p>For IT hardware, manufacturing accounts for 70–80% of lifetime carbon, emitted before the device is ever used; operational energy is only 20–30% (Class 1 and Class 7). So replacing a still-working laptop triggers a fresh dose of embodied manufacturing carbon (~tens of kg CO₂e), while the efficiency gain only trims the smaller operational slice. Unless the old machine is drastically less efficient, the embodied cost of manufacturing the replacement outweighs the operational saving — meaning the greener choice is usually to <b>extend the existing device's life</b> (Class 7's "longevity is greenest"). The new-laptop purchase also pushes a functional device toward e-waste prematurely, losing its remaining embodied value in the circular hierarchy.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ================= CHEAT SHEET ================= -->
+  <div class="cheat" id="cheat">
+    <h2>Last-minute revision — one line per must-know</h2>
+    <div class="grid">
+      <div class="item"><h4>Two tracks</h4><p>T1 = make IT greener (chips, servers, cooling). T2 = use IT to green everything else (BPR, paperless, e-waste).</p></div>
+      <div class="item"><h4>Scope 1/2/3</h4><p>1 = direct (generators). 2 = purchased electricity. 3 = value chain (usually biggest).</p></div>
+      <div class="item"><h4>Scope 2 carbon</h4><p>kWh × grid factor. BD ≈ 0.6 kg CO₂/kWh.</p></div>
+      <div class="item"><h4>Market failures</h4><p>Short-termism · free-rider · externalities · information asymmetry → why regulation exists.</p></div>
+      <div class="item"><h4>Frameworks</h4><p>ISO 14001 &amp; Energy Star = voluntary. GHG Protocol = defines scopes. TCFD/EED/WEEE = binding. BD: E-Waste Rules 2021, SREDA 2012.</p></div>
+      <div class="item"><h4>CPU power law</h4><p>\(P=C V^2 f\). Voltage cut = quadratic saving; frequency cut = linear. DVFS drops both.</p></div>
+      <div class="item"><h4>C-states</h4><p>C0 active → C6 deep sleep. Deeper = more saving, longer wake latency.</p></div>
+      <div class="item"><h4>Idle floor</h4><p>Power = 50% + 50%×utilisation. Fix = consolidation (60–80%) + race-to-idle.</p></div>
+      <div class="item"><h4>PUE</h4><p>Total ÷ IT = 1 + non-IT/IT. Perfect 1.0, avg 1.58, BD 1.8–2.2. Never below 1.0.</p></div>
+      <div class="item"><h4>Every watt → heat</h4><p>1st law: IT power = heat to remove. Cooling ≈ 40% of DC energy.</p></div>
+      <div class="item"><h4>Cooling ladder</h4><p>CRAC/CRAH → in-row → rear-door → direct liquid → immersion. Free cooling ≈ 10× efficiency.</p></div>
+      <div class="item"><h4>Cost/tax/carbon</h4><p>All = kWh × rate. Optimisation cuts non-IT only (×0.6); IT stays; only PUE needs rebuild.</p></div>
+      <div class="item"><h4>BPR</h4><p>"Should this step exist?" AS-IS→TO-BE. Eliminate steps, don't just digitise. BPMN: circle/rectangle/diamond/swimlane/doc.</p></div>
+      <div class="item"><h4>Paper cost</h4><p>Real cost ~10× perceived. 6-phase roadmap; never skip legal or pilot. E-sig: SES/AES/QES; BD ICT Act 2006.</p></div>
+      <div class="item"><h4>E-waste</h4><p>62 Mt/yr, 17% recycled. Urban mine = \$57B. EPR → design for recycling. Hierarchy: Reuse→Repair→Refurbish→Remanufacture→Recycle.</p></div>
+      <div class="item"><h4>Embodied carbon</h4><p>Manufacturing = 70–80% of IT footprint. Longevity beats use-phase efficiency.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from CSE407 Class 1–7 lecture material (EWU). Worked problems use illustrative round numbers so the method is visible — substitute the real exam figures; the steps are identical. Videos are real, verified links. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

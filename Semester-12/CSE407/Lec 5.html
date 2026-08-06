@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 5 — Business Process Reengineering for Sustainability</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p1:#3d1f6e;--p2:#5e3aa8;--p3:#8265d4;--p4:#c2aef0;--p5:#ede6fb;
+  --ink:#1a1422;--ink2:#3e3450;--ink3:#6b5f7e;--ink4:#a89bbc;
+  --paper:#f6f3fa;--card:#ffffff;--card2:#faf8fc;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --teal:#0e7070;--teal-l:#e0f5f5;
+  --border:#e4dcf2;--border2:#cdbfe4;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(246,243,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--p1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--p1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--p5);border-color:var(--p3);color:var(--p1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--p3)}
+.prog-dot.active{background:var(--p1);box-shadow:0 0 0 2px var(--p5)}
+
+.hero{background:linear-gradient(135deg,var(--p1) 0%,#2a1450 70%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:480px;height:480px;top:-150px;right:-110px;background:rgba(130,101,212,0.16)}
+.hero-c2{width:240px;height:240px;bottom:-80px;left:16%;background:rgba(194,174,240,0.08)}
+.hero-c3{width:130px;height:130px;top:45px;left:56%;background:rgba(130,101,212,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-p{background:rgba(194,174,240,0.2);color:#c2aef0;border:1px solid rgba(194,174,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.chip-red{background:rgba(255,150,140,0.2);color:#ff968c;border:1px solid rgba(255,150,140,0.35)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(28px,5vw,46px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--p4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--p4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--p1);border-bottom-color:var(--p2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--p1);color:#fff}
+
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--p1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--p3)}
+.sb-item.active .sb-dot{background:var(--p1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--p1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--p2),var(--p3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--p3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--p5);border-color:var(--p3);color:var(--p1)}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-p{background:var(--p5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-t{background:var(--teal-l)}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--p5);color:var(--p1);border:1px solid rgba(130,101,212,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--p3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--p5);border-color:var(--p3);color:var(--p1)}
+.section.done .mark-done-btn{background:var(--p5);border-color:var(--p3);color:var(--p1)}
+
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-p{background:var(--p5);border-color:var(--p2);color:var(--p1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-teal{background:var(--teal-l);border-color:var(--teal);color:var(--teal)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--p5);border:1px solid rgba(130,101,212,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--p1);line-height:1}
+.stat-u{font-size:13px;color:var(--p2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--p2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--p5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--p1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--p5)}
+
+/* TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--p3);color:var(--p1)}
+.fw-tab.active{background:var(--p1);color:#fff;border-color:var(--p1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--p1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* AS-IS / TO-BE PROCESS MAP */
+.process-map{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.process-toggle{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:260px}
+.process-toggle-btn{flex:1;padding:9px 14px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;transition:var(--t);background:var(--card);color:var(--ink3)}
+.process-toggle-btn.active{background:var(--p1);color:#fff}
+.process-flow{display:none}
+.process-flow.active{display:block}
+.process-step{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.process-box{flex:1;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--ink2);position:relative}
+.process-box.waste{border-color:var(--red);background:var(--red-l);color:#6b1010}
+.process-box.good{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.process-arrow{color:var(--ink4);font-size:16px;flex-shrink:0}
+.process-meta{font-size:10px;color:var(--ink4);margin-top:2px}
+.process-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:16px}
+.process-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.process-stat-n{font-family:'Fraunces',serif;font-size:22px;color:var(--p1)}
+.process-stat-l{font-size:10px;color:var(--ink3);margin-top:2px}
+
+/* PAPER VS DIGITAL CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--p1);min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--p2)}
+.result-box{background:var(--p1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;text-align:center}
+.result-n{font-family:'Fraunces',serif;font-size:26px;color:var(--p4)}
+.result-l{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+
+/* BPMN MINI EXPLAINER */
+.bpmn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:16px}
+.bpmn-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:var(--t)}
+.bpmn-item:hover{border-color:var(--p3);box-shadow:0 4px 12px rgba(0,0,0,0.07)}
+.bpmn-shape{margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+.bpmn-label{font-size:11px;font-weight:700;color:var(--ink)}
+.bpmn-desc{display:none;margin-top:14px;padding:14px 16px;background:var(--p5);border-radius:var(--r-sm);font-size:13px;color:var(--p1);line-height:1.6;border-left:2px solid var(--p2)}
+.bpmn-desc.show{display:block}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--p1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--p4);margin-bottom:8px}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--p1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* TERM PAPER CHECKLIST */
+.checklist-wrap{background:var(--card2);border:2px solid var(--amber);border-radius:var(--r);padding:20px;margin-top:18px}
+.checklist-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.checklist-item:last-child{border-bottom:none}
+.checklist-box{width:18px;height:18px;border:2px solid var(--amber);border-radius:4px;flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.checklist-box.checked{background:var(--amber);color:#fff;font-size:12px}
+.checklist-text{font-size:13.5px;color:var(--ink2);line-height:1.5}
+.checklist-text strong{color:var(--ink)}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--p3)}
+.qp-dot.active{background:var(--p2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--p2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--p3);background:var(--p5);color:var(--p1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--p1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--p2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--p1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--p5);color:var(--p1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--p1);color:#fff;border-color:var(--p1)}
+.f-btn.primary:hover{background:var(--p2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 5 — Business Process Reengineering</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-p">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 5 of 22</span>
+      <span class="chip chip-gray">Jun 18, 2025 · Wednesday · 1h 30min</span>
+      <span class="chip chip-red">⚠️ Term Paper Proposal Due Today</span>
+    </div>
+    <h1>Business Process Reengineering<br><em>for Sustainability</em></h1>
+    <p class="hero-sub">We leave hardware behind: how organizations redesign workflows, not just servers, to cut their environmental footprint at the process level.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.5 (all)</span>
+      <span class="ref">📗 Lamb Ch.3 (all)</span>
+      <span class="ref">🎯 CO2</span>
+      <span class="ref">🧠 EP1, EP2</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">BPMN 2.0</div><div class="h-stat-lbl">Standard notation for mapping business processes</div></div>
+      <div class="h-stat"><div class="h-stat-num">AS-IS</div><div class="h-stat-lbl">→ <strong style="color:#fff">TO-BE</strong> the core BPR transformation pattern</div></div>
+      <div class="h-stat"><div class="h-stat-num">30–50%</div><div class="h-stat-lbl">Typical waste reduction from well-executed BPR</div></div>
+      <div class="h-stat"><div class="h-stat-num">CO2</div><div class="h-stat-lbl">This is Track 2 territory — computing FOR sustainability</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>What is BPR?</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>AS-IS / TO-BE</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>BPMN Notation</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Process Waste Audit</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Case Examples</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Term Paper ✅</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; track shift</div>
+        <div class="sec-subtitle">From Track 1 (hardware) to Track 2 (computing for sustainability)</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Classes 1–4 covered <strong>Track 1: Energy-Efficient Computing</strong> — minimizing power inside the machine and the data center. Starting today, we shift to <strong>Track 2: Applying Computing Towards Sustainability</strong> — using IT and process redesign as tools to reduce the environmental footprint of an entire organization, not just its servers.</p>
+
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">🔌 Track 1 recap (Classes 1-4)</div><p>DVFS, C-states, energy proportionality, hot/cold aisle containment, free cooling, PUE. All about making the IT itself greener.</p></div>
+      <div class="card-b"><div class="card-b-title">🌍 Track 2 begins (Class 5+)</div><p>Business process reengineering, paperless workflows, recycling, sustainable hardware procurement. Using IT as a lever for organizational sustainability.</p></div>
+      <div class="card-b"><div class="card-b-title">🎯 Today's focus</div><p>How do you systematically identify and redesign wasteful business processes — using a real engineering methodology, not just good intentions?</p></div>
+    </div>
+
+    <div class="callout callout-red">
+      <div class="callout-label">⚠️ Important reminder</div>
+      Your <strong>term paper topic proposal is due today</strong>. We'll dedicate Section 7 of this class to walking through the submission requirements together — make sure you have a draft topic in mind before we get there.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: WHAT IS BPR -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🔁</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 12 min</div>
+        <div class="sec-title">What is Business Process Reengineering?</div>
+        <div class="sec-subtitle">From Hammer &amp; Champy to the sustainability lens</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose"><strong>Business Process Reengineering (BPR)</strong> is the fundamental rethinking and radical redesign of business processes to achieve dramatic improvements in critical measures of performance — cost, quality, service, and speed. The concept was popularized by Michael Hammer and James Champy in their 1993 book "Reengineering the Corporation."</p>
+
+    <div class="callout callout-p">
+      <div class="callout-label">📘 From Velete Ch.5 — BPR vs. incremental improvement</div>
+      Traditional process improvement asks "how can we do this faster?" BPR asks "<strong>why are we doing this at all?</strong>" It questions the existence of a step entirely, not just its efficiency. This distinction matters enormously for sustainability: optimizing a wasteful process (e.g., faster paper approval routing) still leaves the waste in place. BPR asks whether the paper-based approval should exist at all.
+    </div>
+
+    <p class="prose" style="margin-top:18px">When BPR is applied with a sustainability lens, the guiding questions expand beyond cost and speed to include environmental impact:</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🏢 Traditional BPR questions</div>
+        <ul>
+          <li>Can this step be eliminated entirely?</li>
+          <li>Can steps be combined or run in parallel?</li>
+          <li>Can technology replace manual work?</li>
+          <li>Can decision-making be pushed closer to the point of work?</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🌿 Sustainability-lens BPR questions</div>
+        <ul>
+          <li>Does this step consume physical resources (paper, travel, energy) unnecessarily?</li>
+          <li>Can digital alternatives eliminate material/energy waste?</li>
+          <li>Does this process generate waste that could be designed out?</li>
+          <li>What is the carbon/resource footprint of each process step?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">70<span class="stat-u">%</span></div><div class="stat-l">Of BPR initiatives historically failed to meet goals — change management matters as much as the redesign</div></div>
+      <div class="stat"><div class="stat-n">30–50<span class="stat-u">%</span></div><div class="stat-l">Typical resource waste reduction achievable through well-executed sustainability-focused BPR</div></div>
+      <div class="stat"><div class="stat-n">$0</div><div class="stat-l">Capital often required — many BPR wins come from eliminating steps, not buying technology</div></div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: AS-IS / TO-BE -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🗺️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Method · 18 min</div>
+        <div class="sec-title">The AS-IS / TO-BE methodology</div>
+        <div class="sec-subtitle">Mapping current reality, then designing the sustainable future state</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 18 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Every BPR project follows the same fundamental structure: document the <strong>AS-IS</strong> (current state) process in detail, identify waste and inefficiency, then design the <strong>TO-BE</strong> (future state) process that eliminates that waste. This is also exactly the structure of your upcoming Case Study 1 assignment.</p>
+
+    <!-- AS-IS / TO-BE INTERACTIVE PROCESS MAP -->
+    <div class="process-map">
+      <div class="calc-title">🗂️ Interactive: AS-IS vs TO-BE Process Map</div>
+      <div class="calc-subtitle">Example: A university expense reimbursement process. Toggle between current state and redesigned state.</div>
+      <div class="process-toggle">
+        <div class="process-toggle-btn active" onclick="showProcess('asis')">AS-IS (Current)</div>
+        <div class="process-toggle-btn" onclick="showProcess('tobe')">TO-BE (Redesigned)</div>
+      </div>
+
+      <div class="process-flow active" id="process-asis">
+        <div class="process-step">
+          <div class="process-box waste">1. Employee fills paper expense form by hand<div class="process-meta">⏱ 15 min · 🖨️ 1 sheet paper</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box waste">2. Form physically walked to department head for signature<div class="process-meta">⏱ 1-2 days wait · 🚶 physical movement</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box waste">3. Form physically walked to finance office<div class="process-meta">⏱ 1 day wait · 🖨️ photocopied for records</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box waste">4. Finance manually re-enters data into accounting system<div class="process-meta">⏱ 20 min · ⚠️ manual entry errors possible</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box waste">5. Paper form filed in physical cabinet for 7 years (audit requirement)<div class="process-meta">📦 physical storage space · 🖨️ permanent paper record</div></div>
+        </div>
+        <div class="process-summary">
+          <div class="process-stat"><div class="process-stat-n">5-7</div><div class="process-stat-l">days total cycle time</div></div>
+          <div class="process-stat"><div class="process-stat-n">3</div><div class="process-stat-l">sheets of paper per claim</div></div>
+          <div class="process-stat"><div class="process-stat-n">5</div><div class="process-stat-l">manual touchpoints</div></div>
+          <div class="process-stat"><div class="process-stat-n">High</div><div class="process-stat-l">error/loss risk</div></div>
+        </div>
+      </div>
+
+      <div class="process-flow" id="process-tobe">
+        <div class="process-step">
+          <div class="process-box good">1. Employee submits digital form via mobile app, photographs receipts<div class="process-meta">⏱ 3 min · 📱 zero paper</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box good">2. Automated workflow routes to department head — push notification<div class="process-meta">⏱ approval within hours, not days</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box good">3. Approved claim auto-syncs to accounting system — zero re-entry<div class="process-meta">⏱ instant · ✅ no transcription errors</div></div>
+        </div>
+        <div class="process-step"><div class="process-arrow">↓</div></div>
+        <div class="process-step">
+          <div class="process-box good">4. Digital record stored in cloud with audit trail, retained per policy<div class="process-meta">☁️ zero physical storage · 🔍 instantly searchable</div></div>
+        </div>
+        <div class="process-summary">
+          <div class="process-stat"><div class="process-stat-n">&lt;1</div><div class="process-stat-l">day total cycle time</div></div>
+          <div class="process-stat"><div class="process-stat-n">0</div><div class="process-stat-l">sheets of paper per claim</div></div>
+          <div class="process-stat"><div class="process-stat-n">2</div><div class="process-stat-l">touchpoints (employee + approver)</div></div>
+          <div class="process-stat"><div class="process-stat-n">Low</div><div class="process-stat-l">error/loss risk</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">💡 Key insight</div>
+      Notice that the TO-BE redesign didn't just digitize the AS-IS steps one-for-one — it <strong>eliminated</strong> the physical walking, the manual re-entry, and the long-term physical storage entirely. This is the difference between digitization (same process, digital tools) and true reengineering (redesigned process). True BPR usually removes 1-2 entire steps, not just speeds up existing ones.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: BPMN NOTATION -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">📐</div>
+      <div class="sec-meta">
+        <div class="sec-label">Tool Skills · 12 min</div>
+        <div class="sec-title">BPMN 2.0 notation basics</div>
+        <div class="sec-subtitle">The standard visual language for documenting business processes</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">To map AS-IS and TO-BE processes professionally — as you'll need to for Case Study 1 — you need a standard notation. <strong>BPMN (Business Process Model and Notation) 2.0</strong> is the most widely used standard globally, maintained by the Object Management Group (OMG). Tap each symbol below to learn what it means.</p>
+
+    <div class="bpmn-grid">
+      <div class="bpmn-item" onclick="toggleBpmn('start')">
+        <div class="bpmn-shape"><svg width="40" height="40"><circle cx="20" cy="20" r="14" fill="none" stroke="#1a7a50" stroke-width="2.5"/></svg></div>
+        <div class="bpmn-label">Start Event</div>
+      </div>
+      <div class="bpmn-item" onclick="toggleBpmn('task')">
+        <div class="bpmn-shape"><svg width="50" height="40"><rect x="3" y="8" width="44" height="24" rx="6" fill="none" stroke="#5e3aa8" stroke-width="2.5"/></svg></div>
+        <div class="bpmn-label">Task / Activity</div>
+      </div>
+      <div class="bpmn-item" onclick="toggleBpmn('gateway')">
+        <div class="bpmn-shape"><svg width="40" height="40"><rect x="8" y="8" width="24" height="24" fill="none" stroke="#c97d12" stroke-width="2.5" transform="rotate(45 20 20)"/></svg></div>
+        <div class="bpmn-label">Gateway (Decision)</div>
+      </div>
+      <div class="bpmn-item" onclick="toggleBpmn('end')">
+        <div class="bpmn-shape"><svg width="40" height="40"><circle cx="20" cy="20" r="14" fill="none" stroke="#c0392b" stroke-width="4"/></svg></div>
+        <div class="bpmn-label">End Event</div>
+      </div>
+      <div class="bpmn-item" onclick="toggleBpmn('swimlane')">
+        <div class="bpmn-shape"><svg width="50" height="40"><rect x="3" y="3" width="44" height="34" rx="3" fill="none" stroke="#0e7070" stroke-width="2"/><line x1="3" y1="20" x2="47" y2="20" stroke="#0e7070" stroke-width="1.5"/></svg></div>
+        <div class="bpmn-label">Swimlane (Role)</div>
+      </div>
+      <div class="bpmn-item" onclick="toggleBpmn('dataobject')">
+        <div class="bpmn-shape"><svg width="36" height="40"><path d="M4 4 L24 4 L32 12 L32 36 L4 36 Z" fill="none" stroke="#1b9ac4" stroke-width="2"/><path d="M24 4 L24 12 L32 12" fill="none" stroke="#1b9ac4" stroke-width="2"/></svg></div>
+        <div class="bpmn-label">Data Object</div>
+      </div>
+    </div>
+
+    <div class="bpmn-desc" id="bpmn-start">
+      <strong>Start Event (thin circle).</strong> Marks where a process begins — e.g., "Expense incurred" or "Customer places order." Every BPMN diagram needs exactly one (or more) start events to show entry points into the process.
+    </div>
+    <div class="bpmn-desc" id="bpmn-task">
+      <strong>Task / Activity (rounded rectangle).</strong> Represents a single unit of work performed by a person or system — e.g., "Fill expense form" or "Approve request." The most common element in any process map. In sustainability BPR, each task should be annotated with its resource footprint (paper, energy, travel).
+    </div>
+    <div class="bpmn-desc" id="bpmn-gateway">
+      <strong>Gateway / Decision (diamond).</strong> Represents a branch point where the process splits based on a condition — e.g., "Amount &gt; $500?" leading to different approval paths. Critical for identifying where unnecessary complexity or redundant approval layers exist.
+    </div>
+    <div class="bpmn-desc" id="bpmn-end">
+      <strong>End Event (thick circle).</strong> Marks where a process concludes — e.g., "Reimbursement paid" or "Order fulfilled." A process can have multiple end events for different outcomes (approved/rejected).
+    </div>
+    <div class="bpmn-desc" id="bpmn-swimlane">
+      <strong>Swimlane (horizontal/vertical band).</strong> Groups process steps by the role or department responsible — e.g., "Employee," "Department Head," "Finance." Swimlanes immediately reveal handoffs between people/systems — and every handoff is a potential point of delay, error, or waste in a sustainability audit.
+    </div>
+    <div class="bpmn-desc" id="bpmn-dataobject">
+      <strong>Data Object (document icon).</strong> Represents information or a physical artifact flowing through the process — e.g., "Paper expense form" or "Digital approval record." In green BPR, distinguishing physical data objects (paper) from digital ones is the whole point — every physical data object is a sustainability target for elimination.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">📝 For your Case Study 1</div>
+      You will be required to map AS-IS and TO-BE models using BPMN 2.0, ArchiMate, or TOGAF (your choice). Free tools: <strong>Bizagi Modeler</strong>, <strong>Camunda Modeler</strong>, or even draw.io / Lucidchart with a BPMN shape library all work well for student projects. Annotate each task with its estimated resource footprint — this is what makes it a sustainability-focused BPR rather than a generic process map.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: PROCESS WASTE AUDIT -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🔍</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied Method · 15 min</div>
+        <div class="sec-title">Auditing processes for sustainability waste</div>
+        <div class="sec-subtitle">A practical checklist — and a calculator for paper vs. digital impact</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Lean manufacturing identifies "7 wastes" (TIMWOOD). Sustainability-focused BPR adapts this lens specifically to environmental waste in business processes. Use this framework when analyzing any process:</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📄 Material waste</div>
+        <p>Paper, printed forms, physical signatures, photocopies, physical mail/courier. Each represents both a direct material cost AND embodied carbon (paper production, ink, transport).</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🚗 Transport/travel waste</div>
+        <p>Physical movement of documents or people between locations when digital transfer would suffice — internal mail runs, in-person meetings replaceable by video calls, physical document delivery.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">⏳ Waiting/storage waste</div>
+        <p>Documents sitting in physical inboxes or filing cabinets, energy-consuming idle equipment waiting for the next process step, physical archive storage requiring climate control.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔁 Redundancy waste</div>
+        <p>Re-entering the same data multiple times across systems, duplicate approvals, printing a document to read it then digitizing it again — energy and material spent on work that adds no value.</p>
+      </div>
+    </div>
+
+    <!-- PAPER VS DIGITAL CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">📊 Interactive: Paper-to-Digital Impact Calculator</div>
+      <div class="calc-subtitle">Estimate the environmental impact of a paper-based process at your organization's scale.</div>
+      <div class="calc-row">
+        <span class="calc-lbl">Forms processed per month</span>
+        <input type="range" id="formsSlider" min="50" max="5000" value="500" step="50" oninput="calcPaper()">
+        <span class="calc-val" id="formsVal">500</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Avg. sheets per form (incl. copies)</span>
+        <input type="range" id="sheetsSlider" min="1" max="10" value="3" step="1" oninput="calcPaper()">
+        <span class="calc-val" id="sheetsVal">3</span>
+      </div>
+      <div class="result-box">
+        <div><div class="result-n" id="sheetsYear">18,000</div><div class="result-l">Sheets used per year</div></div>
+        <div><div class="result-n" id="treesYear">2.2</div><div class="result-l">Trees consumed per year</div></div>
+        <div><div class="result-n" id="co2Year">86 kg</div><div class="result-l">CO₂e from paper production/year</div></div>
+        <div><div class="result-n" id="costYear">$540</div><div class="result-l">Direct paper + printing cost/year</div></div>
+      </div>
+    </div>
+
+    <div class="callout callout-teal" style="margin-top:16px">
+      <div class="callout-label">📗 From Lamb Ch.3</div>
+      One sheet of A4 paper has an embodied footprint of roughly 4.7g CO₂e (production + transport), and approximately 8,333 sheets come from a single mature tree's pulp equivalent. These numbers seem small per-sheet, but at organizational scale — thousands of forms monthly — the cumulative impact becomes significant, and entirely avoidable through process redesign.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: CASE EXAMPLES -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">💼</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied · 10 min</div>
+        <div class="sec-title">Real-world BPR sustainability case examples</div>
+        <div class="sec-subtitle">Flip each card to see the redesign and its measured impact</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">These examples illustrate sustainability-focused BPR in different sectors — to give you a sense of the range of processes you might select for your own Case Study 1 assignment.</p>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Banking sector</div><div class="sc-q">A bank's loan approval process required 12 physical signatures across 4 departments, taking 3 weeks. What was the sustainability-focused redesign?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Redesign &amp; impact</div><div class="sc-a">Digital signature workflow with parallel (not sequential) approval routing. Result: 3 weeks → 3 days, paper use down 95%, courier trips between branches eliminated entirely (reducing transport emissions). The parallel routing alone — independent of digitization — cut cycle time in half.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">University admin</div><div class="sc-q">A university's course registration required students to physically queue at 5 different offices to collect signatures. What changed?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Redesign &amp; impact</div><div class="sc-a">Centralized online portal with automated eligibility checks replacing manual signature verification. Eliminated thousands of student-hours of physical queuing (and associated campus energy use for waiting areas), removed ~15,000 sheets of paper per semester, and cut registration time from 2 days to 20 minutes.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Manufacturing supply chain</div><div class="sc-q">A garment factory's quality inspection process required physical samples shipped to a central lab 200km away for every batch. What was the redesign?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Redesign &amp; impact</div><div class="sc-a">Remote visual inspection via high-resolution imaging and IoT sensors, with physical sampling only for statistically-flagged anomalies. Reduced courier trips by 80%, cutting transport emissions and turnaround time from 5 days to same-day — directly relevant to Bangladesh's large garment export sector.</div></div>
+      </div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Class Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Think of a process you've personally experienced at EWU (admissions, library, exam registration, ID card replacement) that involves significant paper or physical movement. How would you redesign it using today's framework?</div><div class="discuss-time">Pairs discuss, 2-3 share with class — may become Case Study 1 inspiration!</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: TERM PAPER -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">📝</div>
+      <div class="sec-meta">
+        <div class="sec-label">Administrative · 10 min</div>
+        <div class="sec-title">Term paper proposal — due today!</div>
+        <div class="sec-subtitle">Walk-through of submission requirements</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">As noted at the start of class, your term paper topic proposal is due today. This is worth 5 marks (Project Proposal component) toward your overall 20-mark Term Paper grade. Use this checklist to verify your submission is complete before the end of class.</p>
+
+    <div class="checklist-wrap">
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Topic title</strong> — A clear, specific Green IT research topic (not too broad, e.g., "Energy efficiency of edge computing nodes in Bangladesh's mobile networks" rather than just "Green IT")</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Introduction &amp; background</strong> — 2-3 sentences of context for why this topic matters</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Problem statement</strong> — What specific gap, question, or problem are you addressing?</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Objectives, focus &amp; limitations</strong> — What will your paper accomplish, and what is explicitly out of scope?</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Research questions</strong> — 2-3 specific questions your research will answer</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Planned methodology</strong> — How will you gather and analyze data/evidence? (survey, case study, simulation, literature review, etc.)</div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-box" onclick="this.classList.toggle('checked');this.textContent=this.classList.contains('checked')?'✓':''"></div>
+        <div class="checklist-text"><strong>Expected results &amp; outcomes</strong> — What do you anticipate finding, and what value will it add?</div>
+      </div>
+    </div>
+
+    <div class="callout callout-p" style="margin-top:16px">
+      <div class="callout-label">💡 Good topic ideas connecting to today's BPR content</div>
+      "Sustainability impact of digitizing [a specific Bangladeshi institution's] paper-based workflow," "BPMN-based analysis of e-waste reduction potential in [industry] supply chains," or "Comparative carbon footprint of physical vs. digital document workflows in Bangladesh's banking sector" are all strong, specific, locally-relevant topics building directly on today's class.
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Final Check-in (3 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Quick show of hands: who has their topic finalized? Who needs 1-on-1 guidance before submitting? Instructor will circulate for the remainder of this section.</div><div class="discuss-time">Submit your proposal before leaving today's class</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — BPR for sustainability</div>
+        <div class="sec-subtitle">6 questions on today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 6 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🔁</div><div class="sum-title">BPR vs. incremental fix</div><div class="sum-text">BPR asks "should this step exist?" not just "how do we speed it up?" Radical redesign, not just optimization.</div></div>
+      <div class="sum-card"><div class="sum-icon">🗺️</div><div class="sum-title">AS-IS → TO-BE</div><div class="sum-text">Document current state in detail, identify waste, then redesign. True reengineering eliminates steps, not just digitizes them.</div></div>
+      <div class="sum-card"><div class="sum-icon">📐</div><div class="sum-title">BPMN 2.0</div><div class="sum-text">Standard notation: events (circles), tasks (rectangles), gateways (diamonds), swimlanes (roles), data objects (documents).</div></div>
+      <div class="sum-card"><div class="sum-icon">🔍</div><div class="sum-title">Waste categories</div><div class="sum-text">Material, transport/travel, waiting/storage, redundancy waste — the lens for auditing any process for sustainability gaps.</div></div>
+      <div class="sum-card"><div class="sum-icon">💼</div><div class="sum-title">Real impact</div><div class="sum-text">Banking, university, and manufacturing examples show 50-95% reductions in paper, time, and transport emissions are achievable.</div></div>
+      <div class="sum-card"><div class="sum-icon">📝</div><div class="sum-title">Term paper</div><div class="sum-text">Proposal due today — 7-point checklist covers everything needed for the 5-mark proposal component.</div></div>
+    </div>
+
+    <div class="callout callout-p" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 6 (Jun 22, Sunday)</div>
+      <strong>Going Paperless.</strong> We go deeper into one specific BPR application — eliminating paper entirely from organizational workflows. We'll cover document management systems, digital signature legal frameworks, and the practical roadmap for paperless transformation. Read: <em>Velete Ch.6 (all)</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 6</div>
+      Pick one paper-based process you use regularly (personal or at EWU) and count: how many sheets of paper does it consume per use? How many times do you encounter it per month/semester? Bring your tally — we'll aggregate class data to estimate EWU's potential paper savings.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--p2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 5: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 3: all</div>
+    </div>
+  </div>
+  <div class="sb-card" style="border:1.5px solid #fdecd8;background:#fff9f5">
+    <div class="sb-title" style="color:var(--amber-d)">⚠️ Due Today</div>
+    <div style="font-size:12px;color:var(--ink2);line-height:1.6"><strong>Term paper topic proposal</strong> — 5 marks. Submit before end of class. See Section 7 checklist.</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">BPMN Quick Reference</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>○ Start Event</div>
+      <div>▭ Task / Activity</div>
+      <div>◇ Gateway (Decision)</div>
+      <div>◉ End Event</div>
+      <div>▭▭ Swimlane (Role)</div>
+      <div>📄 Data Object</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 4: Cooling Strategies\nDate: Jun 15, 2025 (Sunday)')">← Class 4</button>
+    <button class="f-btn primary" onclick="alert('Class 6: Going Paperless\nDate: Jun 22, 2025 (Sunday)\nReading: Velete Ch.6')">Class 6: Paperless →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & track shift',time:'5 min'},
+  {title:'What is BPR?',time:'12 min'},
+  {title:'AS-IS / TO-BE method',time:'18 min'},
+  {title:'BPMN notation basics',time:'12 min'},
+  {title:'Process waste audit',time:'15 min'},
+  {title:'Case examples',time:'10 min'},
+  {title:'Term paper proposal',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'What is the key distinction between traditional process improvement and Business Process Reengineering (BPR)?',ctx:'',opts:['BPR is always more expensive than process improvement','Traditional improvement asks "how can we do this faster?" while BPR asks "why are we doing this at all?" — questioning whether a step should exist','BPR only applies to manufacturing, not services','There is no real difference between the two approaches'],ans:1,ex:'This is the fundamental distinction from Hammer & Champy\'s original BPR concept. Process improvement optimizes existing steps (faster, cheaper) while BPR questions the existence of steps entirely. For sustainability purposes, this matters because optimizing a wasteful process (e.g., a faster paper routing system) still leaves the underlying waste in place — true BPR might eliminate the paper step altogether.'},
+  {q:'A team digitizes a paper expense form into a PDF that still requires printing, physical signature, and scanning back in. Is this true Business Process Reengineering?',ctx:'',opts:['Yes — using a PDF instead of paper is BPR by definition','No — this is digitization of the existing process, not reengineering. True BPR would eliminate the print/sign/scan steps entirely using e-signatures and automated routing','Yes — any use of technology counts as reengineering','No — BPR can never involve technology, only organizational changes'],ans:1,ex:'This example highlights the critical difference: digitization keeps the same process structure but adds digital tools (here, the print-sign-scan cycle is preserved). True BPR redesigns the underlying process — eliminating the physical signature requirement via legally valid e-signatures and automated routing, removing steps rather than just digitizing them.'},
+  {q:'In BPMN 2.0 notation, what does a diamond shape represent?',ctx:'',opts:['A start event','A task or activity performed by a person','A gateway — a decision point where the process branches based on a condition','A swimlane representing a department'],ans:2,ex:'The diamond is the Gateway symbol in BPMN, representing a decision point where the process flow branches based on a condition (e.g., "Amount > $500?"). Circles represent events (thin = start, thick = end), rectangles represent tasks, and horizontal/vertical bands represent swimlanes.'},
+  {q:'When auditing a business process for sustainability waste, which of the following is an example of "redundancy waste"?',ctx:'',opts:['A document being physically couriered between two offices 5km apart','The same customer data being manually re-entered into three separate systems because they don\'t communicate with each other','A server running at 10% utilization but drawing 60% of peak power','A data center built in a hot, humid climate with no free cooling availability'],ans:1,ex:'Redundancy waste specifically refers to repeated, duplicate effort that adds no value — like re-entering the same data multiple times across disconnected systems. The courier example is transport waste, the server example is an energy-proportionality issue (from Class 3), and the data center example is a cooling/climate issue (from Class 4) — all real forms of waste, but not redundancy waste specifically.'},
+  {q:'A university process requires students to print a form, walk to 5 different offices for physical signatures, then submit the paper form. Using the AS-IS/TO-BE methodology, what should the FIRST step be?',ctx:'',opts:['Immediately buy new software to digitize the form','Document the AS-IS process in detail — every step, person involved, time taken, and resources consumed — before designing any solution','Skip straight to designing the TO-BE process based on assumptions','Eliminate the entire registration process without analysis'],ans:1,ex:'The AS-IS/TO-BE methodology always starts with rigorous documentation of the current state. Without understanding exactly where time, paper, and movement are consumed in the AS-IS process, you cannot identify what to eliminate or redesign in the TO-BE process — and you risk solving the wrong problem or missing the biggest waste sources.'},
+  {q:'Why does true Business Process Reengineering for sustainability often require ZERO capital investment in some cases?',ctx:'',opts:['BPR projects are required by law to have no budget','Many sustainability wins come from simply eliminating unnecessary steps (e.g., removing a redundant approval layer or unnecessary physical signature) rather than purchasing new technology','Reengineering only applies to companies with no IT budget','Capital investment always makes processes less sustainable'],ans:1,ex:'A key insight from BPR is that some of the highest-impact changes are about elimination, not addition. Removing an unnecessary approval step, combining two redundant reviews into one, or simply asking "does this need a physical signature?" can dramatically reduce waste without buying any new software or hardware — pure process redesign. This is why BPR audits should always ask "can we eliminate this?" before "can we digitize this?"'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcPaper()}
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--p3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showProcess(which){
+  document.querySelectorAll('.process-toggle-btn').forEach((b,i)=>b.classList.toggle('active',(which==='asis'&&i===0)||(which==='tobe'&&i===1)));
+  document.getElementById('process-asis').classList.toggle('active',which==='asis');
+  document.getElementById('process-tobe').classList.toggle('active',which==='tobe');
+}
+function toggleBpmn(id){
+  const def=document.getElementById('bpmn-'+id);
+  const wasOpen=def.classList.contains('show');
+  document.querySelectorAll('.bpmn-desc').forEach(d=>d.classList.remove('show'));
+  if(!wasOpen) def.classList.add('show');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+function calcPaper(){
+  const forms=parseInt(document.getElementById('formsSlider').value);
+  const sheets=parseInt(document.getElementById('sheetsSlider').value);
+  document.getElementById('formsVal').textContent=forms;
+  document.getElementById('sheetsVal').textContent=sheets;
+  const sheetsYear=forms*sheets*12;
+  const trees=sheetsYear/8333;
+  const co2=sheetsYear*4.7/1000; // kg
+  const cost=sheetsYear*0.03; // $0.03/sheet incl printing
+  document.getElementById('sheetsYear').textContent=sheetsYear.toLocaleString();
+  document.getElementById('treesYear').textContent=trees.toFixed(1);
+  document.getElementById('co2Year').textContent=co2.toFixed(0)+' kg';
+  document.getElementById('costYear').textContent='$'+cost.toFixed(0);
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review BPR fundamentals and AS-IS/TO-BE — try again.','Good start — focus on BPMN notation and waste categories.','Decent! Review the case examples and methodology order.','Solid understanding — check any questions you missed.','Strong performance! Well prepared on BPR for sustainability.','Perfect — outstanding grasp of process reengineering!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c5_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c5_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

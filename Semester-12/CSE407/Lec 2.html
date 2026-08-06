@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 2 — Governance & Regulatory Issues</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --b1:#0d2f5c;--b2:#1a5199;--b3:#2e7dd4;--b4:#88c0f8;--b5:#d8eafd;
+  --ink:#111820;--ink2:#364452;--ink3:#6b7b8a;--ink4:#a0afbb;
+  --paper:#f3f5f8;--card:#ffffff;--card2:#f7f8fa;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --teal:#0e7070;--teal-l:#e0f5f5;
+  --border:#dde3ea;--border2:#c8d0d9;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+/* TOP BAR */
+#topbar{position:sticky;top:0;z-index:100;background:rgba(243,245,248,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--b1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--b1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--b5);border-color:var(--b3);color:var(--b1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--b3)}
+.prog-dot.active{background:var(--b1);box-shadow:0 0 0 2px var(--b5)}
+
+/* HERO */
+.hero{background:var(--b1);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%;background:rgba(46,125,212,0.15)}
+.hero-c1{width:420px;height:420px;top:-140px;right:-100px}
+.hero-c2{width:240px;height:240px;bottom:-80px;left:18%}
+.hero-c3{width:120px;height:120px;top:40px;left:58%}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-blue{background:rgba(136,192,248,0.2);color:#88c0f8;border:1px solid rgba(136,192,248,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--b4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--b4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--b1);border-bottom-color:var(--b2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--b1);color:#fff}
+.ol-item.done .ol-num{background:var(--b4);color:var(--b1)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--b1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--b3)}
+.sb-item.active .sb-dot{background:var(--b1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--b1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--b2),var(--b3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--b3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--b5);border-color:var(--b3);color:var(--b1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:0.05s}.section:nth-child(3){animation-delay:0.1s}.section:nth-child(4){animation-delay:0.15s}.section:nth-child(5){animation-delay:0.2s}.section:nth-child(6){animation-delay:0.25s}.section:nth-child(7){animation-delay:0.3s}.section:nth-child(8){animation-delay:0.35s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-b{background:var(--b5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-t{background:var(--teal-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--b5);color:var(--b1);border:1px solid rgba(46,125,212,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--b3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--b5);border-color:var(--b3);color:var(--b1)}
+.section.done .mark-done-btn{background:var(--b5);border-color:var(--b3);color:var(--b1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-blue{background:var(--b5);border-color:var(--b2);color:var(--b1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-teal{background:var(--teal-l);border-color:var(--teal);color:var(--teal)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--b5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--b1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--b5)}
+
+/* FRAMEWORK EXPLORER */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--b3);color:var(--b1)}
+.fw-tab.active{background:var(--b1);color:#fff;border-color:var(--b1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--b1);color:#fff;flex-shrink:0}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* COMPLIANCE CHECKER */
+.comp-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.comp-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.comp-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.comp-q{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.comp-options{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.comp-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);cursor:pointer;transition:var(--t);font-size:13px;color:var(--ink2)}
+.comp-opt:hover{border-color:var(--b3);background:var(--b5)}
+.comp-opt input{accent-color:var(--b2)}
+.comp-result{padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;margin-top:4px;display:none}
+.comp-result.show{display:block}
+.comp-result.good{background:var(--green-l);border-left:3px solid var(--green);color:var(--green-d)}
+.comp-result.warn{background:var(--amber-l);border-left:3px solid var(--amber);color:var(--amber-d)}
+.comp-result.bad{background:var(--red-l);border-left:3px solid var(--red);color:#6b1010}
+.comp-btn{padding:8px 18px;border-radius:20px;background:var(--b1);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:var(--t)}
+.comp-btn:hover{background:var(--b2)}
+
+/* TIMELINE */
+.timeline{margin-top:18px;position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border2);border-radius:2px}
+.tl-item{position:relative;margin-bottom:20px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--b2)}
+.tl-year{font-size:10px;font-weight:700;color:var(--b2);text-transform:uppercase;letter-spacing:0.05em}
+.tl-title{font-size:14px;font-weight:700;color:var(--ink);margin:2px 0}
+.tl-text{font-size:13px;color:var(--ink2);line-height:1.6}
+
+/* REGULATION MAP */
+.reg-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:16px}
+.reg-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:var(--t);cursor:pointer}
+.reg-card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.09);transform:translateY(-2px)}
+.reg-card.expanded .reg-body{display:block}
+.reg-head{padding:12px 14px;display:flex;align-items:center;gap:8px}
+.reg-flag{font-size:20px}
+.reg-info{flex:1}
+.reg-name{font-size:13px;font-weight:700;color:var(--ink)}
+.reg-region{font-size:11px;color:var(--ink3)}
+.reg-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.rs-active{background:#e0f5ee;color:#0e5a30}
+.rs-partial{background:var(--amber-l);color:var(--amber-d)}
+.rs-emerging{background:var(--b5);color:var(--b1)}
+.reg-body{display:none;padding:0 14px 12px;font-size:12px;color:var(--ink3);line-height:1.6;border-top:1px solid var(--border)}
+.reg-expand-hint{font-size:10px;color:var(--ink4);padding:0 14px 10px;font-style:italic}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--b1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,0.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--b4);margin-bottom:8px}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--b1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--b3)}
+.qp-dot.active{background:var(--b2)}
+.q-block{display:none}
+.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--b2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--b3);background:var(--b5);color:var(--b1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--b1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--b2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--b1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--b5);color:var(--b1)}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+/* FOOTER */
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:0.4;pointer-events:none}
+.f-btn.primary{background:var(--b1);color:#fff;border-color:var(--b1)}
+.f-btn.primary:hover{background:var(--b2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 2 — Governance & Regulatory Issues</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-blue">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 2 of 22</span>
+      <span class="chip chip-gray">Jun 8, 2025 · Sunday · 1h 30min</span>
+    </div>
+    <h1>Governance &amp; <em>Regulatory Issues</em></h1>
+    <p class="hero-sub">Who sets the rules for Green IT — and how compliance, standards, and policy shape what engineers must build.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.2 (all)</span>
+      <span class="ref">📗 Lamb Ch.3 (all)</span>
+      <span class="ref">📗 Lamb Ch.4 (all)</span>
+      <span class="ref">🎯 CO1</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">195</div><div class="h-stat-lbl">Countries signed the Paris Agreement on climate</div></div>
+      <div class="h-stat"><div class="h-stat-num">€35M</div><div class="h-stat-lbl">Max GDPR fine — showing regulators mean business</div></div>
+      <div class="h-stat"><div class="h-stat-num">2030</div><div class="h-stat-lbl">EU target: all new data centers carbon-neutral</div></div>
+      <div class="h-stat"><div class="h-stat-num">ISO 14001</div><div class="h-stat-lbl">The world's most-used environmental management standard</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Why Governance</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Key Frameworks</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Regulations Worldwide</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Bangladesh & SREDA</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Compliance in Practice</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Engineer's Obligations</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; homework review</div>
+        <div class="sec-subtitle">Class 1 key ideas + PUE homework debrief</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Welcome back. Before we move to today's topic, let's quickly anchor the key ideas from Class 1 — and hear your homework findings.</p>
+
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">⚡ The problem</div><p>IT consumes ~2–4% of global electricity. Data centers, networks, and devices are all growing faster than the grid can supply cleanly.</p></div>
+      <div class="card-b"><div class="card-b-title">🗺️ Two tracks</div><p>Track 1: make IT use less energy. Track 2: use IT to make the world more sustainable. Both needed, both complement each other.</p></div>
+      <div class="card-b"><div class="card-b-title">📐 PUE reminder</div><p>PUE = Total facility power ÷ IT equipment power. Perfect = 1.0. Industry average = 1.58. World-class = 1.1–1.2.</p></div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">What data center did you research? What was its PUE? What was the operator doing to improve it — and what would <strong>you</strong> do differently?</div><div class="discuss-time">2–3 students share, brief class reaction</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: WHY GOVERNANCE -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">⚖️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">Why governance &amp; regulation matter</div>
+        <div class="sec-subtitle">The case for external rules when market incentives fall short</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">In Class 1 we saw that Green IT saves money — so why don't organizations do it automatically? The answer reveals why governance and regulation exist in the first place.</p>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">📗 Lamb Ch.3 — The market failure argument</div>
+      Energy costs are often shared (building-wide electricity bills) rather than charged to the team that wastes it. When the person making the decision doesn't bear the cost, they under-invest in efficiency. Regulation corrects this market failure by making the cost explicit and mandatory.
+    </div>
+
+    <p class="prose">There are three fundamental reasons why voluntary action alone is insufficient:</p>
+
+    <ul class="big-list">
+      <li><div class="bl-icon">🏦</div><div><strong>Short-termism</strong> — Organizations optimize for quarterly results. A $500K energy efficiency investment with a 3-year payback loses to a $500K marketing campaign with a 3-month payback — unless rules force a longer horizon.</div></li>
+      <li><div class="bl-icon">🎮</div><div><strong>Free-rider problem</strong> — If competitors don't invest in green IT, you're at a cost disadvantage if you do. Regulation levels the playing field so nobody gains by cutting corners on sustainability.</div></li>
+      <li><div class="bl-icon">🌍</div><div><strong>Externalities</strong> — CO₂ emissions harm everyone, not just the emitter. A factory or data center doesn't pay for climate damage unless forced to. Carbon pricing and efficiency standards internalize these costs.</div></li>
+      <li><div class="bl-icon">📊</div><div><strong>Information asymmetry</strong> — Consumers and investors can't assess a company's true environmental performance without standardized reporting. Governance mandates disclosure, enabling better market decisions.</div></li>
+    </ul>
+
+    <div class="callout callout-blue">
+      <div class="callout-label">💡 Key distinction</div>
+      <strong>Governance</strong> = the internal systems, policies, and processes an organization uses to manage its environmental impact (voluntary). <strong>Regulation</strong> = externally imposed legal requirements with penalties for non-compliance (mandatory). Both matter — governance shapes culture, regulation enforces minimums.
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Quick Discussion (3 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">A startup claims they can't afford to invest in energy efficiency right now — they'll do it "when they scale." Is this a reasonable position? What are the risks of waiting?</div><div class="discuss-time">Pairs → 1 pair shares</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: KEY FRAMEWORKS -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">🏗️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Content · 20 min</div>
+        <div class="sec-title">Key Green IT frameworks &amp; standards</div>
+        <div class="sec-subtitle">Tap each framework to explore what it requires and who it applies to</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 20 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Dozens of frameworks, standards, and certifications exist. As an engineer, you need to know which ones are legally binding, which are voluntary best-practice, and what each one actually requires you to do.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showFW('iso14001')">ISO 14001</div>
+      <div class="fw-tab" onclick="showFW('energystar')">Energy Star</div>
+      <div class="fw-tab" onclick="showFW('ghg')">GHG Protocol</div>
+      <div class="fw-tab" onclick="showFW('tcfd')">TCFD</div>
+      <div class="fw-tab" onclick="showFW('eueed')">EU EED</div>
+      <div class="fw-tab" onclick="showFW('weee')">WEEE Directive</div>
+    </div>
+
+    <div class="fw-panel active" id="fw-iso14001">
+      <div class="fw-header"><div class="fw-badge">ISO 14001</div><div><div class="fw-name">Environmental Management Systems</div><div class="fw-org">International Organization for Standardization (ISO) · Voluntary certification</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">The world's most widely adopted environmental management standard. It doesn't specify environmental performance targets — instead it provides a framework for organizations to build systematic processes for identifying, managing, and improving their environmental impact. <strong>Over 300,000 organizations</strong> in 171 countries are certified.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">What it requires</div><div class="fw-item-text">Identify environmental aspects, set objectives, implement controls, monitor, audit, and continuously improve. PDCA (Plan-Do-Check-Act) cycle.</div></div>
+        <div class="fw-item"><div class="fw-item-title">IT relevance</div><div class="fw-item-text">Data centers, e-waste disposal, energy monitoring, supplier assessment. Often required for ISO 14001 certification of the parent organization.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Who needs it</div><div class="fw-item-text">Any organization wanting to demonstrate environmental commitment to clients, investors, or government. Often required in EU/UK public sector procurement.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Penalty for non-compliance</div><div class="fw-item-text">None (voluntary) — but loss of certification can mean loss of contracts. Many global clients require it of suppliers.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-energystar">
+      <div class="fw-header"><div class="fw-badge" style="background:#2e7dd4">Energy Star</div><div><div class="fw-name">Energy Efficiency Labeling Program</div><div class="fw-org">US Environmental Protection Agency (EPA) · Voluntary certification</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">A labeling program that identifies energy-efficient products. Equipment earns the Energy Star label by meeting EPA performance standards — typically the top 25% of energy efficiency in its category. It covers computers, monitors, servers, storage, network equipment, and data centers.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">For hardware</div><div class="fw-item-text">Processors, laptops, desktops, monitors, servers. Energy Star computers use 30–65% less energy than standard models.</div></div>
+        <div class="fw-item"><div class="fw-item-title">For data centers</div><div class="fw-item-text">Energy Star for Data Centers requires PUE reporting and achieving top 25% efficiency. EPA provides a benchmarking tool.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Procurement impact</div><div class="fw-item-text">US federal agencies are legally required to purchase Energy Star products. Many corporations and universities follow the same policy.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh relevance</div><div class="fw-item-text">Not legally binding locally, but EU/US clients may require it of their suppliers. Increasingly referenced in government ICT procurement policies.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-ghg">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">GHG Protocol</div><div><div class="fw-name">Greenhouse Gas Protocol</div><div class="fw-org">WRI &amp; WBCSD · Most widely used emissions accounting standard</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">The GHG Protocol provides the accounting framework for nearly every corporate and government carbon footprint measurement. It defines Scope 1, 2, and 3 emissions — a classification system every engineer working in sustainability needs to understand deeply.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Scope 1 (direct)</div><div class="fw-item-text">Emissions from sources owned or controlled by the company. E.g., diesel generators in your data center, company vehicles.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Scope 2 (indirect — energy)</div><div class="fw-item-text">Emissions from purchased electricity, heat, or steam. For most IT organizations, this is the largest scope. Measured by electricity consumption × grid emission factor.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Scope 3 (value chain)</div><div class="fw-item-text">All other indirect emissions: manufacturing of hardware, employee commuting, business travel, use of sold products. Often 70–85% of a tech company's total footprint.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Why engineers need this</div><div class="fw-item-text">Scope 3 includes your users' devices and your hardware suppliers. Engineers who specify hardware or design for long device lifespans directly impact Scope 3.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-tcfd">
+      <div class="fw-header"><div class="fw-badge" style="background:#5a3aab">TCFD</div><div><div class="fw-name">Task Force on Climate-related Financial Disclosures</div><div class="fw-org">Financial Stability Board · Now mandatory in UK, EU, NZ; adopted globally</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">TCFD requires companies to disclose how climate-related risks and opportunities affect their business — covering governance, strategy, risk management, and metrics. Originally voluntary, it is now mandatory for large companies in the UK, EU (as CSRD), New Zealand, and others.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Four pillars</div><div class="fw-item-text">Governance (board oversight), Strategy (climate scenario analysis), Risk Management (identification and response), Metrics &amp; Targets (GHG data, energy intensity).</div></div>
+        <div class="fw-item"><div class="fw-item-title">IT system risk</div><div class="fw-item-text">Physical risk: flooding/heat threatening data centers. Transition risk: carbon taxes making energy-intensive operations expensive. Both must be disclosed.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering implication</div><div class="fw-item-text">IT infrastructure resilience assessments, energy intensity metrics, and climate scenario testing are now C-suite and board-level concerns — engineers provide the data.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh watch</div><div class="fw-item-text">Not yet mandatory locally, but multinational clients operating in Bangladesh are subject to it. Expect trickle-down requirements in supply chain by 2026–2028.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-eueed">
+      <div class="fw-header"><div class="fw-badge" style="background:#003f8a">EU EED</div><div><div class="fw-name">EU Energy Efficiency Directive</div><div class="fw-org">European Union · Legally binding for EU member states</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">The EU Energy Efficiency Directive (revised 2023) sets binding targets for reducing energy consumption across the EU economy, with specific provisions for data centers. From September 2024, data centers above 500 kW must register and report energy performance indicators to the EU Commission.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Data center requirements</div><div class="fw-item-text">PUE reporting, water usage effectiveness (WUE), renewable energy share, server utilization rate, and e-waste data — all mandatory for large data centers.</div></div>
+        <div class="fw-item"><div class="fw-item-title">2030 target</div><div class="fw-item-text">EU overall energy efficiency improvement target of 32.5%. Data centers must be carbon-neutral by 2030 under the European Green Deal.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Penalties</div><div class="fw-item-text">Member states set penalties, but non-compliance risks significant fines and public naming — reputationally damaging for large operators like AWS, Google, Microsoft EU.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh relevance</div><div class="fw-item-text">Direct EU market access requires compliance. Bangladeshi IT/ITES companies serving EU clients increasingly face contractual EED-aligned requirements.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-weee">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e7070">WEEE</div><div><div class="fw-name">Waste Electrical &amp; Electronic Equipment Directive</div><div class="fw-org">European Union · Legally binding; adopted in many other nations</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">WEEE makes manufacturers, importers, and distributors of electronics responsible for the end-of-life collection, recycling, and recovery of their products. It bans e-waste from landfill and sets recovery targets. The RoHS Directive (Restriction of Hazardous Substances) complements it by restricting toxic materials in electronics from the outset.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Who is affected</div><div class="fw-item-text">Anyone who manufactures, imports, or sells electrical/electronic equipment in the EU. Includes software companies that sell hardware bundled with services.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Collection targets</div><div class="fw-item-text">85% of e-waste generated must be collected for recycling. Recovery rates set by equipment category (IT/telecom equipment: 75% recovery rate).</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineer's role</div><div class="fw-item-text">Design for disassembly, use of recyclable materials, avoiding hazardous substances, and extending product lifespans all directly reduce WEEE compliance burden.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh context</div><div class="fw-item-text">Bangladesh has the E-Waste Management Rules 2021, modeled partly on WEEE. WEEE is directly applicable to Bangladeshi exporters selling into the EU market.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: REGULATIONS WORLDWIDE -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🗺️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Global Landscape · 15 min</div>
+        <div class="sec-title">Green IT regulations around the world</div>
+        <div class="sec-subtitle">Tap any region to see its key regulations and enforcement status</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Green IT regulation varies dramatically by region — from comprehensive binding frameworks in the EU, to voluntary programs in the US, to emerging rules in South Asia. Engineers working globally need to know which rules apply where.</p>
+
+    <div class="reg-map">
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇪🇺</div><div class="reg-info"><div class="reg-name">European Union</div><div class="reg-region">Most comprehensive framework globally</div></div><span class="reg-status rs-active">Active</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">Key rules: EU Energy Efficiency Directive (data center reporting), EU Green Deal (carbon neutrality by 2050), CSRD (mandatory sustainability reporting), WEEE/RoHS (e-waste), Ecodesign Regulation (product efficiency). All are legally binding with significant penalties.</div>
+      </div>
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇺🇸</div><div class="reg-info"><div class="reg-name">United States</div><div class="reg-region">Mix of federal & state-level rules</div></div><span class="reg-status rs-partial">Partial</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">Energy Star (voluntary but widely adopted), Federal Energy Management Program (mandatory for federal agencies), California Title 24 (building energy efficiency), SEC climate disclosure rules (2024). No single federal Green IT mandate, but state-level rules vary significantly.</div>
+      </div>
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇬🇧</div><div class="reg-info"><div class="reg-name">United Kingdom</div><div class="reg-region">Post-Brexit independent framework</div></div><span class="reg-status rs-active">Active</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">UK Streamlined Energy &amp; Carbon Reporting (SECR) — mandatory for large companies. TCFD mandatory for premium listed companies and large companies. UK Net Zero Strategy targets 78% emissions reduction by 2035.</div>
+      </div>
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇨🇳</div><div class="reg-info"><div class="reg-name">China</div><div class="reg-region">Rapid expansion of data center rules</div></div><span class="reg-status rs-active">Active</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">China mandates PUE ≤ 1.3 for all new large data centers (2021 MIIT guidelines). "East Data West Compute" policy moves data centers to renewable-powered western provinces. China's carbon market covers energy sector; IT sector inclusion expanding.</div>
+      </div>
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇸🇬</div><div class="reg-info"><div class="reg-name">Singapore</div><div class="reg-region">Leading example for Southeast Asia</div></div><span class="reg-status rs-active">Active</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">Singapore Green Data Centre Standard (SS564), moratorium on new data centers 2019–2022 to control energy use, Green Mark certification for buildings. Mandatory carbon tax ($25 SGD/tonne, rising to $80 by 2030).</div>
+      </div>
+      <div class="reg-card" onclick="this.classList.toggle('expanded')">
+        <div class="reg-head"><div class="reg-flag">🇧🇩</div><div class="reg-info"><div class="reg-name">Bangladesh</div><div class="reg-region">Emerging — growing rapidly</div></div><span class="reg-status rs-emerging">Emerging</span></div>
+        <div class="reg-expand-hint">Tap to expand</div>
+        <div class="reg-body">E-Waste Management Rules 2021 (modeled on WEEE), SREDA Act 2012 (renewable energy target: 40% by 2041), Bangladesh National Energy Efficiency &amp; Conservation Master Plan. Compliance currently weak, but enforcement is tightening, especially under donor-funded programs.</div>
+      </div>
+    </div>
+
+    <div class="timeline" style="margin-top:24px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:16px">📅 Key regulatory milestones — Green IT timeline</div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1992</div><div class="tl-title">Energy Star launched (US EPA)</div><div class="tl-text">First major voluntary energy efficiency labeling program for electronics. Over 75 billion kWh saved annually by 2020.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1996 / Rev. 2015</div><div class="tl-title">ISO 14001 published</div><div class="tl-text">Environmental management standard adopted globally. Became a common requirement in corporate procurement and supply chains worldwide.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2003</div><div class="tl-title">EU WEEE &amp; RoHS Directives</div><div class="tl-text">Landmark e-waste and hazardous substances rules in electronics — set the global template for producer responsibility.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2015</div><div class="tl-title">Paris Agreement</div><div class="tl-text">195 countries commit to limiting warming to 1.5°C. Accelerated national policy action on energy and emissions, directly driving Green IT regulation.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2021</div><div class="tl-title">Bangladesh E-Waste Rules 2021</div><div class="tl-text">First comprehensive e-waste regulation in Bangladesh. Sets producer responsibility and recycling requirements — directly relevant to local IT companies.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2024</div><div class="tl-title">EU EED data center reporting mandatory</div><div class="tl-text">Large data centers in the EU must now register and report PUE, water usage, renewable energy share, and server utilization to the European Commission.</div></div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: BANGLADESH & SREDA -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-t">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Focus · 10 min</div>
+        <div class="sec-title">Bangladesh regulatory landscape &amp; SREDA</div>
+        <div class="sec-subtitle">What rules apply here — and what's coming</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Bangladesh's Green IT regulatory environment is young but evolving fast. Engineers starting their careers now will see these rules tighten significantly over the next 5–10 years. Understanding the current framework — and where it's heading — is a professional necessity.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📋 SREDA Act 2012</div>
+        <p>Sustainable and Renewable Energy Development Authority — Bangladesh's primary body for renewable energy policy. Targets: 10% renewable by 2021 (missed), 40% by 2041. Oversees solar, wind, and energy efficiency programs. Engineers can engage SREDA for project approvals and incentives.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">♻️ E-Waste Management Rules 2021</div>
+        <p>Requires manufacturers, importers, and dealers of EEE (Electrical &amp; Electronic Equipment) to register, collect, and ensure proper recycling of e-waste. Sets up Extended Producer Responsibility (EPR) — the same model as EU WEEE. Enforcement is currently limited but growing.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏛️ ICT Policy 2018</div>
+        <p>Bangladesh's national ICT policy includes provisions for green ICT, energy efficiency in government data centers, and promotion of renewable-powered ICT infrastructure under the "Digital Bangladesh" vision. Provides a framework for public procurement of green IT.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔌 Bangladesh Energy Efficiency Master Plan</div>
+        <p>Sets economy-wide efficiency targets including the industrial and commercial ICT sector. The Bangladesh Energy Regulatory Commission (BERC) sets electricity tariffs that influence data center operating economics.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-teal" style="margin-top:16px">
+      <div class="callout-label">⚠️ The compliance gap</div>
+      Many of Bangladesh's Green IT rules exist on paper but have weak enforcement mechanisms. This creates a <strong>compliance window</strong> — companies that build green IT practices now will be ahead of the curve when enforcement tightens, rather than scrambling to retrofit later. The cost of proactive compliance is a fraction of the cost of reactive compliance.
+    </div>
+
+    <div class="table-wrap">
+      <table class="styled">
+        <thead><tr><th>Regulation</th><th>Applies to</th><th>Key requirement</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>E-Waste Rules 2021</strong></td><td>Manufacturers, importers, dealers</td><td>Register, collect, recycle EEE waste</td><td style="color:#1a7a50;font-weight:700">Active</td></tr>
+          <tr><td><strong>SREDA Act 2012</strong></td><td>Energy producers &amp; large consumers</td><td>Renewable energy targets &amp; efficiency reporting</td><td style="color:#c97d12;font-weight:700">Partial enforcement</td></tr>
+          <tr><td><strong>ICT Policy 2018</strong></td><td>Government ICT procurement</td><td>Green IT preference in procurement</td><td style="color:#c97d12;font-weight:700">Inconsistent</td></tr>
+          <tr><td><strong>Building Code (BNBC)</strong></td><td>New commercial buildings</td><td>Energy efficiency requirements for data centers</td><td style="color:#1a5199;font-weight:700">Emerging</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: COMPLIANCE IN PRACTICE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🔍</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied · 10 min</div>
+        <div class="sec-title">Compliance in practice</div>
+        <div class="sec-subtitle">How organizations actually implement and prove compliance</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Knowing a regulation exists is not enough. Engineers need to understand <strong>how compliance actually works</strong> — what evidence is required, who audits it, and what happens when things go wrong.</p>
+
+    <div class="callout callout-blue">
+      <div class="callout-label">📘 Velete Ch.2 — The compliance cycle</div>
+      Compliance is not a one-time event — it's an ongoing process: <strong>Assess → Plan → Implement → Monitor → Report → Audit → Improve</strong>. Organizations that treat compliance as a project (one-time) consistently fail audits. Those that embed it into operations (continuous) consistently pass.
+    </div>
+
+    <!-- INTERACTIVE COMPLIANCE CHECKER -->
+    <div class="comp-wrap">
+      <div class="comp-title">🧩 Scenario: Is this organization compliant?</div>
+      <div class="comp-subtitle">A medium-sized Dhaka IT company (200 employees, 50 servers, exports software to Germany). Answer each question:</div>
+
+      <div class="comp-q">1. They buy new servers every 3 years and throw old ones in general waste bins.</div>
+      <div class="comp-options" id="cq1">
+        <label class="comp-opt"><input type="radio" name="cq1" value="yes"> ✅ Compliant — they replace regularly, which is good practice</label>
+        <label class="comp-opt"><input type="radio" name="cq1" value="no"> ❌ Non-compliant — they must follow E-Waste Rules 2021 for disposal</label>
+        <label class="comp-opt"><input type="radio" name="cq1" value="partial"> ⚠️ Partially compliant — replacement is fine but disposal is wrong</label>
+      </div>
+      <button class="comp-btn" onclick="checkComp('cq1','partial','The replacement cycle is actually good practice — shorter cycles mean better energy efficiency. However, throwing IT equipment in general waste is a direct violation of Bangladesh E-Waste Rules 2021, which requires certified recycling. Their German client is also subject to WEEE, which may contractually require compliant disposal by suppliers.')">Check answer</button>
+      <div class="comp-result" id="cr1"></div>
+
+      <div class="comp-q" style="margin-top:20px">2. They measure their electricity consumption monthly but don't track carbon emissions or report to any framework.</div>
+      <div class="comp-options" id="cq2">
+        <label class="comp-opt"><input type="radio" name="cq2" value="yes"> ✅ Fine — no mandatory carbon reporting in Bangladesh yet</label>
+        <label class="comp-opt"><input type="radio" name="cq2" value="no"> ❌ Non-compliant — all companies must report carbon</label>
+        <label class="comp-opt"><input type="radio" name="cq2" value="partial"> ⚠️ Technically fine now, but a business risk — German client may soon require GHG Protocol reporting</label>
+      </div>
+      <button class="comp-btn" onclick="checkComp('cq2','partial','Correct. Carbon reporting is not yet mandatory in Bangladesh for companies of this size. However, the German client is subject to CSRD from 2025 onwards, which requires Scope 3 reporting — meaning their Bangladeshi supplier\'s emissions must be reported too. The company is exposed to losing this contract if they don\'t start building GHG Protocol-aligned reporting soon.')">Check answer</button>
+      <div class="comp-result" id="cr2"></div>
+
+      <div class="comp-q" style="margin-top:20px">3. They source 20% of their office electricity from a solar rooftop system and have an informal recycling bin for old equipment.</div>
+      <div class="comp-options" id="cq3">
+        <label class="comp-opt"><input type="radio" name="cq3" value="yes"> ✅ Compliant and forward-thinking on both counts</label>
+        <label class="comp-opt"><input type="radio" name="cq3" value="no"> ❌ The solar system doesn't count unless SREDA-registered</label>
+        <label class="comp-opt"><input type="radio" name="cq3" value="partial"> ⚠️ Solar is good but informal recycling bins don't satisfy E-Waste Rules — need certified recycler</label>
+      </div>
+      <button class="comp-btn" onclick="checkComp('cq3','partial','Correct. The solar rooftop system is excellent and SREDA-approved net metering does count toward renewable energy targets. However, an \"informal recycling bin\" does not satisfy E-Waste Rules 2021 — equipment must go to a certified recycler who provides documentation. The good intentions are there; the formal process needs to be completed.')">Check answer</button>
+      <div class="comp-result" id="cr3"></div>
+    </div>
+
+    <div class="scenario-grid" style="margin-top:20px">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Audit scenario</div><div class="sc-q">An ISO 14001 auditor visits your data center. What is the first document they will ask for?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">The Environmental Management System (EMS) manual and your environmental aspects register — listing every activity that has an environmental impact, its significance, and your controls. Without this, the audit fails immediately.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Procurement scenario</div><div class="sc-q">Your company bids for a UK government IT contract. They require ISO 14001 and TCFD disclosure. You have neither. How long would it realistically take?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">ISO 14001 certification typically takes 6–18 months to implement and certify from scratch. TCFD-aligned reporting takes 3–6 months to develop. Realistically 12–18 months minimum. This is why regulatory awareness must be built into business development strategy — not handled after winning the bid.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Design scenario</div><div class="sc-q">You're specifying servers for a new Dhaka data center that will host EU clients. Which standards should influence your hardware selection?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Energy Star (efficiency labeling), EU Ecodesign Regulation compliance (product efficiency), WEEE-compliant end-of-life disposal plan, and GHG Protocol Scope 2 calculation for electricity. Choosing EU-compliant hardware from day one avoids costly retrofitting when the client requests an ESG audit.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: ENGINEER'S OBLIGATIONS -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🛠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practical · 10 min</div>
+        <div class="sec-title">The engineer's regulatory obligations</div>
+        <div class="sec-subtitle">What governance and compliance actually means for your day-to-day work</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Regulations aren't just management's problem. Engineers are the ones who implement the technical controls that make compliance possible — or impossible. Here's what governance means at the engineering level.</p>
+
+    <ul class="big-list">
+      <li><div class="bl-icon">📊</div><div><strong>Metering &amp; monitoring</strong> — Compliance starts with measurement. Installing smart meters, DCIM (Data Center Infrastructure Management) software, and energy dashboards is engineering work. You can't report what you don't measure.</div></li>
+      <li><div class="bl-icon">📋</div><div><strong>Asset inventory &amp; lifecycle tracking</strong> — E-waste rules require knowing what equipment you have, when it was deployed, and when it is retired. Engineers who build CMDB (Configuration Management Database) systems directly enable compliance.</div></li>
+      <li><div class="bl-icon">🔒</div><div><strong>Evidence generation</strong> — Auditors require documented evidence: energy readings, disposal certificates, vendor certifications. Automated reporting pipelines, not spreadsheets, are the professional standard.</div></li>
+      <li><div class="bl-icon">🏗️</div><div><strong>Design for compliance</strong> — Choosing WEEE-compliant hardware, designing systems that enable renewable energy integration, and specifying energy-efficient configurations are engineering decisions with regulatory consequences.</div></li>
+      <li><div class="bl-icon">⚠️</div><div><strong>Flagging non-compliance risk</strong> — Engineers who discover practices that create regulatory risk (e.g., improper e-waste disposal, fraudulent energy reporting) have a professional obligation to escalate. Engineering codes of conduct worldwide require acting in the public interest.</div></li>
+    </ul>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">⚠️ Professional responsibility</div>
+      <strong>From EP5 (Complex Engineering Activities):</strong> When a design involves diverse stakeholders with varying needs — regulators, clients, communities, future generations — engineers must identify and account for all their interests. Green IT governance is precisely this kind of complex multi-stakeholder engineering challenge.
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">1</div>
+        <div><div class="discuss-text">Your manager tells you to skip the certified e-waste recycler and just throw old servers in the bin to save BDT 15,000. You know this violates E-Waste Rules 2021. What do you do? Walk through your reasoning step by step.</div><div class="discuss-time">Pairs → open class discussion → instructor guidance</div></div>
+      </div>
+      <div class="discuss-item">
+        <div class="discuss-num">2</div>
+        <div><div class="discuss-text">Bangladesh's E-Waste Rules currently have weak enforcement. Does weak enforcement change whether you should comply? What principles guide your answer?</div><div class="discuss-time">Open class discussion</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — governance &amp; regulation</div>
+        <div class="sec-subtitle">6 questions on today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 3 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">⚖️</div><div class="sum-title">Why governance exists</div><div class="sum-text">Market failures — short-termism, free riders, externalities — mean voluntary action is insufficient. Regulation corrects this.</div></div>
+      <div class="sum-card"><div class="sum-icon">🏗️</div><div class="sum-title">Know your frameworks</div><div class="sum-text">ISO 14001, Energy Star, GHG Protocol, TCFD, EU EED, WEEE — each has different scope, enforceability, and engineering implications.</div></div>
+      <div class="sum-card"><div class="sum-icon">🌍</div><div class="sum-title">Global patchwork</div><div class="sum-text">Regulations differ by region. EU leads with binding rules. Bangladesh has emerging rules with weak enforcement — for now.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Bangladesh context</div><div class="sum-text">E-Waste Rules 2021 and SREDA Act 2012 are the key local rules. Export market clients (EU/UK) increasingly extend their own regulations to suppliers.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔍</div><div class="sum-title">Compliance = process</div><div class="sum-text">Assess → Plan → Implement → Monitor → Report → Audit → Improve. It's a continuous cycle, not a one-time project.</div></div>
+      <div class="sum-card"><div class="sum-icon">🛠️</div><div class="sum-title">Engineers enable compliance</div><div class="sum-text">Metering, asset tracking, evidence generation, design for compliance — technical engineering work is what makes regulatory compliance achievable.</div></div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 3 (Jun 11, Wednesday)</div>
+      <strong>Minimizing Power Usage — Part 1.</strong> We move from policy to practice: how do processors, devices, and systems reduce their actual power consumption? Read: <em>Velete Ch.3 (all)</em> and <em>Lamb Ch.2 pp.30–37</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 3</div>
+      Look up Bangladesh's grid emission factor (kg CO₂ per kWh). Then calculate the Scope 2 emissions for a 10-server office consuming 500W per server, running 12 hours/day for 365 days. Bring the calculation to class — we'll use it in Class 3's energy minimization section.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--b2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 2: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 3: all<br>Chapter 4: all</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Key Frameworks</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.9">
+      <div>📋 ISO 14001 — EMS standard</div>
+      <div>⭐ Energy Star — efficiency labels</div>
+      <div>🌫️ GHG Protocol — Scope 1/2/3</div>
+      <div>📊 TCFD — climate disclosure</div>
+      <div>🇪🇺 EU EED — data center rules</div>
+      <div>♻️ WEEE — e-waste directive</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<!-- FOOTER -->
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 1: The Importance of Green IT\nDate: Jun 4, 2025 (Wednesday)')">← Class 1</button>
+    <button class="f-btn primary" onclick="alert('Class 3: Minimizing Power Usage — Part 1\nDate: Jun 11, 2025 (Wednesday)\nReading: Velete Ch.3 | Lamb Ch.2 pp.30–37')">Class 3: Power →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & homework',time:'5 min'},
+  {title:'Why governance matters',time:'10 min'},
+  {title:'Key frameworks & standards',time:'20 min'},
+  {title:'Regulations worldwide',time:'15 min'},
+  {title:'Bangladesh & SREDA',time:'10 min'},
+  {title:'Compliance in practice',time:'10 min'},
+  {title:"Engineer's obligations",time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'What is the primary reason Green IT governance is needed, even when companies know it saves money?',ctx:'',opts:['Engineers don\'t know how to build efficient systems','Market failures — short-termism, free riders, and externalities — prevent voluntary action from being sufficient','Government agencies want to collect more taxes','Green IT doesn\'t actually save money on its own'],ans:1,ex:'Market failures are the core answer. Short-termism (quarterly focus), the free-rider problem (competitors don\'t pay, so why should I?), and externalities (emitters don\'t pay for climate damage) all prevent markets from self-correcting. Regulation forces a level playing field.'},
+  {q:'A Bangladeshi IT company exports software to France. Which EU framework would most directly affect their hardware procurement decisions?',ctx:'',opts:['ISO 14001','WEEE Directive — end-of-life e-waste rules for electronics','GHG Protocol','TCFD climate disclosure'],ans:1,ex:'WEEE (Waste Electrical and Electronic Equipment Directive) directly governs how electronic products must be disposed of in the EU, and increasingly extends to supply chains. Their French client may contractually require WEEE-compliant hardware disposal. ISO 14001 and TCFD are broader management/reporting frameworks.'},
+  {q:'Which emissions scope covers a software company\'s biggest carbon source: manufacturing of employee laptops and servers?',ctx:'Recall: Scope 1 = direct emissions. Scope 2 = purchased electricity. Scope 3 = all other indirect.',opts:['Scope 1','Scope 2','Scope 3','None — manufacturing emissions are the hardware maker\'s problem, not the software company\'s'],ans:2,ex:'Scope 3 covers all indirect emissions in the value chain — including the upstream manufacturing of hardware purchased by the company. For most tech companies, Scope 3 (hardware + user devices) is 70–85% of total footprint. "That\'s the manufacturer\'s problem" is legally wrong under GHG Protocol corporate accounting standards.'},
+  {q:'ISO 14001 certification guarantees that a company has achieved a specific minimum level of environmental performance (e.g., PUE ≤ 1.5). True or false?',ctx:'',opts:['True — ISO 14001 sets specific performance targets','False — ISO 14001 certifies a management system (process), not specific environmental outcomes','True — but only for data centers, not other IT operations','False — ISO 14001 doesn\'t apply to IT companies'],ans:1,ex:'This is a crucial distinction: ISO 14001 is a process standard, not a performance standard. It certifies that you have a structured Environmental Management System — that you identify impacts, set objectives, monitor, and improve. It does not require achieving specific PUE or emissions targets. That\'s why it\'s possible to be ISO 14001 certified with poor actual environmental performance.'},
+  {q:'Bangladesh\'s E-Waste Rules 2021 require companies to dispose of old servers through:',ctx:'',opts:['Any general waste contractor','Certified e-waste recyclers with documentation','Incineration in industrial furnaces','Export to other countries for recycling'],ans:1,ex:'Bangladesh E-Waste Rules 2021 establish Extended Producer Responsibility (EPR) — electronic equipment must be collected and processed by certified recyclers who provide documentation. General waste disposal is explicitly prohibited. The documentation requirement is important: it creates an audit trail that regulators and clients can verify.'},
+  {q:'Your manager asks you to falsify energy consumption data in a regulatory report to avoid a penalty. As a professional engineer, what is the correct course of action?',ctx:'Consider professional ethics codes and the EP5 complex engineering attribute: considering diverse stakeholders.',opts:['Report accurately — falsification violates professional ethics, legal obligations, and harms public interest stakeholders','Falsify the data — protecting the company protects your job and your colleagues','Report accurately only if you think you\'ll get caught','Refuse but don\'t escalate — it\'s not your responsibility'],ans:0,ex:'This is unambiguous from an engineering ethics standpoint. Professional engineering codes worldwide require acting in the public interest — regulators, communities, and future generations are all stakeholders whose interests are harmed by falsified data. This is also a criminal offense in most jurisdictions. The correct action is to refuse, document your refusal in writing, escalate through proper channels, and if necessary report to the regulatory body. "Not my responsibility" is not an acceptable position for a professional engineer.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,curQ=0,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes()}
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--b3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+
+function showFW(id){
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',['iso14001','energystar','ghg','tcfd','eueed','weee'][i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('fw-'+id).classList.add('active');
+}
+
+function checkComp(qid,correct,explanation){
+  const selected=document.querySelector(`input[name="${qid}"]:checked`);
+  const res=document.getElementById('c'+qid.replace('q',''));
+  if(!selected){res.className='comp-result show warn';res.textContent='Please select an answer first.';return}
+  const isCorrect=selected.value===correct;
+  res.className='comp-result show '+(isCorrect?'good':'warn');
+  res.innerHTML=(isCorrect?'✓ Correct! ':'⚠️ Not quite. ')+explanation;
+}
+
+function flipCard(el){el.classList.toggle('flipped')}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{document.getElementById('qResult').style.display='block';const msgs=['Review the governance fundamentals — try the sections above again.','Good start! Focus on the frameworks and Bangladesh context.','Decent understanding. Review the compliance scenarios.','Solid! A couple of gaps to close — check your wrong answers.','Strong performance! Well prepared on governance.','Perfect — excellent grasp of Green IT governance.'];document.getElementById('qScore').textContent=score;document.getElementById('qMsg').textContent=msgs[Math.min(score,5)]}
+}
+function resetQuiz(){score=0;curQ=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c2_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c2_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+
+init();
+</script>
+</body>
+</html>

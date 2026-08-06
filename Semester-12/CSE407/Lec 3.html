@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 3 — Minimizing Power Usage (Part 1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --o1:#7a3a0a;--o2:#c2640f;--o3:#e8851f;--o4:#ffc88a;--o5:#fdecd8;
+  --ink:#1c1410;--ink2:#4a3d34;--ink3:#7c6e63;--ink4:#b0a399;
+  --paper:#f7f3ee;--card:#ffffff;--card2:#fbf8f4;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --blue:#1a5199;--blue-l:#e8f0fb;
+  --border:#e9e1d8;--border2:#d4c8bc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(247,243,238,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--o1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--o1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--o5);border-color:var(--o3);color:var(--o1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--o3)}
+.prog-dot.active{background:var(--o1);box-shadow:0 0 0 2px var(--o5)}
+
+.hero{background:var(--o1);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%;background:rgba(232,133,31,0.15)}
+.hero-c1{width:420px;height:420px;top:-140px;right:-100px}
+.hero-c2{width:240px;height:240px;bottom:-80px;left:18%}
+.hero-c3{width:120px;height:120px;top:40px;left:58%}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-o{background:rgba(255,200,138,0.2);color:#ffc88a;border:1px solid rgba(255,200,138,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--o4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--o4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--o1);border-bottom-color:var(--o2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--o1);color:#fff}
+.ol-item.done .ol-num{background:var(--o4);color:var(--o1)}
+
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--o1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--o3)}
+.sb-item.active .sb-dot{background:var(--o1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--o1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--o2),var(--o3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--o3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--o5);border-color:var(--o3);color:var(--o1)}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:0.05s}.section:nth-child(3){animation-delay:0.1s}.section:nth-child(4){animation-delay:0.15s}.section:nth-child(5){animation-delay:0.2s}.section:nth-child(6){animation-delay:0.25s}.section:nth-child(7){animation-delay:0.3s}.section:nth-child(8){animation-delay:0.35s}.section:nth-child(9){animation-delay:0.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-o{background:var(--o5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-b{background:var(--blue-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--o5);color:var(--o1);border:1px solid rgba(232,133,31,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--o3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--o5);border-color:var(--o3);color:var(--o1)}
+.section.done .mark-done-btn{background:var(--o5);border-color:var(--o3);color:var(--o1)}
+
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-o{background:var(--o5);border-color:var(--o2);color:var(--o1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-blue{background:var(--blue-l);border-color:var(--blue);color:#0c2d6e}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--o5);border:1px solid rgba(232,133,31,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--o1);line-height:1}
+.stat-u{font-size:13px;color:var(--o2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--o2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--o5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--o1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--o5)}
+
+/* TABS / EXPLORER */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--o3);color:var(--o1)}
+.fw-tab.active{background:var(--o1);color:#fff;border-color:var(--o1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--o1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* DVFS CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:170px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--o1);min-width:65px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--o2)}
+.dvfs-result{background:var(--o1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.dvfs-number{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--o4)}
+.dvfs-rating{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5}
+.dvfs-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.dvfs-fill{height:100%;border-radius:4px;transition:width 0.3s ease,background 0.3s ease}
+.dvfs-formula{font-size:12px;color:rgba(255,255,255,0.5);font-family:monospace;margin-top:4px}
+
+/* C-STATE EXPLORER */
+.cstate-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.cstate-tab{flex:1;min-width:70px;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.cstate-tab:hover{border-color:var(--o3)}
+.cstate-tab.active{background:var(--o1);color:#fff;border-color:var(--o1)}
+.cstate-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.cstate-panel.active{display:block}
+.cstate-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cstate-icon{font-size:24px}
+.cstate-title{font-size:15px;font-weight:700;color:var(--ink)}
+.cstate-power{font-size:12px;color:var(--o2);font-weight:700}
+.cstate-desc{font-size:13.5px;color:var(--ink2);line-height:1.7}
+
+/* ENERGY PROPORTIONALITY GRAPH */
+.eprop-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.eprop-graph{position:relative;height:200px;margin-top:18px;border-left:2px solid var(--border2);border-bottom:2px solid var(--border2);border-radius:0 0 0 4px}
+.eprop-line{position:absolute;bottom:0;left:0;width:100%;height:100%}
+.eprop-marker{position:absolute;width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transform:translate(-50%,50%)}
+.eprop-axis-x{font-size:10px;color:var(--ink4);margin-top:6px;display:flex;justify-content:space-between}
+.eprop-axis-y{position:absolute;left:-32px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;font-size:10px;color:var(--ink4)}
+.eprop-legend{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--ink3)}
+.eprop-leg-item{display:flex;align-items:center;gap:6px}
+.eprop-dot{width:10px;height:10px;border-radius:50%}
+.eprop-readout{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.eprop-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.eprop-stat-n{font-family:'Fraunces',serif;font-size:24px;color:var(--o1)}
+.eprop-stat-l{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* LAPTOP SIMULATOR */
+.sim-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.sim-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:560px){.sim-controls{grid-template-columns:1fr}}
+.sim-control{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sim-control-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;justify-content:space-between}
+.sim-radio-group{display:flex;gap:6px;margin-top:6px}
+.sim-radio{flex:1;padding:7px;text-align:center;border:1.5px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink3);transition:var(--t)}
+.sim-radio.active{background:var(--o1);color:#fff;border-color:var(--o1)}
+.sim-output{background:var(--o1);color:#fff;border-radius:10px;padding:20px;margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px;text-align:center}
+.sim-out-n{font-family:'Fraunces',serif;font-size:28px;color:var(--o4)}
+.sim-out-l{font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px}
+.sim-breakdown{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.sim-bar-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.sim-bar-label{min-width:90px;color:var(--ink3)}
+.sim-bar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.sim-bar-fill{height:100%;border-radius:4px;transition:width 0.3s}
+.sim-bar-val{min-width:50px;text-align:right;font-weight:700;color:var(--ink2)}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--o1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,0.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--o4);margin-bottom:8px}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--o1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--o3)}
+.qp-dot.active{background:var(--o2)}
+.q-block{display:none}
+.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--o2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--o3);background:var(--o5);color:var(--o1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--o1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--o2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--o1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--o5);color:var(--o1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:0.4;pointer-events:none}
+.f-btn.primary{background:var(--o1);color:#fff;border-color:var(--o1)}
+.f-btn.primary:hover{background:var(--o2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 3 — Minimizing Power Usage (Part 1)</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-o">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 3 of 22</span>
+      <span class="chip chip-gray">Jun 11, 2025 · Wednesday · 1h 30min</span>
+    </div>
+    <h1>Minimizing Power Usage<br><em>Part 1 — Inside the Machine</em></h1>
+    <p class="hero-sub">From transistors to operating systems — how processors, devices, and software actually consume (and save) electrical power.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.3 (all)</span>
+      <span class="ref">📗 Lamb Ch.2 pp.30–37</span>
+      <span class="ref">🎯 CO1</span>
+      <span class="ref">🧠 EP1, EP2</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">P∝V²f</div><div class="h-stat-lbl">CPU dynamic power formula — voltage matters most</div></div>
+      <div class="h-stat"><div class="h-stat-num">7</div><div class="h-stat-lbl">CPU idle states (C0–C6) defined by ACPI standard</div></div>
+      <div class="h-stat"><div class="h-stat-num">50–70%</div><div class="h-stat-lbl">Power a typical server draws even when nearly idle</div></div>
+      <div class="h-stat"><div class="h-stat-num">3–5×</div><div class="h-stat-lbl">Power difference between an OLED black and white screen</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Where Power Goes</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>CPU Power Mgmt</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Energy Proportionality</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Devices &amp; Peripherals</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Laptop Simulator</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Engineer's Toolkit</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; homework review</div>
+        <div class="sec-subtitle">Governance recap + Scope 2 emissions homework debrief</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Last class we covered governance and regulation — the external rules shaping Green IT. Today we go inside the machine: how does a computer actually consume power, and what can engineers do to reduce it directly?</p>
+
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">⚖️ Governance recap</div><p>Market failures (short-termism, free riders, externalities) mean voluntary action isn't enough. ISO 14001, Energy Star, GHG Protocol, WEEE all shape what's required.</p></div>
+      <div class="card-b"><div class="card-b-title">🇧🇩 Local rules</div><p>Bangladesh's E-Waste Rules 2021 and SREDA Act 2012 are the key local frameworks — currently under-enforced but tightening.</p></div>
+      <div class="card-b"><div class="card-b-title">📐 Today's shift</div><p>From policy (who sets the rules) to engineering (how do we actually reduce power draw at the hardware and software level)?</p></div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">What grid emission factor did you find for Bangladesh? What was your calculated Scope 2 emissions for the 10-server office scenario (500W/server, 12hrs/day, 365 days)?</div><div class="discuss-time">2–3 students share their calculation and methodology</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: WHERE POWER GOES -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">🔌</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundations · 10 min</div>
+        <div class="sec-title">Where does the power actually go?</div>
+        <div class="sec-subtitle">Breaking down power consumption inside a computer</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Before we can minimize power, we need to know where it goes. In any computing device — from a smartphone to a data center server — power is consumed by several major components, each with very different behavior.</p>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">35<span class="stat-u">%</span></div><div class="stat-l">CPU/SoC — the single largest consumer in most systems</div></div>
+      <div class="stat"><div class="stat-n">20<span class="stat-u">%</span></div><div class="stat-l">Memory (DRAM) — power scales with capacity &amp; refresh rate</div></div>
+      <div class="stat"><div class="stat-n">15<span class="stat-u">%</span></div><div class="stat-l">Storage — varies hugely: SSD vs spinning HDD</div></div>
+      <div class="stat"><div class="stat-n">15<span class="stat-u">%</span></div><div class="stat-l">Display — dominant in laptops &amp; phones, esp. backlit LCDs</div></div>
+      <div class="stat"><div class="stat-n">10<span class="stat-u">%</span></div><div class="stat-l">Network/radio — WiFi, cellular, Bluetooth modules</div></div>
+      <div class="stat"><div class="stat-n">5<span class="stat-u">%</span></div><div class="stat-l">Power conversion losses — AC/DC, voltage regulators</div></div>
+    </div>
+
+    <div class="callout callout-o" style="margin-top:18px">
+      <div class="callout-label">📘 From Velete Ch.3</div>
+      Power consumption splits into two categories: <strong>static power</strong> (leakage current — consumed even when a circuit is idle, due to imperfect insulation in transistors) and <strong>dynamic power</strong> (consumed when transistors actively switch state). As chips have shrunk to nanometer scales, static/leakage power has grown to be a significant fraction of total consumption — which is why idle states matter so much.
+    </div>
+
+    <p class="prose" style="margin-top:18px">A critical concept: <strong>power</strong> (Watts) is the rate of energy use, while <strong>energy</strong> (Joules, or kWh) is power × time. A device drawing 10W for 1 hour uses the same energy as one drawing 5W for 2 hours. This distinction matters because some power-saving techniques reduce instantaneous power but increase the time to complete a task — the net energy savings depend on which effect dominates.</p>
+
+    <div class="callout callout-amber">
+      <div class="callout-label">⚡ Worked example</div>
+      A laptop CPU at full performance (15W) completes a video encode in 10 minutes = 2.5 Wh of energy. The same task at half power (8W, but takes 22 minutes due to lower clock speed) = 2.93 Wh. <strong>The "slower" mode actually used more total energy</strong> — because static/leakage power was drawn for longer. This is the foundation of the "race to idle" principle we'll explore next.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: CPU POWER MANAGEMENT -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🧠</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Content · 15 min</div>
+        <div class="sec-title">CPU power management — DVFS &amp; C-states</div>
+        <div class="sec-subtitle">The two pillars of modern processor power management</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Modern CPUs use two complementary techniques to manage power: <strong>Dynamic Voltage and Frequency Scaling (DVFS)</strong> for when the CPU is actively working at varying intensity, and <strong>C-states (idle states)</strong> for when the CPU has nothing to do.</p>
+
+    <!-- DVFS CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">⚙️ Interactive: DVFS Power Calculator</div>
+      <div class="calc-subtitle">Dynamic power follows P = C · V² · f (Capacitance × Voltage² × Frequency). Adjust voltage and frequency to see the effect.</div>
+      <div class="calc-row">
+        <span class="calc-lbl">Voltage (V)</span>
+        <input type="range" id="voltSlider" min="60" max="120" value="100" step="1" oninput="calcDVFS()">
+        <span class="calc-val" id="voltVal">1.00 V</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Frequency (GHz)</span>
+        <input type="range" id="freqSlider" min="50" max="300" value="200" step="5" oninput="calcDVFS()">
+        <span class="calc-val" id="freqVal">2.00 GHz</span>
+      </div>
+      <div class="dvfs-result">
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Relative Power</div>
+          <div class="dvfs-number" id="dvfsNum">100%</div>
+          <div class="dvfs-formula" id="dvfsFormula">P = C × 1.00² × 2.00</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="dvfs-rating" id="dvfsRating">Baseline (1.0V, 2.0GHz) = reference point</div>
+          <div class="dvfs-bar"><div class="dvfs-fill" id="dvfsFill" style="width:50%;background:#e8851f"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.4);margin-top:4px"><span>0%</span><span>200% (baseline=100%)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">💡 Key insight — voltage matters MORE than frequency</div>
+      Because power scales with <strong>voltage squared</strong> but only <strong>linearly</strong> with frequency, reducing voltage gives a quadratic saving while reducing frequency gives only a linear one. A 10% voltage cut saves ~19% power; a 10% frequency cut saves only ~10%. This is why modern CPUs aggressively pair lower frequencies with lower voltages (DVFS) rather than just throttling frequency alone.
+    </div>
+
+    <p class="prose" style="margin-top:18px">When the CPU has <strong>nothing to do</strong>, DVFS isn't enough — even at minimum frequency, leakage current wastes power. This is where <strong>C-states (CPU idle states)</strong> come in, defined by the ACPI (Advanced Configuration and Power Interface) standard. Explore each state below:</p>
+
+    <div class="cstate-tabs">
+      <div class="cstate-tab active" onclick="showCState(0)">C0</div>
+      <div class="cstate-tab" onclick="showCState(1)">C1</div>
+      <div class="cstate-tab" onclick="showCState(2)">C2</div>
+      <div class="cstate-tab" onclick="showCState(3)">C3</div>
+      <div class="cstate-tab" onclick="showCState(4)">C6</div>
+      <div class="cstate-tab" onclick="showCState(5)">C7/C8+</div>
+    </div>
+    <div class="cstate-panel active" id="cstate0">
+      <div class="cstate-head"><div class="cstate-icon">⚡</div><div><div class="cstate-title">C0 — Operating State</div><div class="cstate-power">Power: 100% (reference)</div></div></div>
+      <div class="cstate-desc">The CPU is actively executing instructions. This is the only state where useful work happens. DVFS operates within C0 — the CPU can run at different voltage/frequency points (P-states: P0 = max performance, Pn = min performance) while still in C0.</div>
+    </div>
+    <div class="cstate-panel" id="cstate1">
+      <div class="cstate-head"><div class="cstate-icon">😴</div><div><div class="cstate-title">C1 — Halt</div><div class="cstate-power">Power: ~70% · Wake latency: ~1ns</div></div></div>
+      <div class="cstate-desc">The CPU stops executing instructions but maintains full context (caches, registers stay powered). Extremely fast to wake — essentially free to enter/exit. Used constantly between instructions even during "active" workloads.</div>
+    </div>
+    <div class="cstate-panel" id="cstate2">
+      <div class="cstate-head"><div class="cstate-icon">🛌</div><div><div class="cstate-title">C2 — Stop Clock</div><div class="cstate-power">Power: ~50% · Wake latency: ~50ns</div></div></div>
+      <div class="cstate-desc">Internal clocks are stopped, but caches remain coherent. Slightly deeper sleep than C1, with marginally more power saving and marginally higher wake latency. The exact behavior varies by CPU vendor.</div>
+    </div>
+    <div class="cstate-panel" id="cstate3">
+      <div class="cstate-head"><div class="cstate-icon">💤</div><div><div class="cstate-title">C3 — Sleep</div><div class="cstate-power">Power: ~30% · Wake latency: ~100ns</div></div></div>
+      <div class="cstate-desc">All internal clocks are stopped and the CPU flushes its caches to maintain coherency externally. Significant power savings, but waking up requires cache reload — affecting performance if entered/exited too frequently.</div>
+    </div>
+    <div class="cstate-panel" id="cstate4">
+      <div class="cstate-head"><div class="cstate-icon">🥶</div><div><div class="cstate-title">C6 — Deep Power Down</div><div class="cstate-power">Power: ~5–10% · Wake latency: ~100µs</div></div></div>
+      <div class="cstate-desc">The CPU core's voltage is reduced to near-zero (or fully removed) — core state is saved to a retention register or last-level cache before power-down. Mobile and laptop CPUs spend most idle time here. Wake latency is high enough that the OS scheduler must predict idle duration accurately.</div>
+    </div>
+    <div class="cstate-panel" id="cstate5">
+      <div class="cstate-head"><div class="cstate-icon">❄️</div><div><div class="cstate-title">C7 / C8–C10 — Package Sleep States</div><div class="cstate-power">Power: &lt;5% · Wake latency: ~1ms+</div></div></div>
+      <div class="cstate-desc">Deepest states — power down shared resources across the entire CPU package (all cores, last-level cache, memory controller, I/O). Used in mobile SoCs during screen-off "Doze" periods. Highest power savings but highest wake latency, so the OS only enters these for extended idle periods.</div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: ENERGY PROPORTIONALITY -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">📐</div>
+      <div class="sec-meta">
+        <div class="sec-label">Concept Deep-Dive · 15 min</div>
+        <div class="sec-title">Energy-proportional computing</div>
+        <div class="sec-subtitle">The gap between "ideal" and "real" servers — and why it's the central challenge of Green IT</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">An <strong>energy-proportional</strong> system consumes power exactly proportional to the amount of useful work it does: 0% utilization = 0% power, 100% utilization = 100% power, 50% utilization = 50% power. No real system achieves this perfectly — but understanding the gap is essential.</p>
+
+    <div class="eprop-wrap">
+      <div class="calc-title">📊 Interactive: Energy Proportionality Explorer</div>
+      <div class="calc-subtitle">Drag the slider to set server utilization. Compare an "ideal" energy-proportional system vs. a typical real server.</div>
+      <div class="calc-row" style="margin-top:8px">
+        <span class="calc-lbl">Server CPU utilization</span>
+        <input type="range" id="utilSlider" min="0" max="100" value="20" step="1" oninput="calcEprop()">
+        <span class="calc-val" id="utilVal">20%</span>
+      </div>
+      <div class="eprop-readout">
+        <div class="eprop-stat"><div class="eprop-stat-n" id="idealPower" style="color:#1a7a50">20%</div><div class="eprop-stat-l">Ideal (energy-proportional) power draw</div></div>
+        <div class="eprop-stat"><div class="eprop-stat-n" id="realPower" style="color:#c0392b">62%</div><div class="eprop-stat-l">Typical real server power draw</div></div>
+      </div>
+      <div class="eprop-readout">
+        <div class="eprop-stat"><div class="eprop-stat-n" id="wastedPower">42%</div><div class="eprop-stat-l">"Wasted" overhead — power consumed for zero proportional work</div></div>
+        <div class="eprop-stat"><div class="eprop-stat-n" id="efficiencyRatio">0.32×</div><div class="eprop-stat-l">Efficiency ratio (work done ÷ power drawn)</div></div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:16px">
+      <div class="callout-label">📗 From Lamb Ch.2</div>
+      The formula used above approximates real servers as: <code>Power = 50% (idle floor) + 50% × utilization</code>. This reflects the fact that fans, memory, motherboard, power supplies, and baseline CPU circuits all draw power regardless of load. Google's research (Barroso &amp; Hölzle, 2007) first popularized this concept and showed most data center servers operate at 10-50% utilization — squarely in the most wasteful zone of this curve.
+    </div>
+
+    <p class="prose" style="margin-top:16px">Two strategies address this gap:</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📦 Strategy 1 — Consolidation</div>
+        <p>Instead of running many servers at 10-20% utilization (each paying the "idle floor" cost), consolidate workloads via virtualization onto fewer servers running at 60-80% utilization. Fewer servers paying the idle floor = less total waste. This is the single most impactful Green IT lever in most data centers.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔁 Strategy 2 — Race to idle</div>
+        <p>For battery-powered devices, complete tasks as fast as possible (high power, short time) then enter deep sleep (C6+), rather than running slowly for longer (moderate power, long time). Because idle states have near-zero power, finishing fast and sleeping long usually wins — unless the task is so short that wake/sleep transition overhead dominates.</p>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: DEVICES & PERIPHERALS -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">📱</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied · 10 min</div>
+        <div class="sec-title">Power management beyond the CPU</div>
+        <div class="sec-subtitle">Displays, storage, networking, and mobile-specific techniques</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">The CPU isn't the whole story. In laptops and phones, the display often dominates; in storage systems, the difference between technologies is enormous; and in mobile devices, software-level wake management is critical.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showFW('display')">🖥️ Displays</div>
+      <div class="fw-tab" onclick="showFW('storage')">💾 Storage</div>
+      <div class="fw-tab" onclick="showFW('network')">📡 Networking</div>
+      <div class="fw-tab" onclick="showFW('mobile')">📱 Mobile OS</div>
+    </div>
+
+    <div class="fw-panel active" id="fw-display">
+      <div class="fw-header"><div class="fw-badge">Displays</div><div><div class="fw-name">Backlit vs. self-emissive screens</div><div class="fw-org">Often 15-40% of total device power</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">LCD (backlit)</div><div class="fw-item-text">A backlight illuminates the entire panel uniformly — power draw is roughly constant regardless of content. Brightness is the dominant control: 50% brightness ≈ 50% backlight power.</div></div>
+        <div class="fw-item"><div class="fw-item-title">OLED/AMOLED</div><div class="fw-item-text">Each pixel emits its own light — power scales with content. A black background can use 3-5× less power than white. "Dark mode" is a genuine, measurable power-saving feature on OLED screens (not on LCDs).</div></div>
+        <div class="fw-item"><div class="fw-item-title">Refresh rate</div><div class="fw-item-text">Higher refresh rates (90Hz, 120Hz) increase power draw roughly proportionally. Adaptive refresh rate (dropping to 1Hz for static content) is now standard in efficient devices.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering takeaway</div><div class="fw-item-text">For OLED devices, UI/UX designers choosing dark themes have a direct, measurable impact on battery life — a rare case where design aesthetics and energy efficiency align perfectly.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-storage">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a5199">Storage</div><div><div class="fw-name">HDD vs. SSD power profiles</div><div class="fw-org">10-15% of system power, but highly variable</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">HDD (spinning disk)</div><div class="fw-item-text">Mechanical platters spin continuously (~5-10W active). Spin-down saves power but adds 2-5 second wake latency — frequent spin-down/up cycles can shorten drive lifespan and sometimes use more energy than staying spun up.</div></div>
+        <div class="fw-item"><div class="fw-item-title">SSD (flash)</div><div class="fw-item-text">No moving parts. Active power ~2-5W, idle power can drop to &lt;0.1W almost instantly with no wake latency penalty. SSDs are dramatically more energy-proportional than HDDs.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Storage tiering</div><div class="fw-item-text">In data centers: hot data on SSD (frequently accessed, fast, power-hungry), cold/archival data on HDD or tape (rarely accessed, can be spun down or powered off entirely).</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering takeaway</div><div class="fw-item-text">SSD migration is one of the simplest "free" efficiency wins in both laptops and servers — improving performance AND reducing power simultaneously.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-network">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e7070">Networking</div><div><div class="fw-name">Radio &amp; network interface power</div><div class="fw-org">WiFi, Bluetooth, cellular radios</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Radio power states</div><div class="fw-item-text">Radios have their own idle/active states. Maintaining a WiFi/cellular connection (even idle) consumes far more power than the radio being fully off — this is why airplane mode dramatically extends battery life.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Polling vs push</div><div class="fw-item-text">An app that polls a server every 30 seconds keeps the radio awake constantly. Push notifications let the radio sleep until a message arrives — potentially 10× more efficient for the same "freshness".</div></div>
+        <div class="fw-item"><div class="fw-item-title">Wake-on-LAN</div><div class="fw-item-text">In data centers and offices, idle machines can fully power down while a low-power network interface listens for a "wake" packet — enabling near-zero idle power with instant-on capability.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Energy-proportional networking</div><div class="fw-item-text">Network switches and links can scale their speed (and power) with traffic load — putting unused ports/links to sleep during low-traffic periods.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="fw-mobile">
+      <div class="fw-header"><div class="fw-badge" style="background:#5a3aab">Mobile OS</div><div><div class="fw-name">Software-managed power on Android/iOS</div><div class="fw-org">Where engineering choices meet user experience</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Wake locks</div><div class="fw-item-text">An app can request a "wake lock" to prevent the CPU from sleeping (e.g., during a download). Poorly released wake locks are one of the most common causes of battery drain in badly-written apps.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Doze mode (Android)</div><div class="fw-item-text">When the screen is off and the device is stationary, Android defers background network access and CPU-intensive jobs to periodic "maintenance windows" — batching work to allow longer sleep periods.</div></div>
+        <div class="fw-item"><div class="fw-item-title">App Standby Buckets</div><div class="fw-item-text">Android categorizes apps by usage pattern (active, working set, frequent, rare) and restricts background activity accordingly — rarely-used apps get severely limited background access.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering takeaway</div><div class="fw-item-text">Green mobile development isn't just about algorithms — it's about respecting OS power management APIs, batching network calls, and avoiding unnecessary background services.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: LAPTOP SIMULATOR -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🔋</div>
+      <div class="sec-meta">
+        <div class="sec-label">Hands-on · 10 min</div>
+        <div class="sec-title">Laptop power &amp; battery life simulator</div>
+        <div class="sec-subtitle">Combine everything we've learned — adjust settings and see battery life change in real time</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">This simulator models a typical 50Wh laptop battery. Adjust the settings below — representing real choices users and developers make every day — and watch how battery life and total power draw respond.</p>
+
+    <div class="sim-wrap">
+      <div class="sim-controls">
+        <div class="sim-control">
+          <div class="sim-control-title">🖥️ Screen brightness <span id="brightVal">60%</span></div>
+          <input type="range" id="brightSlider" min="10" max="100" value="60" step="5" oninput="calcSim()" style="width:100%">
+        </div>
+        <div class="sim-control">
+          <div class="sim-control-title">🧠 CPU performance mode</div>
+          <div class="sim-radio-group">
+            <div class="sim-radio" onclick="setCpuMode('saver')">Power saver</div>
+            <div class="sim-radio active" onclick="setCpuMode('balanced')">Balanced</div>
+            <div class="sim-radio" onclick="setCpuMode('performance')">Performance</div>
+          </div>
+        </div>
+        <div class="sim-control">
+          <div class="sim-control-title">📶 Wireless radios</div>
+          <div class="sim-radio-group">
+            <div class="sim-radio" onclick="setRadio('off')">Airplane mode</div>
+            <div class="sim-radio active" onclick="setRadio('on')">WiFi on</div>
+          </div>
+        </div>
+        <div class="sim-control">
+          <div class="sim-control-title">📂 Background apps <span id="appsVal">2</span></div>
+          <input type="range" id="appsSlider" min="0" max="8" value="2" step="1" oninput="calcSim()" style="width:100%">
+        </div>
+      </div>
+
+      <div class="sim-output">
+        <div><div class="sim-out-n" id="simHours">7.4 hrs</div><div class="sim-out-l">Estimated battery life</div></div>
+        <div><div class="sim-out-n" id="simWatts">6.7 W</div><div class="sim-out-l">Total power draw</div></div>
+        <div><div class="sim-out-n" id="simEnergy">3.4 Wh</div><div class="sim-out-l">Energy per hour of use</div></div>
+      </div>
+
+      <div class="sim-breakdown" id="simBreakdown"></div>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">🎯 Try this</div>
+      Set CPU to "Performance", brightness to 100%, WiFi on, and 8 background apps — note the battery life. Now switch to "Power saver", 40% brightness, airplane mode, 0 background apps. The difference you see represents <strong>real, achievable savings</strong> — no new hardware required, just configuration and software discipline.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: ENGINEER'S TOOLKIT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🛠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practical · 10 min</div>
+        <div class="sec-title">The engineer's power-minimization toolkit</div>
+        <div class="sec-subtitle">Concrete techniques you can apply at every layer of the stack</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Today's concepts translate into concrete techniques. Here's a checklist organized by where you sit in the stack:</p>
+
+    <ul class="big-list">
+      <li><div class="bl-icon">💻</div><div><strong>Application developers</strong> — Avoid busy-wait loops (use event-driven/interrupt-based design). Batch network requests instead of frequent polling. Release wake locks promptly. Use dark UI themes for OLED devices. Profile and eliminate CPU-hot code paths.</div></li>
+      <li><div class="bl-icon">⚙️</div><div><strong>Systems/OS engineers</strong> — Enable and tune CPU governors (e.g., Linux "powersave", "ondemand", "schedutil"). Configure ACPI C-state limits appropriately — too aggressive can hurt latency-sensitive workloads. Use SSDs for OS and frequently-accessed data.</div></li>
+      <li><div class="bl-icon">🏗️</div><div><strong>Infrastructure/data center engineers</strong> — Consolidate workloads via virtualization to push utilization toward the efficient zone (60-80%). Implement workload scheduling that "packs" jobs onto fewer servers, allowing others to fully power down.</div></li>
+      <li><div class="bl-icon">📡</div><div><strong>IoT/embedded engineers</strong> — Design firmware around deep sleep states (C6+/equivalent). Use interrupt-driven wake rather than polling sensors continuously. Choose radio protocols (BLE, LoRa) suited to the duty cycle required.</div></li>
+      <li><div class="bl-icon">📊</div><div><strong>Everyone</strong> — Measure before and after. Use tools like Intel Power Gadget, powertop (Linux), or battery historian (Android) to verify that "optimizations" actually reduce energy — remember the race-to-idle example where slower wasn't greener.</div></li>
+    </ul>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Code review scenario</div><div class="sc-q">You review code with: <code>while(true) { checkStatus(); sleep(100ms); }</code> running continuously. What's the green computing concern, and what's a better pattern?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">This polling loop prevents the CPU from entering deep C-states every 100ms — keeping it effectively always "awake". Better: use an event/callback or interrupt-driven mechanism (e.g., file system watchers, message queues, or OS-level notification APIs) so the CPU can sleep until something actually changes.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Architecture scenario</div><div class="sc-q">A company runs 200 servers at 15% average utilization. Leadership wants to "go green" by buying more energy-efficient (Energy Star) servers to replace them 1-for-1. Good idea?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Buying new efficient hardware helps marginally, but the bigger problem is utilization — 200 servers at 15% means ~85% of capacity (and the "idle floor" power) is wasted regardless of hardware efficiency. Consolidating via virtualization to ~50 servers at 60% utilization would save far more energy than a 1-for-1 hardware refresh, at a fraction of the capital cost.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Mobile dev scenario</div><div class="sc-q">A weather app updates location every 10 seconds "for accuracy," even when the screen is off. Users report poor battery life. What's the fix?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">This is a wake-lock / Doze-mode violation — 10-second GPS polling with the screen off keeps the radio and GPS chip continuously active, preventing deep sleep. Fix: use significant-location-change APIs (which use cell tower/WiFi triangulation, far lower power) and respect Doze mode by deferring to maintenance windows when the screen is off.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — power minimization</div>
+        <div class="sec-subtitle">6 questions on today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 4 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🔌</div><div class="sum-title">Power breakdown</div><div class="sum-text">CPU (~35%), memory, storage, display, and network all contribute. Static (leakage) and dynamic power are the two fundamental components.</div></div>
+      <div class="sum-card"><div class="sum-icon">📐</div><div class="sum-title">DVFS: P ∝ V²f</div><div class="sum-text">Voltage cuts give quadratic power savings; frequency cuts give linear savings. This is why voltage scaling is prioritized.</div></div>
+      <div class="sum-card"><div class="sum-icon">💤</div><div class="sum-title">C-states (idle)</div><div class="sum-text">C0 (active) through C6/C7+ (deep sleep). Deeper states save more power but cost more wake latency — the OS balances this tradeoff.</div></div>
+      <div class="sum-card"><div class="sum-icon">📊</div><div class="sum-title">Energy proportionality</div><div class="sum-text">Real servers draw ~50% power even at 0% load. Consolidation (virtualization) is the most powerful fix — covered more in Class 12.</div></div>
+      <div class="sum-card"><div class="sum-icon">🏁</div><div class="sum-title">Race to idle</div><div class="sum-text">Finishing fast and sleeping deeply usually beats running slowly — because idle power is so much lower than active power.</div></div>
+      <div class="sum-card"><div class="sum-icon">📱</div><div class="sum-title">Beyond the CPU</div><div class="sum-text">Displays (dark mode on OLED), SSDs over HDDs, and respecting mobile OS power APIs (Doze, wake locks) all matter significantly.</div></div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 4 (Jun 15, Sunday)</div>
+      <strong>Cooling Strategies.</strong> We zoom out from individual devices to data center infrastructure: how cooling works, why it can account for 40% of data center energy, and modern techniques (hot/cold aisle containment, free cooling, liquid cooling). Read: <em>Velete Ch.4 pp.63–75</em> and <em>Lamb Ch.8 (all)</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 4</div>
+      Using the laptop simulator from today (or your own laptop's settings), find your current power draw estimate. Then check your laptop's actual battery specifications (Wh capacity) and compare your estimated battery life to the manufacturer's claimed battery life. Bring your comparison and one hypothesis for any discrepancy to Class 4.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--o2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 3: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 2: pp.30–37</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Key Formula</div>
+    <div style="font-size:13px;color:var(--ink2);line-height:1.7;font-family:monospace;background:var(--o5);padding:10px;border-radius:8px;text-align:center">
+      P<sub>dynamic</sub> = C · V² · f
+    </div>
+    <div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.6">Voltage cuts → quadratic savings<br>Frequency cuts → linear savings</div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 2: Governance & Regulatory Issues\nDate: Jun 8, 2025 (Sunday)')">← Class 2</button>
+    <button class="f-btn primary" onclick="alert('Class 4: Cooling Strategies\nDate: Jun 15, 2025 (Sunday)\nReading: Velete Ch.4 pp.63-75 | Lamb Ch.8')">Class 4: Cooling →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & homework',time:'5 min'},
+  {title:'Where power goes',time:'10 min'},
+  {title:'CPU power management',time:'15 min'},
+  {title:'Energy proportionality',time:'15 min'},
+  {title:'Devices & peripherals',time:'10 min'},
+  {title:'Laptop simulator',time:'10 min'},
+  {title:"Engineer's toolkit",time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'According to the DVFS power formula P = C·V²·f, if a CPU\'s voltage is reduced by 10% while frequency stays constant, approximately how much does dynamic power decrease?',ctx:'',opts:['About 10%','About 19% (since power scales with V²)','About 1%','Power increases'],ans:1,ex:'Power scales with voltage SQUARED. A 10% voltage reduction means V becomes 0.9 of original, so V² becomes 0.81 (a ~19% reduction). This is why voltage scaling is prioritized over frequency scaling in DVFS — the quadratic relationship gives much bigger returns.'},
+  {q:'A CPU enters C6 (deep power-down) state. Compared to C1 (halt), what is the tradeoff?',ctx:'',opts:['C6 uses more power but wakes up faster','C6 uses much less power but has significantly higher wake latency','C6 and C1 are identical in modern CPUs','C6 is only used for memory, not CPU cores'],ans:1,ex:'C6 reduces core voltage to near-zero (power as low as 5-10% vs C1\'s ~70%) by saving state and powering down, but this requires restoring state on wake — taking ~100µs vs C1\'s ~1ns. The OS scheduler must predict idle duration to choose the right depth: too deep for a short idle period wastes more energy/time on transitions than it saves.'},
+  {q:'A real server at 0% CPU utilization still draws roughly 50% of its peak power. What is the PRIMARY green computing strategy to address this?',ctx:'',opts:['Buy servers with more powerful cooling fans','Consolidate workloads via virtualization onto fewer, more utilized servers','Turn off all servers at night regardless of workload','Increase the CPU clock speed to finish tasks faster'],ans:1,ex:'This is the energy-proportionality gap. The "idle floor" power (memory, fans, power supply, baseline circuits) is paid by EVERY running server regardless of load. Running 4 servers at 20% utilization means paying the idle-floor cost 4 times. Consolidating onto 1 server at 80% utilization pays that cost only once — the single most effective fix at the infrastructure level.'},
+  {q:'"Race to idle" suggests that for a battery-powered device, completing a task quickly at high power and then sleeping is often MORE energy-efficient than completing it slowly at low power. Why?',ctx:'',opts:['High power mode uses less voltage','Idle/sleep states consume so little power that minimizing TIME spent active matters more than the instantaneous power level','Slow processing always uses less total energy — race to idle is a myth','CPUs cannot enter sleep states after high-power operation'],ans:1,ex:'Since deep sleep states (C6+) draw very little power (often <10% of active power), the total ENERGY (power × time) is often minimized by spending less time at moderate power and more time at near-zero power — even if the moderate power period was higher than a "low power, longer duration" alternative. The exception is when wake/sleep transitions themselves have significant energy cost relative to the task.'},
+  {q:'Why does "dark mode" save meaningful battery on OLED/AMOLED screens but provide little to no savings on traditional LCD screens?',ctx:'',opts:['Dark mode reduces CPU usage on all screen types equally','OLED pixels emit their own light individually (so black pixels use ~0 power), while LCDs use a constant backlight regardless of displayed content','LCDs are more efficient than OLED in general','Dark mode only affects battery on Android, not iOS'],ans:1,ex:'OLED/AMOLED displays are self-emissive — each pixel generates its own light, so a black pixel can be fully OFF, drawing near-zero power. LCDs use a separate backlight that illuminates the whole panel uniformly regardless of what colors are displayed — so the backlight (and its power draw) is essentially constant whether the content is mostly black or mostly white.'},
+  {q:'An app polls a remote server for updates every 5 seconds, even when the screen is off, in order to "always have the latest data." What is the main green computing problem with this design?',ctx:'',opts:['It uses too much mobile data, which is a cost issue, not a power issue','It prevents the CPU and radio from entering deep sleep states, keeping average power consumption elevated continuously','5-second polling intervals are too infrequent for most apps','There is no problem — polling is the most efficient design pattern'],ans:1,ex:'Frequent polling (every 5 seconds, screen off) keeps the radio active and prevents the device from entering deep C-states/Doze mode. Even though each individual poll is brief, the device never gets the chance to settle into a low-power state between polls. The fix is event-driven design: push notifications let the radio sleep until the server actively has something to send, dramatically reducing average power.'},
+];
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,curQ=0,score=0;
+let cpuMode='balanced',radioState='on';
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcDVFS();calcEprop();calcSim()}
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--o3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showFW(id){
+  const order=['display','storage','network','mobile'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('fw-'+id).classList.add('active');
+}
+function showCState(idx){
+  document.querySelectorAll('.cstate-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.cstate-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+// DVFS calculator
+function calcDVFS(){
+  const v=parseInt(document.getElementById('voltSlider').value)/100;
+  const f=parseInt(document.getElementById('freqSlider').value)/100;
+  document.getElementById('voltVal').textContent=v.toFixed(2)+' V';
+  document.getElementById('freqVal').textContent=f.toFixed(2)+' GHz';
+  const baseline=1.0*1.0*2.0; // V=1.0,f=2.0
+  const power=v*v*f;
+  const pct=Math.round(power/baseline*100);
+  document.getElementById('dvfsNum').textContent=pct+'%';
+  document.getElementById('dvfsFormula').textContent=`P = C × ${v.toFixed(2)}² × ${f.toFixed(2)} = ${(v*v*f).toFixed(2)}C`;
+  let rating,color;
+  if(pct<=30){rating='Ultra-low power — deep idle / efficiency core territory';color='#1a7a50'}
+  else if(pct<=60){rating='Low power — efficient operation, lower performance';color='#5aa86a'}
+  else if(pct<=100){rating='Balanced — near or below baseline';color='#e8851f'}
+  else if(pct<=160){rating='High performance — above baseline power draw';color='#d2691e'}
+  else{rating='Maximum / turbo — significant power draw for peak speed';color='#c0392b'}
+  document.getElementById('dvfsRating').textContent=rating;
+  document.getElementById('dvfsFill').style.width=Math.min(pct/2,100)+'%';
+  document.getElementById('dvfsFill').style.background=color;
+}
+
+// Energy proportionality
+function calcEprop(){
+  const util=parseInt(document.getElementById('utilSlider').value);
+  document.getElementById('utilVal').textContent=util+'%';
+  const ideal=util;
+  const real=Math.round(50+0.5*util);
+  document.getElementById('idealPower').textContent=ideal+'%';
+  document.getElementById('realPower').textContent=real+'%';
+  document.getElementById('wastedPower').textContent=(real-ideal)+'%';
+  const eff=ideal===0?'0.00×':(util/real).toFixed(2)+'×';
+  document.getElementById('efficiencyRatio').textContent=eff;
+}
+
+// Laptop simulator
+function setCpuMode(mode){
+  cpuMode=mode;
+  document.querySelectorAll('#sec5 .sim-control:nth-child(2) .sim-radio').forEach(r=>r.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  calcSim();
+}
+function setRadio(state){
+  radioState=state;
+  document.querySelectorAll('#sec5 .sim-control:nth-child(3) .sim-radio').forEach(r=>r.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  calcSim();
+}
+function calcSim(){
+  const bright=parseInt(document.getElementById('brightSlider').value);
+  const apps=parseInt(document.getElementById('appsSlider').value);
+  document.getElementById('brightVal').textContent=bright+'%';
+  document.getElementById('appsVal').textContent=apps;
+
+  const cpuPower={saver:4,balanced:9,performance:18}[cpuMode];
+  const displayPower=2+(bright/100)*6; // 2W to 8W
+  const radioPower=radioState==='on'?1.5:0.05;
+  const appsPower=apps*0.5;
+  const basePower=2.5;
+
+  const total=cpuPower+displayPower+radioPower+appsPower+basePower;
+  const battery=50; // Wh
+  const hours=battery/total;
+
+  document.getElementById('simHours').textContent=hours.toFixed(1)+' hrs';
+  document.getElementById('simWatts').textContent=total.toFixed(1)+' W';
+  document.getElementById('simEnergy').textContent=total.toFixed(1)+' Wh';
+
+  const items=[
+    {label:'CPU',val:cpuPower,color:'#e8851f',max:18},
+    {label:'Display',val:displayPower,color:'#2e7dd4',max:8},
+    {label:'Radio',val:radioPower,color:'#1a7a50',max:1.5},
+    {label:'Background apps',val:appsPower,color:'#c0392b',max:4},
+    {label:'Base system',val:basePower,color:'#7c6e63',max:2.5},
+  ];
+  document.getElementById('simBreakdown').innerHTML=items.map(it=>`
+    <div class="sim-bar-row">
+      <div class="sim-bar-label">${it.label}</div>
+      <div class="sim-bar-track"><div class="sim-bar-fill" style="width:${(it.val/it.max*100)}%;background:${it.color}"></div></div>
+      <div class="sim-bar-val">${it.val.toFixed(1)} W</div>
+    </div>`).join('');
+}
+
+// Quiz
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{document.getElementById('qResult').style.display='block';const msgs=['Review DVFS and C-states — try the sections above again.','Good start! Focus on energy proportionality and race-to-idle.','Decent understanding. Review the device/peripheral scenarios.','Solid! A couple of gaps — check your wrong answers.','Strong performance! Well prepared on power management.','Perfect — excellent grasp of power minimization concepts.'];document.getElementById('qScore').textContent=score;document.getElementById('qMsg').textContent=msgs[Math.min(score,5)]}
+}
+function resetQuiz(){score=0;curQ=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c3_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c3_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+
+init();
+</script>
+</body>
+</html>
