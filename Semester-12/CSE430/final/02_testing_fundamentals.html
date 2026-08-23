@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing Fundamentals — CSE430 Exam Prep</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat .item ul { margin: 4px 0 0; padding-left: 1.1em; }
+  .cheat .item li { margin: 2px 0; font-size: .88rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p, .cheat .item li { color: #000; }
+  }
+
+  /* ---- Supplementary: data tables (comparisons, cost tables, oracle maps) ----
+     The base template has no table styling, and this topic leans on several
+     faculty comparison tables, so this block extends — not replaces — the
+     copied CSS above using the same tokens. */
+  .tbl-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px;
+    border: 1px solid var(--rule); box-shadow: var(--shadow); }
+  table.data { width: 100%; border-collapse: collapse; font-size: .92rem;
+    background: #fff; }
+  table.data caption { text-align: left; font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--faint); padding: 10px 16px 0; }
+  table.data th, table.data td { text-align: left; padding: 11px 16px;
+    border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.data thead th { background: var(--ink); color: #fff; font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600; font-size: .76rem; letter-spacing: .04em; text-transform: uppercase; }
+  table.data tbody tr:last-child td { border-bottom: none; }
+  table.data tbody tr:nth-child(even) { background: var(--box); }
+  table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  @media print { .tbl-wrap { box-shadow: none; } table.data thead th { background: #ddd; color: #000; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#t1">Presence, not absence</a></li>
+      <li><a href="#t2">Exhaustive testing is impossible</a></li>
+      <li><a href="#t3">Early testing saves money</a></li>
+      <li><a href="#t4">Defect clustering</a></li>
+      <li><a href="#t5">Pesticide paradox</a></li>
+      <li><a href="#t6">Context dependency</a></li>
+      <li><a href="#t7">Absence-of-errors fallacy</a></li>
+      <li><a href="#t8">Static vs dynamic testing</a></li>
+      <li><a href="#t9">Test oracles</a></li>
+      <li><a href="#t10">Test levels &amp; the SDLC</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>Testing Fundamentals</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE430 — Software Testing and Quality Assurance (East West University)</span>
+      <span><b>Based on:</b> Lecture 14: Testing Fundamentals (Dr. Shamim Hasnat Ripon)</span>
+      <span><b>Exam:</b> ~25 Aug 2026 (mixed format)</span>
+    </div>
+  </header>
+
+  <p>This lecture is the theory backbone the rest of the course hangs off — every later topic (white-box testing, integration testing, regression testing, acceptance testing) is really just a more detailed look at one branch of the map you'll build here: <strong>seven guiding principles</strong>, then <strong>static vs dynamic testing</strong> as the two broad ways of applying them, then <strong>test oracles</strong> as the mechanism that decides pass/fail, then <strong>test levels</strong> as where in the SDLC all of this actually happens. Expect short-answer questions phrased almost exactly like the review questions on the last content slide, plus one or two apply-the-concept scenarios.</p>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t1">
+    <span class="topic-num">Principle 01 of 7</span>
+    <h2>Testing Shows Presence of Defects, Not Their Absence</h2>
+    <p class="subtitle">Passing every test tells you what wasn't found — not that nothing is there.</p>
+
+    <p>Think about a medical screening test. If it comes back positive, you've learned something concrete: there is a problem, and you know roughly where. But if it comes back negative, all you've really learned is that <em>this particular test</em> didn't detect a problem — not that you are guaranteed to be perfectly healthy. A different test, looking at a different marker, might still find something. Software testing works the same way. A <strong>defect</strong> is a flaw in the software that causes it to behave incorrectly; a <strong>test case</strong> is one specific check designed to catch a particular kind of defect if it exists.</p>
+
+    <p>Put formally, in the lecture's own words: testing can reveal defects, but it never proves their absence — even when none are found. If every test in your suite passes, that only means <em>no defects were found by the tests that were run</em>. It does not mean the software is defect-free; it means your confidence has gone up, while certainty has not been reached, because untested paths could still be hiding a problem.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Testing reduces risk — it does not eliminate it.</p>
+    </div>
+
+    <p><strong>Faculty's worked example:</strong> a banking app passes all 500 of its test cases, covering login, transfer, and balance operations. Later, in production, a critical bug turns up in currency conversion — a path the 500-test suite never actually covered. The suite wasn't wrong to pass; it simply never asked the question that would have caught this bug.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The classic exam trap is a scenario that says "the team ran the full test suite and got zero failures — is the software bug-free?" The correct answer is always no: zero failures on the tests you ran is not the same claim as zero defects in the system. Don't let "100% pass rate" and "0% defect rate" collapse into the same sentence in your answer.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· warm-up · short answer</span></span></div>
+      <div class="qbody">
+        <p>Why can't testing ever prove that software is 100% defect-free? Explain your answer using the difference between "passing a test suite" and "having zero defects."</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's own quick-review question 1 from the end of Lecture 14. It is testing whether you can state Principle #1 (Testing Shows Presence of Defects, Not Their Absence) precisely, rather than just recognising it when you see it.
+          </div>
+          <p>Testing works by running a finite, chosen set of test cases and checking whether the observed behaviour matches the expected behaviour. If a test fails, we have direct evidence of a defect — that is what "presence of defects" means. But if every test passes, all we can conclude is that the specific inputs, paths, and scenarios we happened to check behaved correctly. We never execute every possible input, path, and combination of conditions the software could encounter (this connects directly to Principle #2, exhaustive testing is impossible), so there will always be paths that were never exercised. A defect sitting on one of those unexercised paths simply never gets the chance to reveal itself. That's why a 100% pass rate only ever means "no defects found by these tests" — it lowers the probability of undiscovered defects, it does not drive that probability to zero.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t2">
+    <span class="topic-num">Principle 02 of 7</span>
+    <h2>Exhaustive Testing Is Impossible</h2>
+    <p class="subtitle">You cannot try every combination — so you have to choose which ones matter.</p>
+
+    <p>Imagine a combination lock with enough dials that trying every possible setting would take longer than anyone's patience allows — you'd give up long before you tried them all, even though in principle you could. Software has the same problem, at a much larger scale. <strong>Exhaustive testing</strong> means testing every possible input, every possible path through the code, and every possible combination of conditions.</p>
+
+    <p>The lecture's point is blunt: testing all combinations is infeasible. Time, cost, and complexity make 100% coverage impractical even for genuinely small components — this isn't about lazy testers, it's a hard combinatorial wall. The response is to stop chasing "everything" and instead prioritize using risk analysis, focusing limited testing effort where it matters most.</p>
+
+    <div class="formula">
+      <div class="label">Faculty's worked example</div>
+      <p style="margin:0">A simple form with just 10 fields, each with 5 possible values, already has \( 5^{10} \approx 9.7 \) million possible combinations. Even running 1,000 tests every second, that's still <em>days</em> of testing — for one form.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>We can't test everything — we test what matters most.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't read this principle as "write as many test cases as possible." The lecture explicitly says the answer is to prioritize by risk, not to maximize raw test-case count. A smaller, well-chosen set of tests aimed at the highest-risk areas beats a huge unfocused set every time — and it's this principle that later justifies techniques like equivalence partitioning and boundary value analysis from earlier lectures, which exist precisely to pick a small, representative sample instead of testing exhaustively.</p>
+      </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· warm-up · worked problem</span></span></div>
+      <div class="qbody">
+        <p>A configuration screen has 9 independent toggle-fields, each of which can be set to one of 5 possible states. (a) How many total input combinations would exhaustive testing of this one screen require? (b) At a throughput of 1,000 test executions per second, how many minutes of pure execution time would exhaustive testing take? (c) What does Principle #2 say the team should do instead?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{combinations} = 5^9 \)</p>
+              <p class="why">Each of the 9 fields is an <b>independent choice</b> among 5 states, so — exactly as in the faculty's 10-field example — the counts multiply together rather than add.</p>
+            </li>
+            <li>
+              <p class="math-line">\( 5^9 = 1{,}953{,}125 \)</p>
+              <p class="why"><b>Evaluate the exponent:</b> 5 multiplied by itself 9 times.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \dfrac{1{,}953{,}125 \text{ tests}}{1{,}000 \text{ tests/sec}} = 1{,}953.125 \text{ sec} \)</p>
+              <p class="why"><b>Divide</b> total combinations by throughput to get total time in seconds.</p>
+            </li>
+            <li>
+              <p class="math-line">\( 1{,}953.125 \div 60 \approx 32.6 \text{ minutes} \)</p>
+              <p class="why"><b>Unit conversion</b> to a human-readable figure: seconds ÷ 60 = minutes.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>≈1.95 million combinations, roughly 33 minutes of nonstop execution — for one screen, in isolation, with no setup time between tests. Per Principle #2, exhaustive testing here is already impractical, so the team should apply risk-based prioritization (e.g., boundary values, high-risk field combinations, pairwise testing) rather than attempt full coverage.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t3">
+    <span class="topic-num">Principle 03 of 7</span>
+    <h2>Early Testing Saves Time and Money</h2>
+    <p class="subtitle">The same defect gets more expensive to fix the later you find it.</p>
+
+    <p>Catching a typo while you're still drafting a document costs you a few seconds. Catching that same typo after the document has been printed, bound, and shipped to a warehouse means reprinting the whole run. The defect didn't change — only how much has already been built on top of it did. Software defects behave the same way across the <strong>SDLC</strong> (software development life cycle — the sequence of phases a system passes through: requirements, design, coding, and beyond).</p>
+
+    <p>The lecture states this directly: defects found early in the SDLC are far cheaper to fix than those found later, so testing activities should begin at the requirements and design stages — not just after coding is done. This is exactly why <strong>static testing</strong> (Topic 8 below) matters: reviews and inspections let a team catch defects before code even exists.</p>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <caption>Relative cost to fix a defect, by SDLC phase found (indexed to Requirements = 1×)</caption>
+        <thead><tr><th>SDLC phase</th><th class="num">Relative cost</th></tr></thead>
+        <tbody>
+          <tr><td>Requirements</td><td class="num">1×</td></tr>
+          <tr><td>Design</td><td class="num">5×</td></tr>
+          <tr><td>Coding</td><td class="num">10×</td></tr>
+          <tr><td>Post-release</td><td class="num">100×</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>A bug caught in a requirements review is far cheaper than one caught in production.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The multiplier is indexed to Requirements = <strong>1</strong>, not 0 — every phase still costs something. Also, the jump from Coding (10×) to Post-release (100×) is a 10× jump on its own, which is often what an exam question is actually probing, rather than the full 100× compared to Requirements.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· core · worked problem</span></span></div>
+      <div class="qbody">
+        <p>A defect is estimated to cost $200 to fix if it is caught during coding. Using the relative-cost table above, calculate: (a) the equivalent cost of catching the same defect during the requirements phase, and (b) the cost if it escapes all the way to post-release. (c) How many times more expensive is the post-release fix compared to catching it during coding?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Coding} = 10\times \text{ base unit} = \$200 \Rightarrow \text{base unit (1×)} = \$200 / 10 = \$20 \)</p>
+              <p class="why">The table's multipliers are all relative to the same base unit (Requirements = 1×); use the known Coding cost to back out that base unit.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Requirements cost} = 1 \times \$20 = \$20 \)</p>
+              <p class="why"><b>Substitute</b> the base unit into the Requirements multiplier (1×).</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Post-release cost} = 100 \times \$20 = \$2{,}000 \)</p>
+              <p class="why"><b>Substitute</b> the base unit into the Post-release multiplier (100×).</p>
+            </li>
+            <li>
+              <p class="math-line">\( \$2{,}000 / \$200 = 10 \)</p>
+              <p class="why"><b>Divide</b> the post-release cost by the coding cost — equivalently, \(100\times / 10\times = 10\times\).</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Requirements-phase equivalent: $20. Post-release cost: $2,000. The post-release fix is 10× more expensive than fixing it during coding (and 100× more expensive than fixing it at the requirements stage) — the same defect, just discovered later.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t4">
+    <span class="topic-num">Principle 04 of 7</span>
+    <h2>Defect Clustering</h2>
+    <p class="subtitle">Most bugs don't spread evenly — they pile up in a few hot spots.</p>
+
+    <p>If a restaurant gets complaints, they're rarely spread evenly across the whole menu — usually one or two dishes generate most of the trouble, while the rest of the menu is fine. Software defects behave the same way: a small number of modules usually contain most of the defects in a system.</p>
+
+    <p>This follows the <strong>Pareto principle</strong> — a general pattern where a small proportion of causes produces a large proportion of effects. In testing terms, roughly 80% of defects are typically found in roughly 20% of modules. Past defect data helps predict where new defects will cluster, which is valuable information for planning where limited testing time goes.</p>
+
+    <div class="formula">
+      <div class="label">Faculty's worked example — payment module, past release</div>
+      <p style="margin:0">The payment module made up just <strong>15%</strong> of the codebase, but accounted for <strong>65%</strong> of all reported defects.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Past defect patterns guide where testing effort should concentrate.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Defect clustering is a reason to <em>concentrate</em> testing effort, not a licence to skip the other modules entirely — a low-defect-history module can still ship a first-time defect. It's also easy to confuse with Principle #2 (exhaustive testing is impossible): that principle is about the sheer size of the input space, while clustering is about where, historically, defects actually turn up within that space.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· core · short answer</span></span></div>
+      <div class="qbody">
+        <p>A company's defect-tracking system shows that the payment module accounts for 15% of the codebase but 65% of all reported defects from the last release. (a) Which testing principle does this illustrate? (b) If the QA team has limited time before the next release, how should this principle shape their test planning?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's own payment-module example (Principle #4, Defect Clustering), rephrased as a question. The examiner wants you to name the principle correctly and then apply it to a resource-allocation decision — connecting "history predicts risk" to "prioritize testing effort."
+          </div>
+          <p>This is an example of <strong>defect clustering</strong>, which follows the Pareto principle: a small number of modules (here, just 15% of the codebase) account for a disproportionately large share of defects (65%). Given limited time before the next release, the QA team should weight their testing effort toward the payment module first, allocating more test design, more regression checks, and more careful review there than the historical defect rate would justify for an average module. This doesn't mean ignoring the rest of the system — Principle #1 (testing shows presence, not absence, of defects) still applies everywhere — but with finite time, concentrating effort where defects have clustered historically gives the best return on testing investment.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t5">
+    <span class="topic-num">Principle 05 of 7</span>
+    <h2>Pesticide Paradox</h2>
+    <p class="subtitle">Running the exact same tests, forever, eventually tells you nothing new.</p>
+
+    <p>Picture a farmer who sprays the same pesticide on their field, season after season. In year one, it wipes out most of the pests. But any insects that happened to survive that first spraying pass on whatever let them survive — and over time, the surviving population is made up almost entirely of insects that specific pesticide simply doesn't affect anymore. The chemical hasn't gotten weaker; the population it's up against has changed to route around exactly what it checks for.</p>
+
+    <p>A <strong>regression suite</strong> is a fixed set of test cases, re-run after every change, to confirm old functionality still works. The pesticide paradox says: running the identical set of tests repeatedly eventually stops finding new defects — not because the software has become defect-free, but because that suite only ever checks for the specific things it was built to check, and everything that could trip those specific checks has already been fixed. Test cases must be reviewed and updated regularly to keep finding new kinds of defects, the same way a farmer would eventually need to rotate to a different pesticide.</p>
+
+    <div class="formula">
+      <div class="label">Faculty's worked example</div>
+      <p style="margin:0">A regression suite of 200 test cases, unchanged for 18 months, keeps returning 200/200 passing. It isn't because the software is defect-free — it's because those 200 tests only ever check old, already-fixed scenarios. A critical crash then shows up in a feature the suite never covered.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Stale test suites give false confidence — tests must evolve with the software.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the mechanism, made explicit</span>
+      <p>This is the trap worth slowing down on, because "100% passing" and "safe" feel like the same thing and they aren't. Each test case in the suite was written to check one specific thing — usually a defect that was found once and fixed. The very first time you run the suite, that's genuinely useful information. But once the surrounding code stabilizes, that same test just keeps confirming the same fact over and over: "the thing I check for is still fixed." It has nothing to say about any code the suite doesn't touch. Meanwhile the software keeps changing underneath it — new features, new branches, new edge cases get added — and none of that is covered by a suite that hasn't changed. So the pass rate can sit at 100% for 18 straight months while real, uncovered risk quietly accumulates in exactly the parts of the system the old tests never look at. That's the paradox: the more reliably a fixed suite passes, the less information each additional run of it is actually giving you.</p>
+      <p><strong>What to do instead:</strong> don't throw the old suite away — it still guards against old bugs resurfacing. Instead, (1) periodically retire or rewrite tests that never fail and add nothing new, (2) add fresh test cases targeting recently changed code, new features, and any defect found in production, (3) vary the input data and edge cases inside existing tests instead of always rerunning identical fixed values, and (4) pair the regression suite with exploratory or risk-based testing that deliberately probes areas the fixed suite doesn't reach. The goal is a suite that keeps refreshing itself, the way a farmer rotates pesticides, rather than one that just gets re-run unchanged.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· core · short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain the pesticide paradox in software testing, using the farming analogy it's named after. Why doesn't a regression suite that has passed 100% of the time for 18 months guarantee the software is defect-free, and what should the team do about it?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Directly from Principle #5 (Pesticide Paradox). The examiner is checking both the named analogy (why "pesticide") and whether you can connect it back to Principle #1 (presence, not absence, of defects) to explain why a passing suite still leaves risk.
+          </div>
+          <p>Just as a fixed pesticide eventually only kills the insects that were never resistant to it, leaving a population immune to that one chemical, a fixed set of test cases eventually only catches the specific defects it was designed to catch — and once those are fixed, it has nothing left to find. A suite passing 100% for 18 months isn't proof of a defect-free system (Principle #1); it's evidence that the suite hasn't been asked any new questions in 18 months, while the software itself kept changing. The fix is to treat the suite as a living artifact: regularly review and retire tests that no longer add information, inject new tests targeting recent changes and newly discovered defects, vary inputs rather than reusing identical fixed values, and supplement the fixed suite with exploratory testing aimed at areas it has never covered.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· stretch · long answer</span></span></div>
+      <div class="qbody">
+        <p>A team has been using the same 200 regression test cases for 18 months. All tests pass, and the team confidently ships a new release. Two days later, users report a critical crash in a feature that was never part of the original test suite. (a) Which testing principle(s) explain what went wrong? (b) What could the team have done differently?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's own in-class discussion scenario ("Apply the Principles," Lecture 14), turned into an exam question. It deliberately combines two principles rather than testing one in isolation — the examiner wants you to notice both and connect them, not just name the more obvious one.
+          </div>
+          <p>Two principles are at work here together. First, the <strong>pesticide paradox</strong> (Principle #5): an unchanged 200-test suite run repeatedly for 18 months will keep passing once it has already caught everything it's capable of catching — a 100% pass rate on a stale suite is not evidence of low risk, only evidence that the suite hasn't been challenged with anything new. Second, <strong>testing shows presence of defects, not their absence</strong> (Principle #1): because the crashing feature was never part of the original suite, no test ever had the chance to reveal that defect — the passing result said nothing at all about that feature, in either direction. Combined, "all 200 tests passed" gave the team false confidence precisely because the suite was both narrow (never covered the new feature) and stale (unchanged for 18 months, so it wasn't refreshed to catch up with what the software had become).</p>
+          <p>What the team could have done differently: expand the regression suite to include coverage for newly added features before shipping (closing the gap Principle #1 exposes), and periodically review and refresh the existing 200 tests — retiring ones that add no new information and adding tests aimed at recently changed code — so the suite doesn't fossilize the way the pesticide paradox describes. Combining the fixed regression suite with some exploratory testing of new or high-risk areas before release would also have given the untested feature at least some chance of being checked.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t6">
+    <span class="topic-num">Principle 06 of 7</span>
+    <h2>Testing Is Context Dependent</h2>
+    <p class="subtitle">The right amount of testing depends entirely on what's at stake.</p>
+
+    <p>A bridge and a garden shed are both "structures," but nobody expects them to be inspected the same way — the cost of a bridge failing is catastrophic, while a shed failing is a minor inconvenience, so the inspection regime for each is calibrated to that risk. Software testing works the same way: testing is done differently depending on the context of the software, and no single "one-size-fits-all" approach works for every system. Relevant context factors include the domain, the risk level, applicable regulation, the user base, and how fast the release cycle moves.</p>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr><th>Safety-critical software</th><th>E-commerce website</th></tr></thead>
+        <tbody>
+          <tr><td>e.g., aircraft flight control, medical devices</td><td>faster-paced, iterative release cycles</td></tr>
+          <tr><td>Exhaustive, rigorous testing</td><td>Prioritizes usability &amp; performance</td></tr>
+          <tr><td>Formal verification methods</td><td>Tolerates minor defects if fixed quickly</td></tr>
+          <tr><td>Regulatory certification (e.g., DO-178C, IEC 62304)</td><td>Faster testing cycles, less formal process</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>There is no universal "right amount" of testing — it depends on what's at stake.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Resist the instinct to answer "more testing is always better." Over-testing a low-risk system wastes time and budget just as surely as under-testing a high-risk one endangers people — the point of this principle is calibration to context, in either direction, not maximization.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· core · short answer</span></span></div>
+      <div class="qbody">
+        <p>Using at least two context factors, explain why an e-commerce website and an aircraft flight-control system would follow very different testing regimes even though both are "just software."</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Principle #6 (Testing Is Context Dependent), using the lecture's own contrast pair. The examiner wants named context factors, not just "one is more important than the other."
+          </div>
+          <p>Two context factors drive the difference. <strong>Risk level and regulation:</strong> a flight-control system failing can cost lives, so it is subject to exhaustive, rigorous testing, formal verification methods, and mandatory regulatory certification such as DO-178C; an e-commerce site failing typically costs a delayed transaction or a frustrated customer, so that level of rigor would be disproportionate. <strong>Release cycle and user base:</strong> the e-commerce site iterates quickly to meet shifting user demand and competitive pressure, tolerating minor, quickly-fixed defects in exchange for speed, while a flight-control system's release cycle is slow and deliberate precisely because the cost of a missed defect is so much higher. Neither approach is "more testing" in an absolute sense — each is calibrated to what failure would actually cost in its own context.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t7">
+    <span class="topic-num">Principle 07 of 7</span>
+    <h2>Absence-of-Errors Fallacy</h2>
+    <p class="subtitle">A system with zero known bugs can still be a system nobody can actually use.</p>
+
+    <p>Imagine a car that rolls off the assembly line with flawless build quality — no rattles, no defects, every part exactly to spec — but with the steering wheel installed on the wrong side for the country it's being sold in. Mechanically it's perfect. It is still useless to the person who has to drive it. Fixing every known defect doesn't guarantee a useful system, because "correct" and "useful" are answering two different questions.</p>
+
+    <p>This is the distinction between <strong>verification</strong> (did we build the system right — does it match its specification?) and <strong>validation</strong> (did we build the right system — does it actually meet user and business needs?). A system can be 99%, or even 100%, defect-free by its own specification and still fail if that specification never captured what users actually needed.</p>
+
+    <div class="formula">
+      <div class="label">Faculty's worked example</div>
+      <p style="margin:0">A system is delivered on time with zero reported defects — 100% of tests passed. It still fails, because it doesn't support the barcode scanners the warehouse actually uses. Correct, but unusable.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Bug-free is not the same as fit-for-purpose.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't read a QA report showing "0 defects" as automatic proof of success — that report is only telling you the system matches its written specification (verification). Whether that specification captured what users actually need (validation) is a separate question this principle forces you to ask.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· core · short answer</span></span></div>
+      <div class="qbody">
+        <p>A logistics company delivers an inventory-management system on schedule with zero reported defects from testing. Warehouse staff still cannot use it in daily operations because it doesn't support their barcode scanners. (a) Which testing principle explains this outcome? (b) Distinguish between verification and validation in your answer.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's own warehouse-scanner example (Principle #7, Absence-of-Errors Fallacy). The examiner wants the principle named, plus the verification/validation distinction it rests on.
+          </div>
+          <p>This is the <strong>absence-of-errors fallacy</strong>: a bug-free system is not automatically a successful one. Zero reported defects means the system was thoroughly <strong>verified</strong> — it matches whatever specification the testers checked it against. But it clearly was not properly <strong>validated</strong> — nobody confirmed that the specification itself captured the real operational need, which was compatibility with the warehouse's actual barcode scanners. The system is "correct" relative to a specification that missed a critical real-world requirement, which is exactly why fixing every known defect never guarantees a useful system on its own.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>Static vs Dynamic Testing</h2>
+    <p class="subtitle">Two complementary ways of checking software — one before you ever run it, one only once you can.</p>
+
+    <p>Can you "test" software before a single line of code is even run? Surprisingly, yes — and the lecture treats this as one of the two fundamental ways testing gets done.</p>
+
+    <h3>Static testing</h3>
+    <p><strong>Static testing</strong> examines artifacts without running the code — requirements documents, design models, and source code itself, all inspected as text and structure rather than executed. Because it needs no working code, it can start as early as the requirements or design stage, which is exactly what makes it the practical engine behind Principle #3 (early testing saves money). It's well suited to finding requirement ambiguities, design flaws, standard violations, and unreachable code. Common static techniques include reviews, walkthroughs, inspections, and static analysis tools (these connect back to Reviews &amp; Inspections in Lecture 7 and Software Audits in Lecture 8).</p>
+    <p><em>Example:</em> a static analysis tool flags an unused variable, and a peer review catches an ambiguous requirement — "system should respond quickly" — before design even begins.</p>
+
+    <h3>Dynamic testing</h3>
+    <p><strong>Dynamic testing</strong> requires execution: it runs the software with real or simulated inputs and observes actual behavior — outputs, performance, crashes, response times. It necessarily happens later in the SDLC, since it needs working code, unlike static testing. Dynamic techniques include black-box testing, white-box testing, and unit, integration, and system testing.</p>
+    <p><em>Example:</em> running a login test case with valid and invalid credentials, then observing whether the system correctly grants or denies access.</p>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <caption>Side-by-side comparison</caption>
+        <thead><tr><th>Aspect</th><th>Static testing</th><th>Dynamic testing</th></tr></thead>
+        <tbody>
+          <tr><td>Code execution?</td><td>No</td><td>Yes</td></tr>
+          <tr><td>When performed</td><td>Early (requirements, design, code)</td><td>After code is executable</td></tr>
+          <tr><td>Finds</td><td>Ambiguities, design flaws, standard violations</td><td>Functional bugs, crashes, performance issues</td></tr>
+          <tr><td>Cost to fix defects</td><td>Lower</td><td>Higher</td></tr>
+          <tr><td>Example techniques</td><td>Reviews, walkthroughs, inspections, static analysis</td><td>Black-box, white-box, unit/integration/system testing</td></tr>
+          <tr><td>Tools (this course)</td><td>—</td><td>Selenium, JUnit, Eclipse</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Both are complementary — not competing approaches.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>"White-box testing" (Lecture 15) is a dynamic technique that happens to use knowledge of the code's internal structure — don't confuse the term with static testing just because it involves looking at code. The distinguishing question is always: does this technique require the software to actually run? White-box testing does; static analysis does not.</p>
+    </div>
+
+    <p><strong>Worked example — static vs dynamic in action:</strong> a requirements document states "the system should handle a large number of concurrent users." Caught statically, a requirements review flags "large number" as ambiguous and untestable — there's no measurable threshold — and it gets fixed before coding begins. If that review misses it, the same gap is instead caught dynamically: load testing during system testing reveals the app crashes at 500 concurrent users — but only after the system has already been built, making it far more expensive to redesign.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· warm-up · short answer</span></span></div>
+      <div class="qbody">
+        <p>Give an example of a static testing technique and an example of a dynamic testing technique used in this course. State one key difference between them.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The faculty's own quick-review question 2 from the end of Lecture 14. It wants one concrete example of each, plus the defining distinction — execution or not.
+          </div>
+          <p>A static technique: a code review or inspection, which examines the source code as a document, looking for issues like an unused variable or an ambiguous requirement statement, without ever running the program. A dynamic technique: a unit test executed with JUnit, which runs the actual code with specific inputs and checks the output it produces. The key difference is execution: static testing never runs the software and can therefore start as early as the requirements stage, while dynamic testing requires working, executable code and so necessarily happens later in the SDLC.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· core · apply</span></span></div>
+      <div class="qbody">
+        <p>A requirements document states: "The system should handle a large number of concurrent users." (a) Explain how this issue could be caught through static testing before any code is written. (b) Explain how, if missed, it could instead be caught through dynamic testing — and why that would be more costly. (c) Which of the seven testing principles covered earlier does this scenario also illustrate?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The faculty's own "Worked Example: Static vs Dynamic in Action" scenario, including its own closing prompt asking which earlier principle it also demonstrates.
+          </div>
+          <p>(a) In a static requirements review, a reviewer would flag the phrase "large number" as ambiguous and untestable — there's no measurable threshold to design a test against — and require it be rewritten with a concrete number (e.g., "supports 1,000 concurrent users with response time under 2 seconds") before design or coding begins. (b) If that ambiguity slips past review, it would instead surface dynamically: during system-level load testing, the team runs the built application under increasing simulated user load and observes it crash at, say, 500 concurrent users. This is more costly because by this point the system has already been designed and built around the vague requirement, so fixing it may mean redesigning architecture (e.g., adding load balancing) rather than simply rewording a document. (c) This scenario also illustrates <strong>Principle #3, early testing saves time and money</strong>: the same underlying issue costs far less to fix when caught statically at the requirements stage than when caught dynamically after the system is built and running.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t9">
+    <span class="topic-num">Topic 09</span>
+    <h2>Test Oracles</h2>
+    <p class="subtitle">Something has to decide pass or fail — an oracle is that something.</p>
+
+    <p>Every test produces some actual output. But an output on its own doesn't tell you anything — you need to know what the output was <em>supposed</em> to be, so you can compare. A <strong>test oracle</strong> is the mechanism used to judge a test's outcome: it decides pass or fail. It answers the question, "what did we compare the actual output against?" For simple systems the answer is obvious (a calculator's "2+2" should show "4"), but for complex systems deciding what counts as "correct" behavior isn't always straightforward — this is sometimes called the <strong>oracle problem</strong>.</p>
+
+    <p><em>Example:</em> a test sends login credentials and observes the response. The oracle is whatever tells us whether "access granted" was the correct response — usually the requirements specification.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Every test needs an oracle — even if it's implicit, someone (or something) decides pass or fail.</p>
+    </div>
+
+    <h3>Four types of test oracle</h3>
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr><th>Type</th><th>How it decides correctness</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Specification-based</strong></td><td>Expected result derived directly from requirements/spec documents.</td></tr>
+          <tr><td><strong>Derived (heuristic)</strong></td><td>Estimated from domain knowledge, prior versions, or reasonable expectations.</td></tr>
+          <tr><td><strong>Consistency (differential)</strong></td><td>Compare output against another version of the same system.</td></tr>
+          <tr><td><strong>No oracle / self-verifying</strong></td><td>Check general properties instead of one fixed expected value.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <caption>Faculty's worked example — identify the oracle</caption>
+        <thead><tr><th>Test case</th><th>What tells us pass/fail?</th><th>Oracle type</th></tr></thead>
+        <tbody>
+          <tr><td>Verify login rejects incorrect password</td><td>Requirement: "Shall deny access for invalid credentials"</td><td>Specification-based</td></tr>
+          <tr><td>Verify new tax module matches legacy module output</td><td>Output of the old/legacy system</td><td>Consistency (differential)</td></tr>
+          <tr><td>Verify a sorting function's output</td><td>Output list must always be in ascending order</td><td>No oracle (property-based)</td></tr>
+          <tr><td>Verify a "Submit" button behaves like similar apps</td><td>Tester's domain knowledge/experience</td><td>Derived (heuristic)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>The lecture's own closing prompt on this table asks: which of these oracle types would be hardest to automate, and why? The usual answer is the <strong>derived/heuristic</strong> oracle — it relies on a human tester's domain knowledge and judgment about what "feels right," which is exactly the kind of subjective, hard-to-codify check that resists being turned into an automated assertion. A specification-based or property-based oracle, by contrast, can usually be written as an explicit rule a script can check.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· warm-up · short answer</span></span></div>
+      <div class="qbody">
+        <p>What is the difference between a specification-based oracle and a heuristic (derived) oracle? Give an example of each.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The faculty's own quick-review question 3. It wants the defining difference (source of the expected result) plus a concrete example of each, matching the lecture's own worked table.
+          </div>
+          <p>A <strong>specification-based oracle</strong> derives its expected result directly from a requirements or specification document — for example, verifying that a login screen rejects an incorrect password because the requirement explicitly states "shall deny access for invalid credentials." A <strong>heuristic (derived) oracle</strong> instead estimates the expected result from domain knowledge, prior versions of the system, or reasonable tester expectations, rather than an explicit written rule — for example, judging whether a "Submit" button behaves the way similar buttons behave in comparable applications, based on the tester's own experience rather than a documented spec. The key difference is the source of "correct": an explicit document versus informed judgment.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· core · apply</span></span></div>
+      <div class="qbody">
+        <p>For each test case below, identify which type of test oracle is being used and briefly justify your choice.</p>
+        <ul>
+          <li>(a) A new invoice-calculation module's output is compared against the output of the old legacy invoicing system for the same 1,000 transactions.</li>
+          <li>(b) A tester checks that a compression function, when its output is decompressed again, always reproduces the exact original file (a round-trip check).</li>
+          <li>(c) A tester verifies that an error message's exact wording matches the text given in the UI specification document.</li>
+          <li>(d) An experienced tester judges whether a new checkout flow "feels right" compared to how similar checkout flows behave on other e-commerce sites they've used.</li>
+        </ul>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>Applying the same four categories the lecture defines, to new scenarios instead of the ones on the slide:</p>
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) Consistency (differential) oracle</p>
+              <p class="why">Correctness is judged by comparing the new module's output against <b>another version of the same system</b> (the legacy module) — the defining trait of a differential oracle.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) No oracle / self-verifying (property-based)</p>
+              <p class="why">There's no single fixed expected value; instead the test checks a <b>general property</b> that must always hold — decompression must always invert compression exactly.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) Specification-based oracle</p>
+              <p class="why">The expected result — the exact wording — comes <b>directly from a specification document</b>, the defining trait of this oracle type.</p>
+            </li>
+            <li>
+              <p class="math-line">(d) Derived (heuristic) oracle</p>
+              <p class="why">Correctness is judged using the tester's <b>domain knowledge and prior experience</b>, not a written rule — the defining trait of a heuristic oracle, and typically the hardest of the four to automate.</p>
+            </li>
+          </ol>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="topic" id="t10">
+    <span class="topic-num">Topic 10</span>
+    <h2>Test Levels and the SDLC</h2>
+    <p class="subtitle">Different SDLC phases are checked by different levels of testing.</p>
+
+    <p>Software isn't tested all at once — it's tested in layers, each aimed at a different scale of the system, and each layer traces back to a specific stage of the development process (a "V-model" style pairing). The higher up the development phase, the higher up the corresponding test level:</p>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <caption>Development phase → corresponding test level</caption>
+        <thead><tr><th>Development phase</th><th>Test level</th></tr></thead>
+        <tbody>
+          <tr><td>Business / user requirements</td><td>Acceptance testing</td></tr>
+          <tr><td>System requirements</td><td>System testing</td></tr>
+          <tr><td>Architectural / system design</td><td>Integration testing</td></tr>
+          <tr><td>Detailed design &amp; coding</td><td>Unit testing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="data">
+        <caption>Scope, who performs it, and typical defects found</caption>
+        <thead><tr><th>Level</th><th>Scope</th><th>Who performs it</th><th>Typical defects found</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Unit testing</strong></td><td>Individual functions/modules in isolation</td><td>Developers</td><td>Logic errors, calculation errors, boundary errors</td></tr>
+          <tr><td><strong>Integration testing</strong></td><td>Interfaces &amp; interaction between modules</td><td>Developers / testers</td><td>Interface mismatches, data-passing errors</td></tr>
+          <tr><td><strong>System testing</strong></td><td>Complete, integrated system as a whole</td><td>Independent test team</td><td>Functional gaps, end-to-end workflow failures</td></tr>
+          <tr><td><strong>Acceptance testing</strong></td><td>System against business/user needs</td><td>Users / clients / stakeholders</td><td>Misalignment with requirements, usability issues</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>These four levels are where everything else in this guide actually gets applied: static and dynamic testing both happen across all of them, and every test at every level still needs a test oracle to decide pass or fail — the levels are the "where," oracles are the "how you judge it," and the seven principles are the "why we test this way" underneath all of it.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>A very common exam trap: a defect where "two correctly-built modules fail to exchange data properly" sounds like it could be a unit-testing problem (since each module individually works fine), but it's actually an <strong>integration testing</strong> defect — the scope that specifically targets interfaces and interaction between modules, not the modules' internal correctness.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 13 <span class="diff">· warm-up · short answer</span></span></div>
+      <div class="qbody">
+        <p>Which test level would most likely catch a defect where two correctly-built modules fail to exchange data properly? Justify your answer using the scope of that test level.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The faculty's own quick-review question 4. It's specifically designed to catch students who reason "each module works, so it must be a unit-level issue" — the examiner wants you to recognise the scope shift to interfaces.
+          </div>
+          <p><strong>Integration testing.</strong> Unit testing checks each module in isolation, so a module that is internally correct will pass its unit tests regardless of how well it cooperates with other modules — that's precisely why the defect wasn't caught there. Integration testing's scope is defined as interfaces and interaction between modules, performed by developers or testers, and its typical defects are exactly interface mismatches and data-passing errors — which is exactly what this scenario describes.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 14 <span class="diff">· core · apply</span></span></div>
+      <div class="qbody">
+        <p>For each defect described below, identify the most appropriate test level and justify your answer using its scope.</p>
+        <ul>
+          <li>(a) A tax-calculation function returns an incorrect result for negative input values.</li>
+          <li>(b) Data sent from the payment module is not correctly received by the shipping module.</li>
+          <li>(c) The complete checkout workflow fails when exercised end-to-end as a whole system.</li>
+          <li>(d) The delivered dashboard technically works but does not match what business stakeholders actually asked for.</li>
+        </ul>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">(a) Unit testing</p>
+              <p class="why">The defect is confined to <b>one function in isolation</b> — exactly the scope of unit testing, and boundary/calculation errors are its typical defect category.</p>
+            </li>
+            <li>
+              <p class="math-line">(b) Integration testing</p>
+              <p class="why">The problem is in the <b>data-passing between two modules</b>, not either module's internal logic — the defining scope of integration testing.</p>
+            </li>
+            <li>
+              <p class="math-line">(c) System testing</p>
+              <p class="why">The failure only shows up when testing the <b>complete, integrated system as a whole</b> end-to-end — the scope reserved for system testing, run by an independent test team.</p>
+            </li>
+            <li>
+              <p class="math-line">(d) Acceptance testing</p>
+              <p class="why">The system works technically but is <b>misaligned with business/user needs</b> — precisely the scope and typical defect of acceptance testing, performed by users/clients/stakeholders.</p>
+            </li>
+          </ol>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 15 <span class="diff">· stretch · long answer</span></span></div>
+      <div class="qbody">
+        <p>A financial services company ships a new feature after its full automated regression suite — unchanged for over a year — passes 100%. Two weeks later, a critical defect is discovered in production that could have been caught by a simple negative-number test case that was never included in the suite. Using at least three named concepts from this lecture, explain: (a) why the passing suite gave false confidence, (b) why the team could never have tested every possible scenario in the first place, and (c) one specific, concrete action that would most improve their testing process going forward.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            A capstone question spanning the whole lecture — it's designed the way a mixed-format final exam often closes a topic, asking you to weave several named principles into one coherent explanation rather than recalling them one at a time.
+          </div>
+          <p>(a) The false confidence comes from two combined effects. First, <strong>Principle #1 (testing shows presence, not absence, of defects)</strong>: a 100% pass rate only confirms that the tests actually run found nothing — it says nothing about the negative-number case that was never included. Second, <strong>Principle #5 (the pesticide paradox)</strong>: because the suite was unchanged for over a year, it had long since stopped teaching the team anything new — it kept passing not because the software had become safer, but because it was only ever re-checking the same old, already-fixed scenarios.</p>
+          <p>(b) The team could never have tested every possible scenario because of <strong>Principle #2 (exhaustive testing is impossible)</strong>: the space of possible inputs — including every boundary and edge case such as negative numbers — grows combinatorially, so time, cost, and complexity make full coverage impractical even for one module, let alone a whole financial system. Some form of prioritization was always going to leave some scenario untested; the real failure was which one got left out.</p>
+          <p>(c) A concrete, specific action: add negative-number and other boundary-value test cases to the regression suite for this feature (closing the immediate gap), and — reflecting the pesticide paradox's remedy — schedule a periodic review of the whole suite (e.g., every release cycle) specifically to retire tests that add no new information and add tests targeting recently changed code and previously missed edge cases, rather than letting the suite run unchanged indefinitely.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision: Testing Fundamentals</h2>
+    <div class="grid">
+      <div class="item"><h4>1 — Presence, not absence</h4><p>Testing can reveal defects but never prove their absence, even when none are found.</p></div>
+      <div class="item"><h4>2 — Exhaustive testing impossible</h4><p>Can't test every input/path/combination — prioritize by risk instead.</p></div>
+      <div class="item"><h4>3 — Early testing saves money</h4><p>Cost to fix roughly: Requirements 1× → Design 5× → Coding 10× → Post-release 100×.</p></div>
+      <div class="item"><h4>4 — Defect clustering</h4><p>Pareto pattern: ~80% of defects typically found in ~20% of modules; history predicts risk.</p></div>
+      <div class="item"><h4>5 — Pesticide paradox</h4><p>Unchanged tests stop finding new bugs, like pests becoming immune to a repeated pesticide. Refresh and vary the suite.</p></div>
+      <div class="item"><h4>6 — Context dependent</h4><p>No universal "right amount" of testing — rigor matches risk/domain (safety-critical ≠ e-commerce).</p></div>
+      <div class="item"><h4>7 — Absence-of-errors fallacy</h4><p>Bug-free ≠ fit-for-purpose. Must validate (right system), not just verify (built right).</p></div>
+      <div class="item"><h4>Static vs dynamic</h4><p>Static = examine artifacts, no execution, early, cheaper. Dynamic = run the software, later, needs working code.</p></div>
+      <div class="item">
+        <h4>Test oracle types</h4>
+        <ul>
+          <li>Specification-based — from requirements</li>
+          <li>Derived (heuristic) — domain knowledge</li>
+          <li>Consistency (differential) — vs another version</li>
+          <li>No oracle — check general properties</li>
+        </ul>
+      </div>
+      <div class="item">
+        <h4>Test levels (low → high)</h4>
+        <ul>
+          <li>Unit — developers, isolated functions</li>
+          <li>Integration — dev/testers, module interfaces</li>
+          <li>System — independent team, whole system</li>
+          <li>Acceptance — users/stakeholders, business needs</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from CSE430 Lecture 14 (Dr. Shamim Hasnat Ripon, East West University). Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

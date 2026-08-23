@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam Prep Guide — Syntax Testing</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+
+  /* ---- Grammar / derivation-tree text blocks (guide-specific addition) ---- */
+  .gram {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .92rem; line-height: 1.7; white-space: pre; margin: 0;
+    color: var(--ink);
+  }
+  .gram .nt { color: var(--accent); font-weight: 600; }       /* non-terminal */
+  .gram .t  { color: var(--attempt); font-weight: 600; }      /* terminal */
+  .gram .op { color: var(--muted); }                          /* ::= and | */
+  .tree {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .87rem; line-height: 1.85; white-space: pre; margin: 0;
+  }
+  .tree .n   { color: var(--faint); }              /* node number */
+  .tree .nt  { color: var(--accent); font-weight: 600; }
+  .tree .t   { color: var(--attempt); font-weight: 600; }
+  .tree .or  { color: var(--solve); font-style: italic; }
+  .badge {
+    display: inline-block; font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .82rem; background: var(--accent-soft); color: var(--accent);
+    border: 1px solid #CFE2E0; border-radius: 6px; padding: 1px 7px; margin: 0 1px;
+  }
+  .badge.bad { background: var(--attempt-soft); color: var(--attempt); border-color: #EFD9B6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <!-- ================= SIDEBAR ======= -->
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#t1">Where syntax testing fits</a></li>
+      <li><a href="#t2">What syntax testing is</a></li>
+      <li><a href="#t3">BNF from zero</a></li>
+      <li><a href="#t4">The 3-step method</a></li>
+      <li><a href="#t5">Generator vs. recognizer</a></li>
+      <li><a href="#t6">Worked example: the copy/rename grammar</a></li>
+      <li><a href="#t7">Practice questions</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <!-- ================= MASTHEAD ============================================= -->
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>Syntax Testing</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE430 — Software Testing and Quality Assurance (East West University)</span>
+      <span><b>Based on:</b> Syntax Testing (Dr. Shamim Hasnat Ripon)</span>
+      <span><b>Exam:</b> ~25 Aug 2026 (mixed format)</span>
+    </div>
+  </header>
+
+  <!-- ============ 1. WHERE SYNTAX TESTING FITS =================================== -->
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>Where syntax testing fits</h2>
+    <p class="subtitle">Just enough of the big picture to place the technique — this is not the exam's focus.</p>
+
+    <p>Your lecture opens with the usual scaffolding of a testing course: what testing even is
+    (Hetzel's and Myers' definitions — "establishing confidence" vs. "executing with the intent
+    of finding errors"), who does it, the V-model connecting requirements/design/code to
+    system/integration/unit testing, and the fact that testing can never give 100% confidence
+    because time is limited and specifications are never provably complete. You should be able
+    to recognise these as background if a short-answer question quotes them, but they are not
+    what this guide drills — that is <strong>syntax testing</strong> specifically.</p>
+
+    <p>The lecture places syntax testing inside a family of <strong>functional (black-box)
+    testing techniques</strong> — ways of designing tests purely from what the software is
+    supposed to accept and do, without looking at its source code. The faculty's list is:</p>
+    <ol>
+      <li>Equivalence class analysis</li>
+      <li>Cause–effect graphs</li>
+      <li><strong>Syntactic testing</strong> ← this guide</li>
+      <li>Random testing</li>
+      <li>Transaction analysis</li>
+      <li>Testing based on models</li>
+      <li>Testing state transitions</li>
+    </ol>
+    <p>Notice syntax testing sits alongside equivalence classes and cause–effect graphs — all
+    three are ways of turning "what counts as valid input" into concrete test cases, they just
+    use different tools to describe validity. Syntax testing's tool is a formal grammar.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Syntax testing is one specific black-box technique: it designs tests directly from a
+      grammar that defines what a legal input looks like.</p>
+    </div>
+  </section>
+
+  <!-- ============ 2. WHAT SYNTAX TESTING IS =================================== -->
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>What is syntax testing, and why does input format matter?</h2>
+    <p class="subtitle">Definition, straight from the slide, unpacked term by term.</p>
+
+    <p>Think about any place software accepts something structured from the outside world: a
+    command typed at a prompt, a line in a config file, a date field on a form, a URL, a row in
+    a CSV upload. Before the software can act on that input at all, it first has to agree that
+    the input is even <em>shaped</em> correctly — the right pieces, in the right order, spelled
+    the right way. Get the shape wrong (a missing colon, an extra field, a letter where a digit
+    belongs) and nothing downstream matters, because the program should refuse the input before
+    it ever reaches the "real" logic. <strong>Syntax testing is the discipline of testing that
+    gate</strong> — the part of the software that decides "is this input well-formed or not?"</p>
+
+    <div class="formula">
+      <div class="label">Definition (faculty's own wording)</div>
+      <p style="margin:0 0 8px;"><strong>Syntax testing</strong> is a type of <strong>black-box</strong>
+      testing technique used to examine the format and the grammar of the data inputs used in a
+      software application, whether external or internal. The grammar may be formally described
+      in technical or established &amp; specified notations such as <strong>BNF</strong>, and
+      that description can then be used to design input-validation tests.</p>
+      <p style="margin:0;">Syntax testing is performed to verify and validate both internal and
+      external data input to the system, against the specified format, file format, database
+      schema, protocol, and other similar things. Because it involves producing a large number
+      of tests, syntax tests are generally <strong>automated</strong>.</p>
+    </div>
+
+    <p>Two things are worth sitting with here. First, "grammar" is not a metaphor — it is used
+    in the same sense as a grammar for a natural or programming language: a set of rules saying
+    which sequences of symbols are legal. Second, syntax testing only checks <em>shape</em>, not
+    <em>meaning</em>. A string can be perfectly well-formed and still be nonsense in context —
+    we return to that limitation later, because it is exactly the kind of thing exam theory
+    questions like to probe.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>"Black-box" here means the test cases come purely from the input's specified format —
+      not from reading the source code. It does not mean syntax testing ignores structure; the
+      grammar itself is a very precise structural description, it is just a description of
+      <em>inputs</em>, not of the program's internals.</p>
+    </div>
+  </section>
+
+  <!-- ============ 3. BNF FROM ZERO =================================== -->
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>BNF notation, built from zero</h2>
+    <p class="subtitle">If you have never read a grammar before, start here — everything later depends on this.</p>
+
+    <p>Picture a recipe card that lets you substitute ingredients: "sandwich = bread + filling +
+    bread", and then a second card says "filling = cheese or ham or peanut-butter". You never
+    memorise every possible sandwich; you memorise the two small substitution rules, and any
+    sandwich you can build by following them, one substitution at a time, is a "legal" sandwich.
+    A grammar is exactly this idea applied to strings of text instead of food: a small set of
+    substitution rules that together define every legal string, without anyone having to list
+    every string by hand.</p>
+
+    <p><strong>BNF</strong> stands for <strong>Backus–Naur Form</strong> (the slide's own note,
+    "BKF – Bakus-Naur Form", is a misspelling of this — the standard name and spelling is
+    Backus–Naur Form, and that is what you should write on the exam). It is simply a fixed way
+    of writing substitution rules like the sandwich example, using a small set of symbols:</p>
+
+    <div class="formula">
+      <div class="label">BNF symbol legend</div>
+      <p class="gram"><span class="op">&lt;name&gt;</span>   a <b>non-terminal</b> — a placeholder that still needs to be substituted, e.g. <span class="nt">&lt;letter&gt;</span>
+<span class="op">::=</span>       "is defined as" / "can be replaced by" — separates the placeholder from its possible substitutions
+<span class="op">|</span>        "or" — separates alternative substitutions for the same placeholder</p>
+    </div>
+
+    <p>So a rule <code>&lt;letter&gt; ::= a | b</code> reads as: <em>"the placeholder
+    &lt;letter&gt; can be substituted by either the literal <code>a</code> or the literal
+    <code>b</code>."</em> The angle-bracketed name on the left is called a
+    <strong>non-terminal</strong> because it is not yet part of the final string — it still has
+    substituting left to do. The plain literal symbols on the right that never get further
+    substituted (here, <code>a</code> and <code>b</code>) are called <strong>terminals</strong> —
+    they are the actual characters that end up in the finished, legal string. A grammar is
+    "finished" being applied to produce one particular string exactly when every non-terminal has
+    been substituted away and only terminals remain.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p><strong>Non-terminal</strong> = a name in angle brackets that still needs replacing.
+      <strong>Terminal</strong> = an actual literal symbol/word that appears in the final string.
+      <code>::=</code> means "is defined as"; <code>|</code> means "or".</p>
+    </div>
+
+    <p>One more idea from the lecture, stated as an equivalent way of thinking about the same
+    grammar: instead of substitution rules, picture a <strong>finite-state machine</strong> (a
+    diagram of states and arrows) — a "syntax graph" that a string either can or cannot be
+    traced through from start to finish. BNF and a syntax-graph/FSM describe exactly the same
+    set of legal strings; BNF just writes it as text rules instead of a picture. The slide
+    mentions both (<em>"the formal description is a BNF or an FSM"</em>) — for the exam, be
+    ready to recognise either form, but the worked examples in this guide (and almost certainly
+    on your exam, since it is what the lecture worked through) use BNF.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Do not confuse the vertical bar <code>|</code> (which means "or", inside one rule) with
+      writing two separate rules for the same non-terminal — both notations exist in different
+      textbooks, but the lecture's own grammar always uses the single-rule-with-<code>|</code>
+      style, e.g. <code>&lt;command type&gt; ::= copy | rename</code> rather than two lines. Match
+      the lecture's style on the exam.</p>
+    </div>
+  </section>
+
+  <!-- ============ 4. THREE-STEP METHOD =================================== -->
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>The three-step methodology</h2>
+    <p class="subtitle">How you actually <em>do</em> syntax testing, in the order the lecture gives it.</p>
+
+    <p>The slide titled "How to Perform Syntax Testing?" lays out the methodology as three
+    steps. Read them as a recipe you will repeat, almost word for word, on every practice
+    question below.</p>
+
+    <ol>
+      <li><strong>Identify the target language or format.</strong> Decide exactly what kind of
+      input you are testing — a command, a date, a filename, a protocol message — before writing
+      anything formal.</li>
+      <li><strong>Define the syntax of the language.</strong> Every input has some syntax, even
+      if it was never written down (it might be "formally pre-specified" already, or completely
+      "undocumented" and you have to reverse-engineer it from the spec or the code's behaviour).
+      Write that syntax as a BNF grammar.</li>
+      <li><strong>Test and debug the syntax</strong> to ensure its completeness and consistency,
+      using two kinds of test conditions:
+        <ul>
+          <li><strong>Normal condition</strong> — use a covering set of paths through the
+          syntax graph/grammar (enough test strings that every rule and every alternative gets
+          exercised at least once) for the minimum necessary requirements.</li>
+          <li><strong>Garbage condition</strong> — deliberately feed in invalid input, built so
+          that it breaks one specific rule of the grammar, to check the software correctly
+          rejects it.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Step 1 says <em>what</em> you're testing, step 2 says <em>what "correct" means</em> for
+      it (formally), step 3 is where you actually generate test cases — both the ones that
+      should pass and the ones that should be rejected.</p>
+    </div>
+  </section>
+
+  <!-- ============ 5. GENERATOR VS RECOGNIZER =================================== -->
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>Generator vs. recognizer, and the two ways a routine can fail</h2>
+    <p class="subtitle">The mental model that makes "who does what" click.</p>
+
+    <p>Once you have a grammar, there are naturally two roles in play, and it is worth being
+    very clear about which one is which, because exam questions like to ask you to name them.
+    The piece of <strong>software under test</strong> — the part of the program that reads an
+    input string and decides whether to accept or reject it — is acting as a
+    <strong>recognizer</strong>: given a string, it recognizes (accepts) it if the string is a
+    legal member of the language, and should reject it otherwise. You, the <strong>tester</strong>,
+    are acting as a <strong>generator</strong>: you use the grammar to generate strings — both
+    strings that are legal (which the recognizer must accept) and strings that are illegal
+    (which the recognizer must reject) — and throw them at the recognizer to see if its verdicts
+    match what the grammar says they should be.</p>
+
+    <div class="formula">
+      <div class="label">Roles (faculty's own wording)</div>
+      <p style="margin:0;">"The routine is a string recognizer." &nbsp;&nbsp; "The tester is [a] string generator."</p>
+    </div>
+
+    <p>Because the recognizer only ever has two possible verdicts (accept / reject) and the
+    string only ever has two possible true statuses (valid / invalid), there are exactly two
+    ways the recognizer can be <em>wrong</em> — and the lecture names both:</p>
+
+    <ol>
+      <li><strong>The recognizer does not recognize a good string</strong> — it wrongly
+      <em>rejects</em> a string that the grammar says is valid. (A "false negative" — the
+      software is too strict.)</li>
+      <li><strong>It accepts a bad string</strong> — it wrongly <em>accepts</em> a string that
+      the grammar says is invalid. (A "false positive" — the software is too permissive.)</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Both failure modes are real bugs, and one is not automatically worse than the other for
+      an exam answer — but in practice, "accepts a bad string" is often the more dangerous
+      failure, because garbage data then flows further into the system (a database insert, a
+      shell command, a file operation) instead of being stopped at the door. If a question asks
+      you to justify garbage testing's importance, that is the point to make.</p>
+    </div>
+  </section>
+
+  <!-- ============ 6. WORKED EXAMPLE =================================== -->
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>Worked example: the copy/rename command grammar</h2>
+    <p class="subtitle">This is the lecture's own running example — reproduced exactly, step by step.</p>
+
+    <p>The lecture wants to test a small command interpreter that only understands two kinds of
+    one-line commands: copying a file, or renaming a file, where filenames happen to be built
+    only from the letters <code>a</code> and <code>b</code> (a deliberately tiny alphabet, so the
+    whole set of legal strings is small enough to reason about by hand). Applying step 1 of the
+    methodology: the target language is "a copy-or-rename command over one- or two-letter
+    filenames drawn from {a, b}".</p>
+
+    <h3>Step 1 (of the worked example) — the grammar</h3>
+    <p>Applying step 2 of the methodology, the syntax is written formally as BNF, exactly as
+    given on the slide:</p>
+
+    <div class="formula">
+      <div class="label">The grammar (verbatim from the lecture)</div>
+      <p class="gram"><span class="nt">&lt;command&gt;</span>      <span class="op">::=</span> <span class="nt">&lt;command type&gt;</span> <span class="nt">&lt;file name&gt;</span> <span class="t">to</span> <span class="nt">&lt;file name&gt;</span>
+<span class="nt">&lt;command type&gt;</span> <span class="op">::=</span> <span class="t">copy</span> <span class="op">|</span> <span class="t">rename</span>
+<span class="nt">&lt;file name&gt;</span>   <span class="op">::=</span> <span class="nt">&lt;letter&gt;</span> <span class="op">|</span> <span class="nt">&lt;letter&gt;&lt;letter&gt;</span>
+<span class="nt">&lt;letter&gt;</span>       <span class="op">::=</span> <span class="t">a</span> <span class="op">|</span> <span class="t">b</span></p>
+    </div>
+
+    <p>Read it top-down, the way you'd read the recipe cards: a <code>&lt;command&gt;</code> is
+    a <code>&lt;command type&gt;</code>, then a <code>&lt;file name&gt;</code>, then the literal
+    word <code>to</code>, then another <code>&lt;file name&gt;</code>. A
+    <code>&lt;command type&gt;</code> is either the literal <code>copy</code> or the literal
+    <code>rename</code>. A <code>&lt;file name&gt;</code> is either a single
+    <code>&lt;letter&gt;</code> or two <code>&lt;letter&gt;</code>s back to back. A
+    <code>&lt;letter&gt;</code> is either <code>a</code> or <code>b</code>. Only four
+    non-terminals, five terminal symbols (<code>copy</code>, <code>rename</code>, <code>to</code>,
+    <code>a</code>, <code>b</code>) — and yet this already generates a precise, non-trivial
+    little language.</p>
+
+    <h3>Step 2 (of the worked example) — the derivation tree</h3>
+    <p>A <strong>derivation tree</strong> is simply the record of which alternative you picked,
+    at each non-terminal, while walking down from the grammar's starting symbol. Every branch
+    point in the tree is a non-terminal that had a choice (marked "or" below, matching the
+    lecture's own green "OR" markers); every leaf is a terminal symbol that actually appears in
+    the output string. The lecture numbers every node 1–23 so that later it can talk about
+    "covering" specific numbers — keep that numbering, it is reused in the next step and in the
+    practice questions.</p>
+
+    <div class="formula">
+      <div class="label">Derivation tree — numbered exactly as in the lecture</div>
+      <pre class="tree"><span class="n">1</span> <span class="nt">&lt;command&gt;</span>
+├── <span class="n">2</span> <span class="nt">&lt;command type&gt;</span>
+│     └─ <span class="n">6</span> <span class="t">copy</span>  <span class="or">(or)</span>  <span class="n">7</span> <span class="t">rename</span>
+├── <span class="n">3</span> <span class="nt">&lt;file name&gt;</span>            <span class="or">[1st file name]</span>
+│     └─ <span class="n">8</span> <span class="nt">&lt;letter&gt;</span>  <span class="or">(or)</span>  <span class="n">9</span> <span class="nt">&lt;letter&gt;&lt;letter&gt;</span>
+│           <span class="n">8</span> → <span class="n">12</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">13</span> <span class="t">b</span>
+│           <span class="n">9</span> → <span class="nt">&lt;letter&gt;</span>                    <span class="nt">&lt;letter&gt;</span>
+│                  <span class="n">16</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">17</span> <span class="t">b</span>          <span class="n">18</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">19</span> <span class="t">b</span>
+├── <span class="n">4</span> <span class="t">to</span>
+└── <span class="n">5</span> <span class="nt">&lt;file name&gt;</span>            <span class="or">[2nd file name]</span>
+      └─ <span class="n">10</span> <span class="nt">&lt;letter&gt;</span>  <span class="or">(or)</span>  <span class="n">11</span> <span class="nt">&lt;letter&gt;&lt;letter&gt;</span>
+            <span class="n">10</span> → <span class="n">14</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">15</span> <span class="t">b</span>
+            <span class="n">11</span> → <span class="nt">&lt;letter&gt;</span>                    <span class="nt">&lt;letter&gt;</span>
+                   <span class="n">20</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">21</span> <span class="t">b</span>          <span class="n">22</span> <span class="t">a</span> <span class="or">(or)</span> <span class="n">23</span> <span class="t">b</span></pre>
+    </div>
+
+    <p>Read the tree as: node 1 always expands into nodes 2, 3, 4, 5 (that part is fixed, no
+    "or" — every command has exactly this shape). Node 2 then has a genuine choice between
+    <code>copy</code> (6) and <code>rename</code> (7). Nodes 3 and 5 are both
+    <code>&lt;file name&gt;</code>, but they are two <em>separate</em> occurrences (the source
+    filename and the destination filename) — each gets its own independent choice between the
+    one-letter branch (8 or 10) and the two-letter branch (9 or 11). Every individual
+    <code>&lt;letter&gt;</code> (nodes 8, 10, and the four leaves under 9 and 11) independently
+    chooses <code>a</code> or <code>b</code>. One traversal from root to leaves, always picking
+    one option at every "or", produces exactly one legal command string.</p>
+
+    <h3>Step 3 (of the worked example) — deriving the test commands</h3>
+    <p>Applying step 3 of the methodology (normal condition, then garbage condition), the
+    lecture builds its test set by <strong>node coverage</strong>: pick the smallest set of
+    valid strings whose derivation trees, laid on top of each other, touch every node in the
+    tree at least once. This is the same instinct as branch coverage in code — every "or" choice
+    should be exercised on both sides at least once across your test set, not just once overall.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Reasoning · why these commands, in this order</span></div>
+      <div class="qbody">
+        <ol class="steps">
+          <li>
+            <p class="math-line"><span class="badge">copy a to b</span></p>
+            <p class="why">Pick the "everything short" path: <code>copy</code> (6), the
+            one-letter branch for both filenames (8 and 10), each letter the first option
+            (<code>a</code>). This single string already exercises nodes
+            <b>1, 2, 3, 5, 8, 10</b> (non-terminals) and <b>6, 12, 15</b> (terminals) — a good
+            first test because it is the shortest possible legal command and touches the
+            "copy" and "one-letter filename" branches in one shot.</p>
+          </li>
+          <li>
+            <p class="math-line"><span class="badge">copy aa to bb</span></p>
+            <p class="why">Now deliberately pick the <em>other</em> branch at node 3 and node 5
+            — the two-letter <code>&lt;file name&gt;</code> alternative — so the tree's
+            two-letter machinery (nodes 9 and 11, and their four letter-leaves) gets exercised
+            too. This covers non-terminals <b>1, 2, 3, 5, 9, 11</b> and terminals
+            <b>6, 16, 18, 21, 23</b>. Between test 1 and test 2, every non-terminal in the tree
+            (1,2,3,5,8,9,10,11) has now been visited at least once.</p>
+          </li>
+          <li>
+            <p class="math-line">Terminals not yet covered after tests 1–2: <span class="badge bad">7</span> <span class="badge bad">13</span> <span class="badge bad">17</span> <span class="badge bad">19</span> <span class="badge bad">20</span> <span class="badge bad">22</span></p>
+            <p class="why">Node coverage isn't finished until every <em>leaf</em> has appeared
+            at least once too — so far both tests always picked <code>copy</code> (never
+            <code>rename</code> — node 7 unused) and always picked the <em>first</em> letter
+            option at nodes 8, 9's-left-letter, and 11's-right-letter branches in various spots.
+            Checking node-by-node against the tree above shows exactly these six leaves are
+            still untouched.</p>
+          </li>
+          <li>
+            <p class="math-line"><span class="badge">rename b to a</span></p>
+            <p class="why">Switches node 2 to <code>rename</code> (7, finally exercised), and
+            picks the "second" letter option where tests 1–2 had picked the first: <code>b</code>
+            at node 8 (13) and <code>a</code> at node 10 (14). Covers terminals <b>7, 13, 14</b>
+            — matching the lecture's own note.</p>
+          </li>
+          <li>
+            <p class="math-line"><span class="badge">copy bb to aa</span></p>
+            <p class="why">Back to <code>copy</code>, but now flips every remaining
+            not-yet-seen leaf inside the two-letter branches: <code>b</code> for both letters of
+            the first filename (17, 19) and <code>a</code> for both letters of the second
+            (20, 22). Covers terminals <b>17, 19, 20, 22</b> — the last four still missing.</p>
+          </li>
+        </ol>
+        <div class="callout key">
+          <span class="tag">Result</span>
+          <p>These four strings together — <code>copy a to b</code>, <code>copy aa to bb</code>,
+          <code>rename b to a</code>, <code>copy bb to aa</code> — touch all 23 numbered nodes of
+          the derivation tree at least once. That is the "normal condition" test set finished.
+          Garbage-condition strings (deliberately breaking one rule each) are worked in the
+          practice questions below, since the lecture slides stop at the valid set.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Node coverage is a <em>minimum</em>, not a guarantee of correctness — it only promises
+      every rule was exercised by <em>some</em> test, not every <em>combination</em> of rules
+      (e.g. no test here uses <code>rename</code> together with a two-letter source filename).
+      For a small grammar like this you could also just test every possible string; the coverage
+      approach is what scales when the alphabet or the strings get bigger.</p>
+    </div>
+  </section>
+
+  <!-- ============ 7. PRACTICE QUESTIONS =================================== -->
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Practice questions</h2>
+    <p class="subtitle">Work these with pen and grammar in hand before opening any solution.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy</span></span></div>
+      <div class="qbody">
+        <p>In the grammar<br>
+        <code>&lt;command&gt; ::= &lt;command type&gt; &lt;file name&gt; to &lt;file name&gt;</code>,
+        <code>&lt;command type&gt; ::= copy | rename</code>,
+        <code>&lt;file name&gt; ::= &lt;letter&gt; | &lt;letter&gt;&lt;letter&gt;</code>,
+        <code>&lt;letter&gt; ::= a | b</code> — list every <strong>terminal</strong> and every
+        <strong>non-terminal</strong> symbol.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">Non-terminals: <code>&lt;command&gt;</code>, <code>&lt;command type&gt;</code>, <code>&lt;file name&gt;</code>, <code>&lt;letter&gt;</code></p>
+              <p class="why">A symbol is a non-terminal exactly when it appears in angle
+              brackets and has a rule (a <code>::=</code> line) that defines it. These four are
+              the only names to the left of a <code>::=</code> anywhere in the grammar.</p>
+            </li>
+            <li>
+              <p class="math-line">Terminals: <code>copy</code>, <code>rename</code>, <code>to</code>, <code>a</code>, <code>b</code></p>
+              <p class="why">A terminal is any literal symbol on the right-hand side of a rule
+              that is <em>not</em> itself defined by another rule — it is where substitution
+              stops. <code>to</code> is easy to miss because it looks like an ordinary word, not
+              a special symbol, but it never appears in angle brackets and no rule defines it —
+              so it is a terminal, exactly like <code>a</code> or <code>copy</code>.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>4 non-terminals, 5 terminals — 9 distinct symbols total.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · short answer</span></span></div>
+      <div class="qbody">
+        <p>In one or two sentences each: what does <code>::=</code> mean in a BNF rule, and what
+        does <code>|</code> mean? Then give the one-line definition of "generator" and
+        "recognizer" from the lecture.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Pure vocabulary recall from the "Data Validation and Syntax Testing" slide and the
+            BNF notation build-up (Section 3 of this guide) — the kind of definition question
+            that opens a mixed-format exam.
+          </div>
+          <p><code>::=</code> means "is defined as" or "can be substituted by" — it links a
+          non-terminal on its left to the possible things it can be replaced with on its right.
+          <code>|</code> means "or" — it separates alternative substitutions for the same
+          non-terminal, so only one of the alternatives is chosen at a time in any single
+          derivation. <strong>Generator:</strong> the tester, who uses the grammar to produce
+          test strings (both valid and invalid). <strong>Recognizer:</strong> the routine under
+          test, which reads a string and decides whether to accept or reject it.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· easy</span></span></div>
+      <div class="qbody">
+        <p>Is the string <code>Copy a to b</code> (capital "C") a legal <code>&lt;command&gt;</code>
+        under the grammar? Justify your answer using a specific rule.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line"><code>&lt;command type&gt; ::= copy | rename</code></p>
+              <p class="why">This is the only rule that can produce the first word of the
+              command. Its terminals are the exact literal strings <code>copy</code> and
+              <code>rename</code>, lowercase.</p>
+            </li>
+            <li>
+              <p class="math-line"><code>Copy</code> ≠ <code>copy</code></p>
+              <p class="why">BNF terminals are literal, case-sensitive strings — there is no
+              rule anywhere in this grammar that produces a capital <code>C</code>. Even though
+              a human reader would obviously understand the intent, the grammar has no way to
+              derive <code>Copy</code>.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><strong>No — invalid.</strong> It violates the <code>&lt;command type&gt;</code>
+            rule: <code>Copy</code> is not one of the literal terminals <code>copy</code> or
+            <code>rename</code>. A recognizer that accepted this string would be committing the
+            "accepts a bad string" failure mode from Section 5.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Using the same file-copy grammar, derive <strong>three new valid test strings</strong>
+        that were <em>not</em> among the lecture's own four examples
+        (<code>copy a to b</code>, <code>copy aa to bb</code>, <code>rename b to a</code>,
+        <code>copy bb to aa</code>). For each, show which rule/alternative was chosen at every
+        non-terminal.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>Try your own three before reading these — any string not in the lecture's set of
+          four is a valid answer, as long as every step follows a real rule.</p>
+          <ol class="steps">
+            <li>
+              <p class="math-line">Target: <span class="badge">rename aa to ab</span></p>
+              <p class="why"><b>Choose:</b> <code>&lt;command type&gt;</code> → <code>rename</code>;
+              first <code>&lt;file name&gt;</code> → <code>&lt;letter&gt;&lt;letter&gt;</code> →
+              <code>a</code>,<code>a</code> = "aa"; literal <code>to</code>; second
+              <code>&lt;file name&gt;</code> → <code>&lt;letter&gt;&lt;letter&gt;</code> →
+              <code>a</code>,<code>b</code> = "ab". Every non-terminal was expanded, every leaf
+              is a legal terminal — the string is valid.</p>
+            </li>
+            <li>
+              <p class="math-line">Target: <span class="badge">copy ba to a</span></p>
+              <p class="why"><b>Choose:</b> <code>copy</code>; first
+              <code>&lt;file name&gt;</code> → two letters <code>b</code>,<code>a</code> = "ba";
+              <code>to</code>; second <code>&lt;file name&gt;</code> → one letter
+              <code>a</code>. Mixing a two-letter source with a one-letter destination is
+              perfectly legal — the two <code>&lt;file name&gt;</code> occurrences (nodes 3 and
+              5) choose independently.</p>
+            </li>
+            <li>
+              <p class="math-line">Target: <span class="badge">rename a to bb</span></p>
+              <p class="why"><b>Choose:</b> <code>rename</code>; first
+              <code>&lt;file name&gt;</code> → one letter <code>a</code>; <code>to</code>;
+              second <code>&lt;file name&gt;</code> → two letters <code>b</code>,<code>b</code> =
+              "bb". Again a legal, if previously untested, combination.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><code>rename aa to ab</code>, <code>copy ba to a</code>, <code>rename a to bb</code>
+            — all derivable in one pass through the grammar, all distinct from the lecture's
+            four.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Construct <strong>three garbage (invalid) strings</strong> for the file-copy grammar.
+        For each one, name the exact rule it violates and explain why.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line"><span class="badge bad">copy abc to a</span></p>
+              <p class="why"><b>Violates</b> <code>&lt;file name&gt; ::= &lt;letter&gt; |
+              &lt;letter&gt;&lt;letter&gt;</code>. A <code>&lt;file name&gt;</code> can only ever
+              be exactly one or exactly two letters long — there is no alternative that produces
+              three. <code>abc</code> cannot be derived by any sequence of substitutions from
+              this grammar.</p>
+            </li>
+            <li>
+              <p class="math-line"><span class="badge bad">move a to b</span></p>
+              <p class="why"><b>Violates</b> <code>&lt;command type&gt; ::= copy | rename</code>.
+              <code>move</code> is not one of the two literal terminals this rule allows — the
+              grammar simply has no notion of a "move" command, however sensible it sounds in
+              English.</p>
+            </li>
+            <li>
+              <p class="math-line"><span class="badge bad">copy a b</span></p>
+              <p class="why"><b>Violates</b> <code>&lt;command&gt; ::= &lt;command type&gt;
+              &lt;file name&gt; to &lt;file name&gt;</code>. The top-level rule requires the
+              literal word <code>to</code> between the two filenames; dropping it breaks the
+              overall <code>&lt;command&gt;</code> shape even though <code>copy</code>,
+              <code>a</code>, and <code>b</code> are each individually legal symbols elsewhere in
+              the grammar.</p>
+            </li>
+          </ol>
+          <div class="callout watch">
+            <span class="tag">Watch out</span>
+            <p>Notice the three examples deliberately break three <em>different</em> rules (the
+            filename-length rule, the command-type rule, and the overall command-shape rule).
+            On an exam, if asked for "garbage tests", pick ones that each isolate a different
+            rule — a set of garbage strings that all break the same rule is weaker evidence that
+            the recognizer works, because it never probes the untested rules at all.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Explain, using this file-copy example specifically, what a <strong>generator</strong>
+        and a <strong>recognizer</strong> are doing, and give one concrete hypothetical bug that
+        would illustrate each of the two failure modes.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This connects the abstract "generator/recognizer" framing (Section 5) to the
+            concrete worked example (Section 6) — exactly the kind of "apply the general idea to
+            the specific case" question a mixed-format exam favours.
+          </div>
+          <p>Here, the <strong>recognizer</strong> is whatever part of the command interpreter
+          parses a typed line like <code>copy a to b</code> and decides whether to run it or
+          report a syntax error. The <strong>generator</strong> is you, the tester, using the
+          grammar to produce a batch of strings such as <code>copy aa to bb</code> (should be
+          accepted) and <code>move a to b</code> (should be rejected), then feeding all of them
+          to the interpreter and checking its verdicts against what the grammar predicts.</p>
+          <p><strong>Failure mode 1 (rejects a good string):</strong> suppose the interpreter's
+          parser was written assuming filenames are always exactly one letter, and it throws a
+          syntax error on <code>copy aa to bb</code> even though the grammar clearly allows
+          two-letter filenames. <strong>Failure mode 2 (accepts a bad string):</strong> suppose
+          the parser only checks that the line contains the word <code>to</code> somewhere and
+          never actually validates the command-type word, so it happily accepts
+          <code>move a to b</code> and tries to execute it as if it were <code>copy</code> or
+          <code>rename</code> — a much more dangerous bug, since garbage now executes.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>Draw the full derivation tree, step by step, for the new valid string
+        <code>rename ab to a</code>, numbering non-terminal/or nodes the way the lecture does.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">Start: <code>&lt;command&gt;</code></p>
+              <p class="why">Every derivation begins at the grammar's top-level non-terminal.</p>
+            </li>
+            <li>
+              <p class="math-line">Expand via <code>&lt;command&gt; ::= &lt;command type&gt; &lt;file name&gt; to &lt;file name&gt;</code></p>
+              <p class="why">The only rule for <code>&lt;command&gt;</code> — no "or" choice
+              here, it always expands to these four children.</p>
+            </li>
+            <li>
+              <p class="math-line"><code>&lt;command type&gt;</code> → <code>rename</code> (choosing the "or" alternative <code>copy | rename</code>)</p>
+              <p class="why">We want the string to start with "rename", so we pick the second
+              alternative of the <code>&lt;command type&gt;</code> rule.</p>
+            </li>
+            <li>
+              <p class="math-line">1st <code>&lt;file name&gt;</code> → <code>&lt;letter&gt;&lt;letter&gt;</code> → <code>a</code>, <code>b</code> = "ab"</p>
+              <p class="why">We want a two-letter source filename, so we take the second
+              alternative of <code>&lt;file name&gt;</code>, then resolve its two
+              <code>&lt;letter&gt;</code> children to <code>a</code> then <code>b</code>.</p>
+            </li>
+            <li>
+              <p class="math-line">Literal <code>to</code></p>
+              <p class="why">No choice — the grammar's top rule fixes this terminal between the
+              two filenames.</p>
+            </li>
+            <li>
+              <p class="math-line">2nd <code>&lt;file name&gt;</code> → <code>&lt;letter&gt;</code> → <code>a</code></p>
+              <p class="why">We want a one-letter destination filename, so this second
+              (independent) occurrence of <code>&lt;file name&gt;</code> takes the <em>first</em>
+              alternative, resolving to the single letter <code>a</code>.</p>
+            </li>
+          </ol>
+          <div class="formula">
+            <div class="label">Resulting tree</div>
+            <pre class="tree"><span class="nt">&lt;command&gt;</span>
+├── <span class="nt">&lt;command type&gt;</span>
+│     └─ copy <span class="or">(or)</span> <span class="t">rename</span>  ← chosen
+├── <span class="nt">&lt;file name&gt;</span>  (1st)
+│     └─ <span class="nt">&lt;letter&gt;</span> <span class="or">(or)</span> <span class="nt">&lt;letter&gt;&lt;letter&gt;</span>  ← chose 2-letter branch
+│           1st letter: a <span class="or">(or)</span> <span class="t">b</span> → chose <span class="t">a</span>
+│           2nd letter: a <span class="or">(or)</span> <span class="t">b</span> → chose <span class="t">b</span>
+├── <span class="t">to</span>
+└── <span class="nt">&lt;file name&gt;</span>  (2nd)
+      └─ <span class="nt">&lt;letter&gt;</span> <span class="or">(or)</span> <span class="nt">&lt;letter&gt;&lt;letter&gt;</span>  ← chose 1-letter branch
+            a <span class="or">(or)</span> b → chose <span class="t">a</span></pre>
+          </div>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Reading the leaves left to right gives <code>rename ab to a</code> — matching the
+            target string exactly.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>The lecture picked <code>copy a to b</code> and <code>copy aa to bb</code> as its
+        first two normal-condition tests, then added <code>rename b to a</code> and
+        <code>copy bb to aa</code>. Explain the reasoning behind this exact order — why not, say,
+        start with <code>rename a to b</code> instead?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Tests whether you understand node coverage as a <em>strategy</em>, not just a
+            checklist — from the "Third step" slide of the worked example.
+          </div>
+          <p>There is nothing uniquely forced about starting with <code>copy</code> specifically
+          — <code>rename a to b</code> would have covered exactly the same non-terminals and an
+          equally-sized set of terminals as <code>copy a to b</code>, since the two alternatives
+          of <code>&lt;command type&gt;</code> are structurally symmetric. What <em>is</em>
+          principled is the <em>shape</em> of the first two choices: test 1 is the shortest
+          possible legal command (both filenames take the one-letter branch), maximising the
+          chance of catching a basic parsing bug cheaply, and test 2 deliberately flips both
+          filenames to their two-letter branch so that, together, tests 1 and 2 already cover
+          every non-terminal in the tree (both file-name alternatives, both command-type
+          alternatives are still outstanding at this point though — command type only shows
+          "copy" so far). Tests 3 and 4 are then chosen specifically, by checking the tree
+          against what's covered so far, to sweep up the exact six leaf terminals — 7 (rename),
+          13, 17, 19, 20, 22 — that tests 1–2 happened to leave untouched. In short: the first
+          two tests establish structural (non-terminal) coverage cheaply, and the last two are
+          reverse-engineered from exactly which terminals remain uncovered — not chosen
+          arbitrarily.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>Design a brand-new, small BNF grammar for a simple two-character
+        <strong>username format</strong>: the first character must be a letter (<code>a</code>
+        or <code>b</code>), and the second character may be either a letter (<code>a</code> or
+        <code>b</code>) or a digit (<code>1</code> or <code>2</code>). Write the grammar, draw
+        its derivation tree, and give one fully-derived valid test string and one fully-derived
+        garbage test string, explaining exactly which rule the garbage string breaks.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">Step 1 — identify the language: "exactly two characters; first is a letter; second is a letter or a digit".</p>
+              <p class="why">Following the 3-step methodology: before writing any BNF, pin down
+              in plain English exactly what counts as legal.</p>
+            </li>
+            <li>
+              <p class="math-line">Step 2 — the grammar:</p>
+              <p class="why">Translate the plain-English description into rules, reusing the
+              same style as the lecture's own grammar (small alphabets, one rule per concept).</p>
+            </li>
+          </ol>
+          <div class="formula">
+            <div class="label">New grammar — username format</div>
+            <p class="gram"><span class="nt">&lt;username&gt;</span> <span class="op">::=</span> <span class="nt">&lt;letter&gt;</span> <span class="nt">&lt;suffix&gt;</span>
+<span class="nt">&lt;suffix&gt;</span>   <span class="op">::=</span> <span class="nt">&lt;letter&gt;</span> <span class="op">|</span> <span class="nt">&lt;digit&gt;</span>
+<span class="nt">&lt;letter&gt;</span>   <span class="op">::=</span> <span class="t">a</span> <span class="op">|</span> <span class="t">b</span>
+<span class="nt">&lt;digit&gt;</span>    <span class="op">::=</span> <span class="t">1</span> <span class="op">|</span> <span class="t">2</span></p>
+          </div>
+          <div class="formula">
+            <div class="label">Derivation tree</div>
+            <pre class="tree"><span class="nt">&lt;username&gt;</span>
+├── <span class="nt">&lt;letter&gt;</span>
+│     └─ <span class="t">a</span> <span class="or">(or)</span> <span class="t">b</span>
+└── <span class="nt">&lt;suffix&gt;</span>
+      └─ <span class="nt">&lt;letter&gt;</span> <span class="or">(or)</span> <span class="nt">&lt;digit&gt;</span>
+            <span class="t">a</span> <span class="or">(or)</span> <span class="t">b</span>       <span class="t">1</span> <span class="or">(or)</span> <span class="t">2</span></pre>
+          </div>
+          <ol class="steps" start="3">
+            <li>
+              <p class="math-line">Valid test: <span class="badge">b1</span></p>
+              <p class="why"><b>Derive:</b> <code>&lt;username&gt;</code> → <code>&lt;letter&gt;
+              &lt;suffix&gt;</code> → (<code>&lt;letter&gt;</code> → <code>b</code>) then
+              (<code>&lt;suffix&gt;</code> → <code>&lt;digit&gt;</code> → <code>1</code>). Every
+              step follows a real rule, so a correct recognizer must accept it.</p>
+            </li>
+            <li>
+              <p class="math-line">Garbage test: <span class="badge bad">1a</span></p>
+              <p class="why"><b>Violates</b> <code>&lt;username&gt; ::= &lt;letter&gt;
+              &lt;suffix&gt;</code>: the very first character must come from
+              <code>&lt;letter&gt; ::= a | b</code>, but <code>1</code> is a
+              <code>&lt;digit&gt;</code>, not a <code>&lt;letter&gt;</code> — no derivation of
+              <code>&lt;username&gt;</code> can ever place a digit first, regardless of what
+              follows it.</p>
+            </li>
+          </ol>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Still using the username grammar from Question 9, give <strong>two more valid</strong>
+        strings and <strong>one more garbage</strong> string, each with a one-line justification.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">Valid: <span class="badge">aa</span></p>
+              <p class="why"><code>&lt;letter&gt;</code> → <code>a</code>, then
+              <code>&lt;suffix&gt;</code> → <code>&lt;letter&gt;</code> → <code>a</code> — both
+              positions use the letter alternative, which is allowed since
+              <code>&lt;suffix&gt;</code> permits either.</p>
+            </li>
+            <li>
+              <p class="math-line">Valid: <span class="badge">b2</span></p>
+              <p class="why"><code>&lt;letter&gt;</code> → <code>b</code>, then
+              <code>&lt;suffix&gt;</code> → <code>&lt;digit&gt;</code> → <code>2</code>.</p>
+            </li>
+            <li>
+              <p class="math-line">Garbage: <span class="badge bad">a3</span></p>
+              <p class="why"><b>Violates</b> <code>&lt;digit&gt; ::= 1 | 2</code> (reached via
+              <code>&lt;suffix&gt;</code>): <code>3</code> is neither of the two allowed digit
+              terminals, and it also is not one of the two <code>&lt;letter&gt;</code> terminals
+              — so no alternative of <code>&lt;suffix&gt;</code> can produce it.</p>
+            </li>
+          </ol>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Is the string <code>abc</code> a valid username under the grammar from Question 9?
+        Explain why length matters here even though every individual character
+        (<code>a</code>, <code>b</code>, <code>c</code>) might look plausible.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line"><code>&lt;username&gt; ::= &lt;letter&gt; &lt;suffix&gt;</code>, and both <code>&lt;letter&gt;</code> and <code>&lt;suffix&gt;</code> resolve to exactly one character each</p>
+              <p class="why">Every alternative of <code>&lt;letter&gt;</code>
+              (<code>a</code>/<code>b</code>), <code>&lt;digit&gt;</code>
+              (<code>1</code>/<code>2</code>), and hence <code>&lt;suffix&gt;</code> is a single
+              literal symbol — none of them expand to two characters. So
+              <code>&lt;username&gt;</code> always derives a string of <em>exactly</em> two
+              characters, never more or fewer.</p>
+            </li>
+            <li>
+              <p class="math-line"><code>abc</code> has 3 characters</p>
+              <p class="why">No matter which alternatives you pick, the grammar cannot produce a
+              three-character string — the length itself is already disqualifying, independent
+              of which letters appear.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><strong>Invalid</strong> — also, separately, <code>c</code> is not a legal
+            <code>&lt;letter&gt;</code> or <code>&lt;digit&gt;</code> terminal at all, so even a
+            two-character prefix like <code>ac</code> would fail on the second symbol. Two
+            independent violations, either one sufficient to reject it.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain why syntax testing alone is not sufficient to fully test a piece of software.
+        What kinds of bugs can it never catch, no matter how thorough the grammar coverage is?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This connects the definition of syntax testing (Section 2 — "examines the format and
+            grammar", i.e. shape, not meaning) to the list of sibling black-box techniques
+            (Section 1) that exist precisely to cover what syntax testing structurally cannot.
+            The examiner wants you to see syntax testing as one tool among several, not a
+            complete testing strategy on its own.
+          </div>
+          <p>Syntax testing checks whether an input is <em>shaped</em> like a legal string of
+          the grammar — nothing more. It has no way to know whether a syntactically valid input
+          is <em>semantically</em> sensible or produces the <em>correct</em> output, because the
+          grammar never encodes meaning, only structure. Concretely, in the file-copy example,
+          <code>copy a to a</code> is perfectly valid syntax (both filenames legally derive from
+          <code>&lt;file name&gt;</code>), yet it is a source-equals-destination command that a
+          well-designed system probably should reject or warn about — a purely semantic bug that
+          no amount of grammar-based testing would ever surface, since the string is 100% legal
+          by the rules in Section 6. Likewise, syntax testing says nothing about: whether the
+          copy actually happens correctly on disk (that needs functional/black-box testing at
+          the behaviour level); how the system behaves across a sequence of commands over time
+          (that is what <em>testing state transitions</em>, from the Section 1 list, is for);
+          which combinations of input conditions trigger which internal effects (<em>cause–effect
+          graphs</em>); performance, concurrency, or usability issues (outside functional testing
+          entirely); or bugs in code paths the grammar never exercises because the input space it
+          describes is narrower than the program's actual behaviour. In short: syntax testing
+          answers "is this well-formed?" — it was never designed to answer "is this correct?",
+          and that gap is exactly why the lecture lists it as one technique among seven rather
+          than the whole testing strategy.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 13 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A colleague asks you to syntax-test a new input field that accepts a simple time-of-day
+        string like <code>9:30</code>. Walk through the three-step methodology conceptually for
+        this field (you do not need to write the full BNF) — what would you do at each step?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct application of Section 4's three-step methodology to a scenario the lecture
+            did not itself work through — checking that you can transfer the method, not just
+            recite the file-copy example.
+          </div>
+          <p><strong>Step 1 — identify the language:</strong> decide precisely what "time of
+          day" means for this field — is it hours:minutes only, is a leading zero on the hour
+          allowed or required, is a 12-hour or 24-hour clock in use, is there an AM/PM suffix?
+          This has to be pinned down before anything else, because the grammar in step 2 will
+          only be as correct as this specification.</p>
+          <p><strong>Step 2 — define the syntax formally:</strong> write BNF rules such as
+          <code>&lt;time&gt; ::= &lt;hour&gt; : &lt;minute&gt;</code>,
+          <code>&lt;hour&gt; ::= 0 | 1 | ... | 23</code>,
+          <code>&lt;minute&gt; ::= 00 | 01 | ... | 59</code> (or a more compact digit-based
+          version) — capturing every constraint decided in step 1 as an explicit rule, the same
+          way the lecture turned "copy-or-rename over one/two-letter filenames" into the
+          four-rule grammar in Section 6.</p>
+          <p><strong>Step 3 — test normal and garbage conditions:</strong> for the normal
+          condition, pick a covering set of valid times that exercises every rule and boundary
+          (e.g. <code>0:00</code>, <code>9:30</code>, <code>23:59</code>) the same way node
+          coverage was used for the file-copy grammar. For the garbage condition, construct
+          strings that each violate exactly one rule — <code>25:00</code> (hour out of range),
+          <code>9:60</code> (minute out of range), <code>9-30</code> (wrong separator, breaking
+          the top-level <code>&lt;time&gt;</code> rule) — and confirm the field correctly rejects
+          each one.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 14 <span class="diff">· easy</span></span></div>
+      <div class="qbody">
+        <p>True or false, with a one-line reason: "A derivation tree and a BNF grammar for the
+        same language contain exactly the same information, just presented differently."</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">The grammar describes <em>every possible</em> legal string, in general.</p>
+              <p class="why">A grammar is a compact, reusable rule-set — it defines the whole
+              (possibly infinite) language at once.</p>
+            </li>
+            <li>
+              <p class="math-line">One derivation tree records only <em>one specific choice path</em>, producing one specific string.</p>
+              <p class="why">Building the tree means picking one alternative at every "or" —
+              information about the alternatives you <em>didn't</em> pick is not retained in
+              that particular tree.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><strong>False.</strong> The grammar is the general rule-set that can generate
+            every legal string in the language; a derivation tree is the record of one
+            particular walk through those rules, producing exactly one string. Many different
+            derivation trees come from the same grammar (as Section 6 and Question 4 show), but
+            no single tree, by itself, tells you the whole grammar.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <div class="cheat">
+    <h2>Last-minute revision — Syntax Testing</h2>
+    <div class="grid">
+      <div class="item">
+        <h4>BNF symbol legend</h4>
+        <p><code>&lt;name&gt;</code> = non-terminal (still to substitute). <code>::=</code> =
+        "is defined as". <code>|</code> = "or", separates alternatives. Literal words/letters
+        with no rule of their own = terminals (end up in the final string).</p>
+      </div>
+      <div class="item">
+        <h4>3-step methodology</h4>
+        <p>1. Identify the target language/format.<br>2. Define its syntax formally (BNF).<br>
+        3. Test normal condition (covering set of valid paths) + garbage condition (invalid
+        strings, one broken rule each).</p>
+      </div>
+      <div class="item">
+        <h4>Generator / recognizer, one-liner</h4>
+        <p>Tester = <strong>generator</strong> (produces valid &amp; invalid strings); software
+        under test = <strong>recognizer</strong> (accepts/rejects). Two failure modes: rejects a
+        good string, or accepts a bad string.</p>
+      </div>
+      <div class="item">
+        <h4>The lecture's grammar</h4>
+        <p><code>&lt;command&gt;::=&lt;command type&gt;&lt;file name&gt; to &lt;file name&gt;</code><br>
+        <code>&lt;command type&gt;::=copy|rename</code><br>
+        <code>&lt;file name&gt;::=&lt;letter&gt;|&lt;letter&gt;&lt;letter&gt;</code><br>
+        <code>&lt;letter&gt;::=a|b</code></p>
+      </div>
+      <div class="item">
+        <h4>The lecture's 4 test commands</h4>
+        <p><code>copy a to b</code>, <code>copy aa to bb</code>, <code>rename b to a</code>,
+        <code>copy bb to aa</code> — together cover all 23 numbered nodes of the derivation
+        tree.</p>
+      </div>
+      <div class="item">
+        <h4>What syntax testing can't catch</h4>
+        <p>Semantic/logic bugs in syntactically valid input (e.g. <code>copy a to a</code>),
+        behaviour over time, performance, and anything the grammar's input space doesn't cover.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from faculty lecture material (CSE430, Dr. Shamim Hasnat Ripon).
+    Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

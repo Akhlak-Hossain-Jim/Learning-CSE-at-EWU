@@ -1,0 +1,1215 @@
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integration Testing — CSE430 Exam Prep</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+
+  /* ---- Extra: architecture / tree diagrams built from plain boxes ---- */
+  .diagram { background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 20px; margin: 20px 0; overflow-x: auto; }
+  .diagram .dg-label { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin-bottom: 12px; }
+  .node-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 6px 0; }
+  .node { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; font-weight: 600;
+    background: #fff; border: 1.5px solid var(--accent); color: var(--ink);
+    border-radius: 9px; padding: 8px 14px; min-width: 64px; text-align: center; }
+  .node.dim { border-color: var(--faint); color: var(--muted); background: #F5F4EF; border-style: dashed; }
+  .node.stub { border-color: var(--attempt); background: var(--attempt-soft); }
+  .node.driver { border-color: #6b4fa0; background: #efe9f7; }
+  .arrow-down { text-align: center; color: var(--faint); font-size: 1.1rem; margin: 2px 0; }
+  .layer-tag { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .7rem; color: var(--faint);
+    text-align: right; letter-spacing: .06em; text-transform: uppercase; margin: 10px 0 -2px; }
+  .stage-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+  .stage-tag { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .76rem;
+    color: var(--accent); min-width: 74px; }
+  table.cmp { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: .92rem; }
+  table.cmp th, table.cmp td { border: 1px solid var(--rule); padding: 8px 12px; text-align: left; vertical-align: top; }
+  table.cmp th { background: var(--box); font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem;
+    letter-spacing: .03em; text-transform: uppercase; color: var(--muted); }
+  .qtag { display: inline-block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .78rem;
+    background: var(--box); border: 1px solid var(--rule); border-radius: 6px; padding: 1px 7px; margin-right: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#t1">What &amp; why of integration testing</a></li>
+      <li><a href="#t2">Big Bang vs. Incremental; stubs &amp; drivers</a></li>
+      <li><a href="#t3">Top-Down approach</a></li>
+      <li><a href="#t4">Bottom-Up approach</a></li>
+      <li><a href="#t5">Sandwich (hybrid) approach</a></li>
+      <li><a href="#t6">The M1–M7 comparison</a></li>
+      <li><a href="#t7">GUI / multitier example</a></li>
+      <li><a href="#t8">Kickoff process &amp; test conditions</a></li>
+      <li><a href="#t9">Entry/exit criteria &amp; test cases</a></li>
+      <li><a href="#t10">White box or black box?</a></li>
+      <li><a href="#t11">Tools &amp; integration vs. system testing</a></li>
+      <li><a href="#t12">Practice questions</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>Integration Testing</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE430 — Software Testing and Quality Assurance (East West University)</span>
+      <span><b>Based on:</b> Integration Testing (Dr. Shamim Hasnat Ripon)</span>
+      <span><b>Exam:</b> ~25 Aug 2026 (mixed format)</span>
+    </div>
+  </header>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>What integration testing is, and why it exists</h2>
+    <p class="subtitle">Context first: where integration testing sits among the four testing levels, then the definition, the motivation, and the trade-offs.</p>
+
+    <p>Think of building a car. One team builds the engine, another the brakes, another the dashboard electronics. Each team can bolt their own part onto a test rig and check that <em>it</i> works — that is <strong>unit testing</strong>: testing one component in isolation. But a working engine and a working dashboard don't guarantee the dashboard's "check engine" light actually turns on when the engine misfires. Something has to test the <em>connections</em> between the parts. That is <strong>integration testing</strong>.</p>
+
+    <p>The lecture frames this as four fundamental levels of software testing, each looking at the system from a different vantage point:</p>
+    <div class="node-row">
+      <span class="node">01 · Unit Testing<br><span style="font-weight:400;font-size:.78em;">testing individual components</span></span>
+      <span class="node">02 · Integration Testing<br><span style="font-weight:400;font-size:.78em;">testing component groups</span></span>
+      <span class="node">03 · System Testing<br><span style="font-weight:400;font-size:.78em;">testing the integrated system</span></span>
+      <span class="node">04 · Acceptance Testing<br><span style="font-weight:400;font-size:.78em;">testing the final system</span></span>
+    </div>
+
+    <h3>Definition, in the faculty's words</h3>
+    <p>Integration testing means you <strong>integrate/combine unit-tested modules one by one and test the behaviour as a combined unit</strong>. Its main goal is to test the <strong>interfaces between the units/modules</strong> — not to re-check what each module does internally (unit testing already covered that), but to check what happens at the seams where modules talk to each other.</p>
+
+    <p>The normal order is: unit test each module in isolation first, then start integrating the unit-tested modules one at a time, checking the combined behaviour after each addition, until every module is integrated and you've validated that the requirements are implemented correctly as a whole.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Unit testing asks "does this one piece work?" Integration testing asks "do these pieces work <em>together</em>?" — same modules, different question, different bugs.</p>
+    </div>
+
+    <h3>Why bother — where the bugs actually come from</h3>
+    <p>When an application is broken into modules, different developers usually build different modules. That alone creates risk, for reasons the lecture calls out directly:</p>
+    <ul>
+      <li><strong>Different developers, different logic.</strong> Two people rarely implement the same kind of decision the same way, so it becomes important to check whether the logic one developer wrote actually matches what the next module expects.</li>
+      <li><strong>Data changes shape as it travels.</strong> A value that looks fine leaving Module A might get fields appended or stripped by the time it reaches Module B — and that mismatch only shows up once the two are connected.</li>
+      <li><strong>Third-party tools and APIs.</strong> Modules often call out to external services; you need to check both that you're sending correct data to that API and that you're handling the response it sends back correctly.</li>
+      <li><strong>Frequent requirement changes.</strong> A very common real-world problem: a developer ships a change without unit testing it. Integration testing is what catches the resulting interface break before it reaches users.</li>
+    </ul>
+
+    <h3>Advantages</h3>
+    <ul>
+      <li>It makes sure the <em>integrated</em> modules/components work properly — not just each one alone.</li>
+      <li>You can start integration testing as soon as the modules you need are available — you don't have to wait for every other module to be finished, because <strong>stubs</strong> and <strong>drivers</strong> (next section) can stand in for the missing pieces.</li>
+      <li>It specifically detects errors related to the <em>interface</em> — exactly the class of bug unit testing structurally cannot see.</li>
+    </ul>
+
+    <h3>Challenges</h3>
+    <ul>
+      <li>It's not enough to test just the integration links — an exhaustive test considering the whole environment is needed, because there can be many different paths and permutations through an integrated system.</li>
+      <li>Managing it gets complex fast because of factors like the database, the platform, and the environment all being in play at once.</li>
+      <li>Integrating a new system with a legacy system (or two legacy systems with each other) requires heavy changes and testing effort.</li>
+      <li>Integrating two systems built by two different companies is especially risky: you often can't be sure how a change in one system will ripple into the other.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>A very common exam trap: describing integration testing as "just running unit tests together." It isn't — it targets a different failure class (interfaces, data hand-off, control flow between modules), not internal module logic.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>Big Bang vs. Incremental — and the dummy programs both may need</h2>
+    <p class="subtitle">The first fork in the road: integrate everything at once, or a few modules at a time. Then meet stubs and drivers, which make the incremental route possible.</p>
+
+    <p>There are two families of integration strategy. The lecture lays them out as one tree:</p>
+    <div class="diagram">
+      <div class="dg-label">Types of integration testing</div>
+      <div class="node-row"><span class="node">Integration Testing</span></div>
+      <div class="arrow-down">↓</div>
+      <div class="node-row">
+        <span class="node">Big Bang Approach</span>
+        <span class="node">Incremental Approach</span>
+      </div>
+      <div class="arrow-down">↓ (incremental splits three ways)</div>
+      <div class="node-row">
+        <span class="node">Top-Down</span>
+        <span class="node">Bottom-Up</span>
+        <span class="node">Sandwich</span>
+      </div>
+    </div>
+
+    <h3>Big Bang integration</h3>
+    <p>Once <em>every</em> module has been developed and unit tested individually, you integrate all of them <strong>at once</strong> and test the whole assembled system in one shot — like connecting all the wires in a circuit only after every component has been soldered, then flipping the power switch for the first time.</p>
+
+    <table class="cmp">
+      <tr><th>Advantages</th><th>Disadvantages</th></tr>
+      <tr>
+        <td>Suitable for smaller systems — genuinely, the lecture calls out this as the <em>only</em> advantage.</td>
+        <td>
+          <ul style="margin:0;">
+            <li>Fault localisation is tough (a failure could be anywhere among dozens of modules)</li>
+            <li>A lot of delay before testing can even begin</li>
+            <li>Critical issues don't get resolved on priority</li>
+            <li>Difficult to find the root cause of problems</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Students often assume "test everything together" sounds thorough and therefore good. On the exam, the correct framing is the opposite: Big Bang is the <em>weak default</em>, tolerable only for small systems, precisely because it makes debugging so hard.</p>
+    </div>
+
+    <h3>Incremental integration — the overview</h3>
+    <p>Incremental testing connects two or more <em>logically related</em> modules together first, tests that small group, then adds more modules and re-tests, repeating until every module is integrated and tested successfully. It comes in three flavours — <strong>Bottom-Up</strong>, <strong>Top-Down</strong>, and <strong>Sandwich</strong> — covered in the next three sections.</p>
+
+    <h3>Stubs and drivers: the dummy stand-ins</h3>
+    <p>Here's the practical problem incremental testing runs into immediately: if you want to test Module A together with Module B, but Module B isn't built yet, you're stuck — unless you fake Module B. That's exactly what the lecture means when it says: while testing, some modules are still under development, so for testing purposes they get replaced with dummy programs. <strong>These dummy programs are called stubs and drivers.</strong></p>
+
+    <p>The direction of the "calling" relationship is what decides which dummy you need. Take the lecture's own example: <strong>Component 1 = Login Page (Module A)</strong> calls <strong>Component 2 = Admin Page (Module B)</strong>.</p>
+
+    <div class="diagram">
+      <div class="dg-label">Application vs. stub-testing vs. driver-testing</div>
+      <div class="node-row">
+        <span class="node">Login Page (Module A)</span>
+      </div>
+      <div class="arrow-down">↓ calls</div>
+      <div class="node-row">
+        <span class="node">Admin Page (Module B)</span>
+      </div>
+      <p style="text-align:center;font-size:.82rem;color:var(--muted);margin:16px 0 4px;">Testing Module A alone, before B exists → replace B with a <b>stub</b>:</p>
+      <div class="node-row">
+        <span class="node">Login Page (Module A) <br><span style="font-weight:400;font-size:.78em;">real, "calling program"</span></span>
+      </div>
+      <div class="arrow-down">↓ calls</div>
+      <div class="node-row">
+        <span class="node stub">Dummy Admin Page <br><span style="font-weight:400;font-size:.78em;">STUB — "called program"</span></span>
+      </div>
+      <p style="text-align:center;font-size:.82rem;color:var(--muted);margin:16px 0 4px;">Testing Module B alone, before A exists → replace A with a <b>driver</b>:</p>
+      <div class="node-row">
+        <span class="node driver">Dummy Login Page <br><span style="font-weight:400;font-size:.78em;">DRIVER — "calling program"</span></span>
+      </div>
+      <div class="arrow-down">↓ calls</div>
+      <div class="node-row">
+        <span class="node">Admin Page (Module B) <br><span style="font-weight:400;font-size:.78em;">real, "called program"</span></span>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the one distinction the exam loves to test</span>
+      <p>A <strong>stub</strong> is a dummy stand-in for a module that is <em>called</em> — it fakes something <em>below</em> the module you're testing. A <strong>driver</strong> is a dummy stand-in for a module that <em>calls</em> — it fakes something <em>above</em> the module you're testing. Say it out loud: "stub = fake subordinate, driver = fake driver-seat caller."</p>
+    </div>
+
+    <p>For simple applications a stub can just return control straight back to its caller; for complex applications (say, the called module normally talks to a database) the stub has to simulate a realistic range of responses. Drivers, similarly, invoke the module under test, pass it test data, and receive its output data, standing in for whatever higher-level module doesn't exist yet.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't memorise "stub goes with top-down, driver goes with bottom-up" as an arbitrary rule — derive it. Top-down testing starts at the top and the modules <em>below</em> aren't ready yet, so you stub them. Bottom-up testing starts at the bottom and the modules <em>above</em> (the callers) aren't ready yet, so you need drivers to call the bottom modules. The direction of missing-module always matches the direction you're testing away from.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>Top-Down Integration Testing</h2>
+    <p class="subtitle">Start at the top of the control flow, work downward, and stub whatever isn't built yet.</p>
+
+    <p>Top-down testing starts by testing the top-most module(s) and gradually moves down to the lowest set of modules, one by one — following the control flow of the software system from top to bottom. Since the lower-level modules a top module calls might not exist yet, you plug in <strong>stubs</strong> in their place. For simple applications the stub just hands control back; for complex applications (e.g. one that would normally hit a database) the stub has to simulate the full range of expected responses — which in practice is often harder than it first sounds.</p>
+
+    <table class="cmp">
+      <tr><th>Advantages</th><th>Disadvantages</th></tr>
+      <tr>
+        <td>
+          <ul style="margin:0;">
+            <li>Fault localisation is easier (you add one layer at a time)</li>
+            <li>The test product is extremely consistent</li>
+            <li>Stubs are quicker to write than drivers</li>
+            <li>Critical / high-level modules are tested on priority</li>
+            <li>Major design flaws surface as early as possible</li>
+          </ul>
+        </td>
+        <td>
+          <ul style="margin:0;">
+            <li>Requires several stubs</li>
+            <li>Poor support for early release of low-level functionality</li>
+            <li>Basic (low-level) functionality is only tested at the end of the cycle</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Top-down proves the high-level control flow and business logic first — good when you want confidence in the "shape" of the system early, at the cost of not exercising the lowest-level, most detailed logic until late.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>Bottom-Up Integration Testing</h2>
+    <p class="subtitle">Start at the lowest units, work upward, and drive whatever caller isn't built yet.</p>
+
+    <p>Bottom-up testing starts with the lowest units of the application and gradually moves up, one by one — testing takes place from the bottom of the control flow upwards. Integration continues until all modules are integrated and the entire application is tested as a single unit.</p>
+
+    <p>Because it's entirely possible that a higher-level module hasn't been developed yet by the time its lower modules are ready and unit-tested, the missing caller's functionality is simulated with a <strong>driver</strong> — a program that invokes the module under test, passes it test data, and receives its output.</p>
+
+    <div class="diagram">
+      <div class="dg-label">Faculty's worked example — module tree</div>
+      <div class="node-row"><span class="node">A</span></div>
+      <div class="arrow-down">↓ ↓</div>
+      <div class="node-row">
+        <span class="node">B1</span>
+        <span class="node">B2</span>
+      </div>
+      <div class="arrow-down">↓ ↓ &nbsp;&nbsp;&nbsp;&nbsp; ↓ ↓</div>
+      <div class="node-row">
+        <span class="node">B1C1</span>
+        <span class="node">B1C2</span>
+        <span class="node">B2C1</span>
+        <span class="node">B2C2</span>
+      </div>
+    </div>
+
+    <p><strong>B1C1, B1C2, B2C1, B2C2</strong> are the lowest modules, and they're already unit tested. But <strong>B1 and B2 are not yet developed</strong> — their job would be to call B1C1/B1C2 and B2C1/B2C2 respectively. Since B1 and B2 don't exist yet, you need a "stimulator" program that calls B1C1, B1C2, B2C1, B2C2 in their place: that stimulator is the <strong>driver</strong>.</p>
+
+    <table class="cmp">
+      <tr><th>Advantages</th><th>Disadvantages</th></tr>
+      <tr>
+        <td>
+          <ul style="margin:0;">
+            <li>Development and testing can proceed together, so the product ends up more efficient overall</li>
+            <li>Test conditions are much easier to create at the low level</li>
+          </ul>
+        </td>
+        <td>
+          <ul style="margin:0;">
+            <li>Requires several drivers</li>
+            <li>Data flow between modules is only tested very late</li>
+            <li>The need for drivers complicates test data management</li>
+            <li>Poor support for early release</li>
+            <li>Key interface defects are detected late</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Notice top-down and bottom-up have almost mirror-image trade-offs: top-down finds design/interface flaws early but leaves low-level logic untested until late; bottom-up nails down low-level logic early but leaves the actual data flow and interfaces between high-level modules untested until late. Neither is strictly "better" — that's precisely why Sandwich exists.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>Sandwich (Hybrid) Integration Testing</h2>
+    <p class="subtitle">Take the best of both directions at once, and Big-Bang the middle.</p>
+
+    <p>To overcome the limitations of top-down and bottom-up while keeping their advantages, you can run a hybrid: <strong>sandwich integration testing</strong> (also called mixed integration testing). The system is viewed as <strong>three layers</strong>:</p>
+    <ul>
+      <li>A <strong>main target layer</strong> in the middle — the layer you actually care about testing.</li>
+      <li>A layer <strong>above</strong> the target layer.</li>
+      <li>A layer <strong>below</strong> the target layer.</li>
+    </ul>
+    <p>Top-down is used from the top layer down to the middle layer; bottom-up is used from the bottom layer up to the middle layer; and the <strong>Big Bang</strong> approach is used to assemble the modules that make up the middle layer itself.</p>
+
+    <div class="diagram">
+      <div class="dg-label">Faculty's worked example — three layers</div>
+      <div class="node-row"><span class="node">M1</span></div>
+      <div class="layer-tag">Layer 1 (top-down meets here ↓)</div>
+      <div class="node-row">
+        <span class="node">M2</span>
+        <span class="node">M3</span>
+        <span class="node">M4</span>
+      </div>
+      <div class="layer-tag">Layer 2 — main target layer (Big Bang inside this row)</div>
+      <div class="node-row">
+        <span class="node">M5</span>
+        <span class="node">M6</span>
+        <span class="node">M7</span>
+      </div>
+      <div class="layer-tag">Layer 3 (bottom-up meets here ↑)</div>
+    </div>
+
+    <table class="cmp">
+      <tr><th>Advantages</th><th>Disadvantages</th></tr>
+      <tr>
+        <td>
+          <ul style="margin:0;">
+            <li>Top-down and bottom-up work can happen in parallel, or one after the other</li>
+            <li>Very useful for large enterprises and huge projects with several subprojects</li>
+          </ul>
+        </td>
+        <td>
+          <ul style="margin:0;">
+            <li>Cost requirement is very high</li>
+            <li>Cannot be used for smaller systems that have huge interdependence between modules</li>
+            <li>Different skill sets are required for testers working at different levels</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Sandwich isn't a fourth, independent technique — it's literally "run top-down on the top half, bottom-up on the bottom half, and Big Bang the middle where the two meet." If you can explain top-down, bottom-up, and Big Bang, you already know sandwich.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>The M1–M7 comparison: watching both approaches integrate the same tree</h2>
+    <p class="subtitle">The same seven-module tree, integrated two different ways — this is the faculty's direct side-by-side, and a favourite source of exam questions.</p>
+
+    <p>Take one fixed module tree: M1 at the top, with children M2, M3, M4; M3 has a child M5; M4 has children M6 and M7.</p>
+    <div class="diagram">
+      <div class="dg-label">Shared tree for this comparison</div>
+      <div class="node-row"><span class="node">M1</span></div>
+      <div class="arrow-down">↓</div>
+      <div class="node-row">
+        <span class="node">M2</span>
+        <span class="node">M3</span>
+        <span class="node">M4</span>
+      </div>
+      <div class="arrow-down">↓ (from M3) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓ ↓ (from M4)</div>
+      <div class="node-row">
+        <span class="node">M5</span>
+        <span class="node">M6</span>
+        <span class="node">M7</span>
+      </div>
+    </div>
+
+    <h3>Bottom-Up order</h3>
+    <p>Bottom-up starts at the leaves and works up, using drivers for whichever parent isn't attached yet:</p>
+    <div class="stage-row"><span class="stage-tag">Stage 1</span> <span class="node">M5</span><span class="node">M6</span><span class="node">M7</span><span class="node">M2</span> <span style="font-size:.82rem;color:var(--muted);">— each leaf cluster tested alone (M2 has no children, so it's a leaf too); drivers stand in for M3, M4, M1</span></div>
+    <div class="stage-row"><span class="stage-tag">Stage 2</span> <span class="node">M3+M5</span><span class="node">M4+M6+M7</span> <span style="font-size:.82rem;color:var(--muted);">— each parent is joined to its now-real children; a driver still stands in for M1</span></div>
+    <div class="stage-row"><span class="stage-tag">Stage 3</span> <span class="node">M1+M2+M3+M4+M5+M6+M7</span> <span style="font-size:.82rem;color:var(--muted);">— M1 joins in for real; drivers are gone, full system integrated</span></div>
+
+    <h3>Top-Down order</h3>
+    <p>Top-down starts at the root and works down, using stubs for whichever child isn't attached yet:</p>
+    <div class="stage-row"><span class="stage-tag">Stage 1</span> <span class="node">M1</span> <span style="font-size:.82rem;color:var(--muted);">— tested alone, with stubs for M2, M3, M4</span></div>
+    <div class="stage-row"><span class="stage-tag">Stage 2</span> <span class="node">M1+M2+M3+M4</span> <span style="font-size:.82rem;color:var(--muted);">— real M2, M3, M4 added; stubs now cover M5, M6, M7</span></div>
+    <div class="stage-row"><span class="stage-tag">Stage 3</span> <span class="node">M1+M2+M3+M4+M5</span> <span style="font-size:.82rem;color:var(--muted);">— M3's stub is swapped for the real M5; M6, M7 still stubbed</span></div>
+    <div class="stage-row"><span class="stage-tag">Stage 4</span> <span class="node">M1+M2+M3+M4+M5+M6+M7</span> <span style="font-size:.82rem;color:var(--muted);">— M6 and M7 join in for real; full system integrated</span></div>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Bottom-up grows the tree from several small clusters at once and merges them upward (fewer, bigger stages). Top-down grows the tree from a single root and widens/deepens it one level at a time (one module or one level added per stage). Same tree, same seven modules, genuinely different order and different intermediate states — which is exactly why the choice of approach changes what gets tested early versus late.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Worked example: GUI / multitier integration testing</h2>
+    <p class="subtitle">A concrete, black-box style example of integration testing on a real multitier web application — this is the lecture's central applied example.</p>
+
+    <p>A web application is typically a <strong>multitier application</strong>: a front end visible to the user, a middle layer holding business logic and validation (and often third-party API integrations), and a back layer that's the database. The lecture's running example: an advertising company posts ads on different websites, and at month's end the owner wants a report of how many people saw the ads and how many clicked, so clients can be billed accordingly.</p>
+
+    <div class="diagram">
+      <div class="dg-label">Architecture (front layer → middle layer → back layer)</div>
+      <div class="layer-tag">Front layer</div>
+      <div class="node-row"><span class="node">UI</span></div>
+      <div class="arrow-down">⇄</div>
+      <div class="layer-tag">Middle layer</div>
+      <div class="node-row">
+        <span class="node">BL</span>
+        <span class="node">VAL</span>
+        <span class="node">CNT</span>
+      </div>
+      <div class="arrow-down">⇄ all three feed into →</div>
+      <div class="node-row">
+        <span class="node">EN (Engine)</span>
+      </div>
+      <div class="arrow-down">⇅ also talks to</div>
+      <div class="node-row">
+        <span class="node">Scheduler</span>
+      </div>
+      <div class="arrow-down">→</div>
+      <div class="layer-tag">Back layer</div>
+      <div class="node-row"><span class="node">DB</span></div>
+    </div>
+
+    <p>What each module does, in the faculty's own definitions:</p>
+    <ul>
+      <li><strong>UI</strong> — the User Interface module, visible to the end user, where all inputs are given.</li>
+      <li><strong>BL</strong> — the Business Logic module: all the calculations and business-specific methods.</li>
+      <li><strong>VAL</strong> — the Validation module: validates the correctness of the input.</li>
+      <li><strong>CNT</strong> — the Content module: holds static content specific to what the user entered, displayed in the reports.</li>
+      <li><strong>EN</strong> — the Engine module: reads all the data coming from BL, VAL and CNT, extracts the SQL query from it, and fires it at the database.</li>
+      <li><strong>Scheduler</strong> — schedules the reports based on the user's selection (monthly, quarterly, semiannually, annually).</li>
+      <li><strong>DB</strong> — the Database.</li>
+    </ul>
+
+    <h3>Where XML comes in</h3>
+    <p>In the real world this hand-off between modules is usually done in <strong>XML format</strong>. So whatever data the user enters into the UI gets converted into an XML document, which the BL, VAL, and CNT modules interpret. The EN module reads the resulting XML generated by those three, extracts the SQL from it, and queries the database. EN then converts the result set it gets back into another XML document and returns it to the UI, which converts it into a human-readable form for display. In the middle, the Scheduler receives the result set from EN and uses it to create and schedule the reports.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea — where integration testing actually lives here</span>
+      <p>Testing whether this data flows correctly is the integration test. Concretely, that means: are the XML files generated correctly? Do they carry the correct data? Is the data transferred correctly from one module to the next? In practice you try to capture or generate the actual XML files, inspect/alter their tags, and observe the behaviour — a different flavour of testing from ordinary black-box testing, but one that builds a much deeper understanding of the application.</p>
+    </div>
+
+    <h3>The faculty's nine verification questions</h3>
+    <p>These are the exact questions the lecture poses to illustrate what "checking the integration" means for this architecture:</p>
+    <ol>
+      <li>How will the BL, VAL and CNT modules read and interpret the data entered in the UI module?</li>
+      <li>Is BL, VAL and CNT module receiving the correct data from UI?</li>
+      <li>In which format is the data from BL, VAL and CNT transferred to the EN module?</li>
+      <li>How will the EN read the data and extract the query?</li>
+      <li>Is the query extracted correctly?</li>
+      <li>Is the Scheduler getting the correct data for reports?</li>
+      <li>Is the result set received by the EN, from the database, correct and as expected?</li>
+      <li>Is EN able to send the response back to the BL, VAL and CNT module?</li>
+      <li>Is the UI module able to read the data and display it appropriately on the interface?</li>
+    </ol>
+
+    <h3>Three of them, worked as mini test-design examples</h3>
+    <p><strong>Q2 — "Is BL, VAL and CNT receiving the correct data from UI?"</strong> In practice: enter a known set of values into the UI, capture the XML document the UI produces, and check field-by-field that every value the user typed actually appears in the XML, untruncated and in the right tag. If the UI silently drops a field converting it to XML, BL/VAL/CNT will never see it — and no amount of testing BL/VAL/CNT in isolation would ever have caught that.</p>
+    <p><strong>Q3 — "In which format is data from BL, VAL and CNT transferred to EN?"</strong> The lecture's answer is XML. The test isn't "does XML exist" — it's schema-level: does the XML EN receives use the tags EN expects, in the structure EN's parser expects? A tag renamed on one side and not the other is a classic integration bug that unit tests on either side, run alone, would both pass.</p>
+    <p><strong>Q7 — "Is the result set received by EN from the database correct and as expected?"</strong> This checks the return trip: EN built a SQL query from the merged BL/VAL/CNT data, fired it at the DB, and got rows back. You'd verify the query EN actually built matches the input (e.g. the right date range, the right client ID) and that the rows returned match what's really in the DB for that query — not what EN merely assumes it asked for.</p>
+
+    <h3>A few other sample test conditions the lecture calls out</h3>
+    <ul>
+      <li>Are the menu options generating the correct window?</li>
+      <li>Are the windows able to invoke the window under test?</li>
+      <li>For every window, identify the function calls it should allow, and all calls it should be able to make to other features.</li>
+      <li>Identify <strong>reversible calls</strong>: closing a called window should return you to the calling window.</li>
+      <li>Identify <strong>irreversible calls</strong>: the calling window closes before the called window appears.</li>
+      <li>Test the different ways of triggering a call to another window — e.g. menus, buttons, keyboard shortcuts.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>Kicking off integration testing</h2>
+    <p class="subtitle">An eight-step process for going from "here's an architecture" to "here are runnable test cases."</p>
+
+    <p>The lecture gives a concrete, ordered checklist for starting integration testing on any system:</p>
+    <ol>
+      <li>Understand the architecture of your application.</li>
+      <li>Identify the modules.</li>
+      <li>Understand what each module does.</li>
+      <li>Understand how data is transferred from one module to another.</li>
+      <li>Understand how data is entered into and received from the system (the entry point and exit point of the application).</li>
+      <li>Segregate the application to suit your testing needs.</li>
+      <li>Identify and create the test conditions.</li>
+      <li>Take one condition at a time and write down the test cases.</li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Notice the order: you understand the system (steps 1–5) completely <em>before</em> you touch a single test case (steps 7–8). Step 6 — segregating the application — is where you'd decide top-down vs. bottom-up vs. sandwich, based on what you learned in steps 1–5.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t9">
+    <span class="topic-num">Topic 09</span>
+    <h2>Entry/exit criteria and what integration test cases actually check</h2>
+    <p class="subtitle">When are you allowed to start, when are you allowed to call it done, and what do the test cases themselves focus on?</p>
+
+    <h3>Entry criteria</h3>
+    <ul>
+      <li>The integration test plan document is signed off and approved.</li>
+      <li>Integration test cases have been prepared.</li>
+      <li>Test data has been created.</li>
+      <li>Unit testing of the developed modules/components is complete.</li>
+      <li>All critical and high-priority defects (from unit testing) are closed.</li>
+      <li>The test environment is set up for integration.</li>
+    </ul>
+
+    <h3>Exit criteria</h3>
+    <ul>
+      <li>All integration test cases have been executed.</li>
+      <li>No critical, P1, or P2 defects remain open.</li>
+      <li>A test report has been prepared.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Entry criteria include "unit testing complete" — integration testing is not a substitute for unit testing, and starting it before units are individually verified just buries interface bugs under module bugs, making both harder to diagnose.</p>
+    </div>
+
+    <h3>What integration test cases focus on</h3>
+    <p>Because the modules being integrated are already unit tested — their functionality and other testing aspects are already covered — integration test cases zero in on three things: the <strong>interface between the modules</strong>, the <strong>integrated links</strong>, and the <strong>data transfer</strong> between them. The core idea is simple: check that two modules which each work fine on their own also work as expected once wired together.</p>
+
+    <h3>Worked example: LinkedIn-style test cases</h3>
+    <p>The lecture illustrates this with sample integration test cases for a LinkedIn-like application. Each one is phrased as "verify the interface link between page X and page Y":</p>
+    <ul>
+      <li>Verify the interface link between the login page and the home page — i.e. when a user enters valid credentials and logs in, they should be directed to the home page.</li>
+      <li>Verify the interface link between the home page and the profile page — the profile page should open up correctly.</li>
+      <li>Verify the interface link between the network page and the connections page — clicking "Accept" on an invitation from the network page should make that connection show up on the connections page.</li>
+      <li>Verify the interface link between the notifications page and the "say congrats" button — clicking it should direct the user to a new message window.</li>
+    </ul>
+    <p>Every one of these is testing a <em>hand-off</em>: an action on one screen, and the correct consequence appearing on the next screen. That pattern — action here, verified consequence there — is exactly what integration test cases are for, and it's the pattern you'll reuse in the practice questions below on a new scenario.</p>
+  </section>
+
+  <section class="topic" id="t10">
+    <span class="topic-num">Topic 10</span>
+    <h2>Is integration testing white box or black box?</h2>
+    <p class="subtitle">A trick question by design — the lecture poses it, then answers "it depends."</p>
+
+    <p><strong>Black box testing</strong> means the tester needs no internal knowledge of the system — no coding knowledge required, you only care about inputs and outputs. <strong>White box testing</strong> means you need internal knowledge of the application (its code, its structure) to design the tests.</p>
+
+    <p>Integration testing can be done using <em>either</em> technique, depending on what exactly you're integrating:</p>
+    <ul>
+      <li>Testing two integrated <strong>web services</strong> that fetch data from a database and return it as required often needs white-box knowledge — you may need to understand the service's internal query logic to design meaningful tests.</li>
+      <li>Testing a <strong>new feature</strong> being integrated into a website can typically be tested using black-box technique — you just check that the feature behaves correctly from the outside.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea (the faculty's actual answer)</span>
+      <p>It's not fixed either way. Integration testing can be counted as both a black-box and a white-box technique — which one applies depends on the specific modules being integrated and how much internal knowledge you need to design a meaningful test for that particular seam.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t11">
+    <span class="topic-num">Topic 11</span>
+    <h2>Tools, and how integration testing differs from system testing</h2>
+
+    <h3>Integration testing tools</h3>
+    <p>The lecture lists several tools available for integration testing:</p>
+    <ul>
+      <li>Rational Integration Tester</li>
+      <li>Protractor</li>
+      <li>Steam</li>
+      <li>TESSY</li>
+    </ul>
+
+    <h3>Integration testing vs. system testing</h3>
+    <table class="cmp">
+      <tr><th>Integration testing</th><th>System testing</th></tr>
+      <tr>
+        <td>One or two modules that are already unit tested get integrated, and verification checks whether the integrated modules work as expected together.</td>
+        <td>The <strong>system as a whole</strong> is tested — <em>all</em> modules/components are integrated together, to verify the entire system works as expected and no issues arise from having integrated the modules.</td>
+      </tr>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Scale is the difference, not technique. Integration testing looks at a seam or a small cluster of modules; system testing looks at the fully-assembled product end to end. In the M1–M7 tree, every intermediate stage (M3+M5, M1+M2+M3+M4, etc.) is an integration-testing moment; only the very last, fully-assembled stage is what system testing then takes over and evaluates as a whole.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t12">
+    <span class="topic-num">Topic 12</span>
+    <h2>Practice questions</h2>
+    <p class="subtitle">Attempt each one before revealing the solution. They span recall, applied scenario-design, and one question that forces you to weigh trade-offs across all four approaches at once.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· short answer, easy</span></span></div>
+      <div class="qbody"><p>In your own words: what is integration testing, and why is it normally done <em>after</em> unit testing rather than instead of it?</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Tests the core definition from Topic 1 — specifically whether you can articulate that integration testing targets <b>interfaces</b>, not internal module logic, and why unit testing has to come first.
+          </div>
+          <p>Integration testing combines unit-tested modules and tests their combined behaviour, with its main goal being to test the interfaces between the modules — the seams where data or control passes from one module to another. It comes after unit testing because unit testing already verifies that each module's internal logic is correct in isolation; if you skip straight to integration, a failure could be caused either by a module's own bug or by a bad interface, and you'd have no way to tell which. Doing unit testing first removes one whole source of failure, so integration testing can assume "each piece works alone" and focus purely on whether the pieces work <em>together</em>.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· compare/contrast, easy</span></span></div>
+      <div class="qbody"><p>Distinguish a stub from a driver: what does each replace, and in which integration approach does each get used?</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the single most confusable pair in the whole topic (Topic 2). The examiner wants you to connect "which module is missing" to "which dummy program fills the gap" to "which approach that implies."
+          </div>
+          <p>A <strong>stub</strong> is a dummy program that stands in for a module that gets <em>called</em> — it fakes something below/downstream of the module under test. A <strong>driver</strong> is a dummy program that stands in for a module that <em>calls</em> — it fakes something above/upstream, invoking the module under test, feeding it data, and collecting its output. Stubs are used in <strong>top-down</strong> integration, because when you test from the top down, the lower modules a top module calls aren't built yet. Drivers are used in <strong>bottom-up</strong> integration, because when you test from the bottom up, the higher-level caller of a low module isn't built yet. (Using the lecture's Login/Admin Page example: a dummy Admin Page standing in for the real one is a stub; a dummy Login Page standing in as the caller is a driver.)</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· compare/contrast, easy</span></span></div>
+      <div class="qbody"><p>Compare Big Bang integration with Incremental integration. Under what circumstance would each be the more reasonable choice?</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Tests Topic 2's overview — the examiner wants a genuine trade-off comparison, not just two definitions side by side.
+          </div>
+          <p>Big Bang integrates every unit-tested module at once and tests the whole assembled system in a single pass; its only real advantage is that it suits small systems, and its costs are steep — fault localisation is tough, there's a long delay before any testing happens, critical issues don't get fixed with priority, and root causes are hard to find. Incremental integration connects a small, logically related group of modules, tests it, adds more modules, and repeats — via top-down, bottom-up, or sandwich. Big Bang is reasonable only when the system is small enough that "test it all at once and debug whatever breaks" is still tractable. For anything nontrivial, incremental is the safer default, because it isolates failures to a small, recently-added group of modules instead of the whole system at once.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· scenario, medium</span></span></div>
+      <div class="qbody">
+        <p>A team is building <strong>QuickBite</strong>, a food-ordering app, with this module dependency tree:</p>
+        <div class="diagram">
+          <div class="node-row"><span class="node">F1 · QuickBite App (root UI)</span></div>
+          <div class="arrow-down">↓</div>
+          <div class="node-row">
+            <span class="node">F2 · OrderManager</span>
+            <span class="node">F3 · NotificationManager</span>
+          </div>
+          <div class="arrow-down">↓ ↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓ ↓</div>
+          <div class="node-row">
+            <span class="node">F4 · PaymentService</span>
+            <span class="node">F5 · InventoryService</span>
+            <span class="node">F6 · SMSGateway</span>
+            <span class="node">F7 · EmailGateway</span>
+          </div>
+        </div>
+        <p>Management wants to demo the app's main screen flow to stakeholders as early as possible, even if payment and notifications aren't fully wired up yet. Which incremental approach fits best, what would you need to simulate at each stage, and in what order would modules be added?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Applies Topic 3 (top-down) to a fresh tree, in the style of the M1–M7 comparison (Topic 6) — the examiner wants you to reason from "what does the business priority imply" to "which approach" to "concrete stage-by-stage order."
+          </div>
+          <p><strong>Top-down</strong> is the right fit. "Demo the main screen flow early" means the priority is the top-level control flow (F1 → F2/F3) — exactly what top-down tests first, since it starts at the top and stubs whatever is below.</p>
+          <ol class="steps">
+            <li><p class="math-line">Stage 1: test F1 alone.</p><p class="why">F1 is the root; stub out F2 and F3 since neither exists yet in this stage.</p></li>
+            <li><p class="math-line">Stage 2: integrate F1 + F2 + F3.</p><p class="why">Replace the F2 and F3 stubs with the real modules; now stub F4, F5, F6, F7 (the next level down) since the demo doesn't need them working yet.</p></li>
+            <li><p class="math-line">Stage 3: integrate F1 + F2 + F3 + F4 + F5.</p><p class="why">Swap in real PaymentService and InventoryService once ready; F6/F7 stay stubbed if notifications are still lower priority.</p></li>
+            <li><p class="math-line">Stage 4: integrate all seven modules.</p><p class="why">Swap in real SMSGateway and EmailGateway last; full system integrated.</p></li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Top-down, because it lets the team demonstrate and validate the top-level flow (F1→F2→F3) immediately using stubs, and defer the lower-priority, lower-level modules (payment, inventory, notifications) to later stages — matching exactly what the business asked for.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· scenario, medium</span></span></div>
+      <div class="qbody">
+        <p>Same QuickBite tree as Question 4 — but now suppose the situation is reversed: PaymentService (F4), InventoryService (F5), SMSGateway (F6), and EmailGateway (F7) are all finished and unit tested first, while OrderManager (F2), NotificationManager (F3), and the root app UI (F1) are still being built. Which approach now fits naturally, and what will the team need to simulate as they go?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Tests whether you can tell that the <em>same tree</em> calls for a <em>different</em> approach once the order in which modules become available flips — direct application of Topic 4.
+          </div>
+          <p><strong>Bottom-up</strong> fits here. The lowest-level modules (F4, F5, F6, F7) are ready first, but their callers (F2, F3, and ultimately F1) aren't — exactly the situation bottom-up is designed for.</p>
+          <ol class="steps">
+            <li><p class="math-line">Stage 1: test F4, F5, F6, F7 individually.</p><p class="why">Each is a leaf module; since F2 and F3 (their callers) don't exist yet, a <b>driver</b> is needed to invoke each one and feed it test data.</p></li>
+            <li><p class="math-line">Stage 2: integrate F2 with F4+F5, and F3 with F6+F7.</p><p class="why">Once OrderManager and NotificationManager are built, they replace the drivers that were calling their respective children directly.</p></li>
+            <li><p class="math-line">Stage 3: integrate F1 with F2 and F3.</p><p class="why">Once the root app UI is ready, it replaces whatever driver was standing in as its caller, and the whole tree is now real, no dummies left.</p></li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Bottom-up — because development finished the low-level modules first, and drivers let testing start on them immediately rather than waiting for OrderManager, NotificationManager, and the app UI to exist.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· identify stub/driver/neither, medium</span></span></div>
+      <div class="qbody">
+        <p>For each mini-scenario below, say whether the tester needs a <strong>stub</strong>, a <strong>driver</strong>, or <strong>neither</strong> — and why.</p>
+        <ol>
+          <li>You want to test the <code>Login</code> module, which calls a <code>Payment</code> module, but <code>Payment</code> hasn't been built yet.</li>
+          <li>You want to test the <code>ReportGenerator</code> module, which is called by the <code>Dashboard</code> module, but <code>Dashboard</code> hasn't been built yet.</li>
+          <li>You want to test the <code>Validation</code> module. Its caller (<code>Controller</code>) is already built and working, and the module it calls (<code>DatabaseAdapter</code>) is also already built and working.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct application of the stub/driver distinction (Topic 2), including the trap case (c) where neither dummy is needed — an easy mark to lose if you assume every integration test needs a dummy program.
+          </div>
+          <p><strong>(a) Stub.</strong> <code>Payment</code> is a module <code>Login</code> <em>calls</em>, and it doesn't exist yet — you need a dummy called-program (a stub) standing in for <code>Payment</code>.</p>
+          <p><strong>(b) Driver.</strong> <code>Dashboard</code> is the module that <em>calls</em> <code>ReportGenerator</code>, and it doesn't exist yet — you need a dummy calling-program (a driver) to invoke <code>ReportGenerator</code> and feed it test data.</p>
+          <p><strong>(c) Neither.</strong> Both the caller and the callee already exist and work — this is a plain integration test between two real, ready modules. Stubs and drivers only exist to cover for a module that <em>isn't</em> ready; when everything needed is already built, you integrate the real modules directly.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· scenario, medium</span></span></div>
+      <div class="qbody">
+        <p>A payroll system has three layers: a <code>PayrollUI</code> on top; a middle layer of <code>SalaryCalculator</code>, <code>TaxDeductor</code>, and <code>BonusEngine</code> (the layer the QA team cares most about); and a bottom layer of <code>EmployeeDB</code>, <code>TaxRatesAPI</code>, and <code>BonusRulesDB</code>. The team decides to use sandwich integration. Describe what happens at each of the three layers.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct application of Topic 5 (sandwich testing) to a new three-layer scenario, mirroring the faculty's M1–M7 sandwich diagram.
+          </div>
+          <p>The middle layer (<code>SalaryCalculator</code>, <code>TaxDeductor</code>, <code>BonusEngine</code>) is the main target layer, and its three modules are assembled and tested together using the <strong>Big Bang</strong> approach, since it's the layer under the closest scrutiny. Between the top layer and the middle layer, a <strong>top-down</strong> approach is used: <code>PayrollUI</code> is tested first, stubbing the middle-layer modules until they're ready, then integrated down into them. Between the bottom layer and the middle layer, a <strong>bottom-up</strong> approach is used: <code>EmployeeDB</code>, <code>TaxRatesAPI</code>, and <code>BonusRulesDB</code> are tested with drivers standing in for the middle-layer modules that call them, then integrated upward as those modules become ready. The two directions can run in parallel or one after another, and they converge at the middle layer.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· applied, medium</span></span></div>
+      <div class="qbody"><p>Referring to the GUI/multitier example (UI / BL / VAL / CNT / EN / Scheduler / DB): the lecture's Question 3 asks, <em>"In which format is the data from BL, VAL and CNT transferred to the EN module, and is that transfer actually correct?"</em> Concretely, what would you check to answer this, beyond just confirming "yes, it's XML"?</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Reproduces one of the lecture's nine verification questions (Topic 7) and asks you to turn it into an actual test design — the examiner wants concrete checks, not a one-word restatement.
+          </div>
+          <p>Knowing the format is XML is only step one. To actually verify the hand-off you would: (1) capture the real XML document that BL, VAL, and CNT produce for a known input; (2) confirm it's <strong>well-formed</strong> XML that EN's parser can read without error; (3) check that the <strong>tag names and structure</strong> match what EN's parsing logic expects — a tag renamed on one side and not the other would break the hand-off even though both sides individually "work"; (4) confirm <strong>no data is lost or truncated</strong> between what BL/VAL/CNT wrote and what EN reads back; and (5) check that <strong>types and encoding</strong> are consistent (e.g. a numeric field isn't silently read as text). Each of these is a place the two sides could individually pass their own unit tests while still failing to communicate correctly — which is exactly the class of bug integration testing exists to catch.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· applied, medium</span></span></div>
+      <div class="qbody"><p>Still on the GUI/multitier example: the lecture also asks, <em>"Is the result set received by EN from the database correct and as expected?"</em> Explain what could go wrong here even if the EN module and the database are each functioning correctly on their own.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Another of the lecture's nine verification questions (Topic 7), used to reinforce that "each side works alone" does not imply "the seam works" — the central theme of the whole topic.
+          </div>
+          <p>EN builds a SQL query out of the merged BL/VAL/CNT data and fires it at the database; the database then returns whatever rows match that exact query. Even if EN's query-building logic is bug-free <em>and</em> the database correctly executes whatever query it's given, the integration can still fail if EN builds the <em>wrong</em> query from otherwise-correct input — for example, using the wrong date range field, mismatching a client ID, or misreading a filter that VAL sent through. The database would then correctly return rows for the wrong question, and both EN and the database would individually "pass" their own tests while the report shown to the ad company's owner is quietly wrong. Verifying this means checking the actual SQL EN generates against the input, not just checking that EN returns <em>some</em> result set.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· worked test-case design, core</span></span></div>
+      <div class="qbody">
+        <p>A university is building <strong>CampusEvents</strong>, an app with these screens: <em>Login</em> → <em>Dashboard</em> → <em>Event Details</em> → tapping "RSVP" → <em>Confirmation page</em>, which also triggers a <em>Notifications page</em> entry reminding the student closer to the event date. In the style of the lecture's LinkedIn example, write four integration test cases for this flow.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Directly extends the lecture's LinkedIn-app worked example (Topic 9) to a new scenario. Each LinkedIn test case had the same shape — action on one screen, verified consequence on the next — and that shape is what's being reused here.
+          </div>
+          <ol class="steps">
+            <li><p class="math-line">Verify the interface link between the Login page and the Dashboard.</p><p class="why">Mirrors the LinkedIn "login page → home page" case: entering valid credentials should direct the user to the Dashboard, not leave them on Login or show an error.</p></li>
+            <li><p class="math-line">Verify the interface link between the Dashboard and the Event Details page.</p><p class="why">Mirrors "home page → profile page": tapping an event card on the Dashboard should open the correct Event Details page — for that specific event, not a different one.</p></li>
+            <li><p class="math-line">Verify the interface link between the Event Details page's "RSVP" button and the Confirmation page.</p><p class="why">Mirrors "network page → connections page after Accept": tapping RSVP should produce a Confirmation page reflecting that this student is now registered for this specific event.</p></li>
+            <li><p class="math-line">Verify the interface link between a successful RSVP and the Notifications page.</p><p class="why">Mirrors "notifications page → say congrats → new message window": completing an RSVP should create an entry on the Notifications page that will remind the student before the event — checking that the RSVP action correctly propagates into a different module (notifications) than the one the user is looking at.</p></li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Each test case names two screens/modules and one action, and specifies the exact consequence expected on the other side — that action→consequence pairing across a module boundary is what makes it an integration test case rather than a UI or unit test case.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· scenario, easy–medium</span></span></div>
+      <div class="qbody"><p>A test lead says: "Unit testing on three of our five modules is still incomplete, but let's start integration testing anyway to save time." Using the entry/exit criteria, explain whether this is a good idea.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct application of the entry criteria list (Topic 9) to a realistic project-management scenario.
+          </div>
+          <p>No — this violates one of the stated entry criteria directly: <em>"Unit testing of developed modules/components is complete"</em> must be satisfied before integration testing begins. Starting early with two-fifths of the modules unverified means any failure found during integration could be caused by an internal bug in one of those unverified modules rather than by a genuine interface problem, and there would be no way to tell which without going back and unit testing them anyway. Rather than saving time, this typically costs more time overall, since defects get muddled together and root-causing becomes harder — exactly the failure mode entry criteria exist to prevent.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· short answer, easy</span></span></div>
+      <div class="qbody"><p>Is integration testing a white box technique or a black box technique? Justify your answer with an example.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct recall + justification from Topic 10 — the examiner is checking you don't force a false either/or answer.
+          </div>
+          <p>Neither exclusively — it can be either, depending on what's being integrated. If you're integrating two web services that fetch data from a database and you need to understand their internal query logic to design a meaningful test, that's white-box in character. If you're integrating a brand-new feature into an existing website and you're only checking that it behaves correctly from the outside — without needing to know how it's coded internally — that's black-box in character. Since the same testing level (integration) can be approached either way depending on the specific modules involved, integration testing is not fixed to one category.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 13 <span class="diff">· compare/contrast, short answer</span></span></div>
+      <div class="qbody"><p>Distinguish integration testing from system testing. Give an example of a test activity that belongs to each.</p></div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Direct recall from Topic 11 — the examiner wants the scope distinction, not a vague "they're similar" answer.
+          </div>
+          <p>Integration testing checks one or two unit-tested modules once they're combined, verifying that the integrated modules work together as expected — for example, checking that the <code>OrderManager</code> module correctly hands data to the <code>PaymentService</code> module. System testing checks the <strong>system as a whole</strong>, once every module/component has been integrated, to verify that the whole application behaves correctly and that no issues have arisen purely from having combined all these modules — for example, placing an entire order end-to-end through the finished QuickBite app and confirming the receipt, inventory update, and notification all happen correctly together. In short: integration testing checks seams a few modules at a time; system testing checks the fully-assembled product as a single whole.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 14 <span class="diff">· stretch — combines all four approaches, hard</span></span></div>
+      <div class="qbody">
+        <p>A hospital is building a <strong>Patient Records System</strong> with this tree:</p>
+        <div class="diagram">
+          <div class="node-row"><span class="node">H1 · PatientPortal (UI)</span></div>
+          <div class="arrow-down">↓</div>
+          <div class="node-row">
+            <span class="node">H2 · AppointmentManager</span>
+            <span class="node">H3 · RecordsManager</span>
+          </div>
+          <div class="arrow-down">↓ ↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓ ↓</div>
+          <div class="node-row">
+            <span class="node">H4 · DoctorAvailabilityAPI</span>
+            <span class="node">H5 · SMSReminder</span>
+            <span class="node">H6 · LabResultsDB</span>
+            <span class="node">H7 · PrescriptionDB</span>
+          </div>
+        </div>
+        <p>Constraints: (i) the hospital's compliance office needs to see the core patient-safety flow — records lookup and prescriptions — working correctly and demoed <em>very</em> early, before anything else; (ii) the team has a very limited budget for writing dummy programs, and has noted that stubs for H4–H7 would be more complex to write than drivers for H2/H3, since H4–H7 involve real external APIs and databases with complicated response shapes; (iii) this is a single, tightly-coupled small system, not a multi-team enterprise project. Recommend an approach (you may combine ideas), and justify it against all three constraints — including explaining why the other approaches you rejected don't fit as well.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            A stretch question combining Topics 2–5: it forces you to weigh Big Bang, top-down, bottom-up, and sandwich against each other on the same scenario, using the exact advantage/disadvantage lists from the lecture rather than picking an approach by name-recognition alone.
+          </div>
+          <ol class="steps">
+            <li><p class="math-line">Rule out Big Bang.</p><p class="why">Even though constraint (iii) says it's a small system — Big Bang's one listed advantage — the compliance office needs an early demo of a specific flow, and Big Bang offers no visibility until every module is finished and integrated at once. That directly conflicts with constraint (i).</p></li>
+            <li><p class="math-line">Rule out Sandwich.</p><p class="why">Sandwich is explicitly disadvantaged for tightly-coupled small systems (per the lecture's own disadvantage list) and has a high cost requirement — conflicting with both constraint (ii) and (iii). It's really meant for large, multi-subproject enterprises, which this isn't.</p></li>
+            <li><p class="math-line">Compare Top-Down vs. Bottom-Up against constraint (i).</p><p class="why">Constraint (i) wants the H1→H3 records/prescriptions flow demoed early. Top-down naturally front-loads exactly this: test H1 alone, then H1+H2+H3, giving a working (stubbed) records/prescriptions flow at the UI level in just two stages.</p></li>
+            <li><p class="math-line">Compare Top-Down vs. Bottom-Up against constraint (ii).</p><p class="why">Top-down needs stubs for H4–H7; the team already noted stubs for these would be complex (real external APIs/DBs with complicated responses) — a genuine cost. Bottom-up would need drivers for H2/H3 instead, which the team says are simpler to write. This point favours bottom-up.</p></li>
+            <li><p class="math-line">Resolve the conflict: recommend Top-Down anyway, with a narrowed scope.</p><p class="why">Constraint (i) is explicitly a compliance requirement — a hard priority, not a preference — while constraint (ii) is a cost concern that can be mitigated: write only simple "return a fixed valid response" stubs for H4–H7 at first (the lecture notes stubs can be simple for straightforward cases), deferring the full realistic simulation until later stages. This satisfies the urgent, hard constraint while containing the cost concern rather than ignoring it.</p></li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>Top-down, accepting the extra stub-writing cost as a controlled trade-off (using simple stubs initially) because constraint (i) — an early compliance demo of the core H1→H3 flow — is the hard requirement top-down satisfies fastest, while Big Bang and Sandwich each violate at least one constraint outright.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Integration Testing</h2>
+    <div class="grid">
+      <div class="item"><h4>Integration testing, one line</h4><p>Combine unit-tested modules and test the <em>interfaces</em> between them — not their internal logic.</p></div>
+      <div class="item"><h4>Big Bang</h4><p>Integrate every module at once, test once. Only good for small systems; fault localisation is tough.</p></div>
+      <div class="item"><h4>Top-Down</h4><p>Test from the top module downward; use <b>stubs</b> for the not-yet-built lower modules. Finds design flaws early, low-level logic tested last.</p></div>
+      <div class="item"><h4>Bottom-Up</h4><p>Test from the lowest modules upward; use <b>drivers</b> for the not-yet-built higher (calling) modules. Low-level logic solid early, data flow/interfaces tested late.</p></div>
+      <div class="item"><h4>Sandwich</h4><p>Top-down from the top layer, bottom-up from the bottom layer, Big Bang at the middle target layer. High cost; great for large, multi-team systems.</p></div>
+      <div class="item"><h4>Stub vs. Driver</h4><p>Stub = dummy for a module that is <b>called</b> (fakes below). Driver = dummy for a module that <b>calls</b> (fakes above).</p></div>
+      <div class="item"><h4>Entry criteria checklist</h4><p>Test plan signed off · test cases prepared · test data created · unit testing complete · critical/high defects closed · environment ready.</p></div>
+      <div class="item"><h4>Exit criteria checklist</h4><p>All test cases executed · no open critical/P1/P2 defects · test report prepared.</p></div>
+      <div class="item"><h4>White box or black box?</h4><p>Both — depends on the modules being integrated (internal-knowledge-needed seams are white box; behaviour-only seams are black box).</p></div>
+      <div class="item"><h4>Integration vs. System testing</h4><p>Integration = a few modules' seams. System = the entire assembled product, end to end.</p></div>
+      <div class="item"><h4>8-step kickoff (compressed)</h4><p>Understand architecture → modules → what each does → data transfer → entry/exit points → segregate → test conditions → test cases.</p></div>
+      <div class="item"><h4>Tools</h4><p>Rational Integration Tester, Protractor, Steam, TESSY.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from Dr. Shamim Hasnat Ripon's Integration Testing lecture (CSE430, East West University). Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

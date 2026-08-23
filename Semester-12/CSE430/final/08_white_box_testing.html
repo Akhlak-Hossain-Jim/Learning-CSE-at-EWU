@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>White-Box Testing</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+
+  /* ---- ADDITIONS for this guide: pseudocode / CFG blocks / tables ---- */
+  pre.code, pre.cfg {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 16px 20px; margin: 16px 0; overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .82rem; line-height: 1.55; color: var(--ink);
+  }
+  pre.cfg { font-size: .78rem; line-height: 1.45; }
+  pre.cfg b, pre.code b { color: var(--accent); font-weight: 600; }
+  .node-list { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .85rem;
+    background: #fff; border: 1px solid var(--rule); border-radius: 10px;
+    padding: 12px 18px; margin: 12px 0; }
+  .node-list div { padding: 3px 0; }
+  table.tbl { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .92rem; }
+  table.tbl th, table.tbl td { border: 1px solid var(--rule); padding: 8px 12px; text-align: left; }
+  table.tbl th { background: var(--box); font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600; font-size: .78rem; letter-spacing: .02em; }
+  table.tbl td.center, table.tbl th.center { text-align: center; }
+  .scrollx { overflow-x: auto; }
+  .badge { display: inline-block; font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .04em; padding: 2px 9px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#t1">White-box vs black-box</a></li>
+      <li><a href="#t2">Building a CFG</a></li>
+      <li><a href="#t3">Statement coverage</a></li>
+      <li><a href="#t4">Branch coverage</a></li>
+      <li><a href="#t5">Statement vs branch</a></li>
+      <li><a href="#t6">Path coverage &amp; 2ⁿ</a></li>
+      <li><a href="#t7">Feasible vs infeasible</a></li>
+      <li><a href="#t8">Reachability analysis</a></li>
+      <li><a href="#t9">Dead vs unreachable</a></li>
+      <li><a href="#t10">Practice questions</a></li>
+      <li><a href="#cheatsheet">Cheat sheet</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide</p>
+    <h1>White-Box Testing</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE430 — Software Testing and Quality Assurance (East West University)</span>
+      <span><b>Based on:</b> Lecture 15: White-Box Testing (Dr. Shamim Hasnat Ripon)</span>
+      <span><b>Exam:</b> ~25 Aug 2026 (mixed format)</span>
+    </div>
+  </header>
+
+  <!-- ======================= TOPIC 1 ======================= -->
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>White-box vs black-box testing</h2>
+    <p class="subtitle">Same goal — finding bugs before the user does — two completely different vantage points.</p>
+
+    <p>Picture two people trying to find out if a vending machine is broken. One of them can only put coins in and see what comes out — they never open the machine. The other has the wiring diagram, the internal circuit board, and can watch every relay switch as a coin drops. Both are legitimately "testing" the machine, but they're testing it from opposite sides.</p>
+
+    <p>The first person is doing <strong>black-box testing</strong>: they test based on what the software is <em>supposed to do</em> (its requirements), feeding in inputs and checking outputs, with no knowledge of how the code inside is written. The second person is doing <strong>white-box testing</strong>: they test using knowledge of the program's <strong>internal structure and implementation</strong> — the actual statements, the decisions (if/else), the loops, and the paths control can take through the code. That is the faculty's exact definition, and it is the one to reproduce on the exam if asked to define the term.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>White-box testing looks <em>inside</em> the code — at statements, branches, loops, control flow, and execution paths — instead of only at inputs and outputs. The central question the whole lecture is built around is: <strong>which parts of the program have actually been exercised by our tests?</strong></p>
+    </div>
+
+    <h3>Side-by-side comparison (faculty's table)</h3>
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th></th><th>Black-Box Testing</th><th>White-Box Testing</th></tr>
+      <tr><td>Basis</td><td>Based on requirements</td><td>Based on internal code</td></tr>
+      <tr><td>What it examines</td><td>Inputs and outputs</td><td>Statements, branches, and paths</td></tr>
+      <tr><td>Code knowledge</td><td>Not required</td><td>Required</td></tr>
+      <tr><td>What it detects</td><td>Functional problems</td><td>Structural weaknesses</td></tr>
+    </table>
+    </div>
+
+    <p>White-box testing specifically examines: <strong>executable statements</strong>, <strong>decisions and branches</strong>, <strong>loops and conditions</strong>, <strong>control flow</strong>, <strong>execution paths</strong>, and <strong>reachable vs. unreachable code</strong> — this list is the syllabus for the rest of the lecture; every remaining section is one of these six items explained in depth.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Do not write "white-box is better than black-box" on the exam. The lecture is explicit: these are <strong>complementary techniques, not competitors</strong>. Black-box gives you the requirements view, white-box gives you the code view, and together they produce better tests than either alone.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 2 ======================= -->
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>Building a Control Flow Graph (CFG)</h2>
+    <p class="subtitle">The running example the whole lecture is built on: <code>calculatePayable(amount, isMember)</code>.</p>
+
+    <p>Before you can measure any kind of coverage, you need a map of every route control can take through a function. That map is called a <strong>Control Flow Graph</strong>, or <strong>CFG</strong>. Think of the code as a small city: each block of straight-line instructions is one building, each decision (an <code>if</code>) is an intersection with two roads leading out of it (one for "true", one for "false"), and the CFG is simply the road map connecting entry to exit.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>A <strong>Control Flow Graph (CFG) represents the possible flow of execution through a program.</strong> It shows how control <em>may</em> move — not what output the program produces.</p>
+    </div>
+
+    <h3>The five building blocks (faculty's terms)</h3>
+    <ul>
+      <li><strong>Node</strong> — a statement, or a sequence of statements that always execute together.</li>
+      <li><strong>Edge</strong> — a possible transfer of control from one node to another.</li>
+      <li><strong>Decision node</strong> — a condition with two (or more) possible outcomes.</li>
+      <li><strong>Entry node</strong> — the beginning of execution.</li>
+      <li><strong>Exit node</strong> — the end of execution.</li>
+    </ul>
+
+    <h3>Construction rules</h3>
+    <ul>
+      <li>Sequential statements connect directly (one arrow, no branching).</li>
+      <li>A decision creates a True branch and a False branch.</li>
+      <li>Branches merge back together at a common continuation point.</li>
+      <li>A loop contains an edge that goes back to an earlier node.</li>
+    </ul>
+
+    <h3>The running example</h3>
+    <p>This is the exact pseudocode the lecture uses for every coverage calculation from here on — memorise its shape, because branch coverage, path coverage, feasibility, and reachability are all demonstrated on this one function.</p>
+
+    <pre class="code">function calculatePayable(amount, isMember):
+
+    discount = 0
+
+    if amount &gt;= 1000 then
+        discount = 100
+
+    if isMember = true then
+        discount = discount + 50
+
+    payable = amount - discount
+
+    if payable &lt; 0 then
+        payable = 0
+
+    return payable</pre>
+
+    <p>Business rules behind it: a purchase of <strong>$1,000 or more</strong> earns a <strong>$100</strong> discount; a <strong>registered member</strong> gets an <strong>additional $50</strong> off; and the <strong>payable amount can never be negative</strong> (it's floored at zero).</p>
+
+    <h3>Step by step: turning the code into nodes</h3>
+    <p>Walk through the code top to bottom. Every straight-line statement becomes its own node; every <code>if</code> becomes a decision node with two outgoing edges.</p>
+
+    <ol class="steps">
+      <li>
+        <p class="math-line"><b>N1:</b> discount = 0</p>
+        <p class="why">First executable line. It always runs, so it is a plain node directly after Entry — one incoming edge, one outgoing edge.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N2:</b> amount &gt;= 1000 ? <span class="badge">decision</span></p>
+        <p class="why">This is an <code>if</code>, so it is a <strong>decision node</strong>: it needs two outgoing edges, one labelled True and one labelled False.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N3:</b> discount = 100</p>
+        <p class="why">This line only runs when N2 is True — so the True edge from N2 points here. The False edge from N2 skips straight past it.</p>
+      </li>
+      <li>
+        <p class="math-line">N2's True edge (via N3) and N2's False edge <b>merge</b></p>
+        <p class="why"><strong>Merge rule:</strong> whether or not the discount was applied, execution continues at the same next line — so both branches of N2 reconnect into a single edge before the next statement.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N4:</b> isMember = true ? <span class="badge">decision</span></p>
+        <p class="why">Second <code>if</code> in the code — second decision node, again with a True and a False outgoing edge.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N5:</b> discount = discount + 50</p>
+        <p class="why">Runs only on N4's True edge; N4's False edge skips it. The two branches merge again right after, by the same merge rule as step 4.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N6:</b> payable = amount - discount</p>
+        <p class="why">Unconditional statement — it isn't guarded by any <code>if</code>, so it's a single plain node that both merged paths flow into.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N7:</b> payable &lt; 0 ? <span class="badge">decision</span></p>
+        <p class="why">Third and final <code>if</code> — third decision node.</p>
+      </li>
+      <li>
+        <p class="math-line"><b>N8:</b> payable = 0, then <b>N9:</b> return payable</p>
+        <p class="why">N8 runs only on N7's True edge; N7's False edge skips straight to N9. Both branches merge into N9, which flows to Exit.</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Quick check (memorise these three numbers)</span>
+      <p><strong>Decision nodes: N2, N4, N7 → 3 decisions.</strong> Each decision has 2 outcomes (True/False), so <strong>total branch outcomes = 3 × 2 = 6</strong>. Total nodes (including the always-executed statements): <strong>9</strong> (N1–N9).</p>
+    </div>
+
+    <h3>The finished CFG</h3>
+    <pre class="cfg">                    Entry
+                      |
+                      v
+             N1: discount = 0
+                      |
+                      v
+            N2: amount &gt;= 1000?
+                /            \
+             True            False
+              |                 |
+    N3: discount = 100           |
+              |_________________|
+                      |
+                      v
+            N4: isMember = true?
+                /            \
+             True            False
+              |                 |
+N5: discount = discount + 50     |
+              |_________________|
+                      |
+                      v
+     N6: payable = amount - discount
+                      |
+                      v
+            N7: payable &lt; 0?
+                /            \
+             True            False
+              |                 |
+     N8: payable = 0             |
+              |_________________|
+                      |
+                      v
+           N9: return payable
+                      |
+                      v
+                    Exit</pre>
+
+    <p>One concrete route through this graph — an <strong>execution path</strong> — is written as a sequence of nodes with the decision outcome in brackets: <strong>N1 → N2(T) → N3 → N4(T) → N5 → N6 → N7(F) → N9</strong>. That single path corresponds to running the function with, say, <code>amount = 1200, isMember = true</code>. You'll use this exact notation constantly for the rest of the lecture.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>A CFG shows how control <em>may</em> move — not what output the program produces. Don't confuse "this edge exists in the graph" with "this edge will always be taken" — that depends entirely on the input values, which is exactly what coverage testing is about to measure.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 3 ======================= -->
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>Statement coverage</h2>
+    <p class="subtitle">The most basic question you can ask of a test suite: did we even run every line?</p>
+
+    <p>Once you have a CFG, the simplest thing to check is whether your tests ran every executable statement at least once. If a line of code was never executed by any test, you have zero evidence about whether that line works — it could be silently broken and you'd never know.</p>
+
+    <div class="formula">
+      <div class="label">Statement coverage</div>
+      \[ \text{Statement Coverage} = \frac{\text{Executed statements}}{\text{Total executable statements}} \times 100\% \]
+    </div>
+
+    <p>A statement is "covered" the moment <em>any</em> test case in the suite executes it at least once — you don't need the same test to hit every line, you need the <em>union</em> of all your tests to hit every line.</p>
+
+    <div class="callout key">
+      <span class="tag">Faculty's convention — read this carefully</span>
+      <p>In the running example, only the <strong>assignment and return statements</strong> are counted toward the total: <strong>N1, N3, N5, N6, N8, N9</strong> — six statements. The three <em>decision</em> nodes (N2, N4, N7) are not counted as "statements" for this formula; they're counted separately, in branch coverage.</p>
+    </div>
+
+    <h3>Worked example: TC1</h3>
+    <p>Test case <strong>TC1: amount = 1200, isMember = true</strong>. Trace it through the CFG from Topic 2.</p>
+    <ol class="steps">
+      <li>
+        <p class="math-line">N2: amount &gt;= 1000? → 1200 &gt;= 1000 → <b>True</b></p>
+        <p class="why">Substitute the test input into the first decision. Since it's True, we take the N3 branch.</p>
+      </li>
+      <li>
+        <p class="math-line">N4: isMember = true? → <b>True</b></p>
+        <p class="why">Substitute isMember = true into the second decision. True, so we take the N5 branch.</p>
+      </li>
+      <li>
+        <p class="math-line">discount = 100 + 50 = 150; payable = 1200 − 150 = 1050</p>
+        <p class="why">N3 sets discount to 100, N5 adds 50 more, then N6 computes payable from these values.</p>
+      </li>
+      <li>
+        <p class="math-line">N7: payable &lt; 0? → 1050 &lt; 0 → <b>False</b></p>
+        <p class="why">Substitute the computed payable into the third decision. It's False, so N8 is skipped and we go straight to N9.</p>
+      </li>
+      <li>
+        <p class="math-line">Path: N1 → N2(T) → N3 → N4(T) → N5 → N6 → N7(F) → N9</p>
+        <p class="why"><strong>Assemble the path</strong> from the three decision outcomes found above.</p>
+      </li>
+      <li>
+        <p class="math-line">Executed statements: N1, N3, N5, N6, N9 (5 of them). Not executed: N8.</p>
+        <p class="why">Read off every non-decision node the path passes through; N8 (payable = 0) is the one node this path never reaches, because N7 was False.</p>
+      </li>
+      <li>
+        <p class="math-line">Statement Coverage \( = \dfrac{5}{6} \times 100\% = 83.33\% \)</p>
+        <p class="why"><strong>Apply the formula:</strong> 5 executed out of the 6 total executable statements (N1, N3, N5, N6, N8, N9).</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Answer</span>
+      <p>TC1 alone achieves <strong>83.33% statement coverage</strong>. The uncovered statement is <strong>N8 (payable = 0)</strong>, because this particular test never drives payable below zero. Sanity check: 5/6 = 0.8333…, times 100 gives 83.33% — matches.</p>
+    </div>
+
+    <p>What statement coverage buys you: it proves every executable instruction has been exercised at least once, so untested portions of the program become visible, and you know exactly which additional test cases to add next (here: something that forces payable negative, to reach N8).</p>
+  </section>
+
+  <!-- ======================= TOPIC 4 ======================= -->
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>Branch coverage</h2>
+    <p class="subtitle">Running a line isn't the same as running it both ways.</p>
+
+    <p>Statement coverage has a blind spot: an <code>if</code> statement can be marked "covered" the instant its body runs even once — but that tells you nothing about what happens when the condition is <em>false</em>. Branch coverage fixes this by tracking decision <em>outcomes</em> instead of lines.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p><strong>Branch coverage measures whether every possible outcome of each decision has been executed by the test suite.</strong> For a Boolean decision, that means both its True branch <em>and</em> its False branch must each be taken by at least one test.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">Branch coverage</div>
+      \[ \text{Branch Coverage} = \frac{\text{Executed branch outcomes}}{\text{Total branch outcomes}} \times 100\% \]
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Branch coverage is calculated using <strong>decision outcomes</strong>, not the number of test cases. Two test cases can, between them, cover six branch outcomes; one badly-chosen test case might cover none beyond the first.</p>
+    </div>
+
+    <p>The running example has 3 decisions (N2, N4, N7), each with 2 outcomes: <strong>3 × 2 = 6 branch outcomes total.</strong></p>
+
+    <h3>Worked example: designing TC1 + TC2 for 100%</h3>
+    <p>This time the faculty uses a <em>different</em> pair of test cases than the statement-coverage example, chosen specifically so their outcomes are complementary:</p>
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th>Test case</th><th>amount</th><th>isMember</th><th>N2: amount≥1000?</th><th>N4: isMember?</th><th>N7: payable&lt;0?</th></tr>
+      <tr><td>TC1</td><td class="center">1200</td><td class="center">False</td><td class="center">True</td><td class="center">False</td><td class="center">False</td></tr>
+      <tr><td>TC2</td><td class="center">20</td><td class="center">True</td><td class="center">False</td><td class="center">True</td><td class="center">True</td></tr>
+    </table>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <p class="math-line">TC1 path: N1 → N2(T) → N3 → N4(F) → N6 → N7(F) → N9</p>
+        <p class="why">amount = 1200 ≥ 1000 → True; isMember = False → N4 is False; discount stays 100, so payable = 1200 − 100 = 1100, not &lt; 0.</p>
+      </li>
+      <li>
+        <p class="math-line">TC2 path: N1 → N2(F) → N4(T) → N5 → N6 → N7(T) → N8 → N9</p>
+        <p class="why">amount = 20 &lt; 1000 → N2 False; isMember = True → N4 True, discount = 0 + 50 = 50.</p>
+      </li>
+      <li>
+        <p class="math-line">For TC2: discount = 50; payable = 20 − 50 = −30. Therefore payable &lt; 0 is True.</p>
+        <p class="why"><strong>Compute payable explicitly</strong> to justify why N7 comes out True for TC2 — this is the branch statement coverage alone couldn't force.</p>
+      </li>
+      <li>
+        <p class="math-line">N2 outcomes seen: True (TC1) and False (TC2) → both ✓</p>
+        <p class="why">Collect, decision by decision, which outcomes appear across <em>both</em> test cases combined.</p>
+      </li>
+      <li>
+        <p class="math-line">N4 outcomes seen: False (TC1) and True (TC2) → both ✓ &nbsp;|&nbsp; N7 outcomes seen: False (TC1) and True (TC2) → both ✓</p>
+        <p class="why">Same check for the remaining two decisions — every decision now has both a True-case and a False-case somewhere in the suite.</p>
+      </li>
+      <li>
+        <p class="math-line">Branch Coverage \( = \dfrac{6}{6} \times 100\% = 100\% \)</p>
+        <p class="why"><strong>Apply the formula:</strong> all 6 branch outcomes (3 decisions × 2 outcomes) are now executed by the two test cases together.</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Answer</span>
+      <p>Only <strong>two carefully chosen test cases</strong> are needed to cover all six branch outcomes: 100% branch coverage. Note the general rule the lecture states explicitly: <strong>100% branch coverage normally provides 100% statement coverage</strong> (every node here does get executed by TC1 or TC2), but as Topic 5 shows next, the reverse is not guaranteed.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 5 ======================= -->
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>Statement coverage vs branch coverage</h2>
+    <p class="subtitle">100% on one does not mean 100% on the other — this is the single most examinable idea in the whole lecture.</p>
+
+    <p>To make the gap between the two criteria unmistakable, the faculty switches to a second, smaller function, <code>checkResult(mark)</code>, and shows that a single test can max out statement coverage while leaving branch coverage at only half.</p>
+
+    <pre class="code">function checkResult(mark):
+
+    status = "Fail"
+
+    if mark &gt;= 40 then
+        status = "Pass"
+
+    print status</pre>
+
+    <h3>Run it with one test case: mark = 60</h3>
+    <ol class="steps">
+      <li>
+        <p class="math-line">status = "Fail" executes</p>
+        <p class="why">Unconditional first line — always runs.</p>
+      </li>
+      <li>
+        <p class="math-line">Condition mark &gt;= 40 → 60 &gt;= 40 → <b>True</b></p>
+        <p class="why">Substitute mark = 60 into the decision.</p>
+      </li>
+      <li>
+        <p class="math-line">status = "Pass" executes</p>
+        <p class="why">Because the condition was True, the body of the <code>if</code> runs, overwriting status.</p>
+      </li>
+      <li>
+        <p class="math-line">print status executes</p>
+        <p class="why">Unconditional last line — always runs regardless of the decision's outcome.</p>
+      </li>
+      <li>
+        <p class="math-line">Executable statements = {status="Fail", status="Pass", print status} = 3 total, all 3 executed.</p>
+        <p class="why">List every non-decision statement and check off which ones this single test hit.</p>
+      </li>
+      <li>
+        <p class="math-line">Statement Coverage \( = \dfrac{3}{3}\times100\% = 100\% \)</p>
+        <p class="why">All three statements ran — full statement coverage from just one test case.</p>
+      </li>
+      <li>
+        <p class="math-line">Branch outcomes: mark≥40 True ✓ executed. mark≥40 False — <b>never executed</b>.</p>
+        <p class="why">There is exactly one decision with 2 outcomes; this test only ever produced the True outcome.</p>
+      </li>
+      <li>
+        <p class="math-line">Branch Coverage \( = \dfrac{1}{2}\times100\% = 50\% \)</p>
+        <p class="why">Only 1 of the 2 branch outcomes was executed — the False path (mark &lt; 40, status stays "Fail") was never tested even though statement coverage says 100%.</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Answer — the gap, in one line</span>
+      <p><strong>Statement Coverage = 100%, Branch Coverage = 50%.</strong> The false outcome of <code>mark ≥ 40</code> has never been tested — no test has checked <code>mark &lt; 40</code> — yet statement coverage was completely blind to that gap.</p>
+    </div>
+
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th>Comparison point</th><th>Statement coverage</th><th>Branch coverage</th></tr>
+      <tr><td>Focus</td><td>Executable statements</td><td>Decision outcomes</td></tr>
+      <tr><td>Requirement</td><td>Execute every statement</td><td>Execute every True and False branch</td></tr>
+      <tr><td>Relative strength</td><td>Basic structural criterion</td><td>Stronger structural criterion</td></tr>
+      <tr><td>Main limitation</td><td>May miss untested branches</td><td>May miss branch <em>combinations</em></td></tr>
+      <tr><td>Typical use</td><td>Initial test adequacy check</td><td>Decision-oriented test evaluation</td></tr>
+    </table>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — this is the exact exam trap</span>
+      <p>Do <em>not</em> assume "100% statement coverage" means the code has been thoroughly tested. A stronger coverage criterion reveals testing gaps that a weaker criterion may miss entirely. Whenever a question gives you 100% statement coverage and asks "is this enough?", the answer is: check the branches.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 6 ======================= -->
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>Path coverage and the 2ⁿ formula</h2>
+    <p class="subtitle">You already handled this style of question quickly in your diagnostic — here's the vocabulary that goes with the number.</p>
+
+    <p>A <strong>path</strong> is a complete sequence of nodes followed from the program's entry all the way to its exit. Where branch coverage only asks "was each decision's True and False outcome hit <em>somewhere</em>?", path coverage asks the much stronger question: "was every specific <em>combination</em> of decisions exercised?"</p>
+
+    <div class="formula">
+      <div class="label">Path coverage</div>
+      \[ \text{Path Coverage} = \frac{\text{Executed feasible paths}}{\text{Total feasible paths}} \times 100\% \]
+    </div>
+
+    <p>For a snippet with two independent decisions:</p>
+    <pre class="code">if A then
+    execute S1
+
+if B then
+    execute S2</pre>
+
+    <p>Decision A can be True or False; independently, decision B can be True or False. That gives four combinations, laid out as four paths:</p>
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th>Path</th><th>Decision A</th><th>Decision B</th></tr>
+      <tr><td>P1</td><td class="center">True</td><td class="center">True</td></tr>
+      <tr><td>P2</td><td class="center">True</td><td class="center">False</td></tr>
+      <tr><td>P3</td><td class="center">False</td><td class="center">True</td></tr>
+      <tr><td>P4</td><td class="center">False</td><td class="center">False</td></tr>
+    </table>
+    </div>
+
+    <div class="formula">
+      <div class="label">Maximum combinations for n independent Boolean decisions</div>
+      \[ \text{Maximum combinations} = 2^n \]
+    </div>
+
+    <p>Here n = 2 decisions, so \(2^2 = 4\) — matching the four paths above. Applied to the running example, <code>calculatePayable</code> has 3 decisions (N2, N4, N7), so the theoretical maximum is \(2^3 = 8\) possible decision combinations, i.e. up to 8 candidate paths.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Path coverage is <strong>more thorough</strong> than statement or branch coverage — it examines order, combinations of decisions, and complete routes — but <strong>complete path testing is often impractical</strong>: the number of paths grows exponentially with the number of decisions, and (as the next section shows) not every mathematically-possible combination can actually happen.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 7 ======================= -->
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Feasible vs infeasible paths</h2>
+    <p class="subtitle">2ⁿ tells you the upper bound. It does not tell you how many of those paths a real input can actually produce.</p>
+
+    <div class="callout key">
+      <span class="tag">Definitions — get these exact, they're often asked as a short-answer pair</span>
+      <p><strong>Feasible path:</strong> a path that can be executed by at least one valid input. <strong>Infeasible path:</strong> a path that appears in the CFG's structure, but no valid input can ever execute it.</p>
+    </div>
+
+    <p>Infeasible paths arise when two decisions in the same path both depend on the same variable in a way that contradicts itself. Consider:</p>
+    <pre class="code">if x &gt; 10 then
+    execute A
+
+if x &lt; 5 then
+    execute B</pre>
+
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th>x &gt; 10</th><th>x &lt; 5</th><th>Feasibility</th></tr>
+      <tr><td class="center">True</td><td class="center">True</td><td><strong>Infeasible</strong></td></tr>
+      <tr><td class="center">True</td><td class="center">False</td><td>Feasible</td></tr>
+      <tr><td class="center">False</td><td class="center">True</td><td>Feasible</td></tr>
+      <tr><td class="center">False</td><td class="center">False</td><td>Feasible</td></tr>
+    </table>
+    </div>
+
+    <p>No number x can be simultaneously greater than 10 <em>and</em> less than 5 — those two conditions on the same variable can never both hold, so that one row of the truth table is structurally present but never reachable by any real input.</p>
+
+    <h3>Worked example: is a path in the running example infeasible?</h3>
+    <p>Consider the path where <strong>amount ≥ 1000 = True, isMember = True, payable &lt; 0 = True</strong> all hold at once.</p>
+    <ol class="steps">
+      <li>
+        <p class="math-line">If amount ≥ 1000 is True and isMember is True, then discount = 100 + 50 = 150.</p>
+        <p class="why">Both discount-granting decisions fired, so both discounts stack: N3 gives 100, N5 adds 50.</p>
+      </li>
+      <li>
+        <p class="math-line">payable = amount − 150</p>
+        <p class="why">Substitute discount = 150 into N6's formula.</p>
+      </li>
+      <li>
+        <p class="math-line">Since amount ≥ 1000 on this path, payable ≥ 1000 − 150 = 850.</p>
+        <p class="why"><strong>Use the constraint from the first decision</strong> (amount ≥ 1000) as a lower bound on amount, and substitute the smallest possible amount to find the smallest possible payable.</p>
+      </li>
+      <li>
+        <p class="math-line">Therefore payable &lt; 0 cannot be True on this path.</p>
+        <p class="why">payable is provably at least 850, which can never be negative — so the third decision's True outcome is logically incompatible with the first two.</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Answer</span>
+      <p>The path N1 → N2(T) → N3 → N4(T) → N5 → N6 → N7(<strong>T</strong>) → N8 → N9 is <strong>infeasible</strong>. It exists as a structural combination of the CFG's decisions, but no valid <code>amount</code> can make <code>payable</code> negative once both discounts have already been applied.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p><strong>Unexecuted paths should not automatically be treated as testing failures.</strong> Before proposing a new test case to "fix" a missing path, always check feasibility first — you may be chasing a path that no input can ever satisfy.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 8 ======================= -->
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>Reachability analysis</h2>
+    <p class="subtitle">"Nobody has tested it yet" and "nobody ever could" are two very different diagnoses.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p><strong>Reachability analysis determines whether a statement, branch, or program location can be executed from program entry using at least one valid input.</strong> The five questions the faculty says to ask: Can a valid input execute this statement? Can both outcomes of the decision occur? Does an earlier statement prevent execution? Are required conditions logically consistent? Do input constraints make the branch impossible?</p>
+    </div>
+
+    <pre class="code">if age &gt;= 18 then
+    status = "Adult"
+
+if age &lt; 0 then
+    status = "Invalid"</pre>
+
+    <p>The second branch (<code>age &lt; 0</code>) is <strong>structurally</strong> reachable — there's a real edge in the CFG leading to it — but whether it is <em>practically</em> reachable depends on a question the graph alone can't answer: does the system's input validation even allow negative ages to reach this function in the first place? Reachability, in other words, sometimes needs domain knowledge, not just the code.</p>
+
+    <h3>Worked example: is N8 in the running example reachable?</h3>
+    <p>From Topic 3, TC1 (amount = 1200, isMember = true) left N8 (<code>payable = 0</code>) uncovered. Does that mean N8 is unreachable code?</p>
+    <ol class="steps">
+      <li>
+        <p class="math-line">Try amount = 20, isMember = true.</p>
+        <p class="why">Pick a small amount so the $100 threshold discount does <em>not</em> apply, but keep isMember true so the $50 discount still does.</p>
+      </li>
+      <li>
+        <p class="math-line">N2: 20 ≥ 1000? False → discount stays 0. N4: isMember = true? True → discount = 0 + 50 = 50.</p>
+        <p class="why">Trace the two discount decisions with this new input.</p>
+      </li>
+      <li>
+        <p class="math-line">payable = 20 − 50 = −30</p>
+        <p class="why">Apply N6's formula with amount = 20 and discount = 50.</p>
+      </li>
+      <li>
+        <p class="math-line">N7: payable &lt; 0? −30 &lt; 0 → <b>True</b> → N8 executes.</p>
+        <p class="why">This input drives payable negative, so the True branch of N7 fires and N8 runs.</p>
+      </li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Answer</span>
+      <p>N8 <strong>is reachable</strong> — it just wasn't <em>covered</em> by TC1. <strong>Uncovered does not always mean unreachable.</strong> The faculty's own distinction: <em>uncovered code</em> means no <em>current</em> test executes it; <em>unreachable code</em> means no valid test <em>ever could</em>. Reachability analysis is exactly the step that tells you which of the two you're looking at — and therefore whether the fix is "write another test" or "this code cannot ever run."</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 9 ======================= -->
+  <section class="topic" id="t9">
+    <span class="topic-num">Topic 09</span>
+    <h2>Dead code vs unreachable code</h2>
+    <p class="subtitle">Two different diseases that both show up as "this code doesn't matter" — but for opposite reasons.</p>
+
+    <div class="callout key">
+      <span class="tag">One-line definitions</span>
+      <p><strong>Unreachable code:</strong> code that can never be executed from the program entry — there is no control-flow path that reaches it at all. <strong>Dead code:</strong> code that <em>executes</em>, or may execute, but has no meaningful effect on the program's behaviour.</p>
+    </div>
+
+    <p>The distinction is about <em>where the problem lives</em>. Unreachable code is a control-flow problem — the wiring simply doesn't connect to that block. Dead code is a data-flow / logic problem — the wiring does connect, the block does run, but its result is thrown away or never used.</p>
+
+    <h3>Unreachable code — example</h3>
+    <pre class="code">return total
+print("Calculation completed")</pre>
+    <p>The <code>print</code> statement can never execute, because the function has <em>already returned</em> on the line before it — control leaves the function permanently at <code>return total</code>, so nothing after it in the same block is ever reached, no matter what input you give.</p>
+
+    <h3>Dead code — two examples</h3>
+    <pre class="code">rate = 5
+rate = 10
+print(rate)</pre>
+    <p>Here, both lines <em>do</em> execute — but <code>rate = 5</code> is overwritten by <code>rate = 10</code> before it is ever read. The first assignment has no effect on the final value that gets printed, so it is dead: it runs, and it accomplishes nothing.</p>
+
+    <pre class="code">if age &lt; 18 and age &gt; 60 then
+    category = "Special"</pre>
+    <p>This one is subtler: no single value of <code>age</code> can be both less than 18 <em>and</em> greater than 60 at the same time, so the condition is always false and <code>category = "Special"</code> can never actually run.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — faculty's specific classification</span>
+      <p>You might expect an impossible condition like the one above to be filed under "unreachable", the way the lecture's own path-feasibility examples were. But the lecture places it under <strong>dead code</strong> instead — because the <code>if</code>-check itself is structurally reachable (there is a real edge into it), it is only the <em>body</em> that a logically-impossible input condition prevents from ever firing. This overlaps conceptually with the infeasible-path idea from Topic 7; if a question asks you to classify a snippet like this, you can mention both labels and explain the overlap — that shows you understand the nuance rather than just memorising a category.</p>
+    </div>
+
+    <h3>Comparison table</h3>
+    <div class="scrollx">
+    <table class="tbl">
+      <tr><th>Type</th><th>Can execute?</th><th>Affects behaviour?</th></tr>
+      <tr><td>Reachable and useful</td><td class="center">Yes</td><td class="center">Yes</td></tr>
+      <tr><td>Dead code</td><td class="center">Possibly</td><td class="center">No meaningful effect</td></tr>
+      <tr><td>Unreachable code</td><td class="center">No</td><td class="center">No</td></tr>
+    </table>
+    </div>
+
+    <p>Why it matters, straight from the lecture: dead and unreachable code both <strong>increase maintenance difficulty</strong>, <strong>hide logical errors</strong>, <strong>reduce code clarity</strong>, <strong>mislead coverage analysis</strong> (a coverage tool might report a lower percentage that looks like a testing gap when it's really an unfixable code smell), <strong>increase testing effort</strong> spent chasing the impossible, and can even <strong>create security or reliability risks</strong>.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Coverage tools reveal <em>unexecuted</em> code automatically. They cannot tell you <em>why</em> it's unexecuted — that always requires your own logical analysis, which is exactly what Topics 7, 8, and 9 have been building toward.</p>
+    </div>
+  </section>
+
+  <!-- ======================= TOPIC 10: PRACTICE ======================= -->
+  <section class="topic" id="t10">
+    <span class="topic-num">Topic 10</span>
+    <h2>Practice questions</h2>
+    <p class="subtitle">Every question is fully worked, line by line. Cover the solution, attempt it, then reveal.</p>
+
+    <h3>Reference: three new functions, same pseudocode style</h3>
+    <p>These three short functions are used across the questions below. They follow exactly the same style as <code>calculatePayable</code>, so you can practise building CFGs and computing coverage on material you haven't already memorised the answer to.</p>
+
+    <pre class="code">function gradeAttempt(score, attempts):
+    result = "Retry"
+    if score &gt;= 60 then
+        result = "Pass"
+    if attempts &gt; 3 then
+        result = "Locked"
+    return result</pre>
+
+    <pre class="code">function classifyTemperature(temp, isRaining):
+    label = "Mild"
+    if temp &gt;= 35 then
+        label = "Hot"
+    if temp &lt;= 10 then
+        label = "Cold"
+    if isRaining = true then
+        label = label + " and Wet"
+    return label</pre>
+
+    <pre class="code">function computeShippingFee(weight, isExpress):
+    fee = 5
+    if weight &gt; 20 then
+        fee = fee + 15
+    if isExpress = true then
+        fee = fee * 2
+    if fee &gt; 50 then
+        fee = 50
+    return fee</pre>
+
+    <h3>Warm-ups</h3>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy</span></span></div>
+      <div class="qbody">
+        <p>For <code>gradeAttempt(score, attempts)</code>, compute the statement coverage achieved by <strong>TC1: score = 45, attempts = 2</strong>, using the same convention as the lecture (count only the assignment/return statements, not the decision conditions).</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">Nodes: N1 result="Retry"; N2 score≥60? (decision); N3 result="Pass"; N4 attempts&gt;3? (decision); N5 result="Locked"; N6 return result.</p>
+              <p class="why">Number the function's nodes exactly the way Topic 2 numbered <code>calculatePayable</code>, in source order.</p></li>
+            <li><p class="math-line">Total executable statements (excluding decisions) = N1, N3, N5, N6 = 4.</p>
+              <p class="why">Following the faculty's convention: only assignments and the return count toward the total.</p></li>
+            <li><p class="math-line">N2: 45 ≥ 60? → <b>False</b>. N4: 2 &gt; 3? → <b>False</b>.</p>
+              <p class="why">Substitute the test values into each decision in turn.</p></li>
+            <li><p class="math-line">Path: N1 → N2(F) → N4(F) → N6. Executed: N1, N6 (2 statements).</p>
+              <p class="why">Both decisions were False, so both conditional bodies (N3, N5) are skipped.</p></li>
+            <li><p class="math-line">Statement Coverage \( = \dfrac{2}{4}\times100\% = 50\% \)</p>
+              <p class="why">Apply the formula: 2 executed out of 4 total.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>50%.</strong> Uncovered: N3 (result="Pass") and N5 (result="Locked") — this single test never makes either condition true.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy</span></span></div>
+      <div class="qbody">
+        <p><code>classifyTemperature(temp, isRaining)</code> has three decisions. Using the \(2^n\) rule, how many maximum decision combinations (candidate paths) exist? List them in True/False notation for (N2: temp≥35, N4: temp≤10, N6: isRaining).</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">n = 3 independent-looking decisions (N2, N4, N6).</p>
+              <p class="why">Count the <code>if</code> statements in the function — each is one Boolean decision.</p></li>
+            <li><p class="math-line">Maximum combinations \( = 2^3 = 8 \)</p>
+              <p class="why">Apply the path-coverage upper-bound formula directly.</p></li>
+            <li><p class="math-line">TTT, TTF, TFT, TFF, FTT, FTF, FFT, FFF</p>
+              <p class="why">Enumerate all 8 binary combinations of the 3 decisions, in the order (N2, N4, N6).</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>8 maximum combinations.</strong> (You'll check in Question 10 which of these are actually feasible — the count of 8 is only the upper bound, not a promise every one of them can happen.)</p></div>
+        </div>
+      </details>
+    </div>
+
+    <h3>Core questions</h3>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Construct the Control Flow Graph for <code>classifyTemperature(temp, isRaining)</code>: list every node, identify the decision nodes, and state the total number of branch outcomes.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="node-list">
+            <div><b>N1:</b> label = "Mild"</div>
+            <div><b>N2:</b> temp &gt;= 35? <span class="badge">decision</span></div>
+            <div><b>N3:</b> label = "Hot"</div>
+            <div><b>N4:</b> temp &lt;= 10? <span class="badge">decision</span></div>
+            <div><b>N5:</b> label = "Cold"</div>
+            <div><b>N6:</b> isRaining = true? <span class="badge">decision</span></div>
+            <div><b>N7:</b> label = label + " and Wet"</div>
+            <div><b>N8:</b> return label</div>
+          </div>
+          <pre class="cfg">              Entry
+                |
+                v
+      N1: label = "Mild"
+                |
+                v
+      N2: temp &gt;= 35?
+         /            \
+      True            False
+        |                |
+N3: label = "Hot"         |
+        |________________|
+                |
+                v
+      N4: temp &lt;= 10?
+         /            \
+      True            False
+        |                |
+N5: label = "Cold"        |
+        |________________|
+                |
+                v
+      N6: isRaining = true?
+         /            \
+      True            False
+        |                |
+N7: label += " and Wet"   |
+        |________________|
+                |
+                v
+      N8: return label
+                |
+                v
+              Exit</pre>
+          <div class="callout key"><span class="tag">Answer</span><p>8 nodes total. <strong>Decision nodes: N2, N4, N6 → 3 decisions → 6 branch outcomes.</strong> Notice the shape is identical to <code>calculatePayable</code>'s CFG — three sequential guarded assignments — just with different conditions and labels.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Compute the statement coverage achieved by <strong>TC1: temp = 40, isRaining = true</strong> on <code>classifyTemperature</code>.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">N2: 40 ≥ 35? → <b>True</b> → N3 executes, label = "Hot".</p>
+              <p class="why">Substitute temp = 40 into the first decision.</p></li>
+            <li><p class="math-line">N4: 40 ≤ 10? → <b>False</b> → N5 skipped.</p>
+              <p class="why">Substitute temp = 40 into the second decision — 40 is not ≤ 10.</p></li>
+            <li><p class="math-line">N6: isRaining = true? → <b>True</b> → N7 executes, label = "Hot and Wet".</p>
+              <p class="why">Substitute isRaining = true into the third decision.</p></li>
+            <li><p class="math-line">Path: N1 → N2(T) → N3 → N4(F) → N6(T) → N7 → N8. Executed: N1, N3, N7, N8 (4 of 5).</p>
+              <p class="why">Total executable statements (excluding decisions) are N1, N3, N5, N7, N8 = 5; this path skips only N5.</p></li>
+            <li><p class="math-line">Statement Coverage \( = \dfrac{4}{5}\times100\% = 80\% \)</p>
+              <p class="why">Apply the formula: 4 executed out of 5 total.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>80%.</strong> Uncovered: N5 (label = "Cold") — this test never makes temp ≤ 10 true.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Using TC1 from Question 4 (temp = 40, isRaining = true), design a second test case TC2 so that TC1 + TC2 together achieve 100% branch coverage on <code>classifyTemperature</code>. State the final branch coverage and statement coverage.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">TC1 gave outcomes: N2 = True, N4 = False, N6 = True.</p>
+              <p class="why">Read these off the path traced in Question 4.</p></li>
+            <li><p class="math-line">Missing outcomes still needed: N2 = False, N4 = True, N6 = False.</p>
+              <p class="why">Branch coverage needs both outcomes of every decision; these three are the ones TC1 didn't produce.</p></li>
+            <li><p class="math-line">Try TC2: temp = 5, isRaining = false.</p>
+              <p class="why">Pick temp below both thresholds (5 &lt; 35 and 5 ≤ 10) and isRaining false, to try to hit all three missing outcomes with one test.</p></li>
+            <li><p class="math-line">N2: 5 ≥ 35? <b>False</b> ✓. N4: 5 ≤ 10? <b>True</b> ✓. N6: isRaining=true? <b>False</b> ✓.</p>
+              <p class="why">Check each decision against the missing list from step 2 — all three land exactly on the needed outcomes.</p></li>
+            <li><p class="math-line">TC2 path: N1 → N2(F) → N4(T) → N5 → N6(F) → N8.</p>
+              <p class="why">Assemble the path from the three outcomes just found.</p></li>
+            <li><p class="math-line">Combined branch outcomes: N2 {T,F} ✓, N4 {F,T} ✓, N6 {T,F} ✓ → 6/6.</p>
+              <p class="why">Union TC1's outcomes with TC2's outcomes — every decision now has both its True and False side covered.</p></li>
+            <li><p class="math-line">Branch Coverage \( = \dfrac{6}{6}\times100\% = 100\% \)</p>
+              <p class="why">Apply the formula with all 6 outcomes now present.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>Branch coverage = 100%.</strong> As a bonus, check statement coverage too: TC1 executed N1,N3,N7,N8; TC2 executed N1,N5,N8; the union is N1,N3,N5,N7,N8 — all 5 — so <strong>statement coverage is also 100%</strong>, consistent with the lecture's rule that 100% branch coverage normally implies 100% statement coverage.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Construct the Control Flow Graph for <code>computeShippingFee(weight, isExpress)</code>: list every node, identify the decision nodes, and state the number of branch outcomes.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <div class="node-list">
+            <div><b>N1:</b> fee = 5</div>
+            <div><b>N2:</b> weight &gt; 20? <span class="badge">decision</span></div>
+            <div><b>N3:</b> fee = fee + 15</div>
+            <div><b>N4:</b> isExpress = true? <span class="badge">decision</span></div>
+            <div><b>N5:</b> fee = fee * 2</div>
+            <div><b>N6:</b> fee &gt; 50? <span class="badge">decision</span></div>
+            <div><b>N7:</b> fee = 50</div>
+            <div><b>N8:</b> return fee</div>
+          </div>
+          <div class="callout key"><span class="tag">Answer</span><p>8 nodes total. <strong>Decision nodes: N2, N4, N6 → 3 decisions → 6 branch outcomes.</strong> Structurally this is, once again, the same three-guarded-assignments shape as <code>calculatePayable</code> — recognising that shape is most of the work once you've seen it a few times. Hold onto this CFG: Question 11 comes back to it with a twist.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>Compute the statement coverage achieved by <strong>TC1: weight = 25, isExpress = false</strong> on <code>computeShippingFee</code>. Which statements are left uncovered?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">N2: 25 &gt; 20? → <b>True</b> → N3 executes, fee = 5 + 15 = 20.</p>
+              <p class="why">Substitute weight = 25 into the first decision.</p></li>
+            <li><p class="math-line">N4: isExpress = true? → <b>False</b> → N5 skipped, fee stays 20.</p>
+              <p class="why">Substitute isExpress = false into the second decision.</p></li>
+            <li><p class="math-line">N6: 20 &gt; 50? → <b>False</b> → N7 skipped.</p>
+              <p class="why">Substitute the computed fee = 20 into the third decision.</p></li>
+            <li><p class="math-line">Path: N1 → N2(T) → N3 → N4(F) → N6(F) → N8. Executed: N1, N3, N8 (3 of 5).</p>
+              <p class="why">Total executable statements are N1, N3, N5, N7, N8 = 5; this path skips N5 and N7.</p></li>
+            <li><p class="math-line">Statement Coverage \( = \dfrac{3}{5}\times100\% = 60\% \)</p>
+              <p class="why">Apply the formula: 3 executed out of 5 total.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>60%.</strong> Uncovered: N5 (fee = fee*2) and N7 (fee = 50). Before you rush to write a TC2 for N7 — hold that thought until Question 11.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>For <code>isEligible(age)</code> below, a tester runs exactly one test case, <strong>age = 25</strong>, and reports "100% statement coverage, so testing is complete." Compute both statement coverage and branch coverage to check that claim.</p>
+        <pre class="code">function isEligible(age):
+    eligible = false
+    if age &gt;= 21 then
+        eligible = true
+    return eligible</pre>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">Nodes: N1 eligible=false; N2 age≥21? (decision); N3 eligible=true; N4 return eligible.</p>
+              <p class="why">Number the nodes in source order, same as every other example.</p></li>
+            <li><p class="math-line">N2: 25 ≥ 21? → <b>True</b> → N3 executes.</p>
+              <p class="why">Substitute age = 25 into the decision.</p></li>
+            <li><p class="math-line">Executable statements N1, N3, N4 = 3 total, all 3 executed → Statement Coverage \( = \dfrac{3}{3}\times100\% = 100\% \).</p>
+              <p class="why">This one test's path (N1→N2(T)→N3→N4) touches every non-decision node — hence 100%.</p></li>
+            <li><p class="math-line">Branch outcomes for N2: only True has been executed; False (age &lt; 21) never has.</p>
+              <p class="why">There's exactly one decision, with 2 possible outcomes; this test only ever produced one of them.</p></li>
+            <li><p class="math-line">Branch Coverage \( = \dfrac{1}{2}\times100\% = 50\% \)</p>
+              <p class="why">Apply the formula: 1 of the 2 branch outcomes executed.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p>The claim is wrong. <strong>Statement coverage = 100%, branch coverage = 50%.</strong> Nobody has tested what happens when age &lt; 21 (eligible should stay false) — exactly the same gap pattern as the lecture's own <code>checkResult</code> example.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· medium</span></span></div>
+      <div class="qbody">
+        <p>In <code>gradeAttempt(score, attempts)</code>, is it feasible for <strong>score ≥ 60</strong> and <strong>attempts &gt; 3</strong> to both be True on the same execution? Justify your answer.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">The two conditions reference two different variables: score and attempts.</p>
+              <p class="why">Feasibility conflicts only arise when two decisions constrain the <em>same</em> variable in contradictory ways (as in Topic 7's x&gt;10/x&lt;5 example).</p></li>
+            <li><p class="math-line">Try score = 80, attempts = 5.</p>
+              <p class="why">Pick concrete values that satisfy both conditions independently, since nothing links them.</p></li>
+            <li><p class="math-line">score ≥ 60? 80 ≥ 60 → True. attempts &gt; 3? 5 &gt; 3 → True.</p>
+              <p class="why">Verify both decisions really do come out True for this input.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>Feasible.</strong> Independent variables place no constraint on each other, so a real input (e.g. score=80, attempts=5) exercises this exact combination. This is the mirror image of Question 10 below — not every combination of decisions is infeasible; you have to check the actual variables involved before concluding either way.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <h3>Stretch questions</h3>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>In <code>classifyTemperature(temp, isRaining)</code>, is the combination <strong>N2 = True (temp ≥ 35) and N4 = True (temp ≤ 10)</strong> feasible or infeasible? Explain, and say what this means for the 8 combinations you listed in Question 2.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">N2 = True requires temp ≥ 35. N4 = True requires temp ≤ 10.</p>
+              <p class="why">Write out what each decision outcome demands of the single shared variable, temp.</p></li>
+            <li><p class="math-line">35 &gt; 10, so no value of temp can satisfy temp ≥ 35 and temp ≤ 10 simultaneously.</p>
+              <p class="why">Compare the two thresholds directly — the "≥35" region and the "≤10" region of the number line don't overlap.</p></li>
+            <li><p class="math-line">Any path containing N2(T) and N4(T) together is infeasible, regardless of N6's outcome.</p>
+              <p class="why">This mirrors exactly the x&gt;10/x&lt;5 pattern from Topic 7 and the amount/payable contradiction from Topic 7's calculatePayable example: two decisions on the same variable, contradictory ranges.</p></li>
+            <li><p class="math-line">Of the 8 combinations from Question 2, the 2 with N2=T,N4=T (TTT and TTF) are infeasible; the remaining 6 are feasible.</p>
+              <p class="why">N6 (isRaining) is independent, so it doesn't affect feasibility — it just multiplies the infeasible N2/N4 pair by its own 2 outcomes (T and F), removing 2 of the 8.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>Infeasible.</strong> temp cannot be both ≥35 and ≤10 at once. Maximum feasible paths for this function is therefore <strong>6, not 8</strong> — the \(2^n\) formula gives an upper bound, and feasibility analysis is what narrows it down to the real number.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>Back to <code>computeShippingFee</code> from Questions 6–7. A teammate wants to write a TC2 to cover the missing N7 (fee = 50) and push branch coverage to 100%. Before they do — is <strong>N6 = True (fee &gt; 50)</strong> even reachable by any valid input? Work it out algebraically, and say what this implies for the maximum achievable statement and branch coverage.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">fee starts at 5 (N1).</p>
+              <p class="why">Read the initial value straight from the code.</p></li>
+            <li><p class="math-line">N3 can add at most +15 once (only if weight &gt; 20) → fee ≤ 5 + 15 = 20 at this point.</p>
+              <p class="why">N3 is a fixed increment, not scaled by how large weight is — however big weight gets, it only ever adds exactly 15.</p></li>
+            <li><p class="math-line">N5 can multiply by 2 once (only if isExpress) → fee ≤ 20 × 2 = 40 at this point.</p>
+              <p class="why">Apply the second, independent adjustment on top of the worst case from step 2 — doubling is the largest possible effect of N5.</p></li>
+            <li><p class="math-line">The maximum possible value of fee anywhere before N6 is 40.</p>
+              <p class="why">Steps 2 and 3 are the only two places fee can grow, and both are now maxed out together — no input can push fee any higher.</p></li>
+            <li><p class="math-line">Since 40 is not &gt; 50, the condition fee &gt; 50 (N6 = True) can never be satisfied by any valid weight or isExpress.</p>
+              <p class="why">Compare the true maximum (40) against the threshold the decision checks (50).</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p><strong>N6 = True is unreachable</strong>, and therefore <strong>N7 (fee = 50) is unreachable code</strong> — no test case, however cleverly chosen, can ever execute it. The teammate's plan won't work: the maximum achievable statement coverage for this function is \(4/5 = 80\%\) (N7 can never run), and the maximum achievable branch coverage is \(5/6 \approx 83.33\%\) (N6's True outcome can never occur). This is reachability analysis (Topic 8) and unreachable code (Topic 9) doing real work together — a coverage tool would just report "80%, 83.33%" forever and it would be correct, not a sign of an inadequate test suite.</p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· hard</span></span></div>
+      <div class="qbody">
+        <p>Classify each snippet below as <strong>(a)</strong> ordinary reachable code, <strong>(b)</strong> dead code, or <strong>(c)</strong> unreachable code, and justify each in one sentence.</p>
+        <pre class="code">-- Snippet 1 --
+return result
+log("done")
+
+-- Snippet 2 --
+x = 10
+x = 20
+print(x)
+
+-- Snippet 3 --
+if score &gt; 100 and score &lt; 0 then
+    flag = true</pre>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li><p class="math-line">Snippet 1: <strong>Unreachable code.</strong></p>
+              <p class="why">Control leaves the function permanently at <code>return result</code> — there is no path in the CFG from that line to <code>log("done")</code>, for any input.</p></li>
+            <li><p class="math-line">Snippet 2: <strong>Dead code</strong> (specifically, the line <code>x = 10</code> is dead).</p>
+              <p class="why">Both lines do execute, but <code>x = 10</code> is unconditionally overwritten by <code>x = 20</code> before it is ever read — it runs, but has no effect on the printed value. Same pattern as the lecture's rate=5/rate=10 example.</p></li>
+            <li><p class="math-line">Snippet 3: <strong>Dead code</strong> — the faculty's classification for a logically-impossible condition.</p>
+              <p class="why">The <code>if</code>-check is structurally reachable (a real edge leads into it), but no score can be both &gt;100 and &lt;0 at once, so its body never has a meaningful effect — identical in spirit to the lecture's age&lt;18 and age&gt;60 example (see Topic 9's watch-out on this exact overlap with infeasible paths).</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer</span><p>1 = unreachable, 2 = dead code, 3 = dead code (by the faculty's own classification, though you may also mention the infeasible-condition angle for credit).</p></div>
+        </div>
+      </details>
+    </div>
+
+    <h3>Fully worked in-class exercise: processScore</h3>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 13 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>This reproduces the lecture's own in-class exercise in full. For:</p>
+        <pre class="code">function processScore(score, submitted):
+    grade = "F"
+    if score &gt;= 50 then
+        grade = "P"
+    if submitted = false then
+        grade = "I"
+    if score &lt; 0 then
+        grade = "Invalid"
+    return grade</pre>
+        <p>and the test suite</p>
+        <div class="scrollx">
+        <table class="tbl">
+          <tr><th>Test case</th><th>score</th><th>submitted</th><th>Expected grade</th></tr>
+          <tr><td>TC1</td><td class="center">75</td><td class="center">True</td><td class="center">P</td></tr>
+          <tr><td>TC2</td><td class="center">30</td><td class="center">False</td><td class="center">I</td></tr>
+          <tr><td>TC3</td><td class="center">-5</td><td class="center">True</td><td class="center">Invalid</td></tr>
+        </table>
+        </div>
+        <p>(a) Build the CFG. (b) Compute statement and branch coverage for the whole suite. (c) List the feasible execution paths and identify any infeasible one. (d) Is TC1 alone enough for 100% statement coverage? (e) Can score ≥ 50 and score &lt; 0 both be true? (f) State the minimum reasonable test suite.</p>
+      </div>
+      <details class="solution">
+        <summary>Show full worked solution</summary>
+        <div class="soln-body">
+          <p><strong>(a) CFG construction.</strong></p>
+          <div class="node-list">
+            <div><b>N1:</b> grade = "F"</div>
+            <div><b>N2:</b> score &gt;= 50? <span class="badge">decision</span></div>
+            <div><b>N3:</b> grade = "P"</div>
+            <div><b>N4:</b> submitted = false? <span class="badge">decision</span></div>
+            <div><b>N5:</b> grade = "I"</div>
+            <div><b>N6:</b> score &lt; 0? <span class="badge">decision</span></div>
+            <div><b>N7:</b> grade = "Invalid"</div>
+            <div><b>N8:</b> return grade</div>
+          </div>
+          <p>8 nodes, 3 decision nodes (N2, N4, N6), 6 branch outcomes — the same shape you've now seen four times.</p>
+
+          <p><strong>(b) Coverage for the full suite.</strong></p>
+          <ol class="steps">
+            <li><p class="math-line">TC1 (75, True): N2 True→N3 (grade="P"); N4 "submitted=false"? submitted is True so this is False→N5 skipped; N6 75&lt;0? False→N7 skipped. Path: N1→N2(T)→N3→N4(F)→N6(F)→N8.</p>
+              <p class="why">Substitute score=75, submitted=True into each decision in order; grade ends "P", matching the expected result.</p></li>
+            <li><p class="math-line">TC2 (30, False): N2 30≥50? False→N3 skipped, grade stays "F"; N4 "submitted=false"? submitted is False so this is True→N5 (grade="I"); N6 30&lt;0? False→N7 skipped. Path: N1→N2(F)→N4(T)→N5→N6(F)→N8.</p>
+              <p class="why">Substitute score=30, submitted=False; grade ends "I", matching expected.</p></li>
+            <li><p class="math-line">TC3 (-5, True): N2 -5≥50? False→N3 skipped; N4 False (submitted is True); N6 -5&lt;0? True→N7 (grade="Invalid"). Path: N1→N2(F)→N4(F)→N6(T)→N7→N8.</p>
+              <p class="why">Substitute score=-5, submitted=True; grade ends "Invalid", matching expected.</p></li>
+            <li><p class="math-line">Executed statements, union of all three: N1 (all three), N3 (TC1), N5 (TC2), N7 (TC3), N8 (all three) = all 5 of {N1,N3,N5,N7,N8}.</p>
+              <p class="why">Statement coverage only needs each statement to be hit by <em>some</em> test in the suite — check what each test contributes and take the union.</p></li>
+            <li><p class="math-line">Statement Coverage \( = \dfrac{5}{5}\times100\% = 100\% \)</p>
+              <p class="why">All 5 executable statements are covered once you combine all three tests.</p></li>
+            <li><p class="math-line">Branch outcomes, union of all three: N2 {T(TC1), F(TC2,TC3)} ✓both; N4 {F(TC1), T(TC2), F(TC3)} ✓both; N6 {F(TC1,TC2), T(TC3)} ✓both.</p>
+              <p class="why">Check each decision across all three tests — every decision now has at least one True and one False in the suite.</p></li>
+            <li><p class="math-line">Branch Coverage \( = \dfrac{6}{6}\times100\% = 100\% \)</p>
+              <p class="why">All 6 branch outcomes are covered by the three tests together.</p></li>
+          </ol>
+
+          <p><strong>(c) Feasible paths and the infeasible one.</strong></p>
+          <ol class="steps">
+            <li><p class="math-line">3 decisions → \(2^3 = 8\) maximum combinations.</p>
+              <p class="why">Apply the path-count upper bound from Topic 6.</p></li>
+            <li><p class="math-line">N2 = True requires score ≥ 50. N6 = True requires score &lt; 0. Both reference the same variable, score.</p>
+              <p class="why">Look for two decisions constraining the same variable — exactly the pattern that produced an infeasible path in Topic 7.</p></li>
+            <li><p class="math-line">No score can be both ≥ 50 and &lt; 0 at once, so any combination with N2=True and N6=True is infeasible — that removes 2 of the 8 (the two combinations that pair N2=T, N6=T, for each value of N4).</p>
+              <p class="why">N4 (submitted) is independent of score, so it doesn't rescue either of these two combinations.</p></li>
+          </ol>
+          <div class="callout key"><span class="tag">Answer to (c)</span><p><strong>6 feasible paths</strong> out of the 8 structural combinations; <strong>2 are infeasible</strong> — any path requiring score ≥ 50 and score &lt; 0 simultaneously.</p></div>
+
+          <p><strong>(d) Is TC1 alone enough?</strong> No. TC1 by itself only executes N1, N3, N8 = 3 of 5 statements (60%) — it never makes N5 or N7 run. You need TC2 (for N5) and TC3 (for N7) as well.</p>
+
+          <p><strong>(e) Can score ≥ 50 and score &lt; 0 both be true?</strong> No — this is the same contradiction as part (c): no real number satisfies both at once, so this is an infeasible condition pair.</p>
+
+          <p><strong>(f) Minimum reasonable test suite.</strong> All three of TC1, TC2, TC3 are necessary: TC1 is the only one that reaches N3, TC2 is the only one that reaches N5, and TC3 is the only one that reaches N7. Dropping any one of them drops statement coverage below 100%. So the minimum suite is exactly the three given test cases — the lecture's exercise was already minimal.</p>
+        </div>
+      </details>
+    </div>
+
+    <h3>Exit ticket and short theory answers</h3>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 14 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p><strong>Exit ticket (lecture's own):</strong> A test suite achieves 100% statement coverage but only 75% branch coverage. What does this indicate?</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests whether you understand the relationship between the two coverage criteria (Topic 5) — specifically that statement coverage is the <em>weaker</em> criterion and branch coverage is <em>stronger</em>, so a gap between the two numbers is diagnostic information, not a contradiction.
+          </div>
+          <p>It indicates that <strong>at least one branch outcome remains untested</strong> — every statement has run at least once, but for one or more decisions, only one of its two outcomes (True or False) has actually been exercised by the suite. Concretely, with 6 total branch outcomes, 75% means 4.5 → practically, at least one decision (out of however many exist) still has an untested side. This is exactly the pattern from the <code>checkResult</code> example in Topic 5: full statement coverage can hide an entirely untested branch. <strong>Additional test cases are required</strong> — specifically ones chosen to flip the missing decision outcomes to their untested value — before you can claim the branches are adequately tested.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 15 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain the difference between white-box and black-box testing, and why the lecture insists neither one replaces the other.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests the definition from Topic 1 plus the "complementary, not competitors" framing — the examiner wants you to state both definitions accurately <em>and</em> connect them to why combining both views produces better tests than either alone.
+          </div>
+          <p>White-box testing designs test cases using knowledge of the program's internal structure and implementation — it examines executable statements, decisions, branches, loops, and execution paths, so it requires reading the code (Topic 1). Black-box testing instead designs test cases from the requirements, checking only inputs against expected outputs, with no knowledge of the code required. They detect different classes of problems: black-box catches functional problems (the software doesn't do what it's supposed to), while white-box catches structural weaknesses (a branch nobody tested, a path that behaves unexpectedly, dead or unreachable code). Because each technique is blind to what the other one sees, the lecture treats them as complementary: combining the requirements view with the code view produces stronger, more complete tests than relying on either view by itself.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 16 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>In your own words, distinguish dead code from unreachable code, and give one example of each that is not from the lecture slides.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests the Topic 9 distinction — the examiner wants you to show that "code that doesn't matter" splits into two structurally different causes: a control-flow problem versus a data-flow/logic problem, not just recite the two labels.
+          </div>
+          <p>Unreachable code can never be executed at all, because no path in the control flow graph connects the program entry to it — for example, a line placed after an unconditional <code>return</code> in the same block, like the <code>print("Calculation completed")</code> example from Topic 9. Dead code, by contrast, <em>does</em> execute — control does reach it — but it has no meaningful effect on the program's behaviour, typically because its result is immediately overwritten or its condition can never actually be satisfied by valid input, like <code>rate = 5</code> being overwritten by <code>rate = 10</code> before ever being read. An example not in the slides: a function that computes <code>total = total * 1</code> partway through a calculation — the line executes every time, but multiplying by 1 changes nothing, so it is dead code, whereas a <code>break</code> statement placed one line after another unconditional <code>break</code> inside the same loop body would be unreachable code, since the first <code>break</code> already exits the loop before the second line can run.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ======================= CHEAT SHEET ======================= -->
+  <div class="cheat" id="cheatsheet">
+    <h2>Last-minute revision</h2>
+    <div class="grid">
+      <div class="item"><h4>Statement coverage</h4><p>\( \dfrac{\text{Executed statements}}{\text{Total executable statements}} \times 100\% \) — counts lines, not decisions.</p></div>
+      <div class="item"><h4>Branch coverage</h4><p>\( \dfrac{\text{Executed branch outcomes}}{\text{Total branch outcomes}} \times 100\% \) — needs both True and False of every decision.</p></div>
+      <div class="item"><h4>Path coverage</h4><p>\( \dfrac{\text{Executed feasible paths}}{\text{Total feasible paths}} \times 100\% \); upper bound \( 2^n \) for n independent Boolean decisions.</p></div>
+      <div class="item"><h4>calculatePayable CFG</h4><p>9 nodes, decisions N2/N4/N7, 6 branch outcomes. Memorise this shape — three new example functions in this guide reuse it exactly.</p></div>
+      <div class="item"><h4>Feasible vs infeasible</h4><p>Feasible = at least one valid input can execute it. Infeasible = structurally present, but no valid input ever can — usually two decisions contradicting each other on the same variable.</p></div>
+      <div class="item"><h4>Reachability</h4><p>Uncovered code = no <em>current</em> test hits it (might just need a new test). Unreachable code = no valid test <em>ever</em> could.</p></div>
+      <div class="item"><h4>Dead vs unreachable</h4><p>Unreachable = control flow never gets there. Dead = control gets there and it runs, but has no meaningful effect.</p></div>
+      <div class="item"><h4>Coverage hierarchy</h4><p>Statement → Branch → Path, each stronger than the last. 100% on a weaker criterion never guarantees 100% on a stronger one.</p></div>
+      <div class="item"><h4>Golden rule</h4><p>Coverage measures test <em>execution</em>, not software <em>correctness</em>. High coverage is necessary evidence, never proof of a defect-free program.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Generated as a study aid from CSE430 Lecture 15 (Dr. Shamim Hasnat Ripon), East West University. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
