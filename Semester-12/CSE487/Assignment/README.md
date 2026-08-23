@@ -35,6 +35,30 @@
 - To perform network reconnaissance:
   $ `sudo bash network_scan.sh`
 
-> WARNING: FOR AUTHORIZED LAB USE ONLY
+---
 
-> This software is intentionally vulnerable. Do NOT deploy this on a public network, production server, or any third-party system without explicit written authorization. Failure to comply with cybersecurity laws is a criminal offense.
+## ⚠️ DISCLAIMER & LEGAL WARNING
+
+> **This repository is provided strictly for educational and academic purposes only.**
+
+### Authorized Environment
+All exploitation, vulnerability testing, and security assessments demonstrated in this project were performed **exclusively within an isolated sandbox environment** (Oracle VirtualBox with Kali Linux) on the author's own machine. No unauthorized systems, networks, or third-party infrastructure were targeted or affected at any point during this work.
+
+### Educational Purpose
+The content herein — including vulnerable application code, exploitation scripts, and attack payloads — is developed solely as part of the coursework for **CSE 487: Cyber Security, Law, and Ethics** at East West University. It is intended to illustrate common security vulnerabilities (specifically OS Command Injection) and their mitigations for **learning purposes only**.
+
+### Legal & Ethical Notice
+- **Do NOT** deploy, distribute, or use any content from this repository on production systems, public networks, or any environment without explicit written authorization from the system owner.
+- **Do NOT** use the techniques or tools in this repository against any system you do not own or have explicit permission to test.
+- Unauthorized access to computer systems is a **criminal offense** under applicable cybersecurity and computer misuse laws (including the Bangladesh Cyber Security Act, 2018, and equivalent international legislation).
+- The authors and contributors of this repository **assume no liability** for any misuse, damage, or legal consequences arising from the use or misuse of this material.
+
+### Responsible Disclosure
+If any vulnerability or security concern is discovered through the use of concepts presented here, it should be reported responsibly to the appropriate parties and **not exploited maliciously**.
+
+### No Warranty
+This material is provided **"as is"** without warranty of any kind. Use at your own risk and only within legally and ethically authorized environments.
+
+---
+
+*This disclaimer is effective as of the date of the last commit and applies to all content within this repository.*
