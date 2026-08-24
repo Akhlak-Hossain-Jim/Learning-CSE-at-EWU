@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE487 — Blockchain Exam Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+        <li><a href="#t0">How to use this guide</a></li>
+        <li><a href="#t1">Features — the 5 pillars</a></li>
+        <li><a href="#t2">Scenarios — why it's needed</a></li>
+        <li><a href="#t3">Elements of blockchain</a></li>
+        <li><a href="#t4">Merkle root (priority)</a></li>
+        <li><a href="#t5">Operation — transaction flow</a></li>
+        <li><a href="#t6">Centralisation vs decentralisation</a></li>
+        <li><a href="#t7">Consensus protocol</a></li>
+        <li><a href="#t8">Applications &amp; dApp stack</a></li>
+      </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE487 Final · Exam Preparation Guide</p>
+      <h1>Introduction to Blockchain</h1>
+      <div class="meta">
+        <span><b>Course:</b> CSE487 — Cyber Security</span>
+        <span><b>Based on:</b> Rakib Hossen, Asst. Professor, Dept. of CySE, UFTB — "Introduction to Blockchain"</span>
+        <span><b>Syllabus:</b> Item 1.1 – 1.7</span>
+        <span><b>Exam:</b> ≈ 25 Aug 2026 (2 days)</span>
+      </div>
+  </header>
+
+    <section class="topic" id="t0">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Syllabus item 1 — Introduction to Blockchain, all seven sub-topics.</p>
+
+    <p>This guide assumes you know nothing about blockchain. Every term is defined
+    the first time it shows up, and nothing is used before it has been explained.
+    Work top to bottom: the seven sections follow the exact order of your syllabus
+    (features → scenarios → elements → Merkle root → operation → centralisation vs
+    decentralisation → consensus protocol), which is also the order Rakib Hossen
+    taught them.</p>
+
+    <p>Every practice question is collapsed. <strong>Attempt it before you open
+    the solution.</strong> Reading a solution feels like learning and isn't; failing
+    at a question and then reading the fix is what actually sticks. Use
+    <em>Reveal all solutions</em> in the sidebar only on your final pass.</p>
+
+    <div class="callout key">
+      <span class="tag">The one thing to fix first</span>
+      <p>The diagnostic showed the <b>Merkle root</b> is a blank spot. Section 4 is
+      built to close that specifically — it is the longest section here, with a
+      diagram, three worked computations and the tamper-detection argument. If you
+      are short on time, do sections 4, 7 and 6 first.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>Features of blockchain — the 5 pillars</h2>
+    <p class="subtitle">Syllabus 1.1. Near-certain to appear as a "list and explain" question.</p>
+
+    <p>Before the features, the reason blockchain exists at all. Think about how
+    money moved before it. If you want to send 5 dollars to a friend, you don't
+    hand the money over yourself — you ask a bank to do it. The bank keeps a
+    private notebook (a <strong>ledger</strong>: simply a record of who owns what
+    and who paid whom), it subtracts 5 from your line and adds 5 to your friend's
+    line, and everyone accepts the result because everyone trusts the bank.</p>
+
+    <p>That arrangement has three weaknesses, and the lecture named all three. The
+    bank is a <strong>central intermediary</strong>, so the transfer is never truly
+    person-to-person — the bank has to be awake and willing. The bank is a
+    <strong>single point of failure</strong>: if its server dies, every transfer
+    dies with it. And the bank can <strong>censor or delay</strong> — it can freeze
+    your account or hold your transfer for three days, and you have no recourse
+    because it owns the only copy of the notebook.</p>
+
+    <p>Blockchain's answer is blunt: get rid of the single notebook. Give
+    <em>everybody</em> a copy, make it impossible to erase a line once written, and
+    let the network agree on new lines by mathematical rule rather than by trusting
+    an institution. The five features below are just that idea broken into parts.</p>
+
+    <h3>The five pillars, one at a time</h3>
+
+    <p><strong>1. Distribution.</strong> The ledger is not stored in one place. A
+    copy of it lives on every participating computer. Each of those computers is
+    called a <strong>node</strong> — that word just means "one machine taking part
+    in the network." If a hundred nodes are running, there are a hundred copies of
+    the whole history. Knock out ninety-nine and the record survives.</p>
+
+    <p><strong>2. Decentralisation.</strong> Distribution is about <em>where the
+    data sits</em>; decentralisation is about <em>who decides</em>. No single
+    entity has authority to approve, reject or rewrite a transaction. Decisions are
+    made collectively by the nodes following an agreed rule. You can have one
+    without the other — a company could copy its database to fifty of its own
+    servers (distributed) while still being the only one allowed to write to it
+    (centralised). Blockchain insists on both.</p>
+
+    <p><strong>3. Immutability.</strong> "Immutable" means unchangeable. Once a
+    transaction is written into the chain it is <strong>write-once and
+    append-only</strong>: you may add new records to the end, but you may never
+    edit or delete an old one. Section 4 shows the machinery that enforces this —
+    it is not a policy, it is arithmetic.</p>
+
+    <p><strong>4. Tokenisation.</strong> A <strong>token</strong> is a digital
+    stand-in for something of value, recorded on the chain. It might represent a
+    currency unit, a share of a building, a university certificate, or a barrel of
+    crude oil. Tokenisation is what lets a blockchain track real-world assets and
+    not just numbers.</p>
+
+    <p><strong>5. Encryption / Cryptography.</strong> Cryptography is the branch of
+    maths used to hide and to prove things. Blockchain uses two pieces of it:
+    <strong>hashing</strong>, which fingerprints data (Section 4), and
+    <strong>asymmetric key pairs</strong>, which prove who authorised a transaction
+    (Section 3). Together they secure identity and integrity.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Memorise them as <b>D-D-I-T-E</b>: <b>D</b>istribution,
+      <b>D</b>ecentralisation, <b>I</b>mmutability, <b>T</b>okenisation,
+      <b>E</b>ncryption. In the exam, name the pillar <em>and</em> say what breaks
+      without it — that second half is where the marks are.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Distribution and decentralisation get mixed up constantly, and an examiner
+      who asks for five distinct pillars will not accept the same answer twice.
+      One-line separator: <b>distribution = many copies of the data;
+      decentralisation = no single controller of the decisions.</b></p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 1 <span class="diff">· short answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>State the five core pillars of blockchain and explain, for each, what
+        problem of the traditional banking model it removes.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests recall of the <b>5 core pillars</b> (Lecture 1, §3 "Blockchain
+            Foundations") <em>plus</em> your ability to tie them to the
+            <b>limitations of traditional banking</b> from §1 of the same lecture.
+            The examiner is not asking for a list — the phrase "what problem it
+            removes" means they want the <b>pillar → banking weakness</b> mapping.
+            Answer in pairs and you will collect nearly full marks.
+          </div>
+          <p><b>1. Distribution.</b> The ledger is replicated across every node, so
+          there is no one machine holding the only copy. This removes the
+          <em>single point of failure</em> the lecture identified in centralised
+          banking — where a server outage stops all transactions.</p>
+          <p><b>2. Decentralisation.</b> No single authority controls validation.
+          This removes the <em>central intermediary requirement</em>: transactions
+          become genuinely peer-to-peer, so the bank no longer has to be online and
+          approve every exchange, and it removes the bank's power to
+          <em>censor or delay</em> a transfer.</p>
+          <p><b>3. Immutability.</b> Records are append-only and tamper-evident.
+          This removes the risk the lecture called <em>silent modification by
+          database administrators</em> — in the centralised comparison table,
+          message modification is "possible silently"; on-chain it is "practically
+          impossible."</p>
+          <p><b>4. Tokenisation.</b> Real and digital assets can be represented
+          on-chain, which lets the ledger settle ownership of things banks
+          traditionally could not track directly — land deeds, certificates,
+          commodities (the Lecture 1 case studies).</p>
+          <p><b>5. Encryption / cryptography.</b> Hashing plus asymmetric key pairs
+          secure identity and integrity, which replaces the model where trust sits
+          in an <em>institution</em> with a model where trust sits in the
+          <em>protocol</em> — exactly the "trust model" row of the lecture's
+          centralisation/decentralisation table.</p>
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Five pillars, five named banking weaknesses, one sentence each. If
+            you have time, close with the summary line: <em>trust moves from an
+            entity to a protocol.</em> That single sentence is the thesis of the
+            whole lecture.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>Scenarios — why blockchain is needed</h2>
+    <p class="subtitle">Syllabus 1.2. The faculty's three worked scenarios, plus the "story" format he favours.</p>
+
+    <p>Your faculty teaches this topic through stories, and you said his theory
+    questions are often "here is a situation — explain it using the concept." So
+    learn these three scenarios as <em>arguments</em>, not as anecdotes. Each one
+    has the same shape: a centralised record exists, someone can quietly change it
+    or hide it, and the injured party has no way to prove anything.</p>
+
+    <h3>Scenario 1 — Alice pays Bob $5</h3>
+    <p>Alice wants to send Bob five dollars. The bank is the sole ledger keeper, so
+    the payment only happens if the bank's systems are up, and only if the bank
+    permits it. <b>Failure modes:</b> downtime (single point of failure) and
+    censorship/latency. <b>What blockchain changes:</b> the transaction is
+    broadcast to a peer-to-peer network and settled by consensus, so no single
+    party can stop or stall it.</p>
+
+    <h3>Scenario 2 — the land ownership dispute</h3>
+    <p>Land records sit in a centralised land office. A clerk with database access
+    alters a record, or the paper file is destroyed in a fire, and suddenly two
+    people hold deeds to the same plot. <b>Failure modes:</b> silent modification
+    and record loss. <b>What blockchain changes:</b> immutability plus distribution
+    — the deed history is append-only and replicated, so an altered record is
+    detectable (Section 4 explains why) and a destroyed copy is irrelevant because
+    every node has one.</p>
+
+    <h3>Scenario 3 — charity fund transparency</h3>
+    <p>Donors give money for flood victims through a centralised collection. There
+    is no way to verify that 100% of the money reached the victims, because the
+    only accounts are the ones the charity chooses to publish. <b>Failure mode:</b>
+    opacity — the donor must simply trust. <b>What blockchain changes:</b> a
+    transparent, publicly-readable ledger means each donation and each disbursement
+    is independently verifiable by anyone, without asking the charity's permission.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>The three scenarios map to three distinct properties, and an examiner
+      wants that mapping: <b>payments → decentralisation</b> (removes the gatekeeper),
+      <b>land records → immutability</b> (removes silent tampering),
+      <b>charity → transparency</b> (removes the need to trust a report).</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 2 <span class="diff">· long answer · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>A city hospital keeps every patient's medical history in one central
+        database managed by its IT department. A patient discovers that a diagnosis
+        recorded three years ago has been altered, and no one can determine when it
+        changed or who changed it. Meanwhile the patient cannot get a copy of their
+        own file released to a specialist at another hospital without the IT
+        department's approval, which takes weeks.</p>
+        <p>Analyse this story. Identify the failures, map each to the blockchain
+        property that addresses it, and describe how a blockchain-based system
+        would handle the same case.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's signature format: an unseen story that is
+            structurally identical to a taught scenario. It tests whether you can
+            take the <b>centralisation failure modes</b> (Lecture 1 §2) and the
+            <b>5 pillars</b> (§3), and apply them to a case you have not been given
+            — here, a variant of <b>Case Study 03, Medical Report Access Control</b>
+            (§6). The examiner wants <b>failure → property → mechanism</b>, three
+            columns, not a general essay about how good blockchain is.
+          </div>
+
+          <p><b>Step 1 — name the failures.</b> There are three, and they are the
+          three the lecture lists for centralised architectures.</p>
+          <ul>
+            <li><b>Silent modification.</b> A record changed with no trace is
+            exactly the "message modification: possible silently by database
+            admins" row of the centralisation table. The database stores the
+            <em>current</em> value, not the history, so there is nothing to audit.</li>
+            <li><b>Single point of failure and control.</b> One IT department owns
+            the only copy, so it is both the outage risk and the gatekeeper.</li>
+            <li><b>Censorship and latency.</b> The weeks-long approval to release a
+            file is the same failure the lecture describes when a bank can "freeze,
+            delay, or censor" a transaction — the intermediary must act before
+            anything can happen.</li>
+          </ul>
+
+          <p><b>Step 2 — map each failure to the property that fixes it.</b></p>
+          <ul>
+            <li>Silent modification → <b>immutability</b>. Records are append-only,
+            so a correction is written as a <em>new</em> entry with its own
+            timestamp rather than overwriting the old one. The three-year-old
+            diagnosis and the change to it both remain visible, which answers "when"
+            and "who".</li>
+            <li>Single point of failure → <b>distribution</b>. The ledger is
+            replicated across nodes (in a hospital consortium, one node per
+            participating institution), so no single IT department's outage takes
+            the record offline.</li>
+            <li>Censorship / gatekeeping → <b>decentralisation</b>, with access
+            granted by the patient's own key rather than by an administrator's
+            approval.</li>
+          </ul>
+
+          <p><b>Step 3 — describe the mechanism, using Case Study 03.</b> The
+          lecture's medical model does not put the record itself on the chain, and
+          you should say so explicitly because it is the subtle point. The full
+          encrypted health record stays <b>off-chain</b> in a secure database; what
+          goes <b>on-chain</b> is the record's cryptographic hash plus the access
+          permissions. That gives three things at once: the hash proves the
+          off-chain file has not been altered (change one character and the hash no
+          longer matches), the on-chain permission list means the patient grants the
+          specialist view rights directly with their private key, and patient
+          privacy is preserved because no diagnosis is ever published to the
+          network. The same pattern appears in <b>Case Study 02</b>, where
+          universities put certificate hashes on Hyperledger Fabric and keep the
+          documents off-chain.</p>
+
+          <p><b>Step 4 — the honest limitation.</b> Strong answers add one line of
+          balance: blockchain guarantees that the record has not been altered
+          <em>since it was written</em>. It cannot guarantee the diagnosis was
+          correct when first entered. Immutability protects integrity, not accuracy.</p>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Answer in the three-column shape — <b>failure → property →
+            mechanism</b> — and name the specific case study. Naming Case Study 03
+            and the on-chain-hash / off-chain-document split is what separates a
+            top answer from a generic one.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>Elements of blockchain</h2>
+    <p class="subtitle">Syllabus 1.3. The defining equation, the five layers, and what is inside a block.</p>
+
+    <p>Your faculty gives blockchain a compact definition as a sum of three
+    ingredients. Learn it in this exact form — it is the cleanest thing to open an
+    answer with.</p>
+
+    <div class="formula">
+      <div class="label">The faculty's definition</div>
+      \[ \text{Blockchain} = DL + CP + C \]
+    </div>
+
+    <p>Reading it out: <strong>\(DL\), the Distributed Ledger</strong> — the shared
+    database replicated across participants. <strong>\(CP\), the Consensus
+    Protocol</strong> — the algorithmic rules by which the whole network agrees on
+    what is true (Section 7). <strong>\(C\), Cryptography</strong> — hashing and
+    asymmetric key pairs, which secure the data (Section 4).</p>
+
+    <p>Strip any one out and it stops being a blockchain. No \(DL\) and you have a
+    normal database. No \(CP\) and the copies drift apart with no way to reconcile
+    them. No \(C\) and anyone can forge a transaction or edit history undetected.</p>
+
+    <h3>The five architectural layers</h3>
+    <p>The lecture stacks blockchain into five layers. Learn them top-down, because
+    the top is what a user touches and the bottom is what actually runs code.</p>
+
+    <ol>
+      <li><b>Application layer</b> — what people interact with: dApps (decentralised
+      applications), user interfaces, and <b>smart contracts</b>. A smart contract
+      is a program stored on the chain that executes automatically when its
+      conditions are met — Solidity contracts on Ethereum, or Go/Java
+      <b>chaincode</b> on Hyperledger Fabric.</li>
+      <li><b>Data layer</b> — blocks, Merkle trees, digital signatures,
+      transactions. This is where the record physically lives, and it is Section 4's
+      territory.</li>
+      <li><b>Consensus layer</b> — PoW, PoS, DPoS, PBFT, PoET, PoAh, Raft. The
+      agreement rules (Section 7).</li>
+      <li><b>Network layer</b> — the peer-to-peer network, node discovery,
+      <b>sharding</b> (splitting the network into partitions so transactions can be
+      processed in parallel, raising throughput), and DAG structures.</li>
+      <li><b>Execution layer</b> — the virtual machines that actually run the
+      compiled contract code: the EVM (Ethereum Virtual Machine), Docker
+      containers, compilers.</li>
+    </ol>
+
+    <h3>Inside a single block</h3>
+    <p>Every block has two parts, and knowing which field sits in which part is a
+    frequent one-mark question.</p>
+
+    <p>The <strong>block header</strong> holds the metadata: <b>block number</b>,
+    <b>timestamp</b>, <b>nonce</b>, <b>previous block hash</b>, and <b>Merkle root
+    hash</b>. The <strong>block body</strong> holds the actual list of verified
+    transactions.</p>
+
+    <p>Two of those header fields do the structural work. The <b>previous block
+    hash</b> is the link that chains block \(N\) to block \(N-1\) — that is what
+    makes it a <em>chain</em>. The <b>Merkle root</b> is a single fingerprint of
+    every transaction in the body — that is what makes the body tamper-evident.
+    They are different things and the exam will try to make you swap them.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — this one cost you in the diagnostic</span>
+      <p><b>Previous block hash ≠ Merkle root.</b> The previous block hash points
+      <em>backwards, between blocks</em>, and secures history. The Merkle root
+      points <em>downwards, inside one block</em>, and secures that block's
+      transactions. Both are in the header; only one of them links blocks together.</p>
+    </div>
+
+    <h3>Digital signatures — proving who sent it</h3>
+    <p>Hashing proves data has not changed; it does not prove <em>who</em> wrote it.
+    That is the job of asymmetric cryptography. Every participant holds a
+    mathematically linked pair of keys: a <strong>private key</strong>, kept secret,
+    and a <strong>public key</strong>, shared with everybody.</p>
+    <p>To send a transaction, Alice takes the message digest (the hash of her
+    transaction) and signs it with her <em>private</em> key. Anyone on the network
+    can then run a verification using Alice's <em>public</em> key, which succeeds
+    only if the signature really was produced by the matching private key and only
+    if the message has not changed since signing. So one signature proves two
+    things at once: authenticity (it was Alice) and integrity (nothing was edited).</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Sign with the <b>private</b> key, verify with the <b>public</b> key. The
+      direction is the whole exam question. Only Alice can produce the signature;
+      everybody can check it.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04 · priority</span>
+    <h2>Merkle root — built from scratch</h2>
+    <p class="subtitle">Syllabus 1.4. The diagnostic flagged this as a blank spot, so this section starts from zero.</p>
+
+    <h3>First: what a hash function actually is</h3>
+    <p>A <strong>cryptographic hash function</strong> is a machine that takes any
+    input \(M\) — one letter, a sentence, a 4 GB video — and returns a fixed-length
+    string called the <strong>digest</strong> or <strong>hash</strong>. Bitcoin uses
+    SHA-256, which always returns 256 bits regardless of input size.</p>
+
+    <p>Three properties matter here, and only three:</p>
+    <ul>
+      <li><b>Deterministic.</b> The same input always gives the same digest. Hash
+      "hello" a thousand times and you get the same answer a thousand times.</li>
+      <li><b>Avalanche effect.</b> Change the input by one bit and the digest
+      changes completely and unpredictably — not slightly, <em>completely</em>. This
+      is the property that makes tampering detectable.</li>
+      <li><b>One-way.</b> Given a digest you cannot work backwards to the input.</li>
+    </ul>
+
+    <p>Notation you need: \(\text{Hash}(x)\) means "the digest of \(x\)", and the
+    symbol \(\|\) means <strong>concatenation</strong> — glue two things end to end
+    into one string before hashing. So \(\text{Hash}(T1 \| T2)\) means "stick
+    \(T1\) and \(T2\) together, then hash the combined string." It is <em>not</em>
+    addition, and it is not two separate hashes.</p>
+
+    <h3>Now the problem the Merkle tree solves</h3>
+    <p>A block might contain three thousand transactions. Suppose you want to check
+    that none of them has been altered. The clumsy way is to keep a copy of all
+    three thousand and compare them one by one — enormous storage, slow check.</p>
+
+    <p>The clever way is to compress all three thousand into <em>one</em> value in
+    such a way that changing any single transaction changes that value. Then you
+    store the one value in the block header, and any node can verify the entire
+    block body by recomputing it. That single value is the <strong>Merkle
+    root</strong>, and the pairwise hashing structure that produces it is the
+    <strong>Merkle tree</strong> (also called a binary hash tree).</p>
+
+    <h3>The construction, in the faculty's notation</h3>
+    <p>Take a block with four transactions \(T1, T2, T3, T4\). Build upward in
+    pairs:</p>
+
+    <div class="formula">
+      <div class="label">Merkle root for four transactions — the faculty's form</div>
+      \[ H1 = \text{Hash}(T1 \| T2) \]
+      \[ H2 = \text{Hash}(T3 \| T4) \]
+      \[ \text{Merkle Root} = \text{Hash}(H1 \| H2) \]
+    </div>
+
+    <p>The picture is a pyramid: transactions at the bottom, pairs hashed together
+    to make the level above, and so on until only one value is left at the top.</p>
+
+    <div class="formula" style="text-align:center">
+      <div class="label" style="text-align:left">The tree, drawn</div>
+      <svg viewBox="0 0 660 300" width="100%" style="max-width:620px;height:auto" role="img" aria-label="Merkle tree diagram: four transactions hashed pairwise into H1 and H2, then into the Merkle root">
+        <g fill="none" stroke="#5A6B72" stroke-width="1.5">
+          <path d="M327 76 L162 116"/>
+          <path d="M327 76 L492 116"/>
+          <path d="M162 162 L80 202"/>
+          <path d="M162 162 L245 202"/>
+          <path d="M492 162 L410 202"/>
+          <path d="M492 162 L575 202"/>
+        </g>
+        <g font-family="'Space Grotesk', system-ui, sans-serif" font-size="13" text-anchor="middle">
+          <rect x="227" y="30" width="200" height="46" rx="10" fill="#2F6F6B"/>
+          <text x="327" y="51" fill="#ffffff" font-weight="600" font-size="12">MERKLE ROOT</text>
+          <text x="327" y="67" fill="#CFE2E0" font-size="11">Hash(H1 ‖ H2)</text>
+
+          <rect x="72" y="116" width="180" height="46" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="162" y="136" fill="#1E2A32" font-weight="600" font-size="12">H1</text>
+          <text x="162" y="152" fill="#5A6B72" font-size="11">Hash(T1 ‖ T2)</text>
+
+          <rect x="402" y="116" width="180" height="46" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="492" y="136" fill="#1E2A32" font-weight="600" font-size="12">H2</text>
+          <text x="492" y="152" fill="#5A6B72" font-size="11">Hash(T3 ‖ T4)</text>
+
+          <rect x="20" y="202" width="120" height="40" rx="9" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="80" y="227" fill="#1E2A32" font-weight="600">T1</text>
+          <rect x="185" y="202" width="120" height="40" rx="9" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="245" y="227" fill="#1E2A32" font-weight="600">T2</text>
+          <rect x="350" y="202" width="120" height="40" rx="9" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="410" y="227" fill="#1E2A32" font-weight="600">T3</text>
+          <rect x="515" y="202" width="120" height="40" rx="9" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="575" y="227" fill="#1E2A32" font-weight="600">T4</text>
+
+          <text x="327" y="268" fill="#8A979D" font-size="11">Transactions in the block body · the root alone is stored in the block header</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the answer to the diagnostic question</span>
+      <p>The Merkle root is the <b>single hash at the top of the pairwise hash tree
+      built from all transactions in a block</b>. The header stores it because it
+      lets any node verify that <b>no transaction in the body was altered</b> —
+      recompute the tree, compare one value. It is a <em>proof of integrity</em>,
+      not merely a space-saving summary, and it is not the previous block hash.</p>
+    </div>
+
+    <h3>Why tampering is caught — the argument in full</h3>
+    <p>Suppose an attacker edits \(T3\), changing the payment amount. Follow the
+    consequences upward:</p>
+    <ol>
+      <li>\(T3\) changed, so by the avalanche effect \(\text{Hash}(T3\|T4)\) is now
+      a completely different value. \(H2\) has changed.</li>
+      <li>\(H2\) feeds into \(\text{Hash}(H1\|H2)\), so the <b>Merkle root</b>
+      changes too.</li>
+      <li>The Merkle root sits in the <b>block header</b>, so the header's content
+      has changed — which means the <b>hash of the whole block</b> changes.</li>
+      <li>The next block stores that value as its <b>previous block hash</b>. It no
+      longer matches. The chain is visibly broken at that point.</li>
+      <li>To hide the damage the attacker would have to recompute this block's proof
+      of work <em>and</em> every block after it, faster than the honest network is
+      extending the chain — while also convincing a majority of nodes to accept the
+      rewrite.</li>
+    </ol>
+    <p>That cascade — one transaction, one leaf, one root, one broken link — is the
+    complete answer to "how does blockchain achieve immutability?" Write it as a
+    chain of consequences and it is very hard to lose marks.</p>
+
+    <h3>Odd numbers of transactions</h3>
+    <p>The tree needs pairs, so what happens with five transactions? The standard
+    rule is that the <strong>last unpaired hash is duplicated and paired with
+    itself</strong>. With \(T1 \ldots T5\): pair \(T1{+}T2\) and \(T3{+}T4\)
+    normally, then \(T5\) has no partner, so compute
+    \(\text{Hash}(T5 \| T5)\). Now three values sit on that level; the last one is
+    again unpaired, so it doubles with itself again, and you continue until one
+    value remains.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — faculty notation vs. textbook notation</span>
+      <p>Your lecture writes the leaves as the transactions themselves:
+      \(H1=\text{Hash}(T1\|T2)\). Most textbooks first hash each transaction
+      individually (\(HA=\text{Hash}(T1)\)) and then pair the <em>hashes</em>.
+      Both give a valid Merkle tree; the shape and the argument are identical.
+      <b>Use the faculty's form in the exam</b> — it is what the marking scheme
+      will be written against — but do not panic if a textbook diagram has one
+      extra level.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/fB41w3JcR7U" title="Merkle Tree | Merkle Root | Blockchain"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=fB41w3JcR7U" target="_blank" rel="noopener">Merkle Tree | Merkle Root | Blockchain</a> — Telusko. Why it helps: he builds the tree one level at a time on screen and then changes a transaction so you watch the root change — which is the exact cascade you need to describe in the exam.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 3 <span class="diff">· easy</span></span>
+      </div>
+      <div class="qbody">
+        <p>A block contains four transactions \(T1, T2, T3, T4\). Write the full
+        computation of the Merkle root, showing every intermediate value, and state
+        which part of the block each result is stored in.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>Attempt it first. Each line below says <b>why</b> it is allowed to
+          follow the line above.</p>
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( T1,\; T2,\; T3,\; T4 \)</p>
+              <p class="why">Start from the four transactions in the <b>block body</b>. These are the leaves of the tree.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H1 = \text{Hash}(T1 \| T2) \)</p>
+              <p class="why"><b>Pair the first two and concatenate:</b> \(\|\) glues \(T1\) and \(T2\) into one string, and the hash function fingerprints the result. One hash now stands for two transactions.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H2 = \text{Hash}(T3 \| T4) \)</p>
+              <p class="why"><b>Same rule applied to the remaining pair.</b> Every node on a level is formed the same way — that regularity is what makes it a binary hash tree.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Merkle Root} = \text{Hash}(H1 \| H2) \)</p>
+              <p class="why"><b>Repeat one level up.</b> Only two values remain, so concatenating and hashing them collapses the whole block into a single digest. No values are left to pair, so the construction stops.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>\( \text{Merkle Root} = \text{Hash}\big(\text{Hash}(T1\|T2)\;\|\;\text{Hash}(T3\|T4)\big) \)</p>
+            <p><b>Storage:</b> \(T1\ldots T4\) live in the <b>block body</b>;
+            \(H1\) and \(H2\) are intermediate values that need not be stored at
+            all; only the <b>Merkle root</b> is written into the <b>block
+            header</b>. <b>Sanity check:</b> four leaves halve to two, then to one —
+            \(4 \to 2 \to 1\), so the tree has \(\log_2 4 = 2\) levels above the
+            leaves, which matches the two hashing rounds performed.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 4 <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>A block contains <b>five</b> transactions \(T1 \ldots T5\). Construct the
+        Merkle root, showing every level. State the rule you used to handle the odd
+        transaction and how many hashing operations were required in total.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( T1,\; T2,\; T3,\; T4,\; T5 \)</p>
+              <p class="why">Five leaves. Five is odd, so at least one level will not pair cleanly — flag that before you start rather than discovering it halfway.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H1 = \text{Hash}(T1\|T2), \quad H2 = \text{Hash}(T3\|T4) \)</p>
+              <p class="why"><b>Pair left to right</b> as far as the pairs last. Two hashing operations so far.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H3 = \text{Hash}(T5 \| T5) \)</p>
+              <p class="why"><b>Duplication rule for an odd leaf:</b> \(T5\) has no partner, so it is paired with a copy of itself. This keeps the tree binary without inventing a fake transaction. Three operations.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H4 = \text{Hash}(H1\|H2) \)</p>
+              <p class="why"><b>Move up one level</b> and apply the same pairing to \(H1, H2, H3\). The first two pair normally. Four operations.</p>
+            </li>
+            <li>
+              <p class="math-line">\( H5 = \text{Hash}(H3 \| H3) \)</p>
+              <p class="why"><b>Duplication rule again</b> — this level also has an odd count (three values), so the leftover \(H3\) doubles with itself. Five operations.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Merkle Root} = \text{Hash}(H4 \| H5) \)</p>
+              <p class="why"><b>Two values remain, so one final pairing finishes the tree.</b> Six operations.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>\( \text{Merkle Root} = \text{Hash}(H4 \| H5) \), where
+            \(H4=\text{Hash}(H1\|H2)\) and \(H5=\text{Hash}(H3\|H3)\).
+            <b>Rule used:</b> an unpaired node at any level is duplicated and hashed
+            with itself. <b>Total: 6 hashing operations.</b></p>
+            <p><b>Sanity check:</b> level sizes go \(5 \to 3 \to 2 \to 1\). Count
+            the hashes produced at each level: \(3 + 2 + 1 = 6\). Matches.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 5 <span class="diff">· hard · analytical</span></span>
+      </div>
+      <div class="qbody">
+        <p>An attacker gains write access to one node and modifies transaction
+        \(T2\) inside block number 500 of a chain that is 900 blocks long. Trace,
+        step by step, exactly what the network detects and why. Then explain what
+        the attacker would have to do to make the tampering succeed, and why it is
+        infeasible.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This tests whether you can chain together three separate lecture pieces:
+            the <b>hash function's avalanche property</b> and <b>Merkle tree</b>
+            (Data layer, §4), the <b>block header fields</b> — specifically previous
+            block hash (§4), and the <b>consensus layer</b> (§4/§5). The examiner
+            wants a causal chain with no gaps, and then the economic/computational
+            argument. This is the standard way "explain immutability" is asked at
+            distinction level.
+          </div>
+
+          <p><b>What breaks, in order:</b></p>
+          <ol>
+            <li>\(T2\) is altered. Because the hash function has the
+            <b>avalanche property</b>, \(\text{Hash}(T1\|T2)\) — that is, \(H1\) —
+            becomes a completely different digest, not a slightly different one.</li>
+            <li>\(H1\) is an input to \(\text{Hash}(H1\|H2)\), so the <b>Merkle
+            root</b> of block 500 changes.</li>
+            <li>The Merkle root is a <b>block header</b> field, so block 500's
+            header content changes, and therefore the <b>hash of block 500</b>
+            changes.</li>
+            <li>Block 501 stores block 500's hash in its <b>previous block hash</b>
+            field. That stored value now disagrees with the recomputed value. The
+            chain is broken at exactly block 500 — and note that the break is
+            <em>localised</em>, so the network learns not just that tampering
+            occurred but precisely where.</li>
+            <li>Any honest node validating the chain recomputes the Merkle root from
+            the body it holds, sees the mismatch, and <b>rejects the tampered copy</b>.
+            Because the ledger is <b>distributed</b>, the other nodes still hold the
+            original block 500, so the majority version wins and the attacker's node
+            is simply out of sync.</li>
+          </ol>
+
+          <p><b>What the attacker would need to do.</b> To make the fraud stick they
+          would have to re-mine block 500 — find a new <b>nonce</b> satisfying the
+          proof-of-work difficulty target for the altered header — and then re-mine
+          blocks 501 through 900 as well, because each one's previous-block-hash
+          field depends on the block before it. That is 400 blocks of work.</p>
+
+          <p><b>Why it is infeasible.</b> Three reasons, and a good answer gives all
+          three. <em>Computationally:</em> the honest network is simultaneously
+          extending the chain, so the attacker must not only redo 400 blocks but
+          out-pace the entire network's combined hash power while doing it —
+          which in practice requires controlling more than 50% of that power (the
+          "51% attack"). <em>Structurally:</em> even with the work done, consensus
+          means the other nodes must accept the rewritten chain, and honest nodes
+          follow the longest valid chain they have independently verified.
+          <em>Economically:</em> acquiring that much hash power costs far more than
+          the value of one altered transaction.</p>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>The five-step cascade is the core and is worth most of the marks.
+            Name the mechanism at each hop — <b>avalanche → Merkle root → header →
+            block hash → previous block hash mismatch</b> — rather than saying "the
+            hash changes so it's detected." Then add consensus and the 51% argument
+            for the top band.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>Operation — the end-to-end transaction flow</h2>
+    <p class="subtitle">Syllabus 1.5. Six steps, in the faculty's order. Learn them as a sequence you can recite.</p>
+
+    <p>This is the lecture's Alice-pays-Bob-$5 walkthrough. The six steps are worth
+    memorising verbatim because "describe the end-to-end operation of a blockchain
+    transaction" is about as predictable as exam questions get.</p>
+
+    <ol>
+      <li><b>Transaction request.</b> Alice creates the transaction in her wallet
+      and <b>signs it with her private key</b>, then broadcasts it. The signature is
+      what proves it came from her.</li>
+      <li><b>Propagation.</b> The peer-to-peer <b>gossip</b> network spreads the
+      transaction from node to node until it has reached the network. "Gossip"
+      simply means each node forwards to its neighbours, who forward on again.</li>
+      <li><b>Block creation and validation.</b> Miners or validators gather pending
+      transactions into a <b>candidate block</b> — a proposed block that is not yet
+      accepted.</li>
+      <li><b>Consensus execution.</b> Nodes run the consensus algorithm. Under proof
+      of work this means solving a hash puzzle by trying different <b>nonce</b>
+      values (a nonce is an arbitrary number varied until the block's hash meets the
+      network's difficulty target).</li>
+      <li><b>Block appending.</b> The validated block is permanently chained on by
+      storing the <b>previous block hash</b>, so the new block is cryptographically
+      welded to the one before it.</li>
+      <li><b>State settlement.</b> The ledger updates across all nodes and Bob can
+      access the funds using his private key.</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Consensus (step 4) happens <em>before</em> the block joins the chain (step
+      5), not after. A very common wrong answer appends the block and then has the
+      network vote on it. Also: the signature happens at step 1, by the
+      <em>sender</em> — not by the miners.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 6 <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>Alice sends $5 to Bob on a public blockchain. Describe the complete
+        journey of that transaction from Alice's wallet to Bob's balance, naming the
+        cryptographic mechanism used at each stage where one applies.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the <b>end-to-end transaction flow</b> from Lecture 1 §5, and
+            the phrase "naming the cryptographic mechanism" tells you the examiner
+            also wants the <b>digital signature</b> and <b>hashing</b> material from
+            §4 folded in. So the mark scheme is really two lists interleaved: the
+            six process steps, and the cryptography that secures each one.
+          </div>
+          <p><b>1. Creation and signing.</b> Alice composes the transaction in her
+          wallet. She hashes it to a message digest and signs that digest with her
+          <b>private key</b>. <em>Mechanism: asymmetric digital signature</em> — it
+          proves authenticity (only Alice's private key could produce it) and
+          integrity (the signature fails if the transaction is altered).</p>
+          <p><b>2. Broadcast and propagation.</b> The signed transaction goes out to
+          the peer-to-peer network and spreads by gossip, node to node, until it
+          reaches the wider network. Receiving nodes verify the signature using
+          <b>Alice's public key</b> before forwarding it — invalid transactions die
+          at the first hop.</p>
+          <p><b>3. Block assembly.</b> A miner/validator collects pending
+          transactions into a candidate block, computes the <b>Merkle root</b> of
+          those transactions, and writes it into the block header along with the
+          timestamp, block number and previous block hash.
+          <em>Mechanism: cryptographic hashing in a binary hash tree.</em></p>
+          <p><b>4. Consensus.</b> The network runs its consensus protocol. Under
+          <b>proof of work</b>, the miner varies the <b>nonce</b> and re-hashes the
+          header until the resulting hash falls below the difficulty target — hard
+          to find, trivial for everyone else to check.
+          <em>Mechanism: one-way hash function, exploited as a puzzle.</em></p>
+          <p><b>5. Appending.</b> The winning block is added to the chain, storing
+          the <b>previous block hash</b> so it is welded to its predecessor. Other
+          nodes independently verify the work and the Merkle root before accepting
+          it. <em>Mechanism: hash chaining, which is what delivers immutability.</em></p>
+          <p><b>6. Settlement.</b> Every node updates its copy of the ledger. Bob's
+          balance now reflects the $5, and he spends it by signing a new transaction
+          with <b>his own private key</b>.</p>
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Close by contrasting with Scenario 1: at no point did a bank approve
+            anything, so the transfer cannot be censored, delayed or lost to a single
+            server outage. Tying the flow back to the motivating scenario is a cheap
+            extra mark.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>Centralisation vs. decentralisation</h2>
+    <p class="subtitle">Syllabus 1.6. The faculty's six-row comparison table — learn every row.</p>
+
+    <p>In a <strong>centralised</strong> architecture, every client talks to one
+    central server. In a <strong>decentralised</strong> architecture, nodes talk to
+    each other directly in a mesh — there is no middle. The lecture's comparison
+    table is the highest-value thing in this section; reproduce it row for row and
+    the question is answered.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.94rem;margin:20px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase">Aspect</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase">Centralisation</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase">Decentralisation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Control</b></td><td style="padding:9px 10px">Single central authority</td><td style="padding:9px 0 9px 10px">Distributed network of peer nodes</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Data storage</b></td><td style="padding:9px 10px">One central database server</td><td style="padding:9px 0 9px 10px">Replicated across multiple node copies</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Message modification</b></td><td style="padding:9px 10px">Possible silently by database admins</td><td style="padding:9px 0 9px 10px">Practically impossible / tamper-evident</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Failure risk</b></td><td style="padding:9px 10px">Single point of failure (SPOF)</td><td style="padding:9px 0 9px 10px">Highly fault-tolerant</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Trust model</b></td><td style="padding:9px 10px">Trust placed in a central entity/server</td><td style="padding:9px 0 9px 10px">Trust placed in cryptographic protocol</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>Example</b></td><td style="padding:9px 10px">WhatsApp, traditional banking</td><td style="padding:9px 0 9px 10px">Bitcoin, Ethereum</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>The <b>trust model</b> row is the one to lead with. Everything else follows
+      from it: centralised systems relocate risk onto an institution, decentralised
+      systems relocate it onto mathematics. Institutions can be bribed, hacked or
+      shut down; a hash function cannot.</p>
+    </div>
+
+    <h3>Blockchain categories — a related exam favourite</h3>
+    <p>Decentralisation is not all-or-nothing. The lecture gives three categories,
+    and picking the right one for a scenario is a standard question.</p>
+    <ul>
+      <li><b>Public</b> (Ethereum, Polygon, Solana, BNB Chain) — permissionless:
+      anyone may join, read and validate. For open dApps, DeFi, public
+      cryptocurrency.</li>
+      <li><b>Private</b> (Hyperledger Fabric, Quorum) — one organisation controls
+      membership. For internal enterprise automation and proprietary data.</li>
+      <li><b>Consortium</b> (Corda, Hyperledger) — a fixed group of organisations
+      jointly governs it. For multi-bank settlement or inter-organisational
+      federations, where the members do not fully trust each other but must share a
+      record.</li>
+    </ul>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 7 <span class="diff">· medium · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>Six banks in Bangladesh want a shared settlement ledger. No bank will
+        accept another bank running it, none wants the transaction data visible to
+        the public, and all six must be able to verify every entry. Which blockchain
+        category should they deploy, and why are the other two unsuitable? Justify
+        using the centralisation/decentralisation trade-offs.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This connects <b>blockchain categories</b> (Lecture 1 §7) to the
+            <b>trust model</b> row of the centralisation table (§2). The examiner is
+            testing whether you treat decentralisation as a spectrum rather than a
+            switch, and whether you can justify by <em>elimination</em> — which is
+            what "why are the other two unsuitable" is explicitly asking for.
+          </div>
+          <p><b>Answer: a consortium blockchain</b> (Corda or Hyperledger), with one
+          validating node per participating bank.</p>
+          <p><b>Why it fits.</b> The requirement has two halves that pull in
+          opposite directions: mutual distrust between the six banks, and
+          confidentiality from everyone else. A consortium chain is built for
+          exactly that. Governance is shared across the member organisations, so no
+          single bank is the authority — which satisfies the objection to one bank
+          running it — while membership stays permissioned, so the ledger is not
+          publicly readable. Each bank runs its own node, so each holds a full
+          verifiable copy and can independently confirm every entry, which is the
+          <em>distribution</em> pillar doing the work.</p>
+          <p><b>Why not private.</b> A private blockchain places membership and
+          write authority under a single organisation. That reproduces precisely the
+          problem the banks objected to — it is decentralised in data storage but
+          centralised in control, so the trust model reverts to "trust that one
+          entity", the very row of the comparison table this scenario rejects.</p>
+          <p><b>Why not public.</b> A public chain is permissionless, so anyone can
+          read the ledger. That violates the confidentiality requirement outright.
+          It also brings costs the scenario does not need — public consensus such as
+          proof of work is slow and expensive relative to the throughput
+          inter-bank settlement demands, and the anonymity of validators is
+          unacceptable in a regulated financial setting where participants must be
+          identifiable.</p>
+          <p><b>Closing link.</b> The general principle: choose the category by
+          asking <em>who must be able to write</em> and <em>who must be able to
+          read</em>. Public = anyone/anyone, private = one org/one org, consortium =
+          a known group/a known group. This case is a known group on both counts.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Consensus protocol</h2>
+    <p class="subtitle">Syllabus 1.7. The \(CP\) in \(DL + CP + C\), and the last core section.</p>
+
+    <p>Here is the problem consensus solves. Thousands of nodes each hold a copy of
+    the ledger, and there is no boss. Two nodes might receive different transactions
+    at the same moment, or a node might lie deliberately. Something has to decide
+    which version of the ledger is the real one, using only rules the nodes can each
+    check for themselves. A <strong>consensus protocol</strong> is that set of
+    rules — the algorithmic procedure by which a decentralised network agrees on a
+    single true state.</p>
+
+    <p>Your lecture lists seven at the consensus layer: <b>PoW, PoS, DPoS, PBFT,
+    PoET, PoAh, Raft</b>. Two of them carry almost all the exam weight.</p>
+
+    <h3>Proof of Work (PoW)</h3>
+    <p>Nodes called <strong>miners</strong> compete to solve a hash puzzle. Each
+    repeatedly changes the <b>nonce</b> in the block header and re-hashes until the
+    output falls below a difficulty target. Finding a valid nonce takes enormous
+    trial-and-error; <em>checking</em> one takes a single hash. That asymmetry is
+    the whole trick: work is expensive to produce and cheap to verify, so honest
+    nodes can instantly confirm that a miner really did the work. The first to
+    succeed publishes the block and claims the reward. Used by Bitcoin. Cost:
+    massive electricity consumption.</p>
+
+    <h3>Proof of Stake (PoS)</h3>
+    <p>Instead of burning electricity, participants called <strong>validators</strong>
+    lock up ("stake") their own cryptocurrency as collateral. The protocol selects a
+    validator to propose the next block, weighted by stake size. Cheat, and the
+    stake is destroyed — so honesty is enforced economically rather than
+    thermodynamically. Used by Ethereum since its move away from PoW. Far more
+    energy-efficient; the standard criticism is that influence tracks wealth.</p>
+
+    <h3>The rest, in one line each</h3>
+    <ul>
+      <li><b>DPoS</b> (Delegated Proof of Stake) — token holders vote for a small
+      set of delegates who validate on their behalf. Faster, more centralised.</li>
+      <li><b>PBFT</b> (Practical Byzantine Fault Tolerance) — nodes vote in rounds
+      and reach agreement provided fewer than one-third are faulty or malicious.
+      Suits permissioned chains with a known membership.</li>
+      <li><b>PoET</b> (Proof of Elapsed Time) — each node waits a randomly assigned
+      time in a trusted execution environment; shortest wait wins. A lottery instead
+      of a race.</li>
+      <li><b>PoAh</b> (Proof of Authentication) — lightweight authentication-based
+      consensus aimed at resource-constrained IoT devices.</li>
+      <li><b>Raft</b> — a leader-election protocol for permissioned networks;
+      tolerates crashes but not malicious nodes.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>"Byzantine fault tolerant" means the protocol survives nodes that are
+      <em>actively lying</em>, not merely nodes that have crashed. PBFT is Byzantine
+      fault tolerant; Raft is only crash-fault tolerant. That distinction is a
+      classic short-answer question.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/lB81CiQj21E" title="Consensus in Blockchain"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=lB81CiQj21E" target="_blank" rel="noopener">Consensus in Blockchain</a> — Telusko. Why it helps: it shows the disagreement problem before showing the solution, which is the framing your answer should use — same channel and vocabulary as the Merkle video above.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 8 <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>Define a consensus protocol and explain its role in the equation
+        \(\text{Blockchain} = DL + CP + C\). Compare Proof of Work and Proof of
+        Stake on the mechanism of selection, the source of security, and the cost.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Two lecture points welded together: the <b>defining equation</b>
+            (Lecture 1 §3) and the <b>consensus layer</b> (§4). Quoting the equation
+            and then explaining what collapses without \(CP\) is the structure the
+            examiner is looking for — a definition alone will not reach full marks
+            because the question says "explain its role in".
+          </div>
+          <p><b>Definition.</b> A consensus protocol is the set of algorithmic rules
+          by which a decentralised network of independent nodes agrees on a single,
+          shared true state of the ledger, without any central authority and without
+          the nodes having to trust one another.</p>
+          <p><b>Role in \(DL + CP + C\).</b> The distributed ledger \(DL\) gives
+          every node a copy, and cryptography \(C\) makes each copy tamper-evident.
+          Neither of those settles <em>disagreement</em>. If two nodes receive
+          conflicting transactions, or a node broadcasts a false one, \(DL\) and
+          \(C\) alone leave the network with several internally-consistent but
+          mutually contradictory histories. \(CP\) is what forces convergence on
+          one. Remove it and the copies simply drift apart — you have replication
+          without agreement, which is not a blockchain.</p>
+          <p><b>Comparison.</b></p>
+          <ul>
+            <li><b>Selection mechanism.</b> PoW: miners <em>compete</em> — the first
+            to find a nonce producing a hash below the difficulty target wins. PoS:
+            the protocol <em>selects</em> a validator, with probability weighted by
+            the size of the stake they have locked up.</li>
+            <li><b>Source of security.</b> PoW: computational expenditure —
+            rewriting history means redoing the work faster than the whole honest
+            network, which requires over 50% of its hash power. PoS: economic
+            collateral — a dishonest validator has their stake destroyed, so
+            attacking costs the attacker directly.</li>
+            <li><b>Cost.</b> PoW: very high, in electricity and specialised
+            hardware, and the cost is ongoing. PoS: low energy; the cost is capital
+            locked up rather than energy consumed. The recognised criticism of PoS
+            is that influence scales with wealth, which pushes back toward
+            concentration.</li>
+          </ul>
+          <p><b>Closing line.</b> Both replace trust in an institution with a cost
+          that makes dishonesty irrational — PoW makes cheating physically
+          expensive, PoS makes it financially expensive. That sentence ties the
+          comparison back to the trust-model row of the centralisation table.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 9 <span class="diff">· hard · stretch</span></span>
+      </div>
+      <div class="qbody">
+        <p>A university wants to stop fake degree certificates. Design a
+        blockchain-based verification system: state which category of blockchain you
+        would use, which consensus protocol, what data goes on-chain versus
+        off-chain, and how an employer verifies a certificate. Then identify one
+        limitation of your design.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is <b>Case Study 02, Educational Certificate Verification</b>
+            (Lecture 1 §6) turned into a design question. It pulls together four
+            separate syllabus points at once — categories (§7), consensus (§4),
+            hashing (§4) and applications (§6) — which is why it is a stretch
+            question. The examiner wants design <em>decisions with justifications</em>,
+            not a description of the case study.
+          </div>
+          <p><b>Category: consortium (Hyperledger Fabric),</b> as the lecture's case
+          study specifies. Universities and the accrediting authority are the
+          members. It is not private, because a single university issuing and
+          validating its own certificates recreates the trust problem the system is
+          meant to solve. It is not public, because student records must not be
+          world-readable and the network membership needs to be identity-verified.</p>
+          <p><b>Consensus: a permissioned protocol — PBFT or Raft.</b> Justification:
+          the membership is known and fixed, so there is no need for PoW's expensive
+          open-entry defence, and issuing certificates is a low-volume, high-value
+          operation where finality matters more than throughput. PBFT is preferable
+          to Raft here because member institutions may have incentives to misbehave,
+          and PBFT is Byzantine fault tolerant while Raft only tolerates crashes.</p>
+          <p><b>On-chain vs off-chain.</b> <em>On-chain:</em> the SHA-256 hash of
+          each certificate, the issuing institution's identifier, the issue date, and
+          a revocation flag. <em>Off-chain:</em> the certificate document itself and
+          all personal data, held in the university's secure database. This split is
+          the point of the case study — putting the hash on-chain gives
+          tamper-evidence without publishing anyone's transcript, and it keeps block
+          size small.</p>
+          <p><b>Verification flow.</b> The graduate gives the employer the
+          certificate file. The employer hashes it and looks the digest up on the
+          chain. If a matching record exists, was issued by a legitimate member
+          institution, and is not flagged revoked, the certificate is genuine. If the
+          document has been altered by even one character, the <b>avalanche
+          property</b> means the recomputed hash will not match anything on the
+          chain, and the forgery is caught. Crucially the employer never has to
+          contact the university, which removes the delay and the phone-call fraud
+          vector of the current process.</p>
+          <p><b>Limitation.</b> The system guarantees that a certificate matches what
+          the university issued; it cannot guarantee the university should have
+          issued it. If a corrupt registrar issues a genuine certificate to someone
+          who never studied there, the chain will faithfully confirm that forgery
+          forever. This is the same boundary as the medical-records case: blockchain
+          secures the <em>record</em>, not the <em>real-world fact behind it</em> —
+          the "garbage in, garbage forever" problem. A complete answer names this
+          explicitly.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t8">
+    <span class="topic-num">Reference</span>
+    <h2>Applications and the dApp stack</h2>
+    <p class="subtitle">Lower-yield, but cheap marks if a list question appears.</p>
+
+    <p><b>The ten application domains</b> from the lecture: cryptocurrency and
+    payments; banking and cross-border settlement; healthcare records; law
+    enforcement and forensic evidence tracking; e-voting; IoT device authentication;
+    online media and music royalties; real estate deeds and fractional ownership;
+    digital identity management; supply chain traceability.</p>
+
+    <p><b>The three case studies</b>, in one line each. <em>Crude oil refinery
+    supply chain</em> — smart contracts link collectors, refineries, preservers and
+    distributors to prove provenance and prevent diversion. <em>Educational
+    certificates</em> — Hyperledger Fabric, certificate hashes on-chain, documents
+    off-chain. <em>Medical report access control</em> — encrypted records referenced
+    by on-chain hashes, view permissions granted only to authorised clinicians.</p>
+
+    <p><b>The dApp development lifecycle</b>, five steps: set up the environment
+    (Node.js, Ganache local test network, Truffle Suite) → integrate a wallet
+    (MetaMask) → author the smart contract in Solidity (VS Code or Remix IDE) →
+    build the frontend and connect it with Web3.js or Ethers.js → test locally and
+    deploy to Ganache or a testnet.</p>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Blockchain</h2>
+    <div class="grid">
+      <div class="item"><h4>The definition</h4><p>\( \text{Blockchain} = DL + CP + C \) — Distributed Ledger + Consensus Protocol + Cryptography.</p></div>
+      <div class="item"><h4>5 pillars</h4><p>Distribution, Decentralisation, Immutability, Tokenisation, Encryption. (D-D-I-T-E)</p></div>
+      <div class="item"><h4>Merkle root — 4 tx</h4><p>\( H1=\text{Hash}(T1\|T2) \), \( H2=\text{Hash}(T3\|T4) \), \( \text{Root}=\text{Hash}(H1\|H2) \).</p></div>
+      <div class="item"><h4>Odd leaf rule</h4><p>Duplicate it and hash with itself: \( \text{Hash}(T5\|T5) \). Repeat at every level with an odd count.</p></div>
+      <div class="item"><h4>Header vs body</h4><p>Header: block number, timestamp, nonce, <b>previous block hash</b>, <b>Merkle root</b>. Body: the transactions.</p></div>
+      <div class="item"><h4>Tamper cascade</h4><p>Alter tx → leaf hash changes → Merkle root changes → header changes → block hash changes → next block's previous-hash mismatches. Rejected.</p></div>
+      <div class="item"><h4>Signatures</h4><p>Sign with the <b>private</b> key, verify with the <b>public</b> key. Proves authenticity + integrity.</p></div>
+      <div class="item"><h4>5 layers</h4><p>Application → Data → Consensus → Network → Execution.</p></div>
+      <div class="item"><h4>Transaction flow</h4><p>Request &amp; sign → propagate (gossip) → candidate block → consensus → append via previous hash → settlement.</p></div>
+      <div class="item"><h4>PoW vs PoS</h4><p>PoW: compete on nonce-hashing, secured by electricity. PoS: selected by stake weight, secured by collateral at risk.</p></div>
+      <div class="item"><h4>Categories</h4><p>Public = anyone (Ethereum). Private = one org (Fabric, Quorum). Consortium = a known group (Corda).</p></div>
+      <div class="item"><h4>Trust model line</h4><p>Centralised trusts an <b>entity</b>; decentralised trusts a <b>protocol</b>. Lead with this in any comparison.</p></div>
+      <div class="item"><h4>Common trap</h4><p>Merkle root secures transactions <em>inside</em> a block; previous block hash links blocks <em>to each other</em>. Never swap them.</p></div>
+      <div class="item"><h4>PBFT vs Raft</h4><p>PBFT survives lying nodes (Byzantine). Raft survives only crashed nodes.</p></div>
+    </div>
+  </div>
+
+
+
+  <footer class="foot">
+    Guide 1 of 6 · CSE487 Final. Built from Rakib Hossen's lecture material. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
