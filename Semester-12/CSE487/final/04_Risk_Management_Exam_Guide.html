@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE487 — Risk Management Exam Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+        <li><a href="#t0">How to use this guide</a></li>
+        <li><a href="#t1">5 pillars of Info Assurance</a></li>
+        <li><a href="#t2">Risk concepts &amp; the equation</a></li>
+        <li><a href="#t3">Lifecycle &amp; 6 treatments</a></li>
+        <li><a href="#t4">Asset inventory &amp; mapping</a></li>
+        <li><a href="#t5">The ALE chain (priority)</a></li>
+        <li><a href="#t6">Nine worked exercises</a></li>
+        <li><a href="#t7">Case studies</a></li>
+        <li><a href="#t8">Business case &amp; frameworks</a></li>
+      </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE487 Final · Exam Preparation Guide</p>
+      <h1>Risk Management &amp; Quantitative Analysis</h1>
+      <div class="meta">
+        <span><b>Course:</b> CSE487 — Cyber Security</span>
+        <span><b>Based on:</b> Rakib Hossen, Asst. Professor, Dept. of CySE, UFTB — Lecture 07 Risk Management, Risk Management Math, Risk Analysis &amp; Governance, Classroom Asset Inventory</span>
+        <span><b>Syllabus:</b> Item 4.1 — Math (what / when / who / how)</span>
+        <span><b>Exam:</b> ≈ 25 Aug 2026 (2 days)</span>
+      </div>
+  </header>
+
+    <section class="topic" id="t0">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Syllabus item 4 — Risk Management, with the maths sub-points.</p>
+
+    <p>Your syllabus lists this topic as <em>"4. Risk management → Math → what, when,
+    who, how, …"</em>. That nesting is ambiguous in two directions, so this guide
+    covers both readings rather than gambling on one.</p>
+
+    <p><b>Reading one:</b> "what / when / who / how" is the structure of the faculty's
+    <b>landmark case studies</b> — WannaCry, Yahoo, Equifax, Colonial Pipeline — each
+    of which he presents as <em>What happened · When · Victims (who) · Incident
+    response (how it was handled) · Root cause</em>. That is Section 7 here.</p>
+
+    <p><b>Reading two:</b> it refers to the <b>quantitative risk framework</b> —
+    what each term means, when you use each formula, who the numbers are for, and how
+    to compute them. That is Sections 5 and 6, and they are the longest sections in
+    this guide.</p>
+
+    <div class="callout watch">
+      <span class="tag">Your flagged gap</span>
+      <p>The diagnostic showed the <b>AV → EF → SLE → ARO → ALE</b> chain is not yet
+      solid. Section 5 builds it one link at a time from nothing, and Section 6 has
+      <b>nine worked exercises</b> in the faculty's format. If you do nothing else in
+      this guide, do Sections 5 and 6 — this is the most reliably scoreable maths on
+      the paper because the faculty reuses the same problem shape with different
+      numbers.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>Foundations — the 5 pillars of Information Assurance</h2>
+    <p class="subtitle">The vocabulary everything else is built on.</p>
+
+    <p>Before risk, the goals. <strong>Information Assurance (IA)</strong> is the
+    practice of protecting information and the systems that hold it, and the lecture
+    breaks it into five pillars. You almost certainly know the first three as the
+    "CIA triad"; the faculty adds two more, and the two he adds are the ones exam
+    questions target.</p>
+
+    <ol>
+      <li><b>Confidentiality</b> — restricting data access strictly to authorised
+      users and processes. <em>Broken by:</em> a data breach.</li>
+      <li><b>Integrity</b> — safeguarding information from unauthorised
+      modification, deletion or tampering. <em>Broken by:</em> someone silently
+      editing a record.</li>
+      <li><b>Availability</b> — ensuring timely, reliable access to data and systems
+      for authorised users. <em>Broken by:</em> a DoS attack or ransomware.</li>
+      <li><b>Authentication</b> — verifying the claimed identity of users, devices or
+      system entities. <em>Broken by:</em> stolen credentials used without MFA.</li>
+      <li><b>Non-repudiation</b> — cryptographic assurance that a party
+      <em>cannot deny</em> sending or authorising a transaction or message.
+      <em>Delivered by:</em> digital signatures, which is the direct link to the
+      blockchain topic.</li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">The two that get asked</span>
+      <p><b>Authentication</b> answers "are you who you claim to be?" —
+      <em>before</em> the action. <b>Non-repudiation</b> answers "can you later deny
+      you did it?" — <em>after</em> the action. Confidentiality is often confused
+      with authentication too: confidentiality is about <em>who may see the data</em>,
+      authentication is about <em>proving who someone is</em>. You need
+      authentication in order to enforce confidentiality, but they are not the same
+      pillar.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Non-repudiation is <b>not</b> the same as integrity. Integrity says the
+      message was not altered. Non-repudiation says the sender cannot deny sending
+      it. A digital signature happens to deliver both, which is why they get merged
+      — but a hash alone gives integrity with no non-repudiation, because anyone
+      could have computed it.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>Core risk concepts and the risk equation</h2>
+    <p class="subtitle">Four terms that must not be muddled, and the formula that connects them.</p>
+
+    <p>These four words are used loosely in ordinary speech and precisely in this
+    subject. Getting them wrong costs marks in every risk question, so learn them as
+    a set.</p>
+
+    <ul>
+      <li><b>Asset</b> — any valuable hardware, software, data or personnel
+      belonging to the organisation. Note that <em>personnel</em> counts: the
+      lecture's banking inventory lists C-suite, IT operations and end-users as
+      assets with their own vulnerabilities.</li>
+      <li><b>Threat</b> — any potential circumstance or event with the capacity to
+      cause harm to a system. A threat exists whether or not you are vulnerable to
+      it. Ransomware is a threat to everyone; it only harms the unprepared.</li>
+      <li><b>Vulnerability</b> — an unpatched flaw, misconfiguration or weakness in
+      system defences. A vulnerability is a property of <em>your</em> system.</li>
+      <li><b>Risk</b> — the net negative consequence when a threat agent
+      successfully exploits an active vulnerability.</li>
+    </ul>
+
+    <div class="formula" style="text-align:center">
+      <div class="label" style="text-align:left">How the four fit together</div>
+      <svg viewBox="0 0 660 210" width="100%" style="max-width:620px;height:auto" role="img" aria-label="Diagram: threat actor exploits a vulnerability which causes business impact, together producing the security risk level">
+        <g font-family="'Space Grotesk', system-ui, sans-serif" text-anchor="middle">
+          <rect x="10" y="26" width="170" height="46" rx="10" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="95" y="55" fill="#1E2A32" font-weight="600" font-size="13">THREAT ACTOR</text>
+
+          <rect x="245" y="26" width="170" height="46" rx="10" fill="#FBF1E1" stroke="#EFD9B6"/>
+          <text x="330" y="55" fill="#B4690E" font-weight="600" font-size="13">VULNERABILITY</text>
+
+          <rect x="480" y="26" width="170" height="46" rx="10" fill="#FBE4E4" stroke="#B03A2E"/>
+          <text x="565" y="55" fill="#B03A2E" font-weight="600" font-size="13">BUSINESS IMPACT</text>
+
+          <g stroke="#5A6B72" stroke-width="1.5" fill="none">
+            <path d="M180 49 L240 49" marker-end="url(#ar)"/>
+            <path d="M415 49 L475 49" marker-end="url(#ar)"/>
+            <path d="M95 72 L95 140 L250 140"/>
+            <path d="M565 72 L565 140 L410 140"/>
+          </g>
+          <defs>
+            <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#5A6B72"/>
+            </marker>
+          </defs>
+          <text x="210" y="42" fill="#5A6B72" font-size="10.5">exploits</text>
+          <text x="445" y="42" fill="#5A6B72" font-size="10.5">causes</text>
+
+          <rect x="250" y="118" width="160" height="44" rx="10" fill="#2F6F6B"/>
+          <text x="330" y="146" fill="#ffffff" font-weight="700" font-size="12.5">SECURITY RISK</text>
+          <text x="330" y="188" fill="#8A979D" font-size="11">No vulnerability, or no impact → no risk, however capable the threat</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="formula">
+      <div class="label">The governing risk equation</div>
+      \[ \text{Risk} = \text{Likelihood (Probability)} \times \text{Impact (Consequence)} \]
+    </div>
+
+    <p>Read the equation as a filter. Because the two factors <em>multiply</em>, a
+    risk needs both to be non-trivial. An event that is certain but harmless scores
+    low. An event that would be catastrophic but is effectively impossible also
+    scores low. Only events that are both likely enough and damaging enough rise to
+    the top. That multiplicative structure is why "we must eliminate all risk" is a
+    meaningless goal, and why the lecture has a treatment option called
+    <em>Accept</em>.</p>
+
+    <h3>The risk evaluation matrix</h3>
+    <p>The faculty's matrix turns the equation into numbers. Likelihood takes values
+    1.0 (High), 0.5 (Medium) and 0.1 (Low); impact takes 10 (Low), 50 (Moderate) and
+    100 (High). Multiply them for the risk score.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Likelihood</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Low impact (10)</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Moderate impact (50)</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">High impact (100)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>High (1.0)</b></td><td style="padding:9px 10px">Low risk (10)</td><td style="padding:9px 10px">Moderate risk (50)</td><td style="padding:9px 0 9px 10px"><b>High risk (100)</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Medium (0.5)</b></td><td style="padding:9px 10px">Low risk (5)</td><td style="padding:9px 10px">Moderate risk (25)</td><td style="padding:9px 0 9px 10px">Moderate risk (50)</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>Low (0.1)</b></td><td style="padding:9px 10px">Low risk (1)</td><td style="padding:9px 10px">Low risk (5)</td><td style="padding:9px 0 9px 10px">Low risk (10)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">The banding</span>
+      <p><b>Low: 1 to 10 · Medium: above 10 up to 50 · High: above 50 up to 100.</b>
+      Note the boundaries are inclusive at the top: a score of exactly 10 is Low, not
+      Medium, and exactly 50 is Medium, not High. That catches people out.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 1 <span class="diff">· short answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Distinguish between threat, vulnerability and risk, using a single running
+        example. Explain why an organisation can face a severe threat and still carry
+        low risk.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The <b>core risk concepts</b> (Lecture 7 §2) and the <b>risk equation</b>
+            from the same section. The instruction "single running example" is
+            deliberate — it stops you defining three terms in isolation and forces you
+            to show the causal relationship between them. The second half tests the
+            multiplicative structure of \(\text{Risk}=\text{Likelihood}\times\text{Impact}\).
+          </div>
+          <p><b>Running example: ransomware against a hospital.</b></p>
+          <p><b>Threat</b> — any potential circumstance or event with the capacity to
+          cause harm. Here, the existence of ransomware groups actively targeting
+          healthcare. This threat exists independently of the hospital: it is a
+          property of the external world, and the hospital cannot remove it.</p>
+          <p><b>Vulnerability</b> — an unpatched flaw, misconfiguration or weakness in
+          defences. Here, suppose the hospital runs end-of-life Windows machines
+          missing critical patches — precisely the root cause the lecture identifies
+          for WannaCry. This is a property of <em>the hospital's own systems</em>, and
+          unlike the threat it is entirely within their control.</p>
+          <p><b>Risk</b> — the net negative consequence when a threat agent
+          successfully exploits an active vulnerability. Here, the ransomware group
+          exploits the unpatched SMB service, encrypts clinical systems, and emergency
+          services are disrupted — the actual NHS outcome in May 2017.</p>
+          <p>The relationship is a chain: the <b>threat actor exploits the
+          vulnerability, which causes business impact</b>, and the combination is what
+          constitutes the risk. Remove any link and the risk collapses.</p>
+          <p><b>Why a severe threat can still mean low risk.</b> Because
+          \(\text{Risk} = \text{Likelihood} \times \text{Impact}\), and the two
+          <em>multiply</em>. A threat's severity contributes to the impact term, but
+          if the corresponding likelihood is near zero the product is small.</p>
+          <p>Two concrete routes to this. First, <b>no matching vulnerability</b>: if
+          the hospital has patched every system, enforces MFA, and holds immutable
+          offline backups, the ransomware threat remains as severe as ever, but the
+          probability of successful exploitation collapses, so the risk score falls.
+          Using the faculty's matrix, an impact of 100 with a likelihood of 0.1 scores
+          \(0.1 \times 100 = 10\) — <b>Low risk</b>, despite maximum impact. Second,
+          <b>no meaningful impact</b>: a threat targeting a system the organisation
+          does not operate has an impact of zero regardless of how dangerous it is
+          elsewhere.</p>
+          <p><b>The practical conclusion.</b> Organisations cannot reduce threats —
+          those belong to the adversary. They can only reduce
+          <em>vulnerabilities</em>, which lowers likelihood, and
+          <em>impact</em>, through controls like segmentation and backups. Every
+          entry in the six treatment responses works on one of those two levers, never
+          on the threat itself.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 2 <span class="diff">· easy · matrix scoring</span></span>
+      </div>
+      <div class="qbody">
+        <p>Using the faculty's risk evaluation matrix, score and band each of the
+        following. State the likelihood value, impact value, computed score and risk
+        band for each.</p>
+        <ol>
+          <li>A shared classroom PC with no antivirus, used daily by many students,
+          where malware infection would spread across the local network. Likelihood
+          High, impact High.</li>
+          <li>A projector with unsecured HDMI input in a lecture theatre; the worst
+          outcome is a prank display. Likelihood Medium, impact Low.</li>
+          <li>The Wi-Fi router with default admin credentials and remote management
+          enabled; compromise gives full network visibility. Likelihood High, impact
+          High.</li>
+          <li>A network switch in a locked cabinet; physical access would allow
+          traffic sniffing. Likelihood Low, impact Moderate.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Risk Score} = \text{Likelihood} \times \text{Impact} \)</p>
+              <p class="why"><b>Start from the governing equation.</b> The matrix is just this formula with the three likelihood values (1.0 / 0.5 / 0.1) and three impact values (10 / 50 / 100) substituted in.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{(1) } 1.0 \times 100 = 100 \Rightarrow \textbf{High risk} \)</p>
+              <p class="why"><b>High likelihood = 1.0, High impact = 100.</b> Score 100 falls in the band "above 50 up to 100", so High. This is the maximum possible score on the matrix.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{(2) } 0.5 \times 10 = 5 \Rightarrow \textbf{Low risk} \)</p>
+              <p class="why"><b>Medium likelihood = 0.5, Low impact = 10.</b> Score 5 sits in the band "1 to 10", so Low — which is why the classroom inventory rates the projector Low priority despite the vulnerability being real.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{(3) } 1.0 \times 100 = 100 \Rightarrow \textbf{High risk} \)</p>
+              <p class="why">Same values as (1). <b>Note what this means practically:</b> two assets tie at the ceiling, so the matrix alone cannot rank them — you break the tie with judgement about blast radius, which is why the classroom assessment rates the router "Very High" on its finer scale.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{(4) } 0.1 \times 50 = 5 \Rightarrow \textbf{Low risk} \)</p>
+              <p class="why"><b>Low likelihood = 0.1, Moderate impact = 50.</b> Score 5, band Low. The locked cabinet is what drove likelihood down to 0.1 — the control has already done its work, and what remains is <em>residual risk</em>.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>(1) score <b>100</b>, <b>High</b> · (2) score <b>5</b>, <b>Low</b> ·
+            (3) score <b>100</b>, <b>High</b> · (4) score <b>5</b>, <b>Low</b>.</p>
+            <p><b>Sanity check:</b> the highest score achievable is
+            \(1.0 \times 100 = 100\) and the lowest is \(0.1 \times 10 = 1\), so
+            every answer must lie in \([1,100]\). ✓</p>
+            <p><b>Watch the boundaries:</b> a score of exactly 10 (e.g. High
+            likelihood × Low impact, or Low likelihood × High impact) is <b>Low</b>,
+            not Medium — the Low band runs 1 <em>to and including</em> 10. Similarly
+            exactly 50 is Medium, not High.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>The risk management lifecycle and the 6 treatment responses</h2>
+    <p class="subtitle">The process, then the menu of things you can do about a risk.</p>
+
+    <h3>The lifecycle — five sequential stages plus two continuous ones</h3>
+    <ol>
+      <li><b>Establish context</b> — define the scope, the assets in question, and
+      the organisation's risk appetite.</li>
+      <li><b>Risk identification</b> — find what could go wrong: the asset inventory
+      and threat mapping work in Section 4.</li>
+      <li><b>Risk analysis</b> — determine likelihood and impact for each identified
+      risk. This is where the quantitative maths of Section 5 lives.</li>
+      <li><b>Risk evaluation</b> — score, band and rank the risks against the
+      matrix, deciding which are tolerable.</li>
+      <li><b>Risk treatment / response</b> — apply one of the six responses below.</li>
+    </ol>
+    <p>Two activities run <em>alongside</em> all five rather than at any single
+    point: <b>communication and consultation</b> with stakeholders, and
+    <b>monitoring and critical review</b>. The lecture draws them as parallel
+    channels for a reason — a question asking you to "draw or describe the lifecycle"
+    expects both, and candidates who list only the five linear stages lose marks.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — analysis vs evaluation</span>
+      <p>These two adjacent stages sound identical and are not. <b>Analysis</b>
+      determines the values — how likely, how damaging, what is the ALE.
+      <b>Evaluation</b> compares those values against criteria and decides whether
+      the risk is acceptable. Analysis produces numbers; evaluation produces
+      decisions.</p>
+    </div>
+
+    <h3>The six treatment responses</h3>
+    <ol>
+      <li><b>Avoid</b> — eliminate the risk entirely by removing the asset,
+      disabling the vulnerable function, or altering the project architecture. The
+      only response that takes the risk to zero, and the only one that costs you
+      capability.</li>
+      <li><b>Mitigate</b> — deploy security controls, firewalls and patches to
+      decrease the likelihood or the impact. The most common response, and the one
+      the ALE cost-benefit maths evaluates.</li>
+      <li><b>Transfer</b> — shift the financial liability to a third party: buy
+      cyber insurance, or outsource hosting. Note carefully what transfers —
+      <em>financial liability</em>, not the risk itself and certainly not the
+      reputational damage or the regulatory duty.</li>
+      <li><b>Accept</b> — acknowledge the residual risk when the cost of mitigation
+      exceeds the potential loss. This is a legitimate, documented decision, not
+      negligence — and it is exactly what the faculty's DoS calculation concludes.</li>
+      <li><b>Contingency plan</b> — formulate disaster recovery and incident response
+      playbooks to execute if the risk materialises. Does not change likelihood;
+      reduces impact when it happens.</li>
+      <li><b>Management action</b> — operational process changes, training, or
+      organisational restructuring.</li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">How to pick one in an exam scenario</span>
+      <p>Work through in this order. <b>Is the function essential?</b> If not, avoid.
+      <b>Does mitigation cost less than the ALE?</b> If yes, mitigate. <b>Is the loss
+      purely financial and insurable?</b> If yes, transfer. <b>Is mitigation more
+      expensive than the loss?</b> Then accept — and document it. Add a
+      <b>contingency plan</b> alongside whichever you chose, because it costs little
+      and reduces impact. Justifying the choice against the ALE is what earns the
+      marks.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the favourite trap on transfer</span>
+      <p>Buying cyber insurance does <b>not</b> mean the risk is gone. Insurance
+      reimburses money; it does not restore customer trust, undo a regulatory
+      penalty, or discharge your legal duty of due diligence. The cyber law lecture
+      is explicit that organisations retain liability even when victimised. Say this
+      whenever transfer appears in a scenario.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>Asset inventory and threat mapping</h2>
+    <p class="subtitle">The banking inventory and the classroom assessment — the faculty's two worked examples.</p>
+
+    <p>Risk identification starts with knowing what you own. The lecture works two
+    inventories, and both are examinable as "produce a risk assessment table for
+    [scenario]" questions.</p>
+
+    <h3>The banking asset inventory</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 8px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Category</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Particulars</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Criticality</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Vulnerabilities</th>
+          <th style="padding:8px 0 8px 8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Risk scenarios</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:8px 8px 8px 0"><b>Core software</b></td><td style="padding:8px">Core Banking System (CBS), switching engine</td><td style="padding:8px"><b>High</b></td><td style="padding:8px">Software bugs, unauthorised config changes</td><td style="padding:8px 0 8px 8px">System outage, transaction error</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:8px 8px 8px 0"><b>Applications</b></td><td style="padding:8px">Document management, HR system, portals</td><td style="padding:8px">High / Medium</td><td style="padding:8px">Missing input validation, unpatched code</td><td style="padding:8px 0 8px 8px">XSS, unauthorised data access</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:8px 8px 8px 0"><b>Databases</b></td><td style="padding:8px">CBS database, device credentials, source code</td><td style="padding:8px"><b>High</b></td><td style="padding:8px">Default passwords, lack of encryption</td><td style="padding:8px 0 8px 8px">Mass customer PII leak, credential theft</td></tr>
+        <tr><td style="padding:8px 8px 8px 0"><b>Human resources</b></td><td style="padding:8px">C-suite, IT operations, end-users</td><td style="padding:8px">High / Medium</td><td style="padding:8px">Phishing susceptibility, low awareness</td><td style="padding:8px 0 8px 8px">Social engineering, insider threat</td></tr>
+      </tbody>
+    </table>
+
+    <p>The row worth commenting on is the last. <b>People are listed as assets with
+    vulnerabilities</b>, exactly like servers. That is not a rhetorical flourish — it
+    reflects that phishing susceptibility is a measurable weakness with a
+    corresponding control (awareness training, which is treatment response 6,
+    management action).</p>
+
+    <h3>The classroom assessment — the attributes and how priority is derived</h3>
+    <p>The classroom exercise assesses twelve asset categories against nine columns:
+    <b>asset, vulnerability, risk, impact, likelihood, priority, control, motivation,
+    attack type</b>. Priority is computed as <b>Impact × Likelihood</b>, banded as
+    Critical / Very High / High / Medium / Low.</p>
+
+    <p>The highest-rated items are worth knowing because they show the reasoning:</p>
+    <ul>
+      <li><b>USB drives — Critical.</b> Impact Very High, likelihood High. Malware
+      carrier with no access control or encryption; the control is to disable USB
+      storage via Group Policy or MDM. Rated highest because it is a trivially easy
+      infiltration vector with severe consequences.</li>
+      <li><b>Wi-Fi router — Very High.</b> Impact Very High, likelihood High. Default
+      credentials, weak encryption, remote management enabled; compromise yields the
+      entire classroom's traffic via man-in-the-middle.</li>
+      <li><b>Student PCs and laptops/tablets — Very High.</b> Shared logins, no
+      encryption, malware spreading laterally.</li>
+      <li><b>Microphones, network switch, projector — Low.</b> Real vulnerabilities,
+      but low likelihood or low impact, so they sit at the bottom of the queue.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">If asked to build a risk assessment table</span>
+      <p>Use the faculty's nine columns and derive priority as <b>Impact ×
+      Likelihood</b>. The two columns candidates forget are <b>motivation</b> (what
+      the attacker wants — disruption, data, admin privilege) and <b>attack type</b>
+      (the method — malware, MitM, physical theft). Including them signals you used
+      <em>his</em> framework rather than a generic one.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 3 <span class="diff">· long answer · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>A small clinic in Dhaka runs a patient records system on a single server in
+        a back office. The server has no offline backup. Reception staff share one
+        login. The clinic's Wi-Fi is used by both staff and patients on the same
+        network, and the router still has its factory password. Two doctors carry
+        patient data on unencrypted USB drives between the clinic and their homes.</p>
+        <p>Produce a risk assessment for this clinic. Identify the assets and
+        vulnerabilities, assess impact and likelihood, assign a priority, and
+        recommend a treatment response for each with justification.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The faculty's <b>asset inventory and risk assessment</b> methodology
+            (Lecture 7 §4 and the classroom assessment document) applied to an unseen
+            scenario, combined with the <b>6 treatment responses</b> (§3) and the
+            <b>risk matrix</b> (§3). The examiner wants his table structure reproduced
+            on new material — so answer <em>as a table</em>, then justify below it.
+          </div>
+
+          <p><b>Risk assessment table.</b></p>
+          <table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0">
+            <thead><tr style="border-bottom:2px solid #1E2A32;text-align:left">
+              <th style="padding:6px 6px 6px 0">Asset</th><th style="padding:6px">Vulnerability</th><th style="padding:6px">Risk</th><th style="padding:6px">Imp</th><th style="padding:6px">Lik</th><th style="padding:6px">Priority</th><th style="padding:6px 0 6px 6px">Response</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 6px 7px 0">Patient records server</td><td style="padding:7px 6px">No offline backup; single point of failure</td><td style="padding:7px 6px">Total, permanent loss of all records to ransomware or hardware failure</td><td style="padding:7px 6px">Very High</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px"><b>Critical</b></td><td style="padding:7px 0 7px 6px">Mitigate + Contingency</td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 6px 7px 0">USB drives with patient data</td><td style="padding:7px 6px">Unencrypted; leave the premises</td><td style="padding:7px 6px">Breach of medical PII on loss or theft; malware carried back in</td><td style="padding:7px 6px">Very High</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px"><b>Critical</b></td><td style="padding:7px 0 7px 6px">Avoid, else Mitigate</td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 6px 7px 0">Wi-Fi router</td><td style="padding:7px 6px">Factory default password; no network segmentation</td><td style="padding:7px 6px">Full network compromise; patients on the clinical network</td><td style="padding:7px 6px">Very High</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px"><b>Very High</b></td><td style="padding:7px 0 7px 6px">Mitigate</td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 6px 7px 0">Reception shared login</td><td style="padding:7px 6px">No individual accounts; no accountability</td><td style="padding:7px 6px">Unauthorised access with no audit trail; non-repudiation lost</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px"><b>High</b></td><td style="padding:7px 0 7px 6px">Mitigate + Mgmt action</td></tr>
+              <tr><td style="padding:7px 6px 7px 0">Staff (people)</td><td style="padding:7px 6px">No security awareness training</td><td style="padding:7px 6px">Phishing, social engineering leading to any of the above</td><td style="padding:7px 6px">High</td><td style="padding:7px 6px">Medium</td><td style="padding:7px 0 7px 6px">Medium</td><td style="padding:7px 0 7px 6px">Management action</td></tr>
+            </tbody>
+          </table>
+
+          <p><b>Justification of each treatment response.</b></p>
+          <p><b>1. Server with no backup — Mitigate plus Contingency plan.</b> Two
+          responses because they address different halves of the equation. Mitigation
+          — immutable offline backups, patching, endpoint protection — reduces
+          likelihood. A contingency plan — a documented, <em>rehearsed</em> restore
+          procedure — reduces impact when it happens anyway. This is the direct lesson
+          of the WannaCry case: organisations that restored from immutable offline
+          backups recovered without paying ransoms, and the root cause there was
+          unpatched end-of-life systems. Backup cost for a single clinic server is
+          trivial against the ALE of losing every patient record, so this is
+          unambiguously worth mitigating.</p>
+          <p><b>2. USB drives — Avoid if the workflow allows, otherwise Mitigate.</b>
+          Avoidance is preferred and is genuinely available here: give the doctors
+          secure remote access to the records system instead, and the asset — data on
+          removable media leaving the building — simply ceases to exist. Avoidance is
+          the only response that takes risk to zero, and it is appropriate when the
+          function can be delivered another way. If remote access is not feasible,
+          mitigate with hardware or software encryption plus endpoint USB scanning
+          before mounting, which is the classroom assessment's stated control for the
+          same asset.</p>
+          <p><b>3. Wi-Fi router — Mitigate.</b> Change the default admin credentials,
+          deploy WPA3, <b>segment the patient guest network from the clinical
+          network</b>, disable remote web management, and apply firmware updates.
+          Segmentation is the critical item: patients and clinical systems sharing one
+          network means any compromised patient device sits directly alongside the
+          records server. Cost is near zero, so no cost-benefit calculation is even
+          needed.</p>
+          <p><b>4. Shared reception login — Mitigate with individual accounts, plus
+          Management action.</b> The security failure here is worth naming in the
+          language of the IA pillars: a shared account destroys
+          <b>non-repudiation</b>, because no action can be attributed to a specific
+          person, and it undermines <b>authentication</b>. For a clinic handling
+          medical records that is also an audit and regulatory problem, not only a
+          technical one. Management action covers the process change of provisioning
+          and de-provisioning accounts as staff join and leave.</p>
+          <p><b>5. Staff — Management action.</b> People are assets with
+          vulnerabilities in the faculty's own inventory, and phishing susceptibility
+          is the vulnerability here. Awareness training and phishing simulation are
+          the control. Rated Medium rather than High only because it is an enabling
+          risk rather than a direct one — but note it is upstream of the others, since
+          a successful phish delivers the ransomware that the missing backup then
+          fails to survive.</p>
+
+          <p><b>Overall recommendation and sequencing.</b> Address in this order:
+          router credentials and network segmentation first (near-zero cost, removes
+          the widest exposure), then offline backups (highest impact if it fails),
+          then encrypted or eliminated USB usage, then individual logins, then
+          training. This sequencing — <em>cheapest and broadest first, then highest
+          impact</em> — is itself a mark, because risk treatment must respect a
+          limited budget.</p>
+          <p><b>What should not be recommended.</b> <em>Accept</em> is not defensible
+          for any of these. The Accept response applies when mitigation cost exceeds
+          the potential loss, and here every mitigation is inexpensive while the losses
+          — total record loss, medical PII breach — are severe. And a clinic that
+          accepted these risks would fail the <b>due diligence obligation</b>: under
+          the cyber law lecture's framing, an organisation remains legally liable even
+          when victimised, and failure to exercise reasonable cybersecurity diligence
+          attracts civil regulatory penalties.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05 · priority</span>
+    <h2>Quantitative risk analysis — the AV → EF → SLE → ARO → ALE chain</h2>
+    <p class="subtitle">Syllabus 4.1. Built from zero, because the diagnostic flagged this.</p>
+
+    <p>Qualitative risk analysis says "this is a High risk." Quantitative analysis
+    says "this risk costs us $56,000 a year." The second one can be compared against
+    the price of a fix, which is why executives want it and why it is on the exam.</p>
+
+    <p>The whole framework is <b>five terms in a chain</b>, where each one feeds the
+    next. Learn it as a chain and you cannot get lost.</p>
+
+    <div class="formula" style="text-align:center">
+      <div class="label" style="text-align:left">The chain</div>
+      <svg viewBox="0 0 660 240" width="100%" style="max-width:640px;height:auto" role="img" aria-label="Flow diagram: asset value times exposure factor gives single loss expectancy, times annual rate of occurrence gives annualised loss expectancy, compared against total cost of ownership">
+        <g font-family="'Space Grotesk', system-ui, sans-serif" text-anchor="middle">
+          <rect x="12" y="20" width="140" height="52" rx="10" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="82" y="42" fill="#1E2A32" font-weight="700" font-size="13">AV</text>
+          <text x="82" y="60" fill="#5A6B72" font-size="10.5">Asset Value</text>
+
+          <text x="180" y="52" fill="#2F6F6B" font-size="18" font-weight="700">×</text>
+
+          <rect x="208" y="20" width="140" height="52" rx="10" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="278" y="42" fill="#1E2A32" font-weight="700" font-size="13">EF</text>
+          <text x="278" y="60" fill="#5A6B72" font-size="10.5">Exposure Factor</text>
+
+          <text x="376" y="52" fill="#2F6F6B" font-size="16" font-weight="700">=</text>
+
+          <rect x="404" y="20" width="140" height="52" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="474" y="42" fill="#2F6F6B" font-weight="700" font-size="13">SLE</text>
+          <text x="474" y="60" fill="#5A6B72" font-size="10.5">per single event</text>
+
+          <path d="M474 72 L474 96 L82 96 L82 118" fill="none" stroke="#5A6B72" stroke-width="1.5"/>
+
+          <rect x="12" y="118" width="140" height="52" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="82" y="140" fill="#2F6F6B" font-weight="700" font-size="13">SLE</text>
+          <text x="82" y="158" fill="#5A6B72" font-size="10.5">per single event</text>
+
+          <text x="180" y="150" fill="#2F6F6B" font-size="18" font-weight="700">×</text>
+
+          <rect x="208" y="118" width="140" height="52" rx="10" fill="#F2F1EB" stroke="#E4E1D8"/>
+          <text x="278" y="140" fill="#1E2A32" font-weight="700" font-size="13">ARO</text>
+          <text x="278" y="158" fill="#5A6B72" font-size="10.5">events per year</text>
+
+          <text x="376" y="150" fill="#2F6F6B" font-size="16" font-weight="700">=</text>
+
+          <rect x="404" y="118" width="140" height="52" rx="10" fill="#2F6F6B"/>
+          <text x="474" y="140" fill="#ffffff" font-weight="700" font-size="13">ALE</text>
+          <text x="474" y="158" fill="#CFE2E0" font-size="10.5">cost per year</text>
+
+          <text x="330" y="205" fill="#B4690E" font-size="12" font-weight="600">Compare ALE against TCO (annual cost of the control) → is the fix worth it?</text>
+          <text x="330" y="224" fill="#8A979D" font-size="11">Savings &gt; Cost → invest. Savings &lt; Cost → accept the risk.</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>Term by term</h3>
+
+    <p><strong>AV — Asset Value.</strong> The replacement cost of the asset, or the
+    net financial profit earned through it. Two things to notice. First, AV can be a
+    <em>period profit</em> rather than a purchase price — the faculty's DoS problem
+    uses "$20,000 weekly profit" as the AV. Second, and this is the trap: <b>the AV
+    must be measured over the same period the incident affects.</b> If each attack
+    ruins one week's trading, the AV is one week's profit, not the annual figure.</p>
+
+    <p><strong>EF — Exposure Factor.</strong> The <em>percentage</em> of the asset's
+    value lost when one incident occurs, expressed as a decimal between 0 and 1.</p>
+    <div class="formula">
+      <div class="label">Exposure Factor</div>
+      \[ \text{EF} = \frac{\text{Loss Amount}}{\text{Total Asset Value}} \]
+    </div>
+    <p>An EF of 1.0 means total destruction; 0.40 means 40% of the value is lost. If
+    a question gives you a percentage ("a 40% reduction in sales"), that percentage
+    <em>is</em> the EF — divide by 100 and use it. If it gives you a loss amount and
+    an asset value instead, use the formula above to derive it.</p>
+
+    <p><strong>SLE — Single Loss Expectancy.</strong> The monetary loss expected
+    <em>each time</em> the incident occurs.</p>
+    <div class="formula">
+      <div class="label">Single Loss Expectancy</div>
+      \[ \text{SLE} = \text{AV} \times \text{EF} \]
+    </div>
+
+    <p><strong>ARO — Annualised Rate of Occurrence.</strong> How many times the
+    incident is expected in one year. Crucially, <b>ARO does not have to be a whole
+    number</b>. Seven attacks a year gives \(\text{ARO}=7\). Once every ten years
+    gives \(\text{ARO}=0.1\). Three events observed over four years gives
+    \(\text{ARO}=3/4=0.75\). Fractional AROs are common in exam questions about rare,
+    severe events, and candidates who assume ARO must be an integer get them wrong.</p>
+
+    <p><strong>ALE — Annualised Loss Expectancy.</strong> The expected total
+    financial loss per year from this specific threat. This is the number you compare
+    against the cost of a control.</p>
+    <div class="formula">
+      <div class="label">Annualised Loss Expectancy</div>
+      \[ \text{ALE} = \text{SLE} \times \text{ARO} \]
+    </div>
+
+    <p><strong>TCO — Total Cost of Ownership.</strong> The aggregate annual cost of
+    acquiring, maintaining and running the mitigation control. If a vendor quotes
+    monthly, <b>multiply by 12</b> before comparing — mixing a monthly cost against
+    an annual loss is the single most common error in these questions.</p>
+
+    <div class="callout key">
+      <span class="tag">The decision rule</span>
+      <p>Compute the <b>annual savings</b> the control delivers, then compare:</p>
+      \[ \text{Net Benefit} = \text{Annual Savings} - \text{TCO} \]
+      <p>If the net benefit is <b>positive</b>, the control is financially justified —
+      <em>Mitigate</em>. If <b>negative</b>, it is not — <em>Accept</em> the risk, or
+      find a cheaper control. When the control eliminates the threat entirely, the
+      annual savings equal the full ALE; when it only reduces the threat, savings are
+      the <em>difference</em> between the old ALE and the new one.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the four errors that cost marks</span>
+      <ol style="margin:6px 0 0">
+        <li><b>Comparing a monthly cost to an annual loss.</b> Always annualise the
+        TCO first.</li>
+        <li><b>Using an annual AV with a per-event EF.</b> If each event damages one
+        week, the AV is one week's value.</li>
+        <li><b>Forgetting that partial mitigation means partial savings.</b> A control
+        that stops 75% of attacks saves 75% of the ALE, not 100%.</li>
+        <li><b>Treating a negative result as "the answer is wrong."</b> A negative net
+        benefit is a perfectly valid finding — it is the conclusion the faculty's own
+        worked example reaches.</li>
+      </ol>
+    </div>
+
+    <h3>The qualitative caveat the faculty makes explicitly</h3>
+    <p>His DoS solution ends with a third case: the service remains unjustified
+    <em>on direct sales loss alone</em>, but would become viable if it also protects
+    other revenue channels, prevents contractual penalties, compliance fines or
+    irreversible brand damage, or if the direct calculation underestimates downstream
+    customer churn and restoration costs.</p>
+    <p>That paragraph is worth marks in almost every cost-benefit question. The
+    arithmetic gives you a verdict; the qualitative caveat shows you understand what
+    the arithmetic left out.</p>
+  </section>
+
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>Nine worked exercises</h2>
+    <p class="subtitle">Exercise 1 is the faculty's own problem. The rest are the same shape with new numbers.</p>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 1 — the faculty's DoS problem <span class="diff">· medium · learn this one cold</span></span>
+      </div>
+      <div class="qbody">
+        <p>Your company operates an online retail store generating an average weekly
+        profit of <b>$20,000</b>. It has suffered repeated Denial of Service attacks,
+        each causing an estimated <b>40% reduction in sales</b> during the affected
+        week. Historical logs show an average of <b>7 DoS attacks per year</b>. A
+        cybersecurity vendor offers a DoS mitigation service at <b>$10,000 per
+        month</b>, and testing indicates it effectively mitigates DoS attacks.</p>
+        <p>(a) What is the ARO? (b) What is the ALE? (c) Is subscribing financially
+        justified?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{ARO} = 7 \text{ attacks/year} \)</p>
+              <p class="why"><b>Read it directly from the question.</b> ARO is defined as the number of threat events per year, and the historical logs give exactly that — no calculation is required. Say so; do not invent working.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{AV} = \$20{,}000 \text{ per week} \)</p>
+              <p class="why"><b>Match the AV period to the incident period.</b> Each attack damages one week's trading, so the asset value in play is one week's profit — not the annual figure. This is the step most people get wrong.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{EF} = 40\% = 0.40 \)</p>
+              <p class="why"><b>Convert the stated percentage to a decimal.</b> "40% reduction in sales during the affected week" is the exposure factor by definition — the fraction of asset value lost per event.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE} = \text{AV} \times \text{EF} = \$20{,}000 \times 0.40 = \$8{,}000 \text{ per attack} \)</p>
+              <p class="why"><b>Apply the SLE formula.</b> Each individual DoS attack costs $8,000 in lost profit.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE} = \text{SLE} \times \text{ARO} = \$8{,}000 \times 7 = \$56{,}000 \text{ per year} \)</p>
+              <p class="why"><b>Annualise:</b> multiply the per-event cost by the number of events per year. This is the figure to compare against the control's price.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{TCO} = \$10{,}000 \times 12 = \$120{,}000 \text{ per year} \)</p>
+              <p class="why"><b>Annualise the vendor's monthly quote before comparing.</b> Comparing $10,000/month directly against $56,000/year would suggest the service is cheap — it is the classic trap in this problem.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \$56{,}000 - \$120{,}000 = -\$64{,}000 \)</p>
+              <p class="why"><b>Savings minus cost.</b> The service is stated to mitigate DoS effectively, so annual savings equal the full ALE of $56,000. The result is negative.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>(a) <b>ARO = 7 attacks/year.</b> (b) <b>SLE = $8,000/attack; ALE =
+            $56,000/year.</b> (c) <b>No — not financially justified.</b> The annual
+            mitigation cost of $120,000 exceeds the expected annual loss of $56,000 by
+            <b>$64,000</b>. The correct treatment response, on this analysis, is
+            <b>Accept</b> the risk (or negotiate a cheaper control).</p>
+            <p><b>Sanity check:</b> $8,000 per attack × 7 attacks ≈ $56,000, and
+            $56,000 is well under half of $120,000, so the verdict is not marginal. ✓</p>
+          </div>
+          <p><b>The qualitative caveat — write this, it is worth marks.</b> The
+          verdict holds <em>on direct online sales loss alone</em>. The service would
+          become justified if any of the following applied: it also protects other
+          core enterprise systems and revenue channels; it prevents catastrophic
+          contractual penalties, compliance fines or irreversible brand damage; or the
+          direct sales figure materially understates downstream customer churn and
+          infrastructure restoration costs. Quantitative analysis prices what you can
+          measure; the decision should also weigh what you cannot.</p>
+          <p><b>Partial-mitigation variant.</b> The faculty also works the case where
+          the service reduces attacks by 75% rather than eliminating them. Then
+          remaining attacks \(= 0.25 \times 7 = 1.75\)/year, new ALE
+          \(= 1.75 \times \$8{,}000 = \$14{,}000\), savings
+          \(= \$56{,}000 - \$14{,}000 = \$42{,}000\), and net benefit
+          \(= \$42{,}000 - \$120{,}000 = -\$78{,}000\) — worse still. Be ready for
+          either version.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 2 — when the control <em>is</em> worth it <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>An online retailer earns an average weekly profit of <b>$50,000</b>.
+        Ransomware incidents each wipe out <b>60%</b> of that week's profit, and the
+        company has averaged <b>4 incidents per year</b>. A managed detection and
+        response service is offered at <b>$6,000 per month</b> and is expected to
+        prevent these incidents entirely.</p>
+        <p>Compute the SLE, ALE and TCO, and advise whether to subscribe. State which
+        risk treatment response your advice corresponds to.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{AV} = \$50{,}000 \text{/week}, \quad \text{EF} = 60\% = 0.60, \quad \text{ARO} = 4 \)</p>
+              <p class="why"><b>Extract the three inputs first.</b> Weekly profit is the AV because each incident damages one week; the stated percentage is the EF; the stated frequency is the ARO. Getting these three right is most of the question.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE} = \$50{,}000 \times 0.60 = \$30{,}000 \text{ per incident} \)</p>
+              <p class="why"><b>SLE = AV × EF.</b> One ransomware event costs $30,000 in lost weekly profit.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE} = \$30{,}000 \times 4 = \$120{,}000 \text{ per year} \)</p>
+              <p class="why"><b>ALE = SLE × ARO.</b> Annualising turns a per-event figure into the yearly exposure.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{TCO} = \$6{,}000 \times 12 = \$72{,}000 \text{ per year} \)</p>
+              <p class="why"><b>Annualise the monthly fee</b> so both sides of the comparison are per-year quantities.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \$120{,}000 - \$72{,}000 = +\$48{,}000 \)</p>
+              <p class="why"><b>Savings minus cost.</b> The service prevents the incidents entirely, so savings equal the full ALE. The result is positive this time.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ROI} = \dfrac{\$48{,}000}{\$72{,}000} \times 100 = 66.67\% \)</p>
+              <p class="why"><b>Net benefit ÷ cost, as a percentage</b> — the same structure as ROSI. Quoting a return rather than just a difference is what a board would ask for.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>SLE <b>$30,000/incident</b> · ALE <b>$120,000/year</b> · TCO
+            <b>$72,000/year</b> · Net benefit <b>+$48,000/year</b> · ROI
+            <b>66.67%</b>. <b>Advise: subscribe.</b></p>
+            <p><b>Treatment response: Mitigate</b> — deploying a security control to
+            reduce likelihood, justified because the cost of the control is below the
+            expected loss it removes.</p>
+            <p><b>Sanity check:</b> $72,000 is less than $120,000, so the sign must be
+            positive. ✓ Contrast with Exercise 1, where a $120,000 control faced a
+            $56,000 loss and the sign was negative — same method, opposite verdict,
+            which is exactly why the arithmetic matters more than intuition.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 3 — fractional ARO <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>A company's data centre equipment is valued at <b>$400,000</b>. A fire
+        would destroy an estimated <b>25%</b> of it. Regional records suggest a fire
+        of this kind occurs <b>once every ten years</b>. An automatic fire suppression
+        system costs <b>$4,000 per year</b> to maintain and would prevent essentially
+        all such loss.</p>
+        <p>Compute the SLE, ARO and ALE, and evaluate the investment.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{AV} = \$400{,}000, \quad \text{EF} = 25\% = 0.25 \)</p>
+              <p class="why"><b>Here the AV is a replacement cost, not a period profit</b> — the equipment itself is the asset. The faculty's definition allows both, and the question's wording ("valued at") tells you which.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE} = \$400{,}000 \times 0.25 = \$100{,}000 \)</p>
+              <p class="why"><b>SLE = AV × EF.</b> One fire costs $100,000 of equipment.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ARO} = \dfrac{1 \text{ event}}{10 \text{ years}} = 0.1 \)</p>
+              <p class="why"><b>Convert a frequency into events per year.</b> ARO is <em>annualised</em>, so "once every ten years" becomes 0.1 per year. <b>ARO is not required to be a whole number</b> — this is the point of the exercise.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE} = \$100{,}000 \times 0.1 = \$10{,}000 \text{ per year} \)</p>
+              <p class="why"><b>ALE = SLE × ARO.</b> Multiplying by a fraction correctly spreads a large, rare loss across the years between occurrences — that is precisely what annualising means.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \$10{,}000 - \$4{,}000 = +\$6{,}000 \text{ per year} \)</p>
+              <p class="why"><b>Savings minus TCO.</b> The cost is already annual, so no ×12 is needed — check the units the question gives rather than applying the conversion reflexively.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>SLE <b>$100,000</b> · ARO <b>0.1/year</b> · ALE <b>$10,000/year</b> ·
+            Net benefit <b>+$6,000/year</b>. <b>The investment is justified —
+            Mitigate.</b></p>
+            <p><b>Sanity check:</b> a $100,000 loss expected once a decade averages
+            $10,000 a year, which matches the ALE. ✓</p>
+          </div>
+          <p><b>Comment worth adding.</b> Note how ALE flattens a rare catastrophe
+          into a modest annual figure. That is useful for comparing risks on a common
+          scale, but it hides the fact that the loss arrives all at once. An
+          organisation that cannot absorb a sudden $100,000 hit should treat this risk
+          more seriously than the $10,000 ALE suggests — which is an argument for
+          combining <em>Mitigate</em> with <b>Transfer</b> (insurance) and a
+          <b>contingency plan</b>. Recognising the limitation of averaging is a
+          higher-band observation.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 4 — partial mitigation <span class="diff">· hard</span></span>
+      </div>
+      <div class="qbody">
+        <p>A company's customer database is valued at <b>$2,000,000</b>. A data breach
+        would expose an estimated <b>15%</b> of that value in direct costs. Breaches
+        of this type occur about <b>once every two years</b>.</p>
+        <p>A data loss prevention platform costing <b>$75,000 per year</b> would not
+        eliminate breaches but is expected to reduce their frequency to
+        <b>once every five years</b>.</p>
+        <p>Compute the baseline ALE, the residual ALE after the control, the annual
+        savings, the percentage reduction in ALE, and the net benefit. Recommend a
+        treatment response.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{SLE} = \$2{,}000{,}000 \times 0.15 = \$300{,}000 \)</p>
+              <p class="why"><b>SLE = AV × EF.</b> Note that the control changes how <em>often</em> a breach happens, not how bad each one is — so the SLE is computed once and reused for both scenarios.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ARO}_{\text{before}} = \dfrac{1}{2} = 0.5 \)</p>
+              <p class="why"><b>Once every two years annualised.</b> Convert the frequency to events per year before it can enter the ALE formula.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_{\text{before}} = \$300{,}000 \times 0.5 = \$150{,}000 \text{/year} \)</p>
+              <p class="why">Baseline annual exposure with no control in place.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ARO}_{\text{after}} = \dfrac{1}{5} = 0.2 \)</p>
+              <p class="why"><b>The control acts on the ARO.</b> Once every five years annualises to 0.2 — this is the only input the control changes.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_{\text{after}} = \$300{,}000 \times 0.2 = \$60{,}000 \text{/year} \)</p>
+              <p class="why"><b>Residual ALE:</b> the exposure that remains <em>after</em> mitigation. Risk is reduced, not removed — which is what "residual risk" means in the lifecycle.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Annual Savings} = \$150{,}000 - \$60{,}000 = \$90{,}000 \)</p>
+              <p class="why"><b>Savings = the difference between the two ALEs, not the full baseline.</b> This is the step people skip, and skipping it overstates the benefit by $60,000.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE reduction} = \dfrac{\$150{,}000 - \$60{,}000}{\$150{,}000} \times 100 = 60\% \)</p>
+              <p class="why"><b>Percentage change = difference ÷ original.</b> A 60% reduction in annual exposure — a useful figure to quote alongside the money.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \$90{,}000 - \$75{,}000 = +\$15{,}000 \text{/year} \)</p>
+              <p class="why"><b>Savings minus TCO.</b> Positive, but only just — which is itself part of the answer.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>SLE <b>$300,000</b> · ALE before <b>$150,000/year</b> · ALE after
+            <b>$60,000/year</b> · Annual savings <b>$90,000</b> · ALE reduction
+            <b>60%</b> · Net benefit <b>+$15,000/year</b>.</p>
+            <p><b>Sanity check:</b> if you had wrongly used the full $150,000 as the
+            savings you would have got +$75,000 — double the true figure. Whenever a
+            control <em>reduces</em> rather than <em>eliminates</em>, always compute
+            two ALEs and subtract. ✓</p>
+          </div>
+          <p><b>Recommendation: Mitigate — but flag the narrow margin.</b> The control
+          is financially justified, returning $15,000 net on a $75,000 spend (a 20%
+          return). However, the margin is thin enough that the recommendation is
+          sensitive to the estimates: if the true EF were 12% rather than 15%, the
+          savings would fall to $72,000 and the net benefit would turn negative.
+          Since EF and ARO are both estimates, a complete answer recommends
+          proceeding <em>and</em> notes that the decision should be revisited if the
+          breach frequency assumption proves optimistic.</p>
+          <p><b>Also note the residual risk.</b> $60,000 per year of exposure
+          remains after the control. That residual should be formally
+          <em>Accepted</em> and documented — combining Mitigate with a documented
+          Accept of what is left is how the treatment stage actually works, and
+          saying so shows you understand the lifecycle rather than just the formula.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 5 — ranking a portfolio of risks <span class="diff">· hard</span></span>
+      </div>
+      <div class="qbody">
+        <p>A logistics company faces three threats:</p>
+        <ul>
+          <li><b>A — Ransomware.</b> Asset value $800,000; exposure factor 0.35;
+          occurs once every two years.</li>
+          <li><b>B — DDoS on the customer portal.</b> Asset value $120,000 (weekly
+          revenue through the portal); exposure factor 0.50; occurs 6 times a year.</li>
+          <li><b>C — Insider data theft.</b> Asset value $2,000,000; exposure factor
+          0.10; occurs once every four years.</li>
+        </ul>
+        <p>Compute the SLE and ALE for each, the total annual risk exposure, and rank
+        them. The company has $200,000 available for controls this year — advise how
+        to allocate it and justify with reference to the treatment responses.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{SLE}_A = \$800{,}000 \times 0.35 = \$280{,}000; \quad \text{ARO}_A = \tfrac{1}{2} = 0.5 \)</p>
+              <p class="why"><b>Compute SLE and ARO separately for each threat</b> before combining. Ransomware has the largest single-event cost of the three.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_A = \$280{,}000 \times 0.5 = \$140{,}000 \text{/year} \)</p>
+              <p class="why">Annualise. A severe but infrequent threat.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE}_B = \$120{,}000 \times 0.50 = \$60{,}000; \quad \text{ARO}_B = 6 \)</p>
+              <p class="why"><b>Smallest SLE of the three</b> — but note the ARO is an order of magnitude larger. Hold judgement until the ALE is computed.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_B = \$60{,}000 \times 6 = \$360{,}000 \text{/year} \)</p>
+              <p class="why"><b>Frequency dominates.</b> The cheapest individual event produces the largest annual exposure, because it happens twelve times as often as A.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE}_C = \$2{,}000{,}000 \times 0.10 = \$200{,}000; \quad \text{ARO}_C = \tfrac{1}{4} = 0.25 \)</p>
+              <p class="why">Largest asset value, but a low exposure factor and a low rate.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_C = \$200{,}000 \times 0.25 = \$50{,}000 \text{/year} \)</p>
+              <p class="why">Annualise. The most valuable asset yields the <em>smallest</em> annual exposure — the opposite of what intuition suggests.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Total ALE} = \$140{,}000 + \$360{,}000 + \$50{,}000 = \$550{,}000 \text{/year} \)</p>
+              <p class="why"><b>ALEs are additive across independent threats</b>, which is what makes them useful for portfolio-level budgeting — you can state the organisation's total annual risk exposure as one number.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>A: SLE $280,000, ALE <b>$140,000</b> · B: SLE $60,000, ALE
+            <b>$360,000</b> · C: SLE $200,000, ALE <b>$50,000</b> · <b>Total annual
+            exposure $550,000</b>.</p>
+            <p><b>Ranking by ALE: B (DDoS) &gt; A (Ransomware) &gt; C (Insider
+            theft).</b></p>
+            <p><b>Sanity check:</b> B alone is 65% of the total exposure
+            (\(360/550\)), which is a striking result worth stating explicitly. ✓</p>
+          </div>
+
+          <p><b>Budget advice for the $200,000.</b></p>
+          <p><b>Priority 1 — Threat B, DDoS ($360,000 ALE).</b> Direct the bulk of the
+          budget here. It is the largest single exposure by a wide margin, and any
+          control costing under $360,000 a year is justified on the arithmetic alone
+          — so $200,000 spent entirely on DDoS mitigation would still be net positive
+          if it prevented the attacks. <b>Response: Mitigate.</b></p>
+          <p><b>Priority 2 — Threat A, ransomware ($140,000 ALE).</b> The important
+          observation is that the most effective controls here are cheap: immutable
+          offline backups, patching discipline and MFA. These address the root causes
+          identified in the WannaCry and Colonial Pipeline cases (unpatched
+          end-of-life systems; leaked VPN credentials without MFA) and cost a small
+          fraction of the ALE. <b>Response: Mitigate, plus a Contingency plan</b> —
+          a rehearsed restore procedure reduces impact even when prevention fails.</p>
+          <p><b>Priority 3 — Threat C, insider theft ($50,000 ALE).</b> Lowest annual
+          exposure, and technical controls against insiders are expensive relative to
+          it. <b>Response: Management action</b> (access reviews, least-privilege
+          enforcement, background screening) which is low cost, combined with formal
+          <b>Accept</b> of the residual — documented, not ignored. If the loss is
+          insurable, <b>Transfer</b> via cyber insurance is also reasonable given the
+          low frequency and high single-event cost.</p>
+
+          <p><b>The analytical point this exercise is built to make.</b> Ranking by
+          <em>asset value</em> would have put C first — it protects a $2,000,000
+          database. Ranking by <em>single loss</em> would have put A first at $280,000
+          per event. Only ranking by <b>ALE</b> reveals that a frequent, individually
+          modest threat is the dominant annual cost. <b>Frequency matters as much as
+          severity, and ALE is the only figure that accounts for both.</b> Say this
+          explicitly — it is the conclusion the question exists to elicit.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 6 — deriving EF and ARO from raw data <span class="diff">· easy</span></span>
+      </div>
+      <div class="qbody">
+        <p>(a) A server rack worth <b>$300,000</b> suffered a power surge that caused
+        <b>$45,000</b> of damage. What is the exposure factor?</p>
+        <p>(b) Over the past four years, the company has recorded <b>3</b> such
+        surges. What is the ARO?</p>
+        <p>(c) Using these figures, compute the ALE.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{EF} = \dfrac{\text{Loss Amount}}{\text{Total Asset Value}} = \dfrac{\$45{,}000}{\$300{,}000} \)</p>
+              <p class="why"><b>Use the EF formula in reverse.</b> When a question gives a loss <em>amount</em> rather than a percentage, this is the definition to reach for.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{EF} = 0.15 = 15\% \)</p>
+              <p class="why">Divide. <b>EF is dimensionless</b> — the dollars cancel, which is a useful check that you divided the right way round. An EF above 1.0 is impossible.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ARO} = \dfrac{3 \text{ events}}{4 \text{ years}} = 0.75 \text{ per year} \)</p>
+              <p class="why"><b>Events divided by the observation period.</b> Historical incident counts must be normalised to a single year before they can be used as an ARO.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE} = \$300{,}000 \times 0.15 = \$45{,}000 \)</p>
+              <p class="why"><b>SLE = AV × EF</b> — which recovers the original loss amount, confirming the EF was derived correctly. Use this as a built-in check.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE} = \$45{,}000 \times 0.75 = \$33{,}750 \text{ per year} \)</p>
+              <p class="why"><b>ALE = SLE × ARO.</b> Three $45,000 events across four years is $135,000 total, or $33,750 per year — which matches.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>(a) <b>EF = 0.15 (15%)</b> · (b) <b>ARO = 0.75/year</b> · (c) <b>ALE =
+            $33,750/year</b>.</p>
+            <p><b>Sanity check:</b> total observed loss = 3 × $45,000 = $135,000 over
+            4 years = $33,750/year. The ALE matches the direct average, as it must. ✓</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 7 — the reverse question: maximum justifiable spend <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>A manufacturer has calculated an ALE of <b>$250,000</b> for supply chain
+        compromise. A vendor claims their platform would reduce this risk by
+        <b>80%</b>.</p>
+        <p>(a) What is the maximum annual price at which this platform is still
+        financially justified? (b) If the vendor quotes <b>$150,000 per year</b>,
+        what are the net benefit and the return on investment?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Annual Savings} = \text{ALE} \times \text{reduction} = \$250{,}000 \times 0.80 \)</p>
+              <p class="why"><b>An 80% reduction saves 80% of the ALE</b>, not all of it. The control's value is the exposure it removes.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Annual Savings} = \$200{,}000 \)</p>
+              <p class="why">Compute. Residual ALE is the other 20%: \(\$250{,}000 \times 0.20 = \$50{,}000\) still carried each year.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \text{Savings} - \text{TCO} \ge 0 \implies \text{TCO} \le \$200{,}000 \)</p>
+              <p class="why"><b>Set the decision rule to break-even and solve for the unknown.</b> The control is justified exactly while its cost does not exceed the saving it produces.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{(b) Net Benefit} = \$200{,}000 - \$150{,}000 = +\$50{,}000 \text{/year} \)</p>
+              <p class="why"><b>Substitute the quoted price</b> into the same rule. Positive, so the quote is acceptable.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ROI} = \dfrac{\$50{,}000}{\$150{,}000} \times 100 = 33.33\% \)</p>
+              <p class="why"><b>Net benefit ÷ cost.</b> Expressing it as a return lets the board compare this control against other uses of the same $150,000.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>(a) <b>Maximum justifiable price = $200,000 per year.</b> Above that
+            the control costs more than the risk it removes.
+            (b) At $150,000: <b>net benefit +$50,000/year, ROI 33.33%</b> — accept the
+            quote.</p>
+            <p><b>Sanity check:</b> the break-even price must be less than the full
+            ALE, since the control does not remove all the risk. $200,000 &lt;
+            $250,000. ✓</p>
+          </div>
+          <p><b>Two qualifications worth a mark each.</b> First, the <b>residual
+          risk</b> of $50,000 per year remains after the control and must be formally
+          accepted and documented. Second, the 80% reduction figure comes from
+          <em>the vendor</em>, which is the party being paid — the analysis is only as
+          reliable as that estimate, and a prudent buyer would seek independent
+          evidence or negotiate contractual guarantees before treating it as fact.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 8 — choosing between two controls <span class="diff">· hard</span></span>
+      </div>
+      <div class="qbody">
+        <p>An e-commerce platform faces payment fraud with an <b>ALE of
+        $400,000</b>. Two mutually exclusive controls are proposed:</p>
+        <ul>
+          <li><b>Control X:</b> costs $90,000/year, reduces the ALE by 50%.</li>
+          <li><b>Control Y:</b> costs $250,000/year, reduces the ALE by 85%.</li>
+        </ul>
+        <p>Evaluate both and recommend one. Would your recommendation change if the
+        company's insurer offered to cover fraud losses above $100,000 for a premium
+        of $40,000/year?</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Savings}_X = \$400{,}000 \times 0.50 = \$200{,}000 \)</p>
+              <p class="why"><b>Savings = ALE × reduction fraction.</b> Compute each option's saving before its net benefit — comparing costs alone is meaningless when the controls differ in effectiveness.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net}_X = \$200{,}000 - \$90{,}000 = +\$110{,}000 \text{/year} \)</p>
+              <p class="why">Savings minus TCO. Residual ALE under X is the untouched half: \(\$200{,}000\).</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Savings}_Y = \$400{,}000 \times 0.85 = \$340{,}000 \)</p>
+              <p class="why">Same rule applied to the stronger control. Y removes considerably more risk.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net}_Y = \$340{,}000 - \$250{,}000 = +\$90{,}000 \text{/year} \)</p>
+              <p class="why"><b>Both are net positive, but X wins on net benefit</b> despite Y removing more risk — because Y's extra effectiveness costs more than it saves.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ROI}_X = \dfrac{110{,}000}{90{,}000} \times 100 = 122.2\%, \quad \text{ROI}_Y = \dfrac{90{,}000}{250{,}000} \times 100 = 36.0\% \)</p>
+              <p class="why"><b>Return on investment confirms the ranking</b> and sharpens it: X returns more than three times as much per dollar spent.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Marginal analysis: } \Delta\text{Savings} = \$340{,}000 - \$200{,}000 = \$140{,}000 \)</p>
+              <p class="why"><b>Ask what the upgrade from X to Y buys.</b> Moving from X to Y removes an extra $140,000 of annual exposure.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \Delta\text{Cost} = \$250{,}000 - \$90{,}000 = \$160{,}000 > \$140{,}000 \)</p>
+              <p class="why"><b>The upgrade costs $160,000 to save $140,000 — a marginal loss of $20,000.</b> This is the decisive argument and it is more rigorous than comparing totals.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>Control X: savings $200,000, net <b>+$110,000</b>, ROI <b>122.2%</b>,
+            residual ALE $200,000. Control Y: savings $340,000, net <b>+$90,000</b>,
+            ROI <b>36.0%</b>, residual ALE $60,000.
+            <b>Recommend Control X</b> — higher net benefit and far higher return, and
+            the marginal upgrade to Y destroys $20,000 of value.</p>
+            <p><b>Sanity check:</b> both nets are positive, so both are better than
+            doing nothing; the question is which is <em>best</em>, and marginal
+            analysis answers it. ✓</p>
+          </div>
+          <p><b>Does the insurance offer change things?</b> Yes, and this is the
+          interesting half.</p>
+          <p>Insurance is the <b>Transfer</b> response — shifting financial liability
+          to a third party. Under Control X the residual ALE is $200,000, and the
+          policy covers losses above $100,000 for a $40,000 premium. Combining X with
+          insurance caps the company's own exposure while costing
+          \(\$90{,}000 + \$40{,}000 = \$130{,}000\) in total — still far below
+          Control Y's $250,000, and with a lower worst-case exposure than X alone.
+          <b>The combined X-plus-transfer option is superior to Y.</b></p>
+          <p><b>But state the limits of transfer.</b> Insurance reimburses money; it
+          does not restore customer trust after a payment fraud incident, does not
+          prevent regulatory action, and does not discharge the organisation's
+          <b>due diligence obligation</b> — the cyber law lecture is explicit that
+          liability persists even when an organisation is a victim. Insurers also
+          price on the strength of existing controls, so the premium quoted here
+          likely <em>assumes</em> a control such as X is in place. Transfer supplements
+          mitigation; it never replaces it.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 9 — full quantitative report <span class="diff">· hard · stretch</span></span>
+      </div>
+      <div class="qbody">
+        <p>A Dhaka-based fintech generates <b>$180,000</b> in monthly revenue through
+        its mobile app. Three risks have been identified:</p>
+        <ul>
+          <li><b>API abuse outage:</b> each event halts the app for roughly a week,
+          costing 25% of that month's revenue; observed 8 times in the last 2 years.</li>
+          <li><b>Credential stuffing:</b> each successful campaign costs $60,000 in
+          fraud and remediation; expected twice a year.</li>
+          <li><b>Regulatory penalty from a data breach:</b> $5,000,000 exposure, EF
+          0.08, expected once in twenty years.</li>
+        </ul>
+        <p>Compute each SLE and ALE and the total exposure. A unified security
+        platform costing <b>$28,000 per month</b> would reduce API abuse by 90%,
+        credential stuffing by 75%, and breach likelihood by 50%. Evaluate it.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Risk 1: AV} = \$180{,}000 \text{/month}, \quad \text{EF} = 0.25 \)</p>
+              <p class="why"><b>Match the AV period to the stated loss period.</b> The question says "25% of that month's revenue", so monthly revenue is the AV — even though the outage itself lasts a week.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE}_1 = \$180{,}000 \times 0.25 = \$45{,}000 \)</p>
+              <p class="why">SLE = AV × EF.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ARO}_1 = \dfrac{8}{2} = 4 \text{ per year} \)</p>
+              <p class="why"><b>Normalise the observed count to one year:</b> 8 events over 2 years is 4 per year.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_1 = \$45{,}000 \times 4 = \$180{,}000 \text{/year} \)</p>
+              <p class="why">Annualise.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE}_2 = \$60{,}000, \quad \text{ARO}_2 = 2 \implies \text{ALE}_2 = \$120{,}000 \text{/year} \)</p>
+              <p class="why"><b>The SLE is given directly here</b> — no AV or EF is needed, because the question states the per-event cost. Do not manufacture an EF when the SLE is handed to you.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLE}_3 = \$5{,}000{,}000 \times 0.08 = \$400{,}000, \quad \text{ARO}_3 = \dfrac{1}{20} = 0.05 \)</p>
+              <p class="why">Back to AV × EF, with a small fractional ARO for a rare event.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ALE}_3 = \$400{,}000 \times 0.05 = \$20{,}000 \text{/year} \)</p>
+              <p class="why">Annualise. The largest single loss produces the smallest annual figure — the same lesson as Exercise 5.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Total ALE} = \$180{,}000 + \$120{,}000 + \$20{,}000 = \$320{,}000 \text{/year} \)</p>
+              <p class="why"><b>Sum across independent threats</b> to get total annual risk exposure.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Savings} = (180{,}000)(0.90) + (120{,}000)(0.75) + (20{,}000)(0.50) \)</p>
+              <p class="why"><b>Apply each reduction to its own ALE, then sum.</b> The platform reduces the three risks by different amounts, so a single blended percentage would be wrong.</p>
+            </li>
+            <li>
+              <p class="math-line">\( = \$162{,}000 + \$90{,}000 + \$10{,}000 = \$262{,}000 \text{/year} \)</p>
+              <p class="why">Compute each term and add. Residual exposure is \(\$320{,}000 - \$262{,}000 = \$58{,}000\)/year.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{TCO} = \$28{,}000 \times 12 = \$336{,}000 \text{/year} \)</p>
+              <p class="why"><b>Annualise the monthly price</b> before comparing against annual savings.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Net Benefit} = \$262{,}000 - \$336{,}000 = -\$74{,}000 \text{/year} \)</p>
+              <p class="why"><b>Negative.</b> The platform costs more than the risk it removes — and note it costs more than the <em>entire</em> $320,000 exposure, so no level of effectiveness could make it pay.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>API abuse: SLE $45,000, ALE <b>$180,000</b> · Credential stuffing: SLE
+            $60,000, ALE <b>$120,000</b> · Regulatory breach: SLE $400,000, ALE
+            <b>$20,000</b> · <b>Total exposure $320,000/year</b>.</p>
+            <p>Platform savings <b>$262,000/year</b> · TCO <b>$336,000/year</b> ·
+            <b>Net benefit −$74,000/year. Not financially justified as priced.</b></p>
+            <p><b>Sanity check:</b> the TCO ($336,000) exceeds the total ALE
+            ($320,000), so the platform cannot break even even if it were 100%
+            effective. That observation alone answers the question. ✓</p>
+          </div>
+          <p><b>Recommendation.</b> Do not purchase the platform at $28,000/month.
+          Instead:</p>
+          <ul>
+            <li><b>Target the dominant risk separately.</b> API abuse alone accounts
+            for $180,000 — 56% of total exposure. A point solution (rate limiting, API
+            gateway controls) would need to cost under $162,000/year to be justified
+            at the same 90% effectiveness, which is well within reach of a dedicated
+            product. <b>Mitigate.</b></li>
+            <li><b>Credential stuffing</b> at $120,000 ALE is largely addressed by MFA
+            and credential-stuffing detection — inexpensive controls relative to the
+            exposure. This is the Colonial Pipeline lesson: leaked credentials without
+            MFA. <b>Mitigate.</b></li>
+            <li><b>Regulatory breach</b> at $20,000 ALE does not warrant expensive
+            technical spend on this arithmetic. <b>Accept</b> the residual, formally
+            documented, and consider <b>Transfer</b> via cyber insurance given the
+            $400,000 single-event severity.</li>
+            <li><b>Negotiate.</b> The platform becomes justified below $262,000/year,
+            i.e. roughly <b>$21,800/month</b>. Quoting the break-even price gives
+            procurement a concrete target.</li>
+          </ul>
+          <p><b>The qualitative caveat.</b> As always, the verdict holds on the
+          quantified losses only. For a fintech, a regulatory breach may carry
+          consequences the $20,000 ALE badly understates — licence suspension,
+          irreversible loss of customer trust, and the <b>due diligence</b> liability
+          that persists even when the firm is the victim. If the platform materially
+          reduces those unpriced exposures, the board may reasonably approve it
+          despite a negative arithmetic result. State the number, then state what the
+          number omits.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Case studies — the what / when / who / how structure</h2>
+    <p class="subtitle">Four landmark attacks. Learn each as five fixed fields.</p>
+
+    <p>The faculty presents every case in the same five fields, which is almost
+    certainly what your syllabus's "what, when, who, how, …" refers to. Learn the
+    grid and any case study question answers itself.</p>
+
+    <div class="callout key">
+      <span class="tag">The five fields</span>
+      <p><b>What happened</b> (the mechanism) · <b>When</b> (date) · <b>Victims</b>
+      (who, and scale) · <b>Incident response</b> (how it was handled) · <b>Root
+      cause</b>. The last field is the one that carries the marks, because it is what
+      connects the story to the risk management lesson.</p>
+    </div>
+
+    <h3>Case 1 — WannaCry ransomware (2017)</h3>
+    <ul>
+      <li><b>What:</b> a worldwide ransomware outbreak that self-propagated by
+      weaponising the <b>EternalBlue</b> exploit against an SMBv1 vulnerability.
+      Infected endpoints were encrypted and Bitcoin ransoms demanded.</li>
+      <li><b>When:</b> May 2017.</li>
+      <li><b>Who:</b> over <b>200,000 systems across 150+ countries</b>; the UK
+      National Health Service suffered severe clinical and emergency service
+      disruption.</li>
+      <li><b>How handled:</b> Microsoft issued emergency out-of-band patches for
+      legacy and modern Windows; researcher Marcus Hutchins found and registered a
+      hardcoded <b>kill-switch domain</b>, curtailing global spread; organisations
+      restored from <b>immutable offline backups</b> rather than paying.</li>
+      <li><b>Root cause:</b> proliferation of <b>unpatched, end-of-life Windows
+      systems</b> lacking critical security updates.</li>
+    </ul>
+
+    <h3>Case 2 — Yahoo data breach (2013–14, disclosed 2016)</h3>
+    <ul>
+      <li><b>What:</b> state-sponsored adversaries exfiltrated full user account
+      databases — names, emails, phone numbers, hashed passwords (MD5/bcrypt) and
+      security questions.</li>
+      <li><b>When:</b> breaches in 2013 and 2014; disclosed 2016.</li>
+      <li><b>Who:</b> all <b>3 billion</b> Yahoo accounts — the largest breach in
+      digital history.</li>
+      <li><b>How handled:</b> forced password resets, invalidation of unencrypted
+      security questions; a <b>$350 million reduction</b> in the Verizon acquisition
+      price.</li>
+      <li><b>Root cause:</b> inadequate internal security controls, outdated hashing
+      algorithms, and failure to detect multi-year APT presence.</li>
+    </ul>
+
+    <h3>Case 3 — Equifax data breach (2017)</h3>
+    <ul>
+      <li><b>What:</b> attackers exploited an unpatched remote code execution flaw in
+      <b>Apache Struts (CVE-2017-5638)</b> to exfiltrate sensitive PII.</li>
+      <li><b>When:</b> July 2017.</li>
+      <li><b>Who:</b> approximately <b>147 million</b> US consumers — Social Security
+      numbers, birth dates, driver's licence records.</li>
+      <li><b>How handled:</b> free credit monitoring offered; CEO, CIO and CISO
+      resigned and testified before Congress; substantial financial settlements and
+      lasting brand damage.</li>
+      <li><b>Root cause:</b> systemic failure in <b>vulnerability management and
+      patch deployment</b> despite published vendor alerts.</li>
+    </ul>
+
+    <h3>Case 4 — Colonial Pipeline ransomware (2021)</h3>
+    <ul>
+      <li><b>What:</b> the <b>DarkSide</b> group compromised billing and business
+      networks, prompting a precautionary shutdown of the pipeline itself.</li>
+      <li><b>When:</b> May 2021.</li>
+      <li><b>Who:</b> Colonial Pipeline Company; fuel shortages, flight cancellations
+      and consumer panic across the US East Coast.</li>
+      <li><b>How handled:</b> paid roughly <b>$4.4 million (75 Bitcoin)</b>, of which
+      about $2.3 million was later recovered by the FBI; operations restored after
+      several days.</li>
+      <li><b>Root cause:</b> <b>leaked legacy VPN credentials without
+      multi-factor authentication.</b></li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">The pattern across all four</span>
+      <p>Three of the four root causes are <b>basic hygiene failures</b>: unpatched
+      end-of-life systems (WannaCry), unapplied vendor patches (Equifax), and
+      credentials without MFA (Colonial). None involved an unknown zero-day. That is
+      the single most useful sentence you can write about these cases, and it is
+      exactly the argument the business-case model uses to justify security spending.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 4 <span class="diff">· long answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Select two of the landmark case studies covered in class. For each, state
+        what happened, when, who was affected, how the incident was handled and its
+        root cause. Then identify what the two cases have in common and what
+        preventive controls would have stopped both.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The <b>landmark case studies</b> (Risk Management &amp; Governance §1),
+            structured on the faculty's own five fields. The final part is the real
+            question — "what do they have in common" pulls in the <b>root cause</b>
+            analysis from §2 of the business case model (human vulnerability, legacy
+            IT, misaligned budgeting, governance deficits, supply chain risk). Choose
+            two cases with a <em>shared</em> root cause so the synthesis writes itself:
+            WannaCry and Equifax are the natural pair, since both are patching
+            failures.
+          </div>
+
+          <p><b>Case 1: WannaCry (May 2017).</b> <em>What:</em> a self-propagating
+          ransomware worm weaponising the EternalBlue exploit against an SMBv1
+          vulnerability; infected endpoints were encrypted and Bitcoin ransoms
+          demanded. <em>Who:</em> over 200,000 systems in more than 150 countries,
+          with the UK NHS suffering severe disruption to clinical and emergency
+          services. <em>How handled:</em> Microsoft released emergency out-of-band
+          patches covering even end-of-life Windows versions; Marcus Hutchins
+          discovered and registered the hardcoded kill-switch domain, halting further
+          global propagation; affected organisations restored from immutable offline
+          backups instead of paying. <em>Root cause:</em> proliferation of unpatched,
+          end-of-life Windows systems lacking critical security updates.</p>
+
+          <p><b>Case 2: Equifax (July 2017).</b> <em>What:</em> attackers exploited an
+          unpatched remote code execution vulnerability in the Apache Struts web
+          framework, CVE-2017-5638, to exfiltrate large volumes of PII. <em>Who:</em>
+          approximately 147 million US consumers, exposing Social Security numbers,
+          birth dates and driver's licence records. <em>How handled:</em> free credit
+          monitoring offered to those affected; the CEO, CIO and CISO resigned and
+          testified before Congress; substantial financial settlements, a severe stock
+          price drop and lasting brand damage followed. <em>Root cause:</em> systemic
+          failure in vulnerability management and patch deployment despite published
+          vendor alerts.</p>
+
+          <p><b>What they have in common.</b></p>
+          <ol>
+            <li><b>Both root causes are patching failures, not novel attacks.</b> In
+            each case a fix existed and had been published before the incident —
+            Microsoft's MS17-010 for SMBv1, and Apache's advisory for CVE-2017-5638.
+            Neither was a zero-day. The organisations were breached through
+            <em>known</em> flaws they had not remediated.</li>
+            <li><b>Both are failures of process rather than technology.</b> No new
+            product was required to prevent either; what was missing was a
+            vulnerability management lifecycle that reliably identified and deployed
+            available patches. In the business-case vocabulary this is the
+            <em>governance deficit</em> and <em>legacy IT</em> root cause, not a
+            technical capability gap.</li>
+            <li><b>Both show impact far exceeding the direct technical event.</b>
+            WannaCry's cost was measured in cancelled operations and diverted
+            ambulances; Equifax's in resignations, congressional testimony, settlements
+            and permanent brand damage. This supports the lecture's claim that breach
+            recovery typically costs <b>five to ten times more</b> than proactive
+            defence.</li>
+          </ol>
+
+          <p><b>Controls that would have prevented both.</b></p>
+          <ul>
+            <li><b>A formal patch and vulnerability management lifecycle</b> — the
+            single control addressing both root causes directly. Continuous
+            vulnerability assessment scanning to identify missing patches, with defined
+            SLAs for remediating critical CVEs. This is the VAPT topic's contribution.</li>
+            <li><b>Asset inventory and lifecycle management</b>, so end-of-life
+            systems are identified and either upgraded or isolated before support ends.
+            WannaCry spread through machines the organisations often did not know they
+            still had.</li>
+            <li><b>Network segmentation</b>, which limits impact when prevention
+            fails. WannaCry's worm behaviour depended on flat networks; segmentation
+            would have contained it, reducing the <b>impact</b> term of
+            \(\text{Risk} = \text{Likelihood} \times \text{Impact}\) even where
+            likelihood could not be reduced.</li>
+            <li><b>Immutable offline backups with rehearsed restore procedures</b> —
+            the <em>Contingency plan</em> treatment response. The organisations that
+            recovered from WannaCry without paying were precisely those who had this.</li>
+            <li><b>Continuous monitoring through a SOC</b>, to detect exploitation and
+            exfiltration in progress. Equifax's data was exfiltrated over an extended
+            period without detection, which is a detection-rate failure in the SOC
+            topic's terms.</li>
+          </ul>
+
+          <p><b>Closing synthesis.</b> Both incidents are, at root, the same failure:
+          an organisation that knew a patch existed and did not deploy it in time.
+          They are the strongest available argument for treating patch management as
+          a governance obligation rather than an IT chore — and, in the Bangladeshi
+          context, for the <b>due diligence obligation</b> the cyber law lecture
+          describes, under which an organisation remains liable even when victimised
+          if it failed to exercise reasonable cybersecurity diligence.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>The business case model and governance frameworks</h2>
+    <p class="subtitle">How to pitch security to decision makers, plus the compliance table.</p>
+
+    <h3>The four-part executive appeal framework</h3>
+    <ol>
+      <li><b>Issue — the problems.</b> Rising threat landscape (ransomware-as-a-
+      service, spear-phishing, DDoS, insider threats); direct business impact
+      (downtime, revenue loss, data theft, brand erosion); compliance exposure (GDPR,
+      HIPAA, PCI-DSS penalties); productivity loss to incident response.</li>
+      <li><b>Root cause — why problems persist.</b> Human vulnerability (weak
+      awareness, weak passwords, social engineering); legacy IT (unsupported,
+      unpatched, technical debt); misaligned budgeting (security seen as overhead
+      rather than enabler); governance deficits (no documented IR, monitoring or
+      access policy); supply chain risk (unvetted third parties as pivot points).</li>
+      <li><b>Solution — the controls.</b> <em>Technical:</em> NGFW, EDR, SIEM,
+      zero-trust network access, encryption, MFA. <em>Process:</em> vulnerability
+      scans, independent penetration tests, backup drills. <em>People:</em> mandatory
+      awareness training and phishing simulation. <em>Governance:</em> formal adoption
+      of ISO 27001 or NIST CSF.</li>
+      <li><b>Effect — measurable benefits.</b> Financial protection; operational
+      resilience with faster RTO; competitive advantage from certifications (ISO
+      27001, SOC 2) that build client trust and shorten sales cycles; regulatory
+      compliance.</li>
+    </ol>
+
+    <p><b>The implementation roadmap</b> is worth memorising as three horizons:
+    <em>short-term (weeks–months)</em> — enforce MFA everywhere, patch critical CVEs,
+    baseline awareness training; <em>medium-term (6–12 months)</em> — deploy SIEM/SOC
+    monitoring, refine policies, conduct compliance audits; <em>long-term (1–3
+    years)</em> — build a resilient zero-trust architecture and a security culture.</p>
+
+    <div class="callout key">
+      <span class="tag">The killer statistic</span>
+      <p><b>Breach recovery and remediation costs typically run 5× to 10× higher than
+      proactive defence investment.</b> That single line is the "risk of inaction"
+      argument and belongs in any answer about justifying security budget to
+      management.</p>
+    </div>
+
+    <h3>Governance frameworks — the ones most likely to be asked</h3>
+    <p>The full table covers fourteen frameworks. Rather than memorising all of them,
+    learn what distinguishes the commonly-confused ones:</p>
+    <ul>
+      <li><b>ISO 27001</b> — the global standard for establishing and operating an
+      <b>ISMS</b> (Information Security Management System). <b>Certifiable</b> by an
+      accredited third-party registrar; audit takes 1 week to 1 month; annual.</li>
+      <li><b>SOC 2</b> — governs customer data security, availability and privacy for
+      SaaS and B2B vendors. <b>Not a certification</b> — it produces an
+      <em>attestation report</em> from an independent CPA firm, over roughly a
+      6-month monitoring period.</li>
+      <li><b>NIST CSF</b> — the framework for <b>Identify, Protect, Detect, Respond,
+      Recover</b>. Not certifiable; self-assessment or third-party gap analysis;
+      continuous.</li>
+      <li><b>PCI DSS</b> — mandatory for any entity storing, processing or
+      transmitting card data. Assessed by a <b>QSA</b> (Qualified Security Assessor)
+      or via self-assessment questionnaire; annual.</li>
+      <li><b>GDPR</b> — EU privacy regulation applying to any organisation processing
+      EU residents' personal data. Enforced by Data Protection Authorities; ongoing
+      and event-driven.</li>
+      <li><b>HIPAA</b> — protects PHI (Protected Health Information) for US
+      healthcare providers, plans, clearinghouses and business associates.</li>
+      <li><b>CIS Controls</b> — a prioritised set of <b>18</b> prescriptive best
+      practices, for organisations of any size wanting rapid threat reduction.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the distinction examiners love</span>
+      <p><b>ISO 27001 gives a certification. SOC 2 gives an attestation report. NIST
+      CSF gives neither — it is a self-assessed framework.</b> If a question asks
+      which framework an organisation should adopt, the answer usually turns on
+      whether they need something <em>certifiable</em> to show clients, and on which
+      regulator has jurisdiction over their data.</p>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Risk Management</h2>
+    <div class="grid">
+      <div class="item"><h4>5 IA pillars</h4><p>Confidentiality, Integrity, Availability, <b>Authentication</b>, <b>Non-repudiation</b>.</p></div>
+      <div class="item"><h4>The 4 concepts</h4><p><b>Asset</b> (what you own) · <b>Threat</b> (external, uncontrollable) · <b>Vulnerability</b> (your flaw) · <b>Risk</b> (the consequence).</p></div>
+      <div class="item"><h4>Risk equation</h4><p>\( \text{Risk} = \text{Likelihood} \times \text{Impact} \). Multiplicative — either factor near zero kills the risk.</p></div>
+      <div class="item"><h4>Matrix values</h4><p>Likelihood 1.0 / 0.5 / 0.1 · Impact 100 / 50 / 10. Bands: Low 1–10, Medium &gt;10–50, High &gt;50–100.</p></div>
+      <div class="item"><h4>THE CHAIN</h4><p>\( \text{SLE}=\text{AV}\times\text{EF} \) then \( \text{ALE}=\text{SLE}\times\text{ARO} \). Compare ALE vs TCO.</p></div>
+      <div class="item"><h4>EF</h4><p>\( \text{EF}=\frac{\text{Loss Amount}}{\text{Asset Value}} \). Decimal 0–1. A stated % <em>is</em> the EF.</p></div>
+      <div class="item"><h4>ARO</h4><p>Events per year. <b>Can be fractional:</b> once in 10 yrs = 0.1; 3 events in 4 yrs = 0.75.</p></div>
+      <div class="item"><h4>Decision rule</h4><p>Net = Savings − TCO. Positive → <b>Mitigate</b>. Negative → <b>Accept</b>.</p></div>
+      <div class="item"><h4>Partial mitigation</h4><p>Savings = ALE<sub>before</sub> − ALE<sub>after</sub>. <b>Not</b> the full ALE.</p></div>
+      <div class="item"><h4>×12 trap</h4><p>Monthly quote → <b>always annualise</b> before comparing to ALE. $10k/mo = $120k/yr.</p></div>
+      <div class="item"><h4>AV period trap</h4><p>If the event damages one week, AV = one <b>week's</b> value. Match the period.</p></div>
+      <div class="item"><h4>6 responses</h4><p><b>Avoid · Mitigate · Transfer · Accept · Contingency plan · Management action.</b></p></div>
+      <div class="item"><h4>Transfer limit</h4><p>Insurance moves <b>money</b>, not reputation, not regulatory duty, not due-diligence liability.</p></div>
+      <div class="item"><h4>Lifecycle</h4><p>Context → Identify → Analyse → Evaluate → Treat, with <b>Communication</b> and <b>Monitoring</b> running alongside.</p></div>
+      <div class="item"><h4>Case root causes</h4><p>WannaCry: unpatched EOL Windows. Equifax: unpatched Struts CVE-2017-5638. Colonial: leaked VPN creds, no MFA. Yahoo: weak controls + undetected APT.</p></div>
+      <div class="item"><h4>Case scale</h4><p>WannaCry 200k systems/150 countries · Yahoo <b>3 billion</b> accounts · Equifax <b>147m</b> · Colonial $4.4m ransom.</p></div>
+      <div class="item"><h4>Business case</h4><p>Issue → Root cause → Solution → Effect. Inaction costs <b>5×–10×</b> proactive defence.</p></div>
+      <div class="item"><h4>Frameworks</h4><p>ISO 27001 = <b>certification</b>. SOC 2 = <b>attestation report</b>. NIST CSF = self-assessed. CIS = 18 controls.</p></div>
+      <div class="item"><h4>Qualitative caveat</h4><p>Always close a cost-benefit answer with what the arithmetic omitted: churn, fines, brand, contractual penalties.</p></div>
+    </div>
+  </div>
+
+
+
+  <footer class="foot">
+    Guide 4 of 6 · CSE487 Final. Built from Rakib Hossen's lecture material. All exercise arithmetic independently verified. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
