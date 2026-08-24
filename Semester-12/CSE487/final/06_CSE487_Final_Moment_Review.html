@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE487 — Final Moment Review</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+        <li><a href="#t0">The 2-day crunch plan</a></li>
+        <li><a href="#t1">Blockchain — one page</a></li>
+        <li><a href="#t2">SOC — one page</a></li>
+        <li><a href="#t3">VAPT — one page</a></li>
+        <li><a href="#t4">Risk Management — one page</a></li>
+        <li><a href="#t5">Cyber Law — one page</a></li>
+        <li><a href="#t6">Every formula</a></li>
+        <li><a href="#t7">Every numbered list</a></li>
+        <li><a href="#t8">Rapid-fire self-test</a></li>
+        <li><a href="#t9">Exam-day tactics</a></li>
+      </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE487 Final · Combined Review</p>
+      <h1>Final Moment Review — All Five Topics</h1>
+      <div class="meta">
+        <span><b>Course:</b> CSE487 — Cyber Security</span>
+        <span><b>Covers:</b> Blockchain · SOC · VAPT · Risk Management · Cyber Law</span>
+        <span><b>Based on:</b> Rakib Hossen, Asst. Professor, Dept. of CySE, UFTB — full lecture set</span>
+        <span><b>Exam:</b> ≈ 25 Aug 2026 (2 days)</span>
+      </div>
+  </header>
+
+    <section class="topic" id="t0">
+    <span class="topic-num">Read first</span>
+    <h2>The 2-day crunch plan</h2>
+    <p class="subtitle">Two days left. Here is where the hours go.</p>
+
+    <p>This file is the consolidation layer. The five individual guides teach; this
+    one <em>compresses</em>. Use it to revise from once you have been through the
+    topic guides, and use it alone on the morning of the exam.</p>
+
+    <p>With two days there is no time to learn everything evenly, so the plan below
+    front-loads the highest-yield material: the maths, which is predictable and
+    fully scoreable, and the cyber law sections, which are pure recall with
+    unambiguous answers. Theory comes after, because partial credit is available on
+    theory and is not available on a formula you got wrong.</p>
+
+    <h3>Day 1 — the scoreable material</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:16px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Block</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">What</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">How</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~2 hrs</b></td><td style="padding:9px 10px">Risk Management maths — the ALE chain</td><td style="padding:9px 0 9px 10px">Guide 4 §5 once, then <b>work Exercises 1–5 on paper</b> before reading any solution</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~2 hrs</b></td><td style="padding:9px 10px">SOC metrics — denominators and the confusion matrix</td><td style="padding:9px 0 9px 10px">Guide 2 §6–§7, then Exercises 1–4. Exercise 4 twice.</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1 hr</b></td><td style="padding:9px 10px">Cyber law sections</td><td style="padding:9px 0 9px 10px">Guide 5 §3. Learn the three memory patterns, then the six-scenario drill.</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1 hr</b></td><td style="padding:9px 10px">Merkle root</td><td style="padding:9px 0 9px 10px">Guide 1 §4. Build a 4-tx and a 5-tx tree by hand until the odd-leaf rule is automatic.</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>~30 min</b></td><td style="padding:9px 10px">Close the day</td><td style="padding:9px 0 9px 10px">Read the master cheat sheet at the bottom of this file. Sleep.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Day 2 — theory, structures and rehearsal</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:16px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Block</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">What</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">How</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1.5 hrs</b></td><td style="padding:9px 10px">VAPT — the completion argument</td><td style="padding:9px 0 9px 10px">Guide 3 §2 Question 2. Then <b>write it out from memory</b>, timed.</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1.5 hrs</b></td><td style="padding:9px 10px">The numbered structures</td><td style="padding:9px 0 9px 10px">§7 below — recite each list until fluent: 5 pillars, 3 pillars, 7 phases, 7 stages, 6 responses, 4 TI types.</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1.5 hrs</b></td><td style="padding:9px 10px">Story-question rehearsal</td><td style="padding:9px 0 9px 10px">Attempt one long story question per topic from the guides, closed-book, 20 min each.</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>~1 hr</b></td><td style="padding:9px 10px">Weak-spot pass</td><td style="padding:9px 0 9px 10px">Whatever you got wrong yesterday. Only that.</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>~30 min</b></td><td style="padding:9px 10px">Rapid-fire self-test</td><td style="padding:9px 0 9px 10px">§8 below. Then the master cheat sheet. Then stop.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Exam morning</span>
+      <p>Read <b>only</b> the master cheat sheet at the bottom of this file and the
+      formula sheet in §6. Nothing new on the last morning — new material at that
+      point displaces what you already have rather than adding to it.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">The one habit that raises marks most</span>
+      <p><b>Attempt every question before opening its solution.</b> Reading a worked
+      solution feels productive and mostly is not. The forgetting curve is beaten by
+      retrieval, not by re-reading — which is exactly why every solution in these
+      guides is collapsed by default.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01 · condensed</span>
+    <h2>Blockchain — one page</h2>
+
+    <p><b>Definition:</b> \( \text{Blockchain} = DL + CP + C \) — Distributed Ledger
+    + Consensus Protocol + Cryptography.</p>
+
+    <p><b>The 5 pillars (features):</b> Distribution (many copies), Decentralisation
+    (no single controller), Immutability (append-only), Tokenisation (assets
+    on-chain), Encryption/Cryptography. Mnemonic <b>D-D-I-T-E</b>.</p>
+
+    <p><b>Why it exists — the 3 banking failures:</b> central intermediary required;
+    single point of failure; censorship and latency.</p>
+
+    <p><b>The 3 scenarios:</b> Alice pays Bob $5 → <em>decentralisation</em> removes
+    the gatekeeper. Land ownership dispute → <em>immutability</em> removes silent
+    tampering. Charity fund transparency → <em>transparency</em> removes the need to
+    trust a report.</p>
+
+    <p><b>5 layers (top to bottom):</b> Application (dApps, smart contracts) → Data
+    (blocks, Merkle trees, signatures) → Consensus (PoW, PoS, DPoS, PBFT, PoET, PoAh,
+    Raft) → Network (P2P, sharding, DAG) → Execution (EVM, Docker, compilers).</p>
+
+    <p><b>Block anatomy.</b> <em>Header:</em> block number, timestamp, nonce,
+    <b>previous block hash</b>, <b>Merkle root</b>. <em>Body:</em> the transactions.</p>
+
+    <div class="formula">
+      <div class="label">Merkle root — the faculty's form</div>
+      \[ H1 = \text{Hash}(T1\|T2), \quad H2 = \text{Hash}(T3\|T4), \quad \text{Merkle Root} = \text{Hash}(H1\|H2) \]
+    </div>
+
+    <p><b>Odd leaf:</b> duplicate it and hash with itself — \(\text{Hash}(T5\|T5)\).
+    Repeat at every level with an odd count.</p>
+
+    <p><b>The tamper cascade</b> (the answer to "how is immutability achieved"):
+    alter a transaction → avalanche effect changes its leaf hash → Merkle root changes
+    → block header changes → block hash changes → the next block's previous-block-hash
+    no longer matches → honest nodes reject it. To hide it the attacker must re-mine
+    every subsequent block faster than the whole honest network — the 51% problem.</p>
+
+    <p><b>Transaction flow (6 steps):</b> request &amp; sign with private key →
+    propagate by gossip → miners assemble a candidate block → consensus (vary the
+    nonce until the hash meets the difficulty target) → append via previous block hash
+    → state settlement.</p>
+
+    <p><b>Digital signatures:</b> sign with the <b>private</b> key, verify with the
+    <b>public</b> key. Proves authenticity <em>and</em> integrity.</p>
+
+    <p><b>Centralised vs decentralised — the six rows:</b> control (single authority /
+    peer nodes), data storage (one server / replicated), message modification (silent /
+    tamper-evident), failure risk (SPOF / fault-tolerant), trust model (<b>entity /
+    protocol</b>), example (WhatsApp, banking / Bitcoin, Ethereum).</p>
+
+    <p><b>Consensus:</b> <em>PoW</em> — miners compete on nonce-hashing; secured by
+    electricity; Bitcoin; high energy cost. <em>PoS</em> — validators selected by
+    stake weight; secured by collateral at risk; Ethereum; low energy, influence
+    tracks wealth. <em>PBFT</em> survives lying (Byzantine) nodes; <em>Raft</em>
+    survives only crashes.</p>
+
+    <p><b>Categories:</b> Public = permissionless, anyone (Ethereum, Polygon, Solana).
+    Private = one organisation (Hyperledger Fabric, Quorum). Consortium = a known
+    group (Corda) — the answer for multi-bank or inter-institutional scenarios.</p>
+
+    <div class="callout watch">
+      <span class="tag">The trap</span>
+      <p><b>Merkle root ≠ previous block hash.</b> Merkle root secures transactions
+      <em>inside</em> one block, downwards. Previous block hash links blocks
+      <em>to each other</em>, backwards. Both live in the header.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02 · condensed</span>
+    <h2>SOC — one page</h2>
+
+    <p><b>Definition:</b> a centralised organisational unit and facility responsible
+    for <b>continuously monitoring, detecting, analysing and responding</b> to
+    cybersecurity threats across an enterprise infrastructure.</p>
+
+    <p><b>6 core functions:</b> prevention &amp; proactive monitoring · alert
+    management &amp; triage · incident response · log management · security
+    intelligence &amp; threat hunting · security posture refinement.</p>
+
+    <p><b>3 pillars:</b> <b>People</b> (Tier 1/2/3, SOC Manager, IR Coordinator →
+    reports to CISO) · <b>Process</b> (SOPs = general workflows; playbooks =
+    attack-specific steps) · <b>Technology</b> (SIEM, SOAR, EDR/XDR, TIP).</p>
+
+    <p><b>Tier ladder — the question each answers:</b> Tier 1 "is it real?" (triage,
+    false-positive filtering, escalate) → Tier 2 "what happened, how far, contain it"
+    (deep-dive, scope analysis, isolation, ACL blocks) → Tier 3 "what did we miss?"
+    (proactive hunting, APTs, reverse engineering, VA/PT, rule refinement) → Manager
+    "how are we performing?" (metrics, staffing, CISO reporting).</p>
+
+    <p><b>SIEM vs SOAR:</b> SIEM <em>detects</em> (aggregates and correlates logs into
+    alerts — Splunk, QRadar, Wazuh). SOAR <em>acts</em> (automated playbooks execute
+    containment).</p>
+
+    <p><b>EDR vs XDR:</b> EDR = endpoints only, host telemetry, device-level
+    visibility, isolate/kill process. XDR = endpoints + network + cloud + identity +
+    email, cross-telemetry correlation, multi-stage attack chains, multi-vector
+    response.</p>
+
+    <p><b>7-phase incident response lifecycle:</b> Alert → Triage → Investigation →
+    <b>Containment → Eradication → Recovery</b> → Reporting &amp; continuous
+    improvement. <em>Order is examinable</em>: stop the bleeding, remove the cause,
+    then restore.</p>
+
+    <p><b>4 types of threat intelligence:</b> <b>Strategic</b> (trends, business
+    impact → CISO, board) · <b>Tactical</b> (IoCs, signatures → Tier 1/2, automated
+    blocking) · <b>Operational</b> (campaigns, motivations, TTPs → incident
+    responders) · <b>Technical</b> (artefacts, malware tooling, exploits →
+    researchers, Tier 3).</p>
+
+    <p><b>Pyramid of Pain</b> (bottom = easy for attacker to change, top = hard):
+    hash values → IP addresses → domain names → network/host artefacts → tools
+    (Mimikatz, Cobalt Strike) → <b>TTPs</b>. MITRE ATT&amp;CK formalises the top:
+    <em>tactics</em> = goal, <em>techniques</em> = method, <em>procedures</em> = the
+    exact observed implementation.</p>
+
+    <p><b>STIX vs TAXII:</b> STIX = the <b>language</b>; TAXII = the <b>taxi</b> that
+    carries it over HTTPS.</p>
+
+    <p><b>4 correlation rules:</b> botnet (firewall/IDS/DNS/proxy → outbound to known
+    C2 → auto-block) · virus outbreak (EDR → ≥3 endpoints in 10 min → isolate) · SQL
+    injection (WAF/web logs → ≥5 signatures → block IP, alert Tier 2) · brute force
+    (AD/VPN → <b>multiple failures followed by a success</b> → lock account, MFA
+    step-up).</p>
+
+    <p><b>3 challenges:</b> alert fatigue · skills shortage (Tier 2/3) · high
+    infrastructure cost (licensing, multi-TB log retention).</p>
+
+    <div class="callout watch">
+      <span class="tag">The trap</span>
+      <p><b>Precision is about the alerts you raised; recall is about the attacks that
+      existed.</b> Recall matters more to a SOC — a false positive wastes an hour, a
+      false negative is a live breach nobody sees.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03 · condensed</span>
+    <h2>VAPT — one page</h2>
+
+    <p><b>Definition:</b> an end-to-end evaluation of an organisation's defensive
+    posture <b>combining</b> automated vulnerability discovery with simulated
+    adversarial exploitation.</p>
+
+    <p><b>The two questions:</b> VA asks "what is weak or unpatched?" · PT asks "can
+    these weaknesses be exploited to gain deep access?"</p>
+
+    <p><b>The one axis:</b> VA = broad, shallow, non-intrusive, automated,
+    continuous, cheap → produces a vulnerability checklist → baseline hygiene and
+    compliance. PT = narrow, deep, intrusive, automated <em>plus manual</em>,
+    periodic, expensive → produces a remediation report based on demonstrated exploits
+    → proof of exploitability and defence readiness.</p>
+
+    <div class="callout key">
+      <span class="tag">The sentence that answers most VAPT questions</span>
+      <p><b>VA measures exposure. PT measures risk.</b> VA gives breadth without
+      proof; PT gives proof without breadth. Together they turn a long unprioritised
+      list into a short evidence-backed one.</p>
+    </div>
+
+    <p><b>What VA cannot do:</b> prove exploitability · chain several findings into an
+    attack path · assess business impact · test whether the SOC would notice · avoid
+    false positives. <b>What PT cannot do:</b> cover the estate · run continuously
+    (it is a snapshot that ages) · scale affordably.</p>
+
+    <p><b>5 scan types:</b> network-based (ports, unencrypted services, weak ACLs) ·
+    host-based (OS config, missing patches, registry) · wireless (rogue APs, WEP/WPA)
+    · application (SQLi, XSS, CSRF, APIs) · database (accounts, default credentials,
+    weak SQL).</p>
+
+    <p><b>Host discovery:</b> ARP for the local subnet, ICMP echo for wider ranges.</p>
+
+    <p><b>SAST vs DAST:</b> <em>Static = still</em> — scans source code not running
+    (white-box in character). <em>Dynamic = running</em> — scans a live application in
+    real time (black-box in character).</p>
+
+    <p><b>7-stage PT methodology:</b> 1 Pre-engagement (rules of engagement, scope,
+    windows, <b>legal authorisation</b>) → 2 Reconnaissance (OSINT: DNS, mail headers,
+    infrastructure) → 3 Scanning &amp; enumeration (Nmap, banner grabbing) → 4 Gaining
+    access (SQLi, buffer overflow, session hijacking, password cracking) → 5
+    Maintaining access (reverse shells, scheduled jobs, backdoors, C2) → 6 Covering
+    tracks (<b>testing whether logging caught it</b>) → 7 Reporting (PoC, business
+    impact, remediation).</p>
+
+    <p><b>3 approaches:</b> black box = zero knowledge (external attacker, most
+    realistic, slowest) · gray box = partial, low-privilege credentials or diagrams
+    (insider or post-foothold, best value) · white box = full source and architecture
+    (most coverage, least realistic).</p>
+
+    <p><b>Tools by stage:</b> discovery — Nmap · vulnerability assessment — Nessus,
+    OpenVAS, Nikto · web app testing — Burp Suite, OWASP ZAP · packet analysis —
+    Wireshark. Free equivalents: Nessus→OpenVAS, Burp→ZAP.</p>
+
+    <p><b>OWASP smart contract 2026 changes:</b> SC01 Access Control and SC06
+    Unchecked External Calls <em>unchanged</em>. NEW: Arithmetic Errors (SC07), Proxy
+    &amp; Upgradeability (SC10). REMOVED: Insecure Randomness, DoS. Elevated under new
+    names: Business Logic (SC02), Flash Loan-Facilitated Attacks (SC04).</p>
+
+    <p><b>5 benefits:</b> safeguard user data · real-time risk visibility from
+    demonstrated exploit paths · regulatory compliance (ISO 27001, PCI-DSS, HIPAA) ·
+    strengthen incident response by testing the blue team · optimise security budgets
+    with data-backed metrics.</p>
+
+    <div class="callout watch">
+      <span class="tag">The trap</span>
+      <p><b>Stage 6 is not the tester hiding.</b> Covering tracks measures whether the
+      SOC's logging captured the intrusion and whether an attacker could purge the
+      evidence. And <b>stage 1 is not optional paperwork</b> — without written
+      authorisation the same acts are offences under Sections 18 and 32.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04 · condensed</span>
+    <h2>Risk Management — one page</h2>
+
+    <p><b>5 pillars of Information Assurance:</b> Confidentiality · Integrity ·
+    Availability · <b>Authentication</b> (are you who you claim — before) ·
+    <b>Non-repudiation</b> (you cannot deny it — after).</p>
+
+    <p><b>The four concepts:</b> <em>Asset</em> = valuable hardware, software, data or
+    <b>personnel</b>. <em>Threat</em> = a potential event capable of causing harm
+    (external, you cannot remove it). <em>Vulnerability</em> = a flaw or
+    misconfiguration in <em>your</em> defences (you can). <em>Risk</em> = the net
+    negative consequence when a threat exploits a vulnerability.</p>
+
+    <div class="formula">
+      <div class="label">The governing equation</div>
+      \[ \text{Risk} = \text{Likelihood} \times \text{Impact} \]
+    </div>
+
+    <p><b>Matrix values:</b> likelihood High 1.0 / Medium 0.5 / Low 0.1; impact High
+    100 / Moderate 50 / Low 10. <b>Bands:</b> Low 1–10, Medium &gt;10–50, High
+    &gt;50–100. (Exactly 10 is Low; exactly 50 is Medium.)</p>
+
+    <p><b>Lifecycle:</b> Establish context → Risk identification → Risk analysis
+    (produces numbers) → Risk evaluation (produces decisions) → Risk treatment, with
+    <b>communication &amp; consultation</b> and <b>monitoring &amp; critical
+    review</b> running alongside all five.</p>
+
+    <p><b>6 treatment responses:</b> <b>Avoid</b> (remove the asset or function — the
+    only route to zero) · <b>Mitigate</b> (controls to cut likelihood or impact) ·
+    <b>Transfer</b> (insurance, outsourcing — moves <em>money</em> only) ·
+    <b>Accept</b> (when mitigation costs more than the loss — a documented decision) ·
+    <b>Contingency plan</b> (DR and IR playbooks — reduces impact) · <b>Management
+    action</b> (process change, training, restructuring).</p>
+
+    <p><b>Choosing one:</b> essential function? no → Avoid. Mitigation &lt; ALE? yes →
+    Mitigate. Purely financial and insurable? → Transfer. Mitigation &gt; loss? →
+    Accept. Add a contingency plan alongside whatever you chose.</p>
+
+    <p><b>Banking asset inventory:</b> core software (CBS, switching engine — High) ·
+    applications (DMS, HR, portals) · databases (CBS DB, credentials, source code —
+    High) · <b>human resources</b> (C-suite, IT ops, end-users — phishing
+    susceptibility as a vulnerability).</p>
+
+    <p><b>Classroom assessment columns:</b> asset · vulnerability · risk · impact ·
+    likelihood · priority (= Impact × Likelihood) · control · <b>motivation</b> ·
+    <b>attack type</b>. Highest-rated: USB drives (Critical), Wi-Fi router and student
+    PCs/laptops (Very High).</p>
+
+    <p><b>4 case studies — root causes:</b> <em>WannaCry</em> (May 2017, EternalBlue/
+    SMBv1, 200k systems/150 countries, NHS; kill switch; root cause = unpatched
+    end-of-life Windows) · <em>Yahoo</em> (2013–14, disclosed 2016, <b>3 billion</b>
+    accounts, $350m price cut; weak controls, outdated hashing, undetected APT) ·
+    <em>Equifax</em> (July 2017, Apache Struts CVE-2017-5638, <b>147m</b> consumers,
+    CEO/CIO/CISO resigned; failed patch management) · <em>Colonial Pipeline</em> (May
+    2021, DarkSide, $4.4m ransom / $2.3m recovered; <b>leaked VPN credentials without
+    MFA</b>).</p>
+
+    <p><b>Business case model:</b> Issue → Root cause → Solution → Effect. Roadmap:
+    short-term MFA + critical patches + awareness; medium-term SIEM/SOC + policy +
+    audits; long-term zero-trust + culture. <b>Inaction costs 5×–10× proactive
+    defence.</b></p>
+
+    <p><b>Frameworks:</b> ISO 27001 = ISMS, <b>certifiable</b>. SOC 2 =
+    <b>attestation report</b> from a CPA firm, not a certification. NIST CSF =
+    Identify/Protect/Detect/Respond/Recover, self-assessed. PCI DSS = card data, QSA
+    or SAQ. CIS = <b>18</b> prioritised controls.</p>
+
+    <div class="callout watch">
+      <span class="tag">The trap</span>
+      <p><b>Insurance does not remove the risk.</b> Transfer moves financial liability
+      — not reputation, not regulatory sanction, and not the due-diligence obligation.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05 · condensed</span>
+    <h2>Cyber Law — one page</h2>
+
+    <p><b>Definition:</b> the comprehensive legal framework governing internet
+    operations, digital telecommunications, computing hardware, electronic data
+    privacy and online transactions.</p>
+
+    <p><b>6 domains:</b> cybercrime · data privacy (GDPR, cross-border flows) ·
+    intellectual property (copyright, piracy, patents) · electronic commerce (smart
+    contracts, digital signatures, consumer rights) · national security (critical
+    infrastructure, cyber terrorism) · freedom of speech (the only <em>balancing</em>
+    domain — expression versus defamation).</p>
+
+    <p><b>5 cybercrime categories:</b> DDoS &amp; botnets · identity theft &amp;
+    social engineering · cyberstalking &amp; harassment · PUPs &amp; malware ·
+    software piracy.</p>
+
+    <p><b>Cyber insurance covers:</b> direct financial loss (phishing, invoice
+    redirection, spoofing) · fraudulent transactions · system restoration · extortion
+    losses and forensics · legal liability and defence. <em>All of it is money.</em></p>
+
+    <h3>The sections — the examinable core</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:16px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 8px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">§</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Offence</th>
+          <th style="padding:8px 0 8px 8px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Max penalty</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>18</b></td><td style="padding:9px 8px">Unauthorised computer access</td><td style="padding:9px 0 9px 8px">Simple: <b>6 months</b> / <b>200,000 BDT</b> · Malicious or substantial harm: <b>3 years</b> / <b>1,000,000 BDT</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>19</b></td><td style="padding:9px 8px">Damage to systems, malware infiltration, data corruption, DoS</td><td style="padding:9px 0 9px 8px"><b>7 years</b> / <b>11,000,000 BDT</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>20</b></td><td style="padding:9px 8px">Source code modification &amp; tampering</td><td style="padding:9px 0 9px 8px"><b>3 years</b> / <b>300,000 BDT</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>22</b></td><td style="padding:9px 8px">Digital &amp; electronic forgery</td><td style="padding:9px 0 9px 8px"><b>5 years</b> / <b>500,000 BDT</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>27</b></td><td style="padding:9px 8px">Cyber terrorism &amp; infrastructure sabotage</td><td style="padding:9px 0 9px 8px"><b>14 years</b> / <b>10,000,000 BDT</b></td></tr>
+        <tr><td style="padding:9px 8px 9px 0"><b>32</b></td><td style="padding:9px 8px">Hacking — unauthorised deletion, modification, network intrusion</td><td style="padding:9px 0 9px 8px"><b>14 years</b> / <b>10,000,000 BDT</b></td></tr>
+      </tbody>
+    </table>
+
+    <p><b>Memory patterns:</b> §20 → 3 yrs / 300k and §22 → 5 yrs / 500k (fine = years
+    × 100,000). §27 and §32 are identical twins at the ceiling. §18 is the only
+    two-tier section. §19 has the <em>highest fine</em> at 11,000,000 BDT despite a
+    lower sentence.</p>
+
+    <p><b>The boundary that decides scenarios:</b> got in and only looked → <b>18</b>
+    · caused damage, deployed malware, ran a DoS → <b>19</b> · intruded and
+    deleted/modified data → <b>32</b> · touched source code → <b>20</b> · faked a
+    signature or identity → <b>22</b> · targeted national security or critical
+    infrastructure → <b>27</b>. Real incidents engage several — list them all, then
+    name the most serious.</p>
+
+    <p><b>Duty of due diligence — 3 obligations:</b> 1. <b>Preserve forensic
+    evidence</b> (uncorrupted access logs, packet captures, memory dumps). 2.
+    <b>Report promptly</b> to law enforcement and regulators — <b>BGD e-Gov CIRT</b>.
+    3. <b>Liability persists:</b> organisations maintain legal liability even when
+    victimised; failure to exercise reasonable cybersecurity diligence attracts severe
+    civil regulatory penalties.</p>
+
+    <p><b>Ethics — the don'ts:</b> never use privileged data for private profit ·
+    never deploy pirated or unvetted software · never shift blame to colleagues or
+    <b>conceal breaches</b>.</p>
+
+    <div class="callout watch">
+      <span class="tag">The trap</span>
+      <p><b>Wiping the compromised server first destroys the evidence.</b> Preserve
+      before you contain, contain before you eradicate, eradicate before you recover.
+      And <b>a pen tester's authorisation is scope-bound</b> — your client cannot
+      consent on a third party's behalf.</p>
+    </div>
+  </section>
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>Every formula, in one place</h2>
+    <p class="subtitle">The sheet to read on the exam morning.</p>
+
+    <h3>Risk management — the quantitative chain</h3>
+    <div class="formula">
+      <div class="label">The chain, in order of use</div>
+      \[ \text{EF} = \frac{\text{Loss Amount}}{\text{Total Asset Value}} \qquad
+         \text{SLE} = \text{AV} \times \text{EF} \qquad
+         \text{ALE} = \text{SLE} \times \text{ARO} \]
+      \[ \text{Risk} = \text{Likelihood} \times \text{Impact} \qquad
+         \text{Net Benefit} = \text{Annual Savings} - \text{TCO} \]
+      \[ \text{ROI} = \frac{\text{Net Benefit}}{\text{TCO}} \times 100 \qquad
+         \text{ROSI} = \frac{\text{Loss Avoided} - \text{Cost}}{\text{Cost}} \times 100 \]
+    </div>
+    <p><b>Rules that go with them.</b> ARO may be fractional — once in 10 years =
+    0.1; 3 events in 4 years = 0.75. Annualise any monthly cost (<b>× 12</b>) before
+    comparing. Match the AV period to the incident period. For a control that
+    <em>reduces</em> rather than eliminates, savings =
+    \(\text{ALE}_{\text{before}} - \text{ALE}_{\text{after}}\).</p>
+
+    <h3>SOC — time metrics</h3>
+    <div class="formula">
+      <div class="label">Means: total time ÷ a count</div>
+      \[ \text{MTTD} = \frac{\text{Total Detection Time}}{\text{Incidents}} \qquad
+         \text{MTTR}_{\text{resp}} = \frac{\text{Total Response Time}}{\text{Incidents}} \qquad
+         \text{MTTR}_{\text{rec}} = \frac{\text{Total Recovery Time}}{\text{Incidents}} \]
+      \[ \text{MTTA} = \frac{\text{Total Ack. Time}}{\textbf{Alerts}} \qquad
+         \text{MTBF} = \frac{\text{Operating Time}}{\text{Failures}} \qquad
+         \text{MTBI} = \frac{\text{Operating Time}}{\text{Incidents}} \]
+    </div>
+
+    <h3>SOC — rate and quality metrics</h3>
+    <div class="formula">
+      <div class="label">Rates: part ÷ whole × 100</div>
+      \[ \text{Resolution Rate} = \frac{\text{Resolved}}{\text{Incidents}} \times 100 \qquad
+         \text{Detection Rate} = \frac{\text{Detected}}{\textbf{Actual Threats}} \times 100 \]
+      \[ \text{FPR}_{\text{operational}} = \frac{FP}{\textbf{Total Alerts}} \times 100 \qquad
+         \text{FPR}_{\text{matrix}} = \frac{FP}{FP + TN} \times 100 \]
+      \[ \text{FNR} = \frac{FN}{TP + FN} \times 100 \qquad
+         \text{Recall (TPR)} = \frac{TP}{TP + FN} \times 100 \qquad
+         \text{Precision} = \frac{TP}{TP + FP} \times 100 \]
+      \[ \text{Accuracy} = \frac{TP + TN}{TP+FN+FP+TN} \times 100 \qquad
+         F1 = 2 \times \frac{P \times R}{P + R} \]
+    </div>
+    <p><b>Rules.</b> Use the matrix FPR when TN is given, the operational one when
+    only a total alert count is given — and <em>say which you used</em>. Compute F1
+    from <b>decimals</b>, not percentages. Detection rate + FNR = 100%, always.</p>
+
+    <h3>SOC — operational metrics</h3>
+    <div class="formula">
+      <div class="label">Operational</div>
+      \[ \text{SLA Compliance} = \frac{\text{Within SLA}}{\text{Incidents}} \times 100 \qquad
+         \text{Escalation Rate} = \frac{\text{Escalated}}{\text{Incidents}} \times 100 \]
+      \[ \text{Analyst Utilisation} = \frac{\text{Time Handling}}{\text{Total Working Time}} \times 100 \qquad
+         \text{Alerts per Analyst} = \frac{\text{Alerts}}{\text{Analysts}} \]
+      \[ \text{Cost per Incident} = \frac{\text{SOC Cost}}{\text{Incidents}} \qquad
+         \text{Containment Rate} = \frac{\text{Contained}}{\textbf{Detected Threats}} \times 100 \]
+      \[ \text{Automation Rate} = \frac{\text{Automated Responses}}{\text{Total Responses}} \times 100 \qquad
+         \text{Log Coverage} = \frac{\text{Systems Sending Logs}}{\textbf{Total Systems}} \times 100 \]
+      \[ \text{Security Incident Rate} = \frac{\text{Incidents}}{\textbf{Total Systems}} \times 100 \qquad
+         \text{Percentage Change} = \frac{\text{old} - \text{new}}{\textbf{old}} \times 100 \]
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The denominator map — the single most useful thing here</span>
+      <p><b>÷ Incidents:</b> MTTD, MTTR (both), MTBI, resolution rate, SLA
+      compliance, escalation rate, closure rate, cost per incident.<br>
+      <b>÷ Alerts:</b> MTTA, operational FPR, alert accuracy, alerts per analyst.<br>
+      <b>÷ Actual attacks:</b> detection rate, FNR, recall.<br>
+      <b>÷ Detected threats:</b> containment rate.<br>
+      <b>÷ Total systems:</b> log coverage, security incident rate.<br>
+      <b>÷ Failures:</b> MTBF. <b>÷ Analysts:</b> alerts per analyst.
+      <b>÷ Total responses:</b> automation rate.</p>
+      <p><b>Write the denominator down before you touch the calculator.</b> Almost
+      every lost mark in the SOC maths is a wrong denominator, not wrong arithmetic.</p>
+    </div>
+
+    <h3>Blockchain</h3>
+    <div class="formula">
+      <div class="label">Merkle tree</div>
+      \[ H1 = \text{Hash}(T1\|T2) \quad H2 = \text{Hash}(T3\|T4) \quad \text{Root} = \text{Hash}(H1\|H2) \]
+      \[ \text{Odd leaf: } \text{Hash}(T_n \| T_n) \qquad\qquad \text{Blockchain} = DL + CP + C \]
+    </div>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Every numbered list, in one place</h2>
+    <p class="subtitle">Recite these until fluent. Numbered lists are the cheapest marks on any paper.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;margin:16px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">List</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">The items</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 blockchain pillars</b></td><td style="padding:9px 0 9px 10px">Distribution · Decentralisation · Immutability · Tokenisation · Encryption</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 blockchain layers</b></td><td style="padding:9px 0 9px 10px">Application · Data · Consensus · Network · Execution</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>6 transaction steps</b></td><td style="padding:9px 0 9px 10px">Request &amp; sign · Propagate · Block creation · Consensus · Append · Settlement</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 block header fields</b></td><td style="padding:9px 0 9px 10px">Block number · Timestamp · Nonce · Previous block hash · Merkle root</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>3 SOC pillars</b></td><td style="padding:9px 0 9px 10px">People · Process · Technology</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>6 SOC functions</b></td><td style="padding:9px 0 9px 10px">Prevention/monitoring · Alert triage · Incident response · Log management · Threat intel &amp; hunting · Posture refinement</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>7 IR phases</b></td><td style="padding:9px 0 9px 10px">Alert · Triage · Investigation · Containment · Eradication · Recovery · Reporting</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>4 TI types</b></td><td style="padding:9px 0 9px 10px">Strategic · Tactical · Operational · Technical</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>6 Pyramid of Pain levels</b></td><td style="padding:9px 0 9px 10px">Hashes · IPs · Domains · Network/host artefacts · Tools · TTPs</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 scan types</b></td><td style="padding:9px 0 9px 10px">Network · Host · Wireless · Application · Database</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>7 PT stages</b></td><td style="padding:9px 0 9px 10px">Pre-engagement · Recon · Scanning/enumeration · Gaining access · Maintaining access · Covering tracks · Reporting</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>3 PT approaches</b></td><td style="padding:9px 0 9px 10px">Black box · Gray box · White box</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>7 VAPT tools</b></td><td style="padding:9px 0 9px 10px">Nmap · Nessus · OpenVAS · Wireshark · Nikto · Burp Suite · OWASP ZAP</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 IA pillars</b></td><td style="padding:9px 0 9px 10px">Confidentiality · Integrity · Availability · Authentication · Non-repudiation</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 lifecycle stages</b></td><td style="padding:9px 0 9px 10px">Context · Identification · Analysis · Evaluation · Treatment (+ communication, + monitoring)</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>6 treatment responses</b></td><td style="padding:9px 0 9px 10px">Avoid · Mitigate · Transfer · Accept · Contingency plan · Management action</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>6 cyber law domains</b></td><td style="padding:9px 0 9px 10px">Cybercrime · Data privacy · IP · E-commerce · National security · Freedom of speech</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 cybercrime categories</b></td><td style="padding:9px 0 9px 10px">DDoS/botnets · Identity theft &amp; social engineering · Cyberstalking · PUPs/malware · Software piracy</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>5 insurance coverages</b></td><td style="padding:9px 0 9px 10px">Direct loss · Fraudulent transactions · System restoration · Extortion · Legal liability</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>3 due diligence duties</b></td><td style="padding:9px 0 9px 10px">Preserve evidence · Report to CIRT · Liability persists</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>Rapid-fire self-test</h2>
+    <p class="subtitle">Fifty questions across all five topics. Answer aloud, then reveal.</p>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Round 1 — Blockchain <span class="diff">· 10 questions</span></span>
+      </div>
+      <div class="qbody">
+        <ol>
+          <li>Write the faculty's definition of blockchain as an equation.</li>
+          <li>Name the five pillars.</li>
+          <li>Give the Merkle root formula for four transactions.</li>
+          <li>What happens with five transactions?</li>
+          <li>Which two fields in the block header do the structural work, and what does each do?</li>
+          <li>Which key signs a transaction, and which verifies it?</li>
+          <li>Name the five layers, top to bottom.</li>
+          <li>What is a nonce, and which consensus protocol uses it?</li>
+          <li>Which blockchain category suits six mutually distrusting banks?</li>
+          <li>What is the difference between PBFT and Raft?</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show answers</summary>
+        <div class="soln-body">
+          <p><b>1.</b> \( \text{Blockchain} = DL + CP + C \) — Distributed Ledger +
+          Consensus Protocol + Cryptography.</p>
+          <p><b>2.</b> Distribution, Decentralisation, Immutability, Tokenisation,
+          Encryption.</p>
+          <p><b>3.</b> \(H1=\text{Hash}(T1\|T2)\), \(H2=\text{Hash}(T3\|T4)\),
+          \(\text{Root}=\text{Hash}(H1\|H2)\).</p>
+          <p><b>4.</b> The unpaired leaf is duplicated and hashed with itself —
+          \(\text{Hash}(T5\|T5)\) — and the rule repeats at any level with an odd
+          count.</p>
+          <p><b>5.</b> The <b>previous block hash</b> links block \(N\) to \(N-1\),
+          making it a chain and securing history. The <b>Merkle root</b> fingerprints
+          all transactions in the body, making the block's contents tamper-evident.</p>
+          <p><b>6.</b> Sign with the <b>private</b> key; verify with the <b>public</b>
+          key.</p>
+          <p><b>7.</b> Application, Data, Consensus, Network, Execution.</p>
+          <p><b>8.</b> An arbitrary number varied until the block header's hash falls
+          below the difficulty target. Used by <b>Proof of Work</b>.</p>
+          <p><b>9.</b> <b>Consortium</b> (Corda, Hyperledger) — shared governance
+          across known members, permissioned so it is not publicly readable.</p>
+          <p><b>10.</b> PBFT is <b>Byzantine</b> fault tolerant — it survives nodes
+          that actively lie. Raft is only <b>crash</b> fault tolerant.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Round 2 — SOC theory <span class="diff">· 10 questions</span></span>
+      </div>
+      <div class="qbody">
+        <ol>
+          <li>Give the definition of a SOC.</li>
+          <li>Name the three pillars.</li>
+          <li>What is the difference between an SOP and a playbook?</li>
+          <li>What question does each analyst tier answer?</li>
+          <li>Which tier's work starts <em>without</em> an alert?</li>
+          <li>Difference between SIEM and SOAR?</li>
+          <li>Name the seven incident response phases in order.</li>
+          <li>Why must containment precede recovery?</li>
+          <li>Name the four threat intelligence types and their consumers.</li>
+          <li>STIX or TAXII — which is the transport protocol?</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show answers</summary>
+        <div class="soln-body">
+          <p><b>1.</b> A centralised organisational unit and facility responsible for
+          continuously monitoring, detecting, analysing and responding to
+          cybersecurity threats across an enterprise infrastructure.</p>
+          <p><b>2.</b> People, Process, Technology.</p>
+          <p><b>3.</b> SOPs are <b>general</b> documented workflows — alert handling,
+          escalation matrices, cross-team communication. Playbooks are
+          <b>attack-specific</b> step-by-step responses (phishing, ransomware,
+          brute-force, SQLi).</p>
+          <p><b>4.</b> Tier 1: "is it real?" · Tier 2: "what happened and how do we
+          contain it?" · Tier 3: "what have we not detected at all?" · Manager: "how
+          well is the SOC performing?"</p>
+          <p><b>5.</b> <b>Tier 3</b> — proactive threat hunting starts without any
+          alert having fired.</p>
+          <p><b>6.</b> SIEM <b>detects</b>: aggregates and correlates logs into
+          alerts. SOAR <b>acts</b>: executes automated response playbooks.</p>
+          <p><b>7.</b> Alert, Triage, Investigation, Containment, Eradication,
+          Recovery, Reporting &amp; continuous improvement.</p>
+          <p><b>8.</b> Restoring systems from backup while the attacker still holds
+          access simply re-infects them. Stop the spread, remove the cause, then
+          restore.</p>
+          <p><b>9.</b> Strategic → CISO/board · Tactical → Tier 1/2 and automated
+          blocking · Operational → incident responders · Technical → researchers and
+          Tier 3.</p>
+          <p><b>10.</b> <b>TAXII</b> is the transport (over HTTPS). STIX is the
+          structured language.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Round 3 — SOC maths <span class="diff">· 10 questions</span></span>
+      </div>
+      <div class="qbody">
+        <ol>
+          <li>MTTD formula, and what denominator?</li>
+          <li>MTTA uses which denominator, and why is it different?</li>
+          <li>Detection rate formula.</li>
+          <li>Precision formula — and in one phrase, what is it about?</li>
+          <li>Recall formula — and in one phrase, what is it about?</li>
+          <li>Which matters more to a SOC, and why?</li>
+          <li>720 min detection time over 60 incidents — MTTD?</li>
+          <li>TP=180, FP=20 — precision?</li>
+          <li>TP=180, FN=20 — recall?</li>
+          <li>Why is accuracy a misleading metric in security?</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show answers</summary>
+        <div class="soln-body">
+          <p><b>1.</b> \( \text{MTTD} = \frac{\text{Total Detection Time}}{\text{Number of Incidents}} \)
+          — denominator is <b>incidents</b>.</p>
+          <p><b>2.</b> <b>Alerts.</b> Acknowledgement happens to alerts before they
+          are ever classified as incidents.</p>
+          <p><b>3.</b> \( \frac{\text{Detected Threats}}{\text{Actual Threats}} \times 100 \).</p>
+          <p><b>4.</b> \( \frac{TP}{TP+FP} \times 100 \) — about <b>the alerts you
+          raised</b>: what fraction were real?</p>
+          <p><b>5.</b> \( \frac{TP}{TP+FN} \times 100 \) — about <b>the attacks that
+          existed</b>: what fraction did you catch?</p>
+          <p><b>6.</b> <b>Recall.</b> A false positive costs an analyst an hour; a
+          false negative is a live breach nobody can see, and the attacker keeps
+          escalating for as long as it goes undetected.</p>
+          <p><b>7.</b> \( 720 / 60 = \mathbf{12} \) minutes.</p>
+          <p><b>8.</b> \( 180/200 \times 100 = \mathbf{90\%} \).</p>
+          <p><b>9.</b> \( 180/200 \times 100 = \mathbf{90\%} \). (Same arithmetic,
+          different meaning — note the denominator changed from FP to FN.)</p>
+          <p><b>10.</b> True negatives dominate security data, so a detector that
+          flagged <em>nothing</em> still scores very high accuracy while catching zero
+          attacks.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Round 4 — VAPT <span class="diff">· 10 questions</span></span>
+      </div>
+      <div class="qbody">
+        <ol>
+          <li>What question does VA ask? What question does PT ask?</li>
+          <li>Give the one-sentence completion argument.</li>
+          <li>Name four things a VA cannot do.</li>
+          <li>Name the five scan types.</li>
+          <li>SAST or DAST — which needs source code?</li>
+          <li>Name the seven PT stages in order.</li>
+          <li>What actually happens in "covering tracks"?</li>
+          <li>Which approach gives a tester low-privilege credentials?</li>
+          <li>Which tool for port scanning? Which for web app proxying?</li>
+          <li>Which two entries are new in the 2026 OWASP smart contract list?</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show answers</summary>
+        <div class="soln-body">
+          <p><b>1.</b> VA: "what is weak or unpatched?" PT: "can these weaknesses be
+          exploited to gain deep access?"</p>
+          <p><b>2.</b> <b>VA measures exposure; PT measures risk.</b> VA gives breadth
+          without proof, PT gives proof without breadth.</p>
+          <p><b>3.</b> Prove exploitability · chain findings into an attack path ·
+          assess business impact · test whether the SOC would detect it. (Also: it
+          produces false positives.)</p>
+          <p><b>4.</b> Network-based, host-based, wireless, application, database.</p>
+          <p><b>5.</b> <b>SAST</b> — it scans source code in a non-running state.</p>
+          <p><b>6.</b> Pre-engagement, Reconnaissance, Scanning &amp; enumeration,
+          Gaining access, Maintaining access, Covering tracks, Reporting.</p>
+          <p><b>7.</b> The tester <b>assesses whether the SOC's logging captured the
+          intrusion</b> and whether forensic traces could be modified or purged. It is
+          a test of the defenders, not concealment.</p>
+          <p><b>8.</b> <b>Gray box</b> — partial knowledge, simulating a foothold or a
+          malicious insider.</p>
+          <p><b>9.</b> <b>Nmap</b> for port scanning; <b>Burp Suite</b> (or OWASP ZAP)
+          for web application proxying.</p>
+          <p><b>10.</b> <b>Arithmetic Errors</b> (SC07) and <b>Proxy &amp;
+          Upgradeability Vulnerabilities</b> (SC10). Removed: Insecure Randomness and
+          DoS.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Round 5 — Risk Management &amp; Cyber Law <span class="diff">· 10 questions</span></span>
+      </div>
+      <div class="qbody">
+        <ol>
+          <li>Write the SLE and ALE formulas.</li>
+          <li>AV = $80,000/week, EF = 25%, ARO = 5. What is the ALE?</li>
+          <li>A control costs $9,000/month and removes an ALE of $95,000. Verdict?</li>
+          <li>An event happens once every 8 years. What is the ARO?</li>
+          <li>Name the six treatment responses.</li>
+          <li>What does insurance <em>not</em> transfer?</li>
+          <li>Which sections carry 14 years and 10,000,000 BDT?</li>
+          <li>Which section has the highest fine, and what is it?</li>
+          <li>Someone breaks in, looks around, changes nothing. Which section?</li>
+          <li>State the three duties on discovering a compromise.</li>
+        </ol>
+      </div>
+      <details class="solution">
+        <summary>Show answers</summary>
+        <div class="soln-body">
+          <p><b>1.</b> \( \text{SLE} = \text{AV} \times \text{EF} \) and
+          \( \text{ALE} = \text{SLE} \times \text{ARO} \).</p>
+          <p><b>2.</b> \( \text{SLE} = 80{,}000 \times 0.25 = \$20{,}000 \);
+          \( \text{ALE} = 20{,}000 \times 5 = \mathbf{\$100{,}000/\text{year}} \).</p>
+          <p><b>3.</b> \( \text{TCO} = 9{,}000 \times 12 = \$108{,}000 \). Net
+          \( = 95{,}000 - 108{,}000 = -\$13{,}000 \). <b>Not justified — Accept the
+          risk</b> (or negotiate a cheaper control). Note the ×12 is the whole
+          question.</p>
+          <p><b>4.</b> \( \text{ARO} = 1/8 = \mathbf{0.125} \) per year.</p>
+          <p><b>5.</b> Avoid, Mitigate, Transfer, Accept, Contingency plan, Management
+          action.</p>
+          <p><b>6.</b> Reputation, regulatory sanction, and the <b>due diligence
+          obligation</b> — an organisation retains legal liability even when
+          victimised. Insurance moves money only.</p>
+          <p><b>7.</b> <b>Section 27</b> (cyber terrorism / infrastructure sabotage)
+          and <b>Section 32</b> (hacking).</p>
+          <p><b>8.</b> <b>Section 19</b> — up to <b>11,000,000 BDT</b>, with up to 7
+          years' imprisonment.</p>
+          <p><b>9.</b> <b>Section 18</b> — unauthorised computer access. Nothing was
+          altered or damaged, so 19 and 32 do not engage. Simple access: 6 months /
+          200,000 BDT; with malicious intent or substantial harm: 3 years / 1,000,000
+          BDT.</p>
+          <p><b>10.</b> Preserve forensic evidence (logs, packet captures, memory
+          dumps) · report promptly to law enforcement and regulators (BGD e-Gov CIRT)
+          · recognise that liability persists even as a victim, since failure to
+          exercise reasonable diligence attracts civil regulatory penalties.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t9">
+    <span class="topic-num">Topic 09</span>
+    <h2>Exam-day tactics</h2>
+    <p class="subtitle">How to convert what you know into marks.</p>
+
+    <h3>On maths questions</h3>
+    <ol>
+      <li><b>Write the formula before substituting.</b> If the arithmetic goes wrong
+      you still get method marks; if you only write a number you get nothing.</li>
+      <li><b>Write the denominator down first</b> in SOC metric questions. Every
+      question deliberately supplies several candidate denominators.</li>
+      <li><b>Annualise everything</b> before comparing. Monthly cost × 12.</li>
+      <li><b>Carry the units</b> — minutes, hours, %, BDT, $ — and check them at the
+      end. A "mean time" must come out in time units.</li>
+      <li><b>Sanity check.</b> Recovery time &gt; response time. Detection rate + FNR
+      = 100%. F1 lies between precision and recall. EF ≤ 1.0.</li>
+      <li><b>State the verdict in words</b>, not just a number. "Net benefit is
+      −$64,000, so the control is not financially justified; the appropriate response
+      is Accept."</li>
+    </ol>
+
+    <h3>On story/analytical questions</h3>
+    <ol>
+      <li><b>Decode the story into the framework first.</b> Spend one minute mapping
+      each event to a stage, phase or section before writing prose.</li>
+      <li><b>Name the source.</b> "Under the 7-stage methodology this is stage 5,
+      maintaining access" scores better than a description of what happened.</li>
+      <li><b>Answer in the shape the question asks for.</b> "Failure → property →
+      mechanism", "what / when / who / how / root cause", "compare across six
+      criteria" — the wording tells you the structure the marker is using.</li>
+      <li><b>List every applicable section or stage</b>, then name the most
+      significant. Do not hunt for a single answer when the facts support several.</li>
+      <li><b>Close with the limitation.</b> Almost every top-band answer ends by
+      naming what the analysis leaves out — the unpriced risks, the residual exposure,
+      the fact that blockchain secures the record but not the truth behind it.</li>
+    </ol>
+
+    <h3>Cross-topic links worth making</h3>
+    <p>Examiners reward answers that connect topics, and this syllabus is unusually
+    well-joined. Four links you can deploy almost anywhere:</p>
+    <ul>
+      <li><b>VAPT → Risk Management.</b> A pen test's demonstrated exploit paths
+      supply the <em>likelihood</em> input to
+      \(\text{Risk}=\text{Likelihood}\times\text{Impact}\), and therefore to the ARO
+      in the ALE calculation.</li>
+      <li><b>VAPT → SOC.</b> Stage 6, covering tracks, is how you find out whether
+      your SIEM correlation rules actually fire — the benefit "strengthen incident
+      response by testing the blue team".</li>
+      <li><b>VAPT → Cyber Law.</b> Stage 1 pre-engagement authorisation is the only
+      thing separating a penetration test from offences under Sections 18 and 32.</li>
+      <li><b>Blockchain → Risk Management.</b> Digital signatures deliver the
+      <em>non-repudiation</em> pillar of Information Assurance; hashing delivers
+      <em>integrity</em>.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">If you run short of time</span>
+      <p>Answer in <b>bullets with the key terms bolded</b> rather than abandoning a
+      question. A structured skeleton — the six criteria, the seven stages, the
+      formula and the substitution — collects most of the available marks. An
+      unfinished elegant paragraph collects few.</p>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Master cheat sheet — all five topics</h2>
+    <div class="grid">
+      <div class="item"><h4>Blockchain =</h4><p>\( DL + CP + C \). Pillars: Distribution, Decentralisation, Immutability, Tokenisation, Encryption.</p></div>
+      <div class="item"><h4>Merkle root</h4><p>\( \text{Hash}\big(\text{Hash}(T1\|T2)\,\|\,\text{Hash}(T3\|T4)\big) \). Odd leaf → hash with itself.</p></div>
+      <div class="item"><h4>Tamper cascade</h4><p>tx → leaf hash → Merkle root → header → block hash → next block's prev-hash mismatch → rejected.</p></div>
+      <div class="item"><h4>Keys</h4><p>Sign <b>private</b>, verify <b>public</b>. Gives authenticity + integrity + non-repudiation.</p></div>
+      <div class="item"><h4>Consensus</h4><p>PoW = compete, secured by electricity. PoS = selected by stake, secured by collateral. PBFT survives liars; Raft only crashes.</p></div>
+      <div class="item"><h4>SOC = </h4><p>People + Process + Technology. T1 triage → T2 investigate/contain → T3 hunt → Manager → CISO.</p></div>
+      <div class="item"><h4>IR order</h4><p>Alert → Triage → Investigate → <b>Contain → Eradicate → Recover</b> → Report.</p></div>
+      <div class="item"><h4>Time metrics</h4><p>\( \text{MTTD}=\frac{\text{det}}{\text{incidents}} \), \( \text{MTTA}=\frac{\text{ack}}{\text{alerts}} \), \( \text{MTBF}=\frac{\text{uptime}}{\text{failures}} \).</p></div>
+      <div class="item"><h4>P vs R</h4><p>Precision \( \frac{TP}{TP+FP} \) = alerts raised. Recall \( \frac{TP}{TP+FN} \) = attacks that existed. <b>Recall wins.</b></p></div>
+      <div class="item"><h4>F1</h4><p>\( 2\times\frac{P\times R}{P+R} \), in <b>decimals</b>. Sits between P and R, nearer the smaller.</p></div>
+      <div class="item"><h4>Denominators</h4><p>Incidents → MTTD/MTTR/resolution/SLA/cost. Alerts → MTTA/FPR. Actual attacks → detection rate/FNR/recall. Systems → log coverage.</p></div>
+      <div class="item"><h4>Free checks</h4><p>Detection rate + FNR = 100%. Recovery &gt; response. EF ≤ 1.0. F1 between P and R.</p></div>
+      <div class="item"><h4>VAPT line</h4><p><b>VA measures exposure. PT measures risk.</b> Breadth without proof vs proof without breadth.</p></div>
+      <div class="item"><h4>7 PT stages</h4><p>Pre-engage → Recon → Scan/enum → Gain access → Maintain → Cover tracks → Report.</p></div>
+      <div class="item"><h4>Box types</h4><p>Black = zero knowledge. Gray = low-priv creds. White = full source. SAST=still, DAST=running.</p></div>
+      <div class="item"><h4>THE CHAIN</h4><p>\( \text{SLE}=\text{AV}\times\text{EF} \) → \( \text{ALE}=\text{SLE}\times\text{ARO} \) → compare vs <b>annualised</b> TCO.</p></div>
+      <div class="item"><h4>ARO</h4><p>Can be fractional. 1-in-10-yrs = 0.1. 3 in 4 yrs = 0.75. Monthly cost <b>×12</b>.</p></div>
+      <div class="item"><h4>Partial mitigation</h4><p>Savings = ALE<sub>before</sub> − ALE<sub>after</sub>, <b>not</b> the full ALE.</p></div>
+      <div class="item"><h4>6 responses</h4><p>Avoid · Mitigate · Transfer · Accept · Contingency · Management action.</p></div>
+      <div class="item"><h4>Risk matrix</h4><p>L: 1.0/0.5/0.1 × I: 100/50/10. Low 1–10, Med &gt;10–50, High &gt;50–100.</p></div>
+      <div class="item"><h4>Case root causes</h4><p>WannaCry = unpatched EOL Windows. Equifax = unpatched Struts CVE. Colonial = VPN creds, no MFA. Yahoo = weak controls + undetected APT.</p></div>
+      <div class="item"><h4>§18 / §19</h4><p>18: access only — 6mo/200k, or 3yr/1M if malicious. 19: damage/malware/DoS — 7yr/<b>11M</b>.</p></div>
+      <div class="item"><h4>§20 / §22</h4><p>20: source code — 3yr/300k. 22: forgery — 5yr/500k. (Fine = years × 100,000.)</p></div>
+      <div class="item"><h4>§27 / §32</h4><p>Identical twins: <b>14 years / 10,000,000 BDT</b>. 27 = cyber terrorism/critical infrastructure. 32 = hacking.</p></div>
+      <div class="item"><h4>Section boundary</h4><p>Looked only → 18. Damaged → 19. Intruded + deleted/modified → 32. Source code → 20. Forged → 22. National security → 27.</p></div>
+      <div class="item"><h4>Due diligence</h4><p>Preserve evidence → report to <b>BGD e-Gov CIRT</b> → liability persists even as a victim.</p></div>
+      <div class="item"><h4>Biggest IR error</h4><p>Wiping the server first. <b>Preserve before contain, contain before eradicate.</b></p></div>
+      <div class="item"><h4>Exam tactic</h4><p>Formula before substitution. Denominator before calculator. Verdict in words. Close with the limitation.</p></div>
+    </div>
+  </div>
+
+
+
+  <footer class="foot">
+    Guide 6 of 6 · CSE487 Final — combined review. Built from Rakib Hossen's lecture material across all five topics. Verify against your own notes and the official syllabus before the exam. Good luck.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
