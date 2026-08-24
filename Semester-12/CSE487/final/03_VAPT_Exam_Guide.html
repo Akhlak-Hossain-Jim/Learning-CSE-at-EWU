@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE487 — VAPT Exam Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+        <li><a href="#t0">How to use this guide</a></li>
+        <li><a href="#t1">What VAPT is</a></li>
+        <li><a href="#t2">VA vs PT (priority)</a></li>
+        <li><a href="#t3">The five scan types</a></li>
+        <li><a href="#t4">7-stage PT methodology</a></li>
+        <li><a href="#t5">The tools landscape</a></li>
+        <li><a href="#t6">OWASP smart contract Top 10</a></li>
+        <li><a href="#t7">Business value</a></li>
+      </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE487 Final · Exam Preparation Guide</p>
+      <h1>Vulnerability Assessment &amp; Penetration Testing</h1>
+      <div class="meta">
+        <span><b>Course:</b> CSE487 — Cyber Security</span>
+        <span><b>Based on:</b> Rakib Hossen, Asst. Professor, Dept. of CySE, UFTB — "Vulnerability Assessment and Penetration Testing"</span>
+        <span><b>Syllabus:</b> Item 3 — full lecture</span>
+        <span><b>Exam:</b> ≈ 25 Aug 2026 (2 days)</span>
+      </div>
+  </header>
+
+    <section class="topic" id="t0">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Syllabus item 3 — VAPT, marked "full" in your syllabus, so everything in the lecture is covered.</p>
+
+    <p>Your syllabus gives VAPT no sub-points, just the word "full." That is
+    actually useful information: it means the whole lecture is examinable and you
+    cannot triage within it. What you <em>can</em> do is notice which parts lend
+    themselves to the two question styles Rakib Hossen favours.</p>
+
+    <p>The <b>analytical/story questions</b> come from Sections 2 and 4 — VA versus
+    PT, and the seven-stage methodology. Give a class a scenario and ask which stage
+    each event belongs to, or ask how the two disciplines complete each other. The
+    <b>list-and-explain questions</b> come from Sections 3, 5, 6 and 7 — scan types,
+    testing approaches, tools, and the OWASP smart contract table.</p>
+
+    <div class="callout watch">
+      <span class="tag">Your flagged gap</span>
+      <p>The diagnostic showed the <b>"how do VA and PT complete each other"</b>
+      argument is not yet solid, and you told me the faculty asks exactly that. It is
+      <b>Section 2, Question 2</b> here, and it is the longest model answer in this
+      guide. Read Section 2 twice.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>What VAPT is</h2>
+    <p class="subtitle">The definition, and why the two halves are named together.</p>
+
+    <p>Start with the plain picture. Imagine you own a building and want to know how
+    secure it is. You could hire someone to walk the perimeter with a clipboard and
+    list every weakness — this window has a broken latch, that door's lock is an old
+    model, the fire exit does not close properly. Thorough, fast, covers the whole
+    building, and completely non-destructive. That is a
+    <strong>vulnerability assessment</strong>.</p>
+
+    <p>Or you could hire someone to actually <em>break in</em>. They pick one weak
+    point, get through it, and then see how far into the building they can travel —
+    can they reach the server room from a broken ground-floor window? That is a
+    <strong>penetration test</strong>. It covers far less ground, but what it tells
+    you is real rather than theoretical.</p>
+
+    <div class="callout key">
+      <span class="tag">The faculty's definition</span>
+      <p>VAPT provides an <b>end-to-end evaluation of an organisation's defensive
+      posture by combining automated vulnerability discovery with simulated
+      adversarial exploitation.</b> The two words in that sentence doing the work are
+      <b>combining</b> — VAPT is deliberately a pairing, not one technique.</p>
+    </div>
+
+    <p>Your lecture summarises the split as two questions:</p>
+    <ul>
+      <li><b>Vulnerability Assessment asks: "what is weak or unpatched?"</b>
+      Non-intrusive automated scans, broad environment-wide scope, identifies known
+      CVEs and flaws. (A <b>CVE</b> — Common Vulnerabilities and Exposures — is the
+      public catalogue ID given to a known, published security flaw.)</li>
+      <li><b>Penetration Testing asks: "can these weaknesses be exploited to gain
+      deep access?"</b> Intrusive, targeted simulations, demonstrates real-world
+      risk.</li>
+    </ul>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/XzQN1cKbdm4" title="Vulnerability Assessments Vs. Penetration Testing: What's The Difference?"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=XzQN1cKbdm4" target="_blank" rel="noopener">Vulnerability Assessments Vs. Penetration Testing: What's The Difference?</a> — Blue Goat Cyber. Why it helps: a short, plain-language framing of the breadth-versus-depth trade-off, which is the axis your whole answer to Question 2 should turn on.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02 · priority</span>
+    <h2>VA vs. PT — and how they complete each other</h2>
+    <p class="subtitle">The comparison table, then the argument the faculty asks for.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;margin:20px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Criteria</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Vulnerability Assessment</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Penetration Testing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Primary objective</b></td><td style="padding:9px 10px">Identify, catalogue and rank vulnerabilities</td><td style="padding:9px 0 9px 10px">Exploit weaknesses to validate attack feasibility</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Nature of testing</b></td><td style="padding:9px 10px">Non-intrusive; passive/active scanning</td><td style="padding:9px 0 9px 10px">Intrusive; active exploitation and privilege escalation</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Scope &amp; breadth</b></td><td style="padding:9px 10px">Broad across all network assets</td><td style="padding:9px 0 9px 10px">Narrow and deep into specific target systems</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Frequency</b></td><td style="padding:9px 10px">Continuous, daily or weekly scans</td><td style="padding:9px 0 9px 10px">Quarterly, annual or milestone-based</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Execution method</b></td><td style="padding:9px 10px">Predominantly automated scanners</td><td style="padding:9px 0 9px 10px">Automated scripts <em>plus</em> manual testing</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Primary output</b></td><td style="padding:9px 10px">Comprehensive vulnerability checklist</td><td style="padding:9px 0 9px 10px">Remediation report based on demonstrated exploits</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>Business value</b></td><td style="padding:9px 10px">Baseline vulnerability hygiene &amp; compliance</td><td style="padding:9px 0 9px 10px">Proof of exploitability and defence readiness</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Compress the table to one axis</span>
+      <p>Every row is a variation on <b>breadth versus depth</b>. VA is wide,
+      shallow, automated, frequent and cheap. PT is narrow, deep, manual, occasional
+      and expensive. If you can only remember one thing, remember that — and then
+      each row can be reconstructed from it.</p>
+    </div>
+
+    <h3>Why neither alone is sufficient</h3>
+
+    <p><b>What a vulnerability assessment cannot tell you.</b> A scanner produces a
+    list, typically a long one, of flaws ranked by a generic severity score. Four
+    things it cannot do. It cannot tell you whether a given flaw is
+    <em>actually reachable</em> in your specific configuration — a critical-rated
+    CVE on a service that is firewalled off from every network an attacker can touch
+    is not a real risk. It cannot <em>chain</em> flaws: three individually
+    "medium" findings that combine into full domain compromise still read as three
+    mediums on the report. It cannot tell you what an attacker would
+    <em>reach</em> once through. And it produces false positives, because it infers
+    from version banners rather than proving anything.</p>
+
+    <p><b>What a penetration test cannot tell you.</b> A pen test is scoped, timed
+    and narrow. It cannot give you <em>coverage</em> — a tester with two weeks and a
+    defined scope examines a fraction of an enterprise estate. It cannot run
+    <em>continuously</em>, so it is a snapshot that begins ageing the moment the
+    report is signed; a server patched on Monday and a new vulnerability published on
+    Tuesday are both invisible to a test that finished last month. And it is
+    expensive per unit of ground covered.</p>
+
+    <div class="callout key">
+      <span class="tag">The completion argument in one sentence</span>
+      <p><b>VA gives breadth without proof; PT gives proof without breadth.</b> Run
+      together, the assessment tells you everywhere you might be weak and the
+      penetration test tells you which of those weaknesses actually matter — so the
+      pair converts a long unprioritised list into a short evidence-backed one.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 1 <span class="diff">· short answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Differentiate between vulnerability assessment and penetration testing
+        across at least six criteria.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Straight recall of the <b>VA vs PT comparison table</b> (VAPT lecture
+            §2). A pure table question — the fastest marks in the whole VAPT topic.
+            Answer it <em>as a table</em> if the paper allows; it is quicker to write
+            and easier to mark, and examiners reward the structure.
+          </div>
+          <p>Present it as the seven-row table above: objective, nature, scope,
+          frequency, execution method, output, business value. Then close with the
+          synthesis sentence, which is worth a mark on its own:</p>
+          <p><em>"In summary, vulnerability assessment is broad, automated,
+          non-intrusive and continuous, producing a catalogue of known weaknesses;
+          penetration testing is narrow, manual, intrusive and periodic, producing
+          proof of which weaknesses can actually be exploited. VA measures
+          <b>exposure</b>; PT measures <b>risk</b>."</em></p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 2 <span class="diff">· long answer · priority</span></span>
+      </div>
+      <div class="qbody">
+        <p>Explain how vulnerability assessment and penetration testing complete each
+        other in enterprise system testing. Your answer should make clear why an
+        organisation performing only one of the two has an incomplete picture of its
+        security posture.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the flagship VAPT question and it draws on the whole lecture:
+            the <b>VA vs PT table</b> (§2) for the contrasts, the <b>scan types</b>
+            (§3) for what VA covers, the <b>7-stage methodology</b> (§4) for what PT
+            actually does, and the <b>benefits</b> (§7) for the business framing.
+            The word "complete" is the instruction — the examiner does not want a
+            comparison, they want an argument that the two are <em>interdependent</em>.
+            Structure: what each provides → what each lacks → how the gaps interlock
+            → the combined workflow → the business consequence.
+          </div>
+
+          <p><b>1. What each provides.</b> Vulnerability assessment provides
+          <em>coverage</em>. It runs automated, non-intrusive scans across the entire
+          estate — network-based, host-based, wireless, application and database
+          scans — and returns a comprehensive, ranked catalogue of known CVEs and
+          misconfigurations. Because it is cheap and automated it can run
+          continuously, so it maintains a current picture of the whole environment.</p>
+          <p>Penetration testing provides <em>proof</em>. It takes specific targets
+          and, through the seven-stage methodology — pre-engagement, reconnaissance,
+          scanning and enumeration, gaining access, maintaining access, covering
+          tracks, reporting — actively exploits weaknesses using a combination of
+          automated scripts and manual technique, and demonstrates what an adversary
+          could genuinely achieve.</p>
+
+          <p><b>2. What each lacks — and this is where the argument lives.</b></p>
+          <p>A vulnerability assessment produces findings, not risk. It cannot
+          establish <b>exploitability</b>: a scanner infers a flaw from a version
+          banner or a configuration value, so a "critical" finding on a service that
+          is unreachable from any network an attacker can touch is not, in that
+          environment, a critical risk. It cannot establish <b>chaining</b>: three
+          separately medium-rated findings — a weak service account, an unpatched
+          internal file server, and an over-permissive share — may combine into full
+          domain compromise, but the report shows three mediums and no relationship
+          between them. It cannot establish <b>business impact</b>, because it does
+          not know what lies beyond the flaw. And it generates
+          <b>false positives</b>, so a proportion of the remediation effort it
+          triggers is wasted.</p>
+          <p>A penetration test produces proof, not coverage. Its scope is
+          <b>narrow and deep by design</b>, so an enterprise estate of thousands of
+          hosts is sampled, not surveyed — the tester examines specific systems
+          within an agreed window. It is <b>periodic</b>, quarterly or annual, which
+          makes it a snapshot: a system patched the week after the test, or a CVE
+          published the day after the report, are both outside its knowledge. And its
+          cost per host examined is high, so it cannot be scaled to the whole estate
+          at any sensible budget.</p>
+
+          <p><b>3. How the gaps interlock.</b> Read those two paragraphs against each
+          other and they are complementary, not merely different. VA's weakness is
+          precisely PT's strength — VA cannot prove exploitability, PT proves it. And
+          PT's weakness is precisely VA's strength — PT cannot cover the estate
+          continuously, VA does exactly that. Neither gap can be closed by doing more
+          of the same discipline: scanning ten times more often still never proves an
+          exploit, and pen testing every host is unaffordable.</p>
+
+          <p><b>4. The combined workflow in practice.</b> The two are sequenced, and
+          describing the sequence is what shows real understanding.</p>
+          <ol>
+            <li><b>VA runs continuously</b> across the estate and produces the
+            ranked inventory of weaknesses. This is the baseline hygiene layer and it
+            also satisfies the continuous-monitoring requirements of ISO 27001,
+            PCI-DSS and HIPAA.</li>
+            <li><b>VA output feeds PT scoping.</b> Rather than the tester beginning
+            blind, the assessment identifies the highest-value targets, so the
+            expensive manual effort is aimed where it will learn the most. This is why
+            the pen test methodology's own stage 3 is "scanning and enumeration" — the
+            disciplines are already nested.</li>
+            <li><b>PT validates and prioritises.</b> The tester attempts exploitation
+            and returns three verdicts on the VA list: confirmed and exploitable,
+            present but not exploitable in this configuration, and false positive.
+            That converts a list of hundreds into a short, evidence-backed
+            remediation queue — and it demonstrates chains the scanner could not see.</li>
+            <li><b>PT also tests the defenders, not just the systems.</b> Stage 6,
+            covering tracks, assesses whether the SOC's logging captured the
+            intrusion and whether forensic traces could be purged. A vulnerability
+            scan can never do this, because nothing is attacked. This is the lecture's
+            benefit "strengthen incident response — test blue-team detection
+            capabilities against active simulations."</li>
+            <li><b>PT findings feed back into VA.</b> New attack paths discovered
+            manually become new things to scan for continuously, so the baseline
+            improves.</li>
+          </ol>
+
+          <p><b>5. Why one alone leaves you blind — state both failure cases.</b></p>
+          <p><em>VA only:</em> the organisation has a long list of theoretical
+          weaknesses with no way to prioritise them, patches by generic severity
+          score rather than by real exposure, remains vulnerable to chained attacks
+          that no single finding predicts, and has never tested whether its SOC would
+          notice an intrusion. It is measuring exposure and calling it risk.</p>
+          <p><em>PT only:</em> the organisation has excellent evidence about a small
+          slice of its estate at a single point in time, and no idea about the rest.
+          Between annual tests the picture decays continuously as new CVEs are
+          published and new systems are deployed. It is measuring risk on a sample
+          and calling it coverage.</p>
+
+          <p><b>Conclusion.</b> VAPT is named as one discipline because the two halves
+          answer different questions that are only useful together: <b>vulnerability
+          assessment asks "where might we be weak?" and penetration testing asks
+          "does it actually matter?"</b> Breadth without proof produces noise;
+          proof without breadth produces false confidence. Combined, they produce the
+          end-to-end evaluation of defensive posture that the lecture's definition
+          describes — and deliver the stated business benefits: real-time risk
+          visibility quantified by demonstrated exploit paths, regulatory compliance,
+          tested incident response, and security budgets justified by data rather
+          than by scanner severity ratings.</p>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>The single highest-value sentence you can write is <b>"VA measures
+            exposure, PT measures risk."</b> Open or close with it. Then make sure
+            you have covered the four interlocking pairs — coverage/proof,
+            continuous/periodic, cheap/expensive, automated/manual — and both failure
+            cases. Candidates who merely re-state the comparison table lose the marks
+            for "complete each other."</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>Vulnerability scanning — the five types</h2>
+    <p class="subtitle">Plus host discovery methods and the SAST/DAST distinction.</p>
+
+    <ol>
+      <li><b>Network-based scans</b> — discover open ports, unencrypted services and
+      weak access control lists (ACLs). This is the view from the network: what is
+      listening, and can it be reached?</li>
+      <li><b>Host-based scans</b> — inspect operating system configurations, missing
+      patches and registry settings. This is the view from <em>inside</em> a machine,
+      which sees things no network scan can.</li>
+      <li><b>Wireless scans</b> — identify rogue access points and WEP/WPA
+      misconfigurations. (A <b>rogue access point</b> is an unauthorised wireless
+      device attached to the network, whether malicious or simply someone's own
+      router plugged in without approval.)</li>
+      <li><b>Application scans</b> — discover SQL injection, XSS, CSRF and API flaws
+      in web applications.</li>
+      <li><b>Database scans</b> — test database accounts, default credentials and
+      weak SQL configurations.</li>
+    </ol>
+
+    <p>The five are not alternatives; they are different vantage points. A host with
+    a critical missing patch may present no unusual open port at all, so a
+    network-based scan sees nothing while a host-based scan sees the flaw
+    immediately. That "different vantage point" framing is what to say if asked why
+    all five are needed.</p>
+
+    <h3>Host discovery methods</h3>
+    <p>Before scanning anything you have to find out what exists. Two methods:</p>
+    <ul>
+      <li><b>ARP requests</b> for local subnet discovery. ARP (Address Resolution
+      Protocol) operates within a single local network segment and is reliable there
+      because hosts must answer it to communicate at all.</li>
+      <li><b>ICMP echo requests</b> — ordinary pings — for wider network ranges,
+      since ARP cannot cross a router.</li>
+    </ul>
+
+    <h3>SAST vs DAST</h3>
+    <div class="formula">
+      <div class="label">Two ways to test an application</div>
+      <p style="margin:6px 0"><b>SAST — Static Application Security Testing:</b>
+      scans <b>source code in a non-running state</b>. Reads the code as text,
+      looking for dangerous patterns.</p>
+      <p style="margin:6px 0 0"><b>DAST — Dynamic Application Security Testing:</b>
+      scans <b>running applications in real time</b>, assessing behaviour by sending
+      inputs and observing responses.</p>
+    </div>
+
+    <p>The memory hook: <b>static = still, dynamic = running</b>. SAST needs the
+    source code and can be run before the application is ever deployed, which makes
+    it cheap to fix findings — but it cannot see anything that only appears at
+    runtime, such as a misconfigured server or a flaw in how two services interact.
+    DAST needs no source code and tests the application as an attacker would meet
+    it, but it can only reach what is exposed and reports symptoms rather than the
+    offending line of code.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>SAST and DAST map onto the white-box / black-box distinction in Section 5.
+      SAST requires full source access, so it is inherently a white-box technique;
+      DAST works from outside with no internal knowledge, so it is black-box in
+      character. Making that link explicitly is an easy extra mark.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 3 <span class="diff">· medium · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>A university's IT team is asked to assess the security of its campus
+        systems. During a walk-through they observe the following:</p>
+        <ul>
+          <li>The student portal accepts a search term and, when a single quote is
+          typed into it, returns a database error message.</li>
+          <li>Several lab PCs are three months behind on operating system updates.</li>
+          <li>An unfamiliar wireless network named "CampusWiFi_Free" is broadcasting
+          from the library.</li>
+          <li>The results database still has an account with the vendor's default
+          username and password.</li>
+          <li>A file server has port 21 open and running plain FTP.</li>
+        </ul>
+        <p>For each observation, identify which type of vulnerability scan would have
+        detected it, and state whether the finding is a vulnerability, a risk, or
+        both. Then explain what a penetration test would add.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the faculty's story format applied to <b>the 5 types of
+            vulnerability scanning</b> (VAPT lecture §3). The second half —
+            vulnerability versus risk — pulls in the definitions from the Risk
+            Management lecture (<em>vulnerability</em> = a flaw or weakness;
+            <em>risk</em> = the consequence when a threat exploits it), so the
+            examiner is checking you can use the two vocabularies together. The final
+            part is the VA/PT link from §2.
+          </div>
+
+          <p><b>Mapping each observation to a scan type:</b></p>
+          <ul>
+            <li><b>Portal returning a database error on a single quote</b> →
+            <b>Application scan</b>. This is the classic signature of SQL injection:
+            unsanitised input reaching the database engine. Tools: Burp Suite or OWASP
+            ZAP; Nikto for the server layer.</li>
+            <li><b>Lab PCs three months behind on patches</b> → <b>Host-based
+            scan</b>. Missing patches and OS configuration are visible from inside
+            the machine, not from the network. Tool: Nessus or OpenVAS with
+            credentialed host scanning.</li>
+            <li><b>Unfamiliar "CampusWiFi_Free" network</b> → <b>Wireless scan</b>.
+            This is a textbook <b>rogue access point</b> — either an attacker running
+            an evil-twin network to harvest credentials, or a well-meaning staff
+            member's own router. Either way it is an unmanaged path onto the
+            network.</li>
+            <li><b>Default vendor credentials on the results database</b> →
+            <b>Database scan</b>, which specifically tests database accounts and
+            default credentials.</li>
+            <li><b>Port 21 open running plain FTP</b> → <b>Network-based scan</b>,
+            which discovers open ports and unencrypted services. Tool: Nmap for
+            discovery, Wireshark to demonstrate that FTP credentials cross the wire in
+            cleartext.</li>
+          </ul>
+
+          <p><b>Vulnerability or risk?</b> Every one of the five is a
+          <b>vulnerability</b> — a flaw, misconfiguration or weakness. None of them
+          is yet a risk, because risk requires a threat actor and an impact:
+          \(\text{Risk} = \text{Likelihood} \times \text{Impact}\). The default
+          database credentials become a risk only when you add "an attacker who can
+          reach that database" and "the student results it contains." Stating that
+          distinction explicitly is the point of the question — a scanner outputs
+          vulnerabilities, and turning them into risks requires judgement the scanner
+          does not have.</p>
+          <p>That said, two of the five carry enough context to assess as high risk
+          immediately: the default credentials on a system holding student records
+          (high impact, trivial likelihood), and the rogue access point (it may
+          already be an active attack rather than a latent weakness).</p>
+
+          <p><b>What a penetration test adds.</b> Four things the scan cannot
+          deliver.</p>
+          <ol>
+            <li><b>Proof of exploitability.</b> The tester actually performs the SQL
+            injection and shows what data it returns. "Returns a database error" is a
+            symptom; "retrieves the full student results table" is a finding a
+            university has to act on.</li>
+            <li><b>Chaining.</b> Individually these are five separate findings. A
+            tester would try to link them: connect to the rogue access point to reach
+            the internal network, sniff cleartext FTP credentials from the file
+            server with Wireshark, and reuse those credentials elsewhere — or use the
+            SQL injection to reach the database the default credentials also protect.
+            The combination is far more serious than any single item, and only an
+            attack simulation reveals it.</li>
+            <li><b>Business impact.</b> The pen test report says what was reached —
+            student records, exam papers, staff payroll — which is what turns a
+            technical list into a prioritised remediation queue.</li>
+            <li><b>Testing the defenders.</b> Did anything alert while all this was
+            happening? Stage 6 of the methodology, covering tracks, assesses whether
+            logging captured the intrusion. A scan tells you the door is unlocked; a
+            pen test tells you nobody noticed someone walking through it.</li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>The chaining paragraph is what separates a good answer from a list.
+            Give at least one concrete chain — rogue AP → sniff FTP credentials →
+            reuse elsewhere — because it demonstrates you understand why the
+            disciplines are paired rather than merely that they differ.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>The 7-stage penetration testing methodology</h2>
+    <p class="subtitle">Learn the order. It is the most reliably examined sequence in this lecture.</p>
+
+    <ol>
+      <li><b>Pre-engagement.</b> Define rules of engagement, target scope, testing
+      windows and <b>legal authorisations</b>. Nothing else may begin until this is
+      signed — without written authorisation the identical activity is a criminal
+      offence under Sections 18 and 32 of the Bangladesh cyber law.</li>
+      <li><b>Reconnaissance (OSINT and intelligence gathering).</b> Collect domain
+      records, DNS entries, mail server headers and network infrastructure data.
+      <b>OSINT</b> means Open Source Intelligence — information gathered from
+      publicly available sources, touching nothing belonging to the target.</li>
+      <li><b>Scanning and enumeration.</b> Port scanning, banner grabbing and service
+      enumeration, using tools such as Nmap and Nessus. <em>Banner grabbing</em> means
+      reading the identifying text a service returns on connection, which usually
+      reveals its exact software version.</li>
+      <li><b>Gaining access (exploitation).</b> Weaponise the identified
+      vulnerabilities — SQL injection, buffer overflows, session hijacking, password
+      cracking — to breach the target perimeter.</li>
+      <li><b>Maintaining access (persistence).</b> Deploy reverse shells, scheduled
+      jobs and backdoors, and establish command-and-control communication. This
+      simulates what a real adversary does after the initial breach, and it tests
+      whether the organisation would detect an attacker who is already inside.</li>
+      <li><b>Covering tracks.</b> Assess logging effectiveness and evaluate whether
+      forensic traces can be modified or purged. Note the framing carefully: the
+      tester is not hiding, they are <em>measuring whether hiding is possible</em>.</li>
+      <li><b>Reporting.</b> Deliver technical and executive reports documenting
+      proof-of-concept exploits, business impact and remediation steps.</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the two stages people misread</span>
+      <p><b>Stage 6 is not the tester covering up wrongdoing.</b> It exists to answer
+      "would our SOC have caught this, and could an attacker have erased the
+      evidence?" It is a test of the <em>defenders</em>. And <b>stage 1 is not
+      paperwork you can skip in an exam answer</b> — authorisation is what separates
+      penetration testing from crime, and examiners give it a mark.</p>
+    </div>
+
+    <h3>The three testing approaches</h3>
+    <ul>
+      <li><b>Black box</b> — the tester has <b>zero prior knowledge</b> of internal
+      architecture or source code. Most realistically simulates an external
+      attacker. Slowest, and may miss internal issues simply for lack of time.</li>
+      <li><b>Gray box</b> — <b>partial knowledge</b>: low-privilege user credentials,
+      network diagrams. Simulates an attacker who has already gained a foothold, or a
+      malicious insider with ordinary access. Usually the best value.</li>
+      <li><b>White box</b> — <b>full knowledge</b>, including architectural
+      documentation and complete source code. Most thorough coverage in the time
+      available; least realistic as an attack simulation.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">How to choose</span>
+      <p><b>Black box</b> when you want to know what an outsider could achieve.
+      <b>Gray box</b> when you want to know what a compromised user account or a
+      disgruntled employee could achieve. <b>White box</b> when you want maximum
+      coverage and the deepest possible code review, and realism is not the goal.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 4 <span class="diff">· medium · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>A penetration testing firm is engaged by a Dhaka-based fintech company.
+        Over three weeks the following happens, in this order:</p>
+        <ol>
+          <li>The firm and the client sign a document defining which IP ranges may be
+          tested and that testing will occur between 01:00 and 05:00 only.</li>
+          <li>A tester searches public DNS records and LinkedIn and builds a list of
+          employee email addresses and the company's mail server details.</li>
+          <li>Nmap is run against the agreed IP range; a web server responds with a
+          banner identifying an outdated version of its software.</li>
+          <li>The tester exploits a known flaw in that version and obtains a shell on
+          the server.</li>
+          <li>A scheduled job is installed that reopens the connection every hour.</li>
+          <li>The tester checks whether the client's SIEM logged any of it, and
+          whether the relevant log entries could be deleted.</li>
+          <li>A document is produced containing screenshots of the shell, an
+          assessment of what customer data was reachable, and a patching plan.</li>
+        </ol>
+        <p>Identify the methodology stage each numbered event corresponds to. State
+        which testing approach appears to have been used and justify your answer.
+        Explain why event 1 is legally indispensable.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The <b>7-stage methodology</b> (VAPT §4) presented as a story to be
+            decoded — precisely the analytical format you flagged as the faculty's
+            style. It also asks for the <b>testing approaches</b> (§4) and connects to
+            <b>Cyber Law Section 18/32</b> on unauthorised access. Three lecture
+            points in one question, so allocate your time accordingly: the mapping is
+            quick, the justification and the legal point need real sentences.
+          </div>
+
+          <p><b>Stage mapping — one line each:</b></p>
+          <ol>
+            <li><b>Pre-engagement.</b> Rules of engagement, target scope, testing
+            window and legal authorisation are exactly this stage's deliverables.</li>
+            <li><b>Reconnaissance (OSINT).</b> DNS records, mail server details and
+            employee information gathered from public sources — nothing belonging to
+            the client has been touched yet, which is what makes it OSINT.</li>
+            <li><b>Scanning and enumeration.</b> Nmap port scanning plus
+            <b>banner grabbing</b>, which is what reveals the outdated software
+            version.</li>
+            <li><b>Gaining access (exploitation).</b> The known flaw is weaponised
+            and a shell obtained — the perimeter is breached.</li>
+            <li><b>Maintaining access (persistence).</b> A scheduled job that reopens
+            the connection is a persistence mechanism, exactly as the lecture lists
+            (reverse shells, scheduled jobs, backdoors, C2).</li>
+            <li><b>Covering tracks.</b> Assessing logging effectiveness and whether
+            forensic traces could be purged — note this is a measurement of the
+            client's detection capability, not concealment by the tester.</li>
+            <li><b>Reporting.</b> Proof-of-concept evidence, business impact
+            assessment and remediation steps — the stage's three stated outputs.</li>
+          </ol>
+
+          <p><b>Testing approach: black box.</b> Justification comes from event 2.
+          The tester had to <em>build</em> a list of employee addresses and mail
+          server details from public DNS records and LinkedIn — if they had been given
+          network diagrams or credentials, that reconnaissance effort would have been
+          unnecessary. Extensive OSINT is the signature of zero prior knowledge.
+          Event 3 supports it: Nmap is being used to <em>discover</em> what is
+          running, which a white-box tester with architecture documentation would
+          already know. Nothing in the story indicates the client supplied
+          credentials, which rules out gray box.</p>
+          <p>A complete answer adds the trade-off: black box gives the most realistic
+          simulation of an external attacker, but it spends a large share of the
+          three weeks on discovery rather than on depth. Gray box would have covered
+          more ground; black box tells you more about what an outsider truly faces.</p>
+
+          <p><b>Why event 1 is legally indispensable.</b> Every subsequent event in
+          this story — scanning the IP range, exploiting the flaw, obtaining a shell,
+          installing a persistence mechanism, attempting to alter logs — is an
+          offence under Bangladeshi cyber law if performed without authorisation.
+          <b>Section 18</b> covers unauthorised access to a computer system;
+          <b>Section 32</b> covers hacking offences including unauthorised data
+          deletion, modification and network intrusion, carrying up to 14 years'
+          imprisonment or a fine up to 10,000,000 BDT; and <b>Section 19</b> would
+          apply to any damage caused to the systems in the process.</p>
+          <p>The signed rules-of-engagement document is what converts these acts from
+          crimes into a contracted professional service. It matters in three specific
+          ways. It provides <b>consent</b> from a party with authority to give it —
+          which is why authorisation must come from the system owner, not merely from
+          a friendly IT manager. It <b>bounds the scope</b>: testing outside the
+          agreed IP ranges or outside the 01:00–05:00 window is unauthorised even
+          though a contract exists, because consent was given only for what the
+          document specifies. And it <b>allocates liability</b> if the testing causes
+          an outage, which intrusive testing can.</p>
+          <p>The professional-ethics link, if you have time: the ACM/IEEE Software
+          Engineering Code's <b>Principle 2 (Client and Employer)</b> requires
+          engineers to use client property only with formal authorisation and consent
+          — so pre-engagement is an ethical obligation as well as a legal shield.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>The tools landscape</h2>
+    <p class="subtitle">Seven tools. Know what each does and, more importantly, which stage it belongs to.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Tool</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Core functionality</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">Primary use case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Nmap</b></td><td style="padding:9px 10px">Network mapping, port scanning, OS/service detection</td><td style="padding:9px 0 9px 10px">Reconnaissance and host enumeration</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Nessus</b></td><td style="padding:9px 10px">Vulnerability scanning, compliance checks, config audits</td><td style="padding:9px 0 9px 10px">Infrastructure and host vulnerability assessment</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>OpenVAS</b></td><td style="padding:9px 10px">Open-source network vulnerability scanning engine</td><td style="padding:9px 0 9px 10px">Scheduled internal vulnerability audits</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Wireshark</b></td><td style="padding:9px 10px">Deep packet analysis and traffic inspection</td><td style="padding:9px 0 9px 10px">Capturing and inspecting unencrypted packets</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Nikto</b></td><td style="padding:9px 10px">Web server scanner for dangerous files and outdated software</td><td style="padding:9px 0 9px 10px">Rapid web server configuration audits</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Burp Suite</b></td><td style="padding:9px 10px">Web proxy, request repeater, automated scanner</td><td style="padding:9px 0 9px 10px">Web app pen testing — SQLi, XSS, auth bypass</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>OWASP ZAP</b></td><td style="padding:9px 10px">Open-source web application security scanner</td><td style="padding:9px 0 9px 10px">Automated DAST scanning and proxy interception</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Group them by stage — far easier than memorising a table</span>
+      <p><b>Discovery (stage 2–3):</b> Nmap. <b>Vulnerability assessment:</b>
+      Nessus, OpenVAS, Nikto. <b>Web application testing:</b> Burp Suite, OWASP ZAP.
+      <b>Traffic analysis:</b> Wireshark. Note that Nessus and OpenVAS are the same
+      job — commercial and open-source — as are Burp Suite and OWASP ZAP.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 5 <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>A small e-commerce company with no security budget wants to establish
+        basic VAPT capability using free tools only. Recommend a toolchain, state
+        which stage of testing each tool serves, and explain what capability the
+        company will still be missing.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The <b>tools table</b> (VAPT §5) mapped onto the <b>7-stage
+            methodology</b> (§4). The constraint "free tools only" is the examiner's
+            way of testing whether you know which entries in the table are
+            open-source. The final part returns to the VA/PT completion argument from
+            §2 — automation is free, expertise is not.
+          </div>
+          <p><b>Recommended toolchain:</b></p>
+          <ul>
+            <li><b>Nmap</b> — stages 2 and 3, reconnaissance and scanning/
+            enumeration. Network mapping, port scanning and OS/service detection to
+            establish what exists and what is exposed. Free and the standard choice.</li>
+            <li><b>OpenVAS</b> — vulnerability assessment across the infrastructure.
+            The open-source equivalent of Nessus, suitable for scheduled internal
+            vulnerability audits, so the company gets the continuous-coverage layer
+            without licence cost.</li>
+            <li><b>Nikto</b> — rapid web server configuration audits, checking for
+            dangerous files and outdated server software. Fast, free, and directly
+            relevant since the business is web-facing.</li>
+            <li><b>OWASP ZAP</b> — application-layer testing. Automated DAST scanning
+            and proxy interception for SQL injection, XSS and CSRF, which is where an
+            e-commerce site's real exposure sits. This is the free counterpart to
+            Burp Suite.</li>
+            <li><b>Wireshark</b> — traffic analysis, to confirm that customer data
+            and credentials are not travelling in cleartext anywhere in the
+            checkout flow.</li>
+          </ul>
+          <p><b>What this gives them.</b> A genuine, continuous
+          <em>vulnerability assessment</em> capability across network, host, web
+          server and application layers, at zero licence cost. For a small company
+          this is a real improvement — it delivers the baseline hygiene and
+          compliance value the lecture attributes to VA, and it will catch the
+          unpatched services, default credentials and obvious injection flaws that
+          most opportunistic attacks rely on.</p>
+          <p><b>What is still missing — the important half of the answer.</b></p>
+          <ol>
+            <li><b>The penetration testing half of VAPT.</b> Every tool listed is a
+            scanner or an analyser. The company will have a list of findings and no
+            proof of which are exploitable, cannot see chained attack paths, and will
+            be prioritising by generic severity score rather than by real exposure.
+            They are measuring exposure and will be tempted to call it risk.</li>
+            <li><b>Manual expertise.</b> The lecture is explicit that penetration
+            testing is automated scripts <em>plus manual testing</em>. Business logic
+            flaws — a checkout that lets you change the price in a request, or an
+            order ID you can increment to read someone else's invoice — are invisible
+            to every scanner because nothing is technically malformed. Only a human
+            finds those, and on an e-commerce site they are among the most damaging.</li>
+            <li><b>False positive triage.</b> OpenVAS will report findings that are
+            not real, and with no expertise to validate them the company will either
+            waste effort or start ignoring the reports.</li>
+            <li><b>Detection testing.</b> No scanner assesses whether an intrusion
+            would be noticed — that is stage 6 of the methodology and it requires an
+            actual simulated attack.</li>
+          </ol>
+          <p><b>Recommendation.</b> Run the free toolchain continuously as the
+          baseline, and budget for a scoped external penetration test — even a
+          narrow, annual one limited to the checkout and authentication flows. That
+          preserves the VA/PT pairing at the lowest viable cost: the free tools
+          supply breadth, the paid engagement supplies proof, and the assessment
+          output makes the paid engagement cheaper by scoping it precisely.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>OWASP Top 10 smart contract vulnerabilities</h2>
+    <p class="subtitle">The 2025 vs 2026 comparison. A likely table-recall question — note what changed.</p>
+
+    <p><b>OWASP</b> is the Open Worldwide Application Security Project, which
+    publishes ranked lists of the most critical security risks in various domains.
+    This one covers smart contracts — the self-executing programs on a blockchain
+    that Guide 1 introduced.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 8px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Rank</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">2025</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">2026</th>
+          <th style="padding:8px 0 8px 8px;font-family:'Space Grotesk',sans-serif;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase">Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC01</b></td><td style="padding:7px 8px">Access Control Vulnerabilities</td><td style="padding:7px 8px">Access Control Vulnerabilities</td><td style="padding:7px 0 7px 8px">Unchanged</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC02</b></td><td style="padding:7px 8px">Price Oracle Manipulation</td><td style="padding:7px 8px">Business Logic Vulnerabilities</td><td style="padding:7px 0 7px 8px">Renamed &amp; elevated</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC03</b></td><td style="padding:7px 8px">Logic Errors</td><td style="padding:7px 8px">Price Oracle Manipulation</td><td style="padding:7px 0 7px 8px">Shifted down</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC04</b></td><td style="padding:7px 8px">Lack of Input Validation</td><td style="padding:7px 8px">Flash Loan-Facilitated Attacks</td><td style="padding:7px 0 7px 8px">Renamed &amp; elevated</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC05</b></td><td style="padding:7px 8px">Reentrancy Attacks</td><td style="padding:7px 8px">Lack of Input Validation</td><td style="padding:7px 0 7px 8px">Shifted down</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC06</b></td><td style="padding:7px 8px">Unchecked External Calls</td><td style="padding:7px 8px">Unchecked External Calls</td><td style="padding:7px 0 7px 8px">Unchanged</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC07</b></td><td style="padding:7px 8px">Flash Loan Attacks</td><td style="padding:7px 8px">Arithmetic Errors</td><td style="padding:7px 0 7px 8px"><b>NEW entry</b></td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC08</b></td><td style="padding:7px 8px">Integer Overflow and Underflow</td><td style="padding:7px 8px">Reentrancy Attacks</td><td style="padding:7px 0 7px 8px">Shifted down</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0"><b>SC09</b></td><td style="padding:7px 8px">Insecure Randomness</td><td style="padding:7px 8px">Integer Overflow and Underflow</td><td style="padding:7px 0 7px 8px">Shifted down (<em>Insecure Randomness removed</em>)</td></tr>
+        <tr><td style="padding:7px 8px 7px 0"><b>SC10</b></td><td style="padding:7px 8px">Denial of Service (DoS) Attacks</td><td style="padding:7px 8px">Proxy &amp; Upgradeability Vulnerabilities</td><td style="padding:7px 0 7px 8px"><b>NEW entry</b> (<em>DoS removed</em>)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Learn the four changes, not the twenty rows</span>
+      <p><b>Unchanged at the top and middle:</b> SC01 Access Control, SC06 Unchecked
+      External Calls. <b>Two new entries in 2026:</b> Arithmetic Errors (SC07) and
+      Proxy &amp; Upgradeability Vulnerabilities (SC10). <b>Two removed:</b> Insecure
+      Randomness and Denial of Service. <b>Two elevated under new names:</b> Business
+      Logic Vulnerabilities to SC02 and Flash Loan-Facilitated Attacks to SC04.
+      Everything else just shifted down to make room.</p>
+    </div>
+
+    <p>Two terms worth defining in case you need to write about them.
+    <b>Reentrancy</b> is when a contract calls an external contract which calls back
+    into the original before the first call finished, allowing the same funds to be
+    withdrawn repeatedly. A <b>flash loan</b> is an uncollateralised loan that must
+    be borrowed and repaid within a single transaction — attackers use them to
+    temporarily command enormous capital, typically to manipulate a price oracle.
+    Note that the 2026 elevation of both Business Logic and Flash Loan attacks tells
+    a story: the industry's problems are shifting from low-level coding bugs toward
+    higher-level design and economic flaws.</p>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07</span>
+    <h2>Business value and best practices</h2>
+    <p class="subtitle">The five benefits. Short section, easy marks.</p>
+
+    <ol>
+      <li><b>Safeguard user data</b> — protect sensitive customer records and PII
+      from public exposure. (<b>PII</b> = Personally Identifiable Information.)</li>
+      <li><b>Real-time risk visibility</b> — quantify operational risk based on
+      demonstrated exploit paths. Note "demonstrated" — this benefit comes
+      specifically from the PT half.</li>
+      <li><b>Regulatory compliance</b> — maintain compliance with ISO 27001,
+      PCI-DSS and HIPAA.</li>
+      <li><b>Strengthen incident response</b> — test blue-team detection
+      capabilities against active simulations. (<em>Blue team</em> = the defenders,
+      i.e. the SOC; <em>red team</em> = the simulated attackers.)</li>
+      <li><b>Optimise security budgets</b> — justify defensive investments using
+      data-backed vulnerability metrics.</li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">Cross-topic link worth making</span>
+      <p>Benefit 4 connects VAPT directly to the SOC topic: a penetration test is how
+      you find out whether your SIEM correlation rules actually fire. And benefit 5
+      connects it to Risk Management: the demonstrated exploit paths supply the
+      <b>likelihood</b> input to \(\text{Risk}=\text{Likelihood}\times\text{Impact}\),
+      and the ALE calculation that follows from it. Examiners like answers that
+      cross topics.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 6 <span class="diff">· long answer · stretch</span></span>
+      </div>
+      <div class="qbody">
+        <p>The board of a Bangladeshi commercial bank has approved budget for
+        <em>either</em> a continuous vulnerability management programme <em>or</em> an
+        annual penetration test, but not both. As the CISO, write the case you would
+        put to the board. Argue for one, acknowledge what you lose, and propose how to
+        mitigate that loss.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            A stretch question with no single correct answer — the marks are for the
+            <b>quality of the argument</b>, not the choice. It draws on the whole VAPT
+            lecture plus the <b>business case model</b> from the Risk Management
+            lecture (issue → root cause → solution → effect). The instruction
+            "acknowledge what you lose" is the examiner explicitly asking for the
+            completion argument from §2, so a candidate who argues one side without
+            naming the sacrificed capability cannot score well however good the case
+            is.
+          </div>
+
+          <p><b>Recommendation: the continuous vulnerability management
+          programme</b> — with a stated plan to recover the penetration testing
+          capability by other means.</p>
+
+          <p><b>The argument.</b> Three grounds.</p>
+          <p><em>Coverage against a changing estate.</em> A bank's environment is not
+          static: core banking systems, switching engines, customer portals and
+          hundreds of endpoints change continuously, and new CVEs are published
+          daily. An annual penetration test is a snapshot that begins ageing the day
+          the report is signed. For eleven of twelve months the bank would be relying
+          on evidence about a configuration that no longer exists. Continuous
+          assessment maintains a current picture — and unpatched, end-of-life systems
+          are precisely the root cause behind WannaCry and Equifax, both of which the
+          risk management lecture treats as landmark cases.</p>
+          <p><em>Regulatory position.</em> Banks operate under sustained compliance
+          obligations. ISO 27001 and PCI-DSS expect ongoing vulnerability management,
+          not a single annual exercise, and the cyber law lecture's
+          <b>due diligence obligation</b> is relevant here: an organisation retains
+          legal liability even when victimised, and failure to exercise reasonable
+          cybersecurity diligence attracts civil regulatory penalties. A continuous
+          programme is far easier to defend as reasonable diligence than one test a
+          year.</p>
+          <p><em>Cost per unit of risk reduced.</em> Automated scanning covers the
+          entire estate at a fraction of the per-host cost of manual testing. With a
+          single budget, breadth buys more risk reduction than depth — most successful
+          attacks on banks exploit known, patchable weaknesses rather than novel
+          zero-days.</p>
+
+          <p><b>What is lost — state it plainly, this is where the marks are.</b>
+          Choosing VA sacrifices four things.</p>
+          <ol>
+            <li><b>Proof of exploitability.</b> The bank will hold a large ranked
+            list and no evidence of which items an attacker could actually use. It
+            will be prioritising by generic severity score rather than by real
+            exposure, and some remediation effort will be spent on findings that are
+            unreachable in practice.</li>
+            <li><b>Chained attack paths.</b> Scanners cannot see how several
+            medium-rated findings combine. For a bank this is the most serious loss,
+            because compromise of a core banking system typically comes from a chain
+            rather than from one catastrophic flaw.</li>
+            <li><b>Blue-team validation.</b> No scan tests whether the SOC would
+            detect an intrusion. The bank will not know whether its correlation rules
+            fire, which is the benefit "strengthen incident response".</li>
+            <li><b>Business logic flaws.</b> Invisible to automation entirely — a
+            transaction flow that can be manipulated is not technically malformed, so
+            nothing flags it.</li>
+          </ol>
+
+          <p><b>How to mitigate the loss without the second budget line.</b></p>
+          <ul>
+            <li><b>Build limited internal testing capability.</b> The SOC's
+            <b>Tier 3</b> analysts already have vulnerability assessment and
+            penetration testing within their stated responsibilities. Using existing
+            staff and free tools — Nmap, OWASP ZAP, Burp Suite Community — recovers
+            some validation capability at no new licence cost.</li>
+            <li><b>Use purple-team exercises.</b> Have Tier 3 run controlled attack
+            simulations against the SOC's own detection rules. This addresses the
+            blue-team validation gap directly and is a staffing decision rather than a
+            procurement one.</li>
+            <li><b>Scope a very small external test.</b> Rather than a full annual
+            engagement, commission a narrow gray-box test of the two highest-value
+            flows only — internet banking authentication and payment initiation.
+            Because the vulnerability programme has already identified the targets,
+            the scoping is precise and the engagement is a fraction of full cost.</li>
+            <li><b>Prioritise by exposure, not by score.</b> Combine scanner output
+            with the asset inventory and criticality ratings from the risk management
+            lecture, so that a critical CVE on an internet-facing core banking
+            component outranks the same CVE on an isolated internal host. This
+            partially substitutes human judgement for the exploitability evidence a
+            pen test would have supplied.</li>
+          </ul>
+
+          <p><b>Closing statement to the board.</b> "Continuous vulnerability
+          management is the right first investment because it addresses the failure
+          mode that actually breaches banks — known, unpatched weaknesses across a
+          changing estate — and it satisfies our ongoing regulatory obligations.
+          But I want to record that it measures our <em>exposure</em>, not our
+          <em>risk</em>. Until we can validate exploitability, we will be
+          prioritising on inference rather than evidence, and we will not know
+          whether our SOC would detect a real intrusion. I am proposing internal
+          testing and a tightly scoped external engagement to close that gap, and I
+          will return to the board with the cost."</p>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Arguing the other way is equally acceptable — a bank that already has
+            mature patching but has never been tested might reasonably choose the pen
+            test. What is <em>not</em> acceptable is choosing either without naming
+            the sacrificed capability. The examiner is testing whether you internalised
+            "VA measures exposure, PT measures risk", so make sure that idea appears
+            explicitly.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — VAPT</h2>
+    <div class="grid">
+      <div class="item"><h4>Definition</h4><p>End-to-end evaluation of defensive posture <b>combining</b> automated vulnerability discovery with simulated adversarial exploitation.</p></div>
+      <div class="item"><h4>The one axis</h4><p>VA = <b>broad, shallow, automated, continuous, cheap</b>. PT = <b>narrow, deep, manual, periodic, expensive</b>.</p></div>
+      <div class="item"><h4>The killer sentence</h4><p><b>VA measures exposure. PT measures risk.</b> Use it in any comparison question.</p></div>
+      <div class="item"><h4>Two questions</h4><p>VA: "what is weak or unpatched?" PT: "can it be exploited to gain deep access?"</p></div>
+      <div class="item"><h4>5 scan types</h4><p>Network · Host · Wireless · Application · Database. Different vantage points, not alternatives.</p></div>
+      <div class="item"><h4>SAST vs DAST</h4><p>Static = <b>still</b> (source code, not running). Dynamic = <b>running</b> (live app, real time).</p></div>
+      <div class="item"><h4>7 PT stages</h4><p>Pre-engagement → Recon (OSINT) → Scanning/Enumeration → Gaining Access → Maintaining Access → Covering Tracks → Reporting.</p></div>
+      <div class="item"><h4>Stage 1 matters</h4><p>Without written authorisation it is a crime under DSA <b>s.18</b> and <b>s.32</b>. Always mention it.</p></div>
+      <div class="item"><h4>Stage 6 misread</h4><p>Covering tracks = <b>testing whether the SOC logged it</b>, not the tester hiding.</p></div>
+      <div class="item"><h4>3 approaches</h4><p>Black = zero knowledge (outsider). Gray = partial, low-priv creds (insider/foothold). White = full source + docs.</p></div>
+      <div class="item"><h4>Host discovery</h4><p><b>ARP</b> for the local subnet · <b>ICMP echo</b> for wider ranges.</p></div>
+      <div class="item"><h4>Tools by stage</h4><p>Discovery: Nmap. VA: Nessus, OpenVAS, Nikto. Web PT: Burp Suite, OWASP ZAP. Packets: Wireshark.</p></div>
+      <div class="item"><h4>Free equivalents</h4><p>Nessus → OpenVAS. Burp Suite → OWASP ZAP.</p></div>
+      <div class="item"><h4>OWASP 2026 changes</h4><p>NEW: Arithmetic Errors (SC07), Proxy &amp; Upgradeability (SC10). REMOVED: Insecure Randomness, DoS. SC01 Access Control unchanged.</p></div>
+      <div class="item"><h4>5 benefits</h4><p>Safeguard data · real-time risk visibility · compliance (ISO 27001, PCI-DSS, HIPAA) · strengthen IR · optimise budgets.</p></div>
+      <div class="item"><h4>What VA can't do</h4><p>Prove exploitability · chain findings · assess business impact · test the defenders · avoid false positives.</p></div>
+    </div>
+  </div>
+
+
+
+  <footer class="foot">
+    Guide 3 of 6 · CSE487 Final. Built from Rakib Hossen's lecture material. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
