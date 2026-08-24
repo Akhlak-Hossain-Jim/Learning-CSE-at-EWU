@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE487 — SOC Exam Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+        <li><a href="#t0">How to use this guide</a></li>
+        <li><a href="#t1">What is a SOC?</a></li>
+        <li><a href="#t2">The three pillars</a></li>
+        <li><a href="#t3">Roles &amp; responsibilities</a></li>
+        <li><a href="#t4">4 pillars of Threat Intel</a></li>
+        <li><a href="#t5">How a SOC prevents attacks</a></li>
+        <li><a href="#t6">The metrics &amp; formulas</a></li>
+        <li><a href="#t7">Precision vs recall (priority)</a></li>
+        <li><a href="#t8">Nine worked exercises</a></li>
+      </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE487 Final · Exam Preparation Guide</p>
+      <h1>Security Operations Center &amp; Threat Intelligence</h1>
+      <div class="meta">
+        <span><b>Course:</b> CSE487 — Cyber Security</span>
+        <span><b>Based on:</b> Rakib Hossen, Asst. Professor, Dept. of CySE, UFTB — "SOC &amp; Threat Intelligence" + "SOC Performance Metrics &amp; Exercises"</span>
+        <span><b>Syllabus:</b> Item 2.1 – 2.6.2</span>
+        <span><b>Exam:</b> ≈ 25 Aug 2026 (2 days)</span>
+      </div>
+  </header>
+
+    <section class="topic" id="t0">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Syllabus item 2 — SOC, all six sub-points including the full metrics maths.</p>
+
+    <p>This is the largest of the six guides, because your syllabus splits SOC into
+    both a theory half and a maths half. Sections 1–6 are theory in the faculty's
+    order (what a SOC is → 3 pillars → roles and responsibilities → the 4 pillars of
+    threat intelligence → how a SOC prevents attacks). Sections 7–9 are the maths:
+    every formula defined and derived, then <b>nine full exercises</b> in exactly
+    the style of the ones Rakib Hossen worked in class, with fresh numbers so you
+    are practising the method rather than recalling his answers.</p>
+
+    <div class="callout key">
+      <span class="tag">Where the marks are</span>
+      <p>The SOC maths is the most predictable scoring opportunity on this paper.
+      Every formula is a division followed by a multiplication by 100 — there is no
+      hard algebra anywhere. What loses marks is picking the wrong
+      <b>denominator</b>. Section 7 is organised around that single problem.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Your flagged gap</span>
+      <p>The diagnostic showed <b>precision vs. recall</b> is unclear. Section 8,
+      Exercise 4 is written to fix it — it is the confusion-matrix question, and the
+      "which metric matters most to a SOC" discussion is the part the faculty
+      explicitly calls out in his own solved exercise. Do not skip it.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t1">
+    <span class="topic-num">Topic 01</span>
+    <h2>What is a SOC?</h2>
+    <p class="subtitle">Syllabus 2.1. Definition plus the six core functions.</p>
+
+    <p>Picture a large hospital's emergency department, but for an organisation's
+    computer network. Alarms arrive continuously from every corner of the estate.
+    Someone has to look at each one, decide whether it is real, decide how serious
+    it is, treat the serious cases, and keep records afterwards. That is a
+    <strong>Security Operations Center</strong>.</p>
+
+    <div class="callout key">
+      <span class="tag">The faculty's definition — learn it verbatim</span>
+      <p>A Security Operations Center (SOC) is a <b>centralised organisational unit
+      and facility responsible for continuously monitoring, detecting, analysing and
+      responding to cybersecurity threats across an enterprise infrastructure</b>.</p>
+    </div>
+
+    <p>Two words in that definition carry weight. <b>Centralised</b>: the point of a
+    SOC is that security visibility is pooled in one place instead of scattered
+    across separate teams who each see a fragment. <b>Continuously</b>: it runs
+    24/7, because attackers do not observe office hours.</p>
+
+    <h3>The six core functions</h3>
+    <ol>
+      <li><b>Prevention and proactive monitoring</b> — round-the-clock scanning of
+      network perimeters, endpoints and cloud assets.</li>
+      <li><b>Alert management and triage</b> — aggregating, correlating and
+      filtering security alerts to eliminate false positives. (<em>Triage</em> is
+      the medical term for sorting patients by urgency; it means the same here.)</li>
+      <li><b>Incident response</b> — systematic containment, eradication and
+      recovery from active attacks.</li>
+      <li><b>Log management</b> — centralised log ingestion, indexing and compliance
+      auditing.</li>
+      <li><b>Security intelligence and threat hunting</b> — integrating external
+      threat feeds to find zero-day or stealth campaigns. (A <em>zero-day</em> is a
+      vulnerability with no vendor patch available yet.)</li>
+      <li><b>Security posture refinement</b> — continuously hardening systems and
+      tuning detection rules.</li>
+    </ol>
+
+    <p>Notice that functions 1 and 6 are <em>proactive</em> while 2 and 3 are
+    <em>reactive</em>. If a question asks whether a SOC is preventive or responsive,
+    the answer is both, and naming functions on each side proves it.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/OHkWXFheSKM" title="Security Operations Center (SOC) Explained"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=OHkWXFheSKM" target="_blank" rel="noopener">Security Operations Center (SOC) Explained</a> — IBM Technology. Why it helps: it walks the people/process/technology structure on a whiteboard in roughly the same order as your lecture, so it reinforces the three pillars rather than competing with them.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 1 <span class="diff">· short answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Define a Security Operations Center and describe its core functions.
+        Explain why an organisation would centralise these functions rather than
+        leave security to individual IT teams.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The definition and <b>six core functions</b> come straight from Lecture
+            "SOC &amp; Threat Intelligence" §1. The second half — "why centralise" —
+            is not stated as a bullet in the slides, so the examiner is testing
+            whether you can <b>derive</b> it from the <b>correlation</b> idea in the
+            SIEM material (§2, Technology) and the <b>alert fatigue</b> challenge
+            (§7). This is the classic "recall plus one step of reasoning" question.
+          </div>
+          <p><b>Definition.</b> A SOC is a centralised organisational unit and
+          facility responsible for continuously monitoring, detecting, analysing and
+          responding to cybersecurity threats across an enterprise infrastructure.</p>
+          <p><b>Core functions.</b> Prevention and proactive 24/7 monitoring of
+          perimeters, endpoints and cloud; alert management and triage to filter
+          false positives; incident response covering containment, eradication and
+          recovery; centralised log management for indexing and compliance auditing;
+          security intelligence and threat hunting using external feeds to catch
+          zero-day and stealth campaigns; and continuous security posture refinement
+          through hardening and detection-rule tuning.</p>
+          <p><b>Why centralise.</b> Three arguments, and the strongest is the first.</p>
+          <ul>
+            <li><b>Correlation is only possible with pooled data.</b> A multi-stage
+            attack shows up as one failed login on the VPN, one odd DNS lookup on
+            the proxy, and one new scheduled task on an endpoint. Each team looking
+            at its own tool sees three unremarkable events. A SOC feeding all three
+            into a <b>SIEM</b> sees one attack chain. Detection that depends on
+            joining evidence across domains is structurally impossible in a
+            decentralised model.</li>
+            <li><b>Scarce expertise is concentrated where it pays.</b> The lecture
+            lists a <em>skills shortage</em> in qualified Tier 2/3 analysts and
+            reverse engineers as a major challenge. No individual IT team can staff
+            a malware reverse engineer; one SOC can, and serves the whole estate.</li>
+            <li><b>Consistency and cost.</b> Documented SOPs and playbooks mean
+            every incident is handled the same way regardless of which system it hit,
+            and the very high infrastructure cost of SIEM licensing and multi-terabyte
+            log retention is paid once instead of per team.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t2">
+    <span class="topic-num">Topic 02</span>
+    <h2>The three pillars of a SOC</h2>
+    <p class="subtitle">Syllabus 2.2. People, Process, Technology. A guaranteed question.</p>
+
+    <p>Everything a SOC is made of falls into one of three buckets. The lecture
+    draws it as a single diagram, and the reason it matters is that a SOC fails if
+    <em>any one</em> pillar is missing — great tools with untrained staff, or great
+    staff with no documented procedure, both produce chaos.</p>
+
+    <div class="formula" style="text-align:center">
+      <div class="label" style="text-align:left">The three pillars</div>
+      <svg viewBox="0 0 660 250" width="100%" style="max-width:620px;height:auto" role="img" aria-label="Diagram: Security Operations Center resting on three pillars — People, Process, Technology">
+        <g font-family="'Space Grotesk', system-ui, sans-serif" text-anchor="middle">
+          <rect x="180" y="18" width="300" height="44" rx="10" fill="#2F6F6B"/>
+          <text x="330" y="45" fill="#ffffff" font-weight="600" font-size="13">SECURITY OPERATIONS CENTER</text>
+          <g fill="none" stroke="#5A6B72" stroke-width="1.5">
+            <path d="M330 62 L330 88"/>
+            <path d="M110 88 L550 88"/>
+            <path d="M110 88 L110 118"/>
+            <path d="M330 88 L330 118"/>
+            <path d="M550 88 L550 118"/>
+          </g>
+          <rect x="20" y="118" width="180" height="92" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="110" y="142" fill="#2F6F6B" font-weight="700" font-size="13">PEOPLE</text>
+          <text x="110" y="164" fill="#1E2A32" font-size="11.5">Tier 1 · Tier 2 · Tier 3</text>
+          <text x="110" y="182" fill="#1E2A32" font-size="11.5">SOC Manager · IR Coord.</text>
+          <text x="110" y="200" fill="#5A6B72" font-size="11">reports to the CISO</text>
+
+          <rect x="240" y="118" width="180" height="92" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="330" y="142" fill="#2F6F6B" font-weight="700" font-size="13">PROCESS</text>
+          <text x="330" y="164" fill="#1E2A32" font-size="11.5">SOPs · escalation matrix</text>
+          <text x="330" y="182" fill="#1E2A32" font-size="11.5">Incident playbooks</text>
+          <text x="330" y="200" fill="#5A6B72" font-size="11">phishing · ransomware · SQLi</text>
+
+          <rect x="460" y="118" width="180" height="92" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="550" y="142" fill="#2F6F6B" font-weight="700" font-size="13">TECHNOLOGY</text>
+          <text x="550" y="164" fill="#1E2A32" font-size="11.5">SIEM · SOAR</text>
+          <text x="550" y="182" fill="#1E2A32" font-size="11.5">EDR / XDR · TIP</text>
+          <text x="550" y="200" fill="#5A6B72" font-size="11">Splunk · QRadar · Wazuh</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>Pillar 1 — People</h3>
+    <p>Covered in full in Section 3, because your syllabus lists roles and
+    responsibilities separately.</p>
+
+    <h3>Pillar 2 — Process</h3>
+    <p>Two artefacts, and the difference between them is examinable.</p>
+    <p><strong>SOPs (Standard Operating Procedures)</strong> are the
+    <em>general</em> documented workflows: how alerts are handled, the escalation
+    matrix that says who passes what to whom, and how the SOC communicates with
+    other teams. <strong>Incident playbooks</strong> are <em>specific</em>: an
+    actionable, step-by-step sequence tailored to one attack type — a phishing
+    playbook, a ransomware playbook, a brute-force playbook, a SQL injection
+    playbook.</p>
+    <p>One-line separator: <b>SOPs govern how the SOC operates in general;
+    playbooks govern what to do about one particular kind of attack.</b></p>
+
+    <h3>Pillar 3 — Technology</h3>
+    <p>Four systems, and you should be able to say what each is <em>for</em> in one
+    sentence.</p>
+    <ul>
+      <li><b>SIEM</b> — Security Information and Event Management. Central log
+      aggregation, correlation rules and event visualisation. <em>Examples: Splunk,
+      IBM QRadar, Wazuh.</em> This is the SOC's central nervous system: it is where
+      logs from everywhere land and where correlation rules turn many events into
+      one alert.</li>
+      <li><b>SOAR</b> — Security Orchestration, Automation and Response. Automated
+      playbooks for rapid containment and workflow orchestration. Where SIEM
+      <em>detects</em>, SOAR <em>acts</em> — automatically blocking an IP or
+      isolating a host without waiting for a human.</li>
+      <li><b>EDR / XDR</b> — Endpoint (or Extended) Detection and Response. Deep
+      visibility into hosts, behavioural anomaly detection and remediation.</li>
+      <li><b>TIP</b> — Threat Intelligence Platform. Feeds real-time indicators of
+      compromise (IoCs) and threat context into the monitoring engines.</li>
+    </ul>
+
+    <h3>EDR vs XDR — the comparison table</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">Dimension</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">EDR</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">XDR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Monitoring scope</b></td><td style="padding:9px 10px">Endpoints only (workstations, servers)</td><td style="padding:9px 0 9px 10px">Multi-layered: endpoints, network, cloud, identity, email</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Data sources</b></td><td style="padding:9px 10px">Host system logs and process telemetry</td><td style="padding:9px 0 9px 10px">Integrated cross-telemetry feeds</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Visibility</b></td><td style="padding:9px 10px">Device-level</td><td style="padding:9px 0 9px 10px">End-to-end, holistic</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Detection focus</b></td><td style="padding:9px 10px">Host anomalies and malware</td><td style="padding:9px 0 9px 10px">Complex multi-stage attack chains across domains</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Response</b></td><td style="padding:9px 10px">Endpoint isolation, process killing</td><td style="padding:9px 0 9px 10px">Multi-vector: firewall block, revoke token, isolate host</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>Deployment</b></td><td style="padding:9px 10px">Moderate; agent-based</td><td style="padding:9px 0 9px 10px">Higher; needs cross-platform API integration</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Do not confuse <b>SIEM</b> with <b>SOAR</b>. SIEM collects and correlates
+      to produce an alert; SOAR takes an alert and executes an automated response.
+      Section 9, Exercise 8 quantifies exactly what adding SOAR does to the metrics
+      — that is the connection between the theory and the maths half of this topic.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 2 <span class="diff">· long answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>"A SOC is only as strong as its weakest pillar." Explain the three pillars
+        of a SOC and, for each, describe a realistic failure that would cripple the
+        SOC even if the other two pillars were world-class.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The three pillars come from §2 of the SOC lecture. The "failure" half
+            asks you to combine them with the <b>operational challenges</b> in §7 —
+            alert fatigue, skills shortage, infrastructure cost. The examiner is
+            testing whether the pillars are a memorised list or something you
+            understand as <em>interdependent</em>, so structure the answer as three
+            paired blocks: <em>what the pillar is</em>, then <em>what its absence
+            does</em>.
+          </div>
+
+          <p><b>Pillar 1 — People.</b> The tiered analyst structure: Tier 1
+          triage specialists monitoring SIEM/EDR consoles and filtering false
+          positives; Tier 2 incident responders doing deep-dive investigation and
+          containment; Tier 3 threat hunters performing proactive hunting, malware
+          reverse engineering and detection-rule refinement; and above them the SOC
+          Manager and Incident Response Coordinator, reporting to the CISO.</p>
+          <p><em>Failure mode:</em> the <b>skills shortage</b> the lecture names.
+          Suppose the SOC has a superb SIEM and mature playbooks but cannot hire
+          Tier 3 staff. Nothing proactive happens — no threat hunting for APTs, no
+          reverse engineering of novel malware, and critically no one refining the
+          correlation rules. The detection logic slowly decays against evolving
+          attacker TTPs, and the SOC becomes purely reactive to threats its
+          out-of-date rules already know about.</p>
+
+          <p><b>Pillar 2 — Process.</b> SOPs define alert handling workflows,
+          escalation matrices and cross-team communication; incident playbooks give
+          attack-specific step-by-step responses for phishing, ransomware,
+          brute-force and SQL injection.</p>
+          <p><em>Failure mode:</em> excellent analysts with excellent tools and no
+          documented escalation matrix. Every incident is improvised. Two analysts
+          handle identical ransomware alerts in two different ways, containment is
+          delayed while people work out who has authority to isolate a production
+          server, and the delay shows up directly in the metrics as an inflated
+          <b>MTTR</b>. Worse, without SOPs there is no consistent post-incident
+          record, so the same mistake repeats and the lecture's Phase 7 — reporting
+          and continuous improvement — never happens.</p>
+
+          <p><b>Pillar 3 — Technology.</b> SIEM for aggregation and correlation,
+          SOAR for automated response, EDR/XDR for endpoint and cross-domain
+          visibility, TIP for IoC feeds.</p>
+          <p><em>Failure mode:</em> skilled analysts following good procedure but
+          with poor log coverage or untuned correlation rules. This produces
+          <b>alert fatigue</b>, the first challenge in §7: the volume of low-fidelity
+          alerts is so high that critical threats are overlooked inside the noise.
+          The maths half of this topic makes it concrete — a false positive rate of
+          16% against 42,000 monthly alerts means analysts wade through roughly
+          6,700 wrong alerts, and genuine detections get buried.</p>
+
+          <p><b>Conclusion.</b> The three failures are not independent — they
+          compound. Weak technology creates alert volume, which overloads people,
+          which causes procedure to be skipped under pressure. That mutual
+          dependence is what the quoted statement means, and saying so explicitly is
+          the closing mark.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t3">
+    <span class="topic-num">Topic 03</span>
+    <h2>Roles and responsibilities</h2>
+    <p class="subtitle">Syllabus 2.3. The tier hierarchy — who does what, and what escalates upward.</p>
+
+    <p>The People pillar is organised as a ladder. Work rises up it: routine
+    filtering at the bottom, investigation in the middle, and the hardest,
+    least-defined work at the top. Learn each tier as <em>a job description plus a
+    handover point</em>.</p>
+
+    <h3>Tier 1 — Triage Specialist</h3>
+    <ul>
+      <li>Ingests raw logs and continuously monitors SIEM/EDR consoles.</li>
+      <li>Conducts preliminary alert triage and <b>false-positive filtering</b> to
+      reduce alert fatigue.</li>
+      <li><b>Escalates confirmed security events to Tier 2.</b></li>
+    </ul>
+    <p>Tier 1 is a filter, not an investigator. The question they answer is "is this
+    real, and how urgent is it?" — not "what happened?"</p>
+
+    <h3>Tier 2 — Incident Responder</h3>
+    <ul>
+      <li>Conducts deep-dive investigations and <b>scope analysis</b> across
+      affected systems — that is, working out how far the compromise has spread.</li>
+      <li>Executes <b>containment</b>: endpoint isolation, network ACL blocks, and
+      system remediation.</li>
+    </ul>
+    <p>Tier 2 owns the incident once it is confirmed. They answer "what happened,
+    how far did it go, and how do we stop it spreading?"</p>
+
+    <h3>Tier 3 — Threat Hunter / Expert</h3>
+    <ul>
+      <li>Proactively hunts stealthy, undetected threats and <b>APTs</b> (Advanced
+      Persistent Threats — well-resourced attackers who maintain long-term covert
+      access).</li>
+      <li>Performs malware reverse engineering, vulnerability assessments and
+      penetration tests.</li>
+      <li>Refines SIEM detection rules and analytics models.</li>
+    </ul>
+    <p>Tier 3 is the only tier whose work <em>starts without an alert</em>. Tiers 1
+    and 2 are triggered by something the system flagged; Tier 3 goes looking for
+    what the system missed. That is the single most important distinction in this
+    section.</p>
+
+    <h3>SOC Manager and Incident Response Coordinator</h3>
+    <ul>
+      <li>Oversee operational performance, metrics, staffing and reporting.</li>
+      <li><b>Report directly to the CISO</b> (Chief Information Security Officer).</li>
+    </ul>
+    <p>Note that the metrics in Sections 7–9 are the SOC Manager's instrument panel.
+    That is the join between this topic and the maths.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea</span>
+      <p>Ladder of questions: <b>Tier 1 — "is it real?"</b> · <b>Tier 2 — "what
+      happened and how do we contain it?"</b> · <b>Tier 3 — "what have we not
+      detected at all?"</b> · <b>Manager — "how well is the SOC performing?"</b>
+      Answer any roles question in that shape and it practically writes itself.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 3 <span class="diff">· long answer · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>At 02:14 the SIEM raises an alert: a finance department workstation has
+        made an outbound connection to a domain flagged on a threat intelligence
+        feed. Twenty minutes later a second alert shows the same workstation
+        authenticating to three file servers it has never touched before.</p>
+        <p>Describe how this incident travels through the SOC's tier structure.
+        State what each tier does, at what point the incident is handed on, and
+        which pillar of the SOC each activity draws on.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            A story wrapped around two lecture structures at once: the <b>tier roles
+            and responsibilities</b> (§2, People) and the <b>7-phase incident
+            response lifecycle</b> (§4). The examiner wants you to notice that the
+            tiers and the phases <em>line up</em> — Tier 1 owns triage, Tier 2 owns
+            investigation through recovery, Tier 3 and the manager own the
+            improvement phase. The two alerts in the story are deliberate: the
+            second is lateral movement, which is what forces escalation.
+          </div>
+
+          <p><b>Phase 1 — Alert (Technology pillar).</b> The SIEM generates the
+          alert because a correlation rule matched a threat intelligence indicator —
+          the outbound connection to a known malicious domain. In the lecture's
+          correlation-rule matrix this is the <b>botnet activity</b> use case:
+          telemetry from firewall, IDS, DNS and proxy, with the alert condition
+          "outbound connection to known C2 domain".</p>
+
+          <p><b>Phase 2 — Triage (Tier 1, People + Process).</b> The Tier 1 triage
+          specialist picks the alert off the console and validates its authenticity,
+          severity and urgency. They check whether the destination is a genuine
+          malicious indicator or a stale feed entry, and whether the workstation's
+          behaviour has a benign explanation. Here it does not — and the second
+          alert, showing authentication to three servers the host has never
+          contacted, is <b>lateral movement</b>, which no false positive explains.
+          <b>Handover point:</b> Tier 1 confirms this is a real security event and
+          <b>escalates to Tier 2</b>. Tier 1 does not investigate further; that is
+          the boundary of the role.</p>
+
+          <p><b>Phase 3 — Investigation (Tier 2).</b> The Tier 2 incident responder
+          performs the deep-dive: forensic artefact analysis and timeline
+          reconstruction to establish the initial access vector, and
+          <b>scope analysis</b> to determine which other systems are affected. The
+          three file servers must now be examined, because lateral movement means
+          the blast radius is larger than the one workstation.</p>
+
+          <p><b>Phase 4 — Containment (Tier 2).</b> Endpoint isolation of the
+          workstation, network ACL blocks against the C2 domain, and revocation of
+          the credentials used to reach the file servers. This halts lateral spread
+          and is executed under the relevant <b>incident playbook</b> — the Process
+          pillar — so the analyst is not improvising at 02:40.</p>
+
+          <p><b>Phase 5 — Eradication (Tier 2, supported by Tier 3).</b> Purging
+          malware artefacts, patching the exploited vulnerability, and closing any
+          backdoors. If the malware is novel, Tier 3 performs
+          <b>reverse engineering</b> to establish what it does and what indicators
+          it leaves — the point where the expert tier is pulled in.</p>
+
+          <p><b>Phase 6 — Recovery.</b> Restoring affected systems from trusted
+          backups and validating operational integrity before returning them to
+          service.</p>
+
+          <p><b>Phase 7 — Reporting and continuous improvement (Tier 3 + SOC
+          Manager).</b> A post-incident review. Tier 3 <b>refines the SIEM detection
+          rules</b> so that the lateral-movement pattern raises an alert on its own
+          next time rather than being noticed twenty minutes later, and updates the
+          playbook. The SOC Manager records the metrics this incident contributes to
+          — its detection time feeds MTTD, its response time feeds MTTR — and
+          reports upward to the CISO.</p>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Name the <b>two handover points</b> explicitly: Tier 1 → Tier 2 on
+            confirmation of a genuine event, and the pull-in of Tier 3 for reverse
+            engineering and rule refinement. Stating where responsibility transfers,
+            and why, is what the question means by "at what point the incident is
+            handed on."</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t4">
+    <span class="topic-num">Topic 04</span>
+    <h2>The four pillars of Threat Intelligence</h2>
+    <p class="subtitle">Syllabus 2.4. Strategic, Tactical, Operational, Technical — and who consumes each.</p>
+
+    <p>First the definition. <strong>Threat Intelligence (TI)</strong> is the
+    disciplined process of gathering, analysing and applying actionable data about
+    adversary motives, capabilities and indicators of compromise, in order to
+    strengthen defensive decisions.</p>
+
+    <p>The operative word is <em>actionable</em>. A list of malicious IP addresses is
+    data; knowing which of them a group targeting Bangladeshi banks is currently
+    using is intelligence. The four types differ by <b>who reads it</b> and
+    <b>how long it stays useful</b>.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 10px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">Type</th>
+          <th style="padding:8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">Content</th>
+          <th style="padding:8px 0 8px 10px;font-family:'Space Grotesk',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">Consumer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Strategic</b></td><td style="padding:9px 10px">High-level trends, business impact, long-term risk picture</td><td style="padding:9px 0 9px 10px">CISO, board members, executives</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Tactical</b></td><td style="padding:9px 10px">Direct threat indicators — IoCs, signatures — for automated blocking</td><td style="padding:9px 0 9px 10px">Tier 1 / Tier 2 analysts, automated controls</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 10px 9px 0"><b>Operational</b></td><td style="padding:9px 10px">Context on adversary campaigns, motivations and attack vectors</td><td style="padding:9px 0 9px 10px">Incident responders (Tier 2)</td></tr>
+        <tr><td style="padding:9px 10px 9px 0"><b>Technical</b></td><td style="padding:9px 10px">Specific artefacts, malware compiler tools, exploit details</td><td style="padding:9px 0 9px 10px">Security researchers, Tier 3</td></tr>
+      </tbody>
+    </table>
+
+    <p>Your lecture also plots these on two axes — complexity against long-term
+    focus — with Strategic and Tactical on the high-complexity row and Technical and
+    Operational on the low-complexity row. If a diagram is asked for, reproduce that
+    quadrant layout; the four names and their consumers are what earn the marks.</p>
+
+    <h3>The Pyramid of Pain (David Bianco)</h3>
+    <p>This ranks indicators by how much it hurts the <em>attacker</em> when you
+    block them. Bottom = trivial for the attacker to change, so blocking achieves
+    little. Top = expensive to change, so blocking really damages their operation.</p>
+
+    <ol>
+      <li><b>Hash values</b> (SHA-256, MD5) — <em>trivial</em>. Recompiling the
+      malware changes the hash in seconds.</li>
+      <li><b>IP addresses</b> — <em>easy</em>. Rent another server.</li>
+      <li><b>Domain names</b> — <em>simple</em>. Register a new one.</li>
+      <li><b>Network / host artefacts</b> — <em>annoying</em>. Requires modifying
+      the tooling's behaviour.</li>
+      <li><b>Tools</b> (Mimikatz, Cobalt Strike) — <em>challenging</em>. The
+      attacker must find or build a replacement and retrain.</li>
+      <li><b>TTPs</b> (Tactics, Techniques and Procedures) — <em>tough</em>.
+      Detecting behaviour rather than artefacts forces the adversary to change how
+      they operate, which is slow and expensive.</li>
+    </ol>
+
+    <p>The <b>MITRE ATT&amp;CK</b> framework formalises the top level.
+    <b>Tactics</b> are the attacker's goal (Initial Access, Privilege Escalation).
+    <b>Techniques</b> are the method used to achieve it (Phishing, Pass-the-Hash).
+    <b>Procedures</b> are the exact step-by-step implementation observed in a real
+    attack.</p>
+
+    <h3>Data formats — STIX and TAXII</h3>
+    <p>These two always appear together and are always confused. <b>STIX</b>
+    (Structured Threat Information Expression) is the <em>language</em> — a
+    standardised structured format for representing threat data. <b>TAXII</b>
+    (Trusted Automated Exchange of Intelligence Information) is the
+    <em>transport</em> — the application protocol that moves STIX data over HTTPS.</p>
+
+    <div class="callout key">
+      <span class="tag">Memory hook</span>
+      <p><b>STIX = the language you write it in. TAXII = the taxi that carries it.</b>
+      That is genuinely how to keep them straight, and it is a one-mark question
+      almost every year.</p>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 4 <span class="diff">· long answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Define threat intelligence and explain its four types, identifying the
+        consumer of each. Then use the Pyramid of Pain to argue why a SOC that
+        blocks only file hashes and IP addresses is doing low-value work.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            Two sections joined: <b>the 4 types of TI</b> (§5) and the <b>Pyramid of
+            Pain</b> (§6). The link the examiner wants is that the pyramid explains
+            <em>why the different TI types have different value</em> — hash and IP
+            blocking is tactical intelligence at the bottom of the pyramid, while
+            TTP-based detection is operational/technical intelligence at the top.
+            Answer the definition and the four types crisply, then spend most of your
+            time on the argument, because that is where the discrimination is.
+          </div>
+
+          <p><b>Definition.</b> Threat intelligence is the disciplined process of
+          gathering, analysing and applying actionable data regarding adversary
+          motives, capabilities and indicators of compromise, in order to strengthen
+          defensive decisions.</p>
+
+          <p><b>The four types.</b></p>
+          <ul>
+            <li><b>Strategic</b> — high-level trends and business impact, written
+            for CISOs, board members and executives. Long time horizon; informs
+            budget and risk appetite, not day-to-day blocking.</li>
+            <li><b>Tactical</b> — direct threat indicators such as IoCs and
+            signatures, consumed by Tier 1/2 analysts and by automated blocking
+            controls. Short-lived and immediately actionable.</li>
+            <li><b>Operational</b> — context around adversary campaigns,
+            motivations and attack vectors, for incident responders who need to
+            understand what an attacker is trying to achieve.</li>
+            <li><b>Technical</b> — specific technical artefacts, malware compiler
+            tooling and exploit details, used by researchers and Tier 3.</li>
+          </ul>
+
+          <p><b>The Pyramid of Pain argument.</b> Bianco's pyramid ranks indicators
+          by the cost imposed on the <em>adversary</em> when a defender blocks them.
+          Hash values sit at the very bottom, labelled trivial: recompiling the same
+          malware produces a completely different hash, so a blocklist of hashes is
+          defeated in the time it takes to rebuild. IP addresses are next, labelled
+          easy — the attacker rents a different server. Domain names are simple to
+          replace by registration.</p>
+          <p>So a SOC that blocks only hashes and IPs is operating entirely on the
+          bottom two rungs. Every block it lands costs the attacker minutes. The
+          defensive work is real but it is also <em>infinitely repeatable by the
+          adversary at near-zero cost</em>, which means the SOC is permanently
+          reactive: it can only ever block what it has already seen, and it will see
+          the same actor again under a new hash the following week. In metric terms
+          this is why such a SOC's <b>detection rate</b> stays stuck — the missed
+          attacks are the same adversary wearing a new indicator.</p>
+          <p>Moving up the pyramid changes the economics. Detecting on <b>tools</b>
+          such as Mimikatz or Cobalt Strike forces the attacker to source and learn
+          a replacement — challenging. Detecting on <b>TTPs</b>, formalised through
+          <b>MITRE ATT&amp;CK</b> as tactics, techniques and procedures, means the
+          defender is matching on <em>behaviour</em>: the act of pass-the-hash, or
+          the pattern of privilege escalation, regardless of which binary or IP
+          performs it. To evade that the adversary must change how they operate,
+          which is slow, expensive and often requires retraining their operators.</p>
+          <p><b>Conclusion.</b> The four TI types map onto the pyramid: tactical
+          intelligence supplies the bottom rungs and is cheap to consume but cheap to
+          evade; operational and technical intelligence supply the top rungs and are
+          what let a SOC impose real cost. A mature SOC uses tactical feeds for
+          automated blocking <em>and</em> builds TTP-based detections — the first
+          buys immediate coverage, the second buys durable advantage.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="topic" id="t5">
+    <span class="topic-num">Topic 05</span>
+    <h2>How a SOC prevents attacks</h2>
+    <p class="subtitle">Syllabus 2.5. The 7-phase incident response lifecycle plus the correlation rule matrix.</p>
+
+    <p>"How does a SOC prevent attacks" is really two questions: what it does
+    <em>before</em> an attack lands, and what it does <em>once one has</em>. Cover
+    both or you lose half the marks.</p>
+
+    <h3>Before — the preventive layer</h3>
+    <ul>
+      <li><b>Continuous monitoring</b> of perimeters, endpoints and cloud, so an
+      intrusion is visible early rather than discovered months later.</li>
+      <li><b>Threat intelligence integration</b>: TIP feeds IoCs into the SIEM, so
+      known-bad indicators are blocked before they can act.</li>
+      <li><b>Proactive threat hunting</b> by Tier 3, searching for what detection
+      rules did not catch.</li>
+      <li><b>Security posture refinement</b> — hardening, patching, and tuning
+      detection rules so both the attack surface and the noise shrink.</li>
+      <li><b>Automated blocking via SOAR</b>, which acts faster than any human can.</li>
+    </ul>
+
+    <h3>During and after — the 7-phase incident response lifecycle</h3>
+    <ol>
+      <li><b>Alert</b> — the SIEM fires, triggered by a correlation rule or a threat
+      intelligence match.</li>
+      <li><b>Triage</b> — Tier 1 validates authenticity, severity and urgency.</li>
+      <li><b>Investigation</b> — Tier 2 performs forensic artefact analysis and
+      timeline reconstruction.</li>
+      <li><b>Containment</b> — network segmentation, credential revocation and host
+      isolation to halt lateral spread.</li>
+      <li><b>Eradication</b> — purging malware artefacts, patching the exploited
+      vulnerability, closing unauthorised backdoors.</li>
+      <li><b>Recovery</b> — restoring from trusted backups and validating
+      operational integrity.</li>
+      <li><b>Reporting and continuous improvement</b> — post-incident review,
+      playbook updates, detection-logic tuning.</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the order is examinable</span>
+      <p><b>Containment comes before eradication, and eradication before
+      recovery.</b> The logic: stop the bleeding, then remove the cause, then
+      restore service. Restoring a system from backup while the attacker still holds
+      access simply re-infects it. Phase 7 is the one candidates forget, and it is
+      the phase that makes the SOC improve rather than merely survive.</p>
+    </div>
+
+    <h3>The standard correlation rule matrix</h3>
+    <p>Four use cases the lecture tabulates. These are extremely quotable — they let
+    you answer "give an example" instantly.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0">
+      <thead>
+        <tr style="border-bottom:2px solid #1E2A32;text-align:left">
+          <th style="padding:8px 8px 8px 0;font-family:'Space Grotesk',sans-serif;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase">Use case</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase">Telemetry</th>
+          <th style="padding:8px;font-family:'Space Grotesk',sans-serif;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase">Alert condition</th>
+          <th style="padding:8px 0 8px 8px;font-family:'Space Grotesk',sans-serif;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>Botnet activity</b></td><td style="padding:9px 8px">Firewall, IDS, DNS, Proxy</td><td style="padding:9px 8px">Outbound connection to a known C2 domain</td><td style="padding:9px 0 9px 8px">Display on active channel; auto-block IP</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>Virus outbreak</b></td><td style="padding:9px 8px">Endpoint AV / EDR</td><td style="padding:9px 8px">\( \ge 3 \) distinct infected endpoints within 10 min</td><td style="padding:9px 0 9px 8px">Page desktop support; isolate infected hosts</td></tr>
+        <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:9px 8px 9px 0"><b>SQL injection</b></td><td style="padding:9px 8px">WAF, web server logs</td><td style="padding:9px 8px">\( \ge 5 \) injection signatures in a short window</td><td style="padding:9px 0 9px 8px">Block source IP on WAF; alert Tier 2</td></tr>
+        <tr><td style="padding:9px 8px 9px 0"><b>Brute force</b></td><td style="padding:9px 8px">Active Directory, VPN</td><td style="padding:9px 8px">Multiple failed logins followed by a success</td><td style="padding:9px 0 9px 8px">Lock account; trigger MFA step-up</td></tr>
+      </tbody>
+    </table>
+
+    <p>The brute-force condition rewards a second look. It is not "many failed
+    logins" — it is <b>many failures followed by a success</b>. Failures alone are a
+    user who forgot their password. Failures then a success is a password that has
+    just been guessed, and that is why the action is to lock the account rather than
+    merely warn.</p>
+
+    <h3>The three operational challenges</h3>
+    <ul>
+      <li><b>Alert fatigue</b> — high alert volume causes critical threats to be
+      overlooked. Quantified by the false positive rate.</li>
+      <li><b>Skills shortage</b> — scarcity of qualified Tier 2/3 analysts and
+      reverse engineers.</li>
+      <li><b>High infrastructure costs</b> — expensive licensing and computational
+      storage for multi-terabyte log retention.</li>
+    </ul>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 5 <span class="diff">· long answer · story-based</span></span>
+      </div>
+      <div class="qbody">
+        <p>A manufacturing company is hit by ransomware. The initial infection came
+        through a phishing email opened by an employee in accounts; within four
+        hours the malware had encrypted two file servers and was spreading toward
+        the production network.</p>
+        <p>Explain how a properly functioning SOC would have (a) reduced the chance
+        of this incident occurring at all, and (b) handled it once it began. Map your
+        answer to the incident response lifecycle and name the technologies involved
+        at each stage.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            This is the "how does a SOC prevent attacks" question (syllabus 2.5)
+            asked as a story. The two-part structure — (a) prevent, (b) respond — is
+            a direct instruction to cover both the <b>proactive core functions</b>
+            (§1) and the <b>7-phase incident response lifecycle</b> (§4), with the
+            <b>Technology pillar</b> (§2) named throughout. The examiner is checking
+            you do not treat "prevent" as a synonym for "respond quickly."
+          </div>
+
+          <p><b>(a) Reducing the chance of occurrence.</b></p>
+          <p>The <b>TIP</b> feeds indicators of compromise into the SIEM and the mail
+          gateway continuously, so the sending domain and any known-malicious
+          attachment hashes associated with the campaign are blocked before delivery
+          — tactical threat intelligence doing its job. <b>Continuous monitoring</b>
+          of endpoints and the perimeter means that if the payload does execute, the
+          resulting outbound C2 connection matches the <b>botnet activity</b>
+          correlation rule (firewall, IDS, DNS and proxy telemetry) and is flagged in
+          minutes rather than hours. <b>Security posture refinement</b> — routine
+          patching and hardening — closes the vulnerabilities ransomware relies on to
+          escalate privileges. <b>Tier 3 threat hunting</b> proactively searches for
+          precursor activity that no rule caught. And the SOC's role in
+          <b>security awareness</b>: the lecture's own professional-conduct material
+          places educating end-users on phishing among the core duties, which
+          addresses the actual entry point in this story.</p>
+          <p>Honest framing for full marks: none of this makes the incident
+          impossible. Prevention reduces likelihood and shrinks the window; the SOC's
+          real guarantee is that the incident is <em>detected early and contained</em>,
+          not that it never happens.</p>
+
+          <p><b>(b) Handling the incident — the 7 phases.</b></p>
+          <ol>
+            <li><b>Alert.</b> The SIEM fires. Two rules plausibly trigger: the
+            <b>virus outbreak</b> rule, whose condition is \(\ge 3\) distinct
+            infected endpoints within 10 minutes, and the botnet rule on the C2
+            callback. <em>Technology: SIEM (Splunk / QRadar / Wazuh), EDR.</em></li>
+            <li><b>Triage.</b> Tier 1 validates authenticity, severity and urgency.
+            Mass encryption across multiple hosts is unambiguous, so this is graded
+            critical immediately and escalated to Tier 2 without delay.</li>
+            <li><b>Investigation.</b> Tier 2 reconstructs the timeline back to the
+            phishing email, identifies patient zero in accounts, and performs
+            <b>scope analysis</b> to determine every host reached so far — vital
+            here, because the malware is moving toward the production network.
+            <em>Technology: EDR/XDR for cross-domain visibility linking the email,
+            the endpoint and the network activity.</em></li>
+            <li><b>Containment.</b> The decisive phase, and the one where speed
+            translates directly into money saved. Isolate the infected endpoints,
+            apply network segmentation to sever the path between the office network
+            and the production network, and revoke the compromised credentials.
+            <em>Technology: SOAR executing an automated ransomware playbook — machine
+            speed matters because the malware is spreading now.</em></li>
+            <li><b>Eradication.</b> Purge the malware artefacts from every affected
+            host, patch the exploited vulnerabilities, and close any backdoors or
+            persistence mechanisms so it cannot re-establish.</li>
+            <li><b>Recovery.</b> Restore the two encrypted file servers from trusted
+            offline backups and validate operational integrity before reconnecting
+            them. Because eradication came first, the restored servers are not
+            immediately re-encrypted.</li>
+            <li><b>Reporting and continuous improvement.</b> Post-incident review;
+            Tier 3 tunes detection logic so mass file-modification behaviour raises
+            an alert in its own right; the ransomware playbook is updated with what
+            was learned; the SOC Manager reports impact and metrics to the CISO.</li>
+          </ol>
+
+          <div class="callout key">
+            <span class="tag">Marking tip</span>
+            <p>Two things lift this into the top band. First, explicitly justify the
+            <b>containment-before-eradication-before-recovery</b> order — restoring
+            backups while the attacker still has access simply re-infects the
+            servers. Second, if the paper allows it, quantify: the whole point of the
+            metrics half of this topic is that a lower <b>MTTD</b> and <b>MTTR</b>
+            mean fewer encrypted servers, and Exercise 8 shows SOAR cutting both
+            roughly in half.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Question 6 <span class="diff">· short answer</span></span>
+      </div>
+      <div class="qbody">
+        <p>Distinguish EDR from XDR. A company already runs EDR on all endpoints and
+        is considering XDR — give one concrete scenario that EDR would miss and XDR
+        would catch.</p>
+      </div>
+      <details class="solution">
+        <summary>Show model answer</summary>
+        <div class="soln-body">
+          <div class="link-map">
+            <span class="tag">What this tests &amp; where it comes from</span>
+            The <b>EDR vs XDR comparison table</b> (§3 of the SOC lecture). The
+            "concrete scenario" half is the discriminator — it tests whether you
+            understand the row that says XDR detects <b>complex, multi-stage attack
+            chains across domains</b> while EDR detects <b>host-based anomalies</b>.
+          </div>
+          <p><b>Distinction.</b> EDR monitors endpoints only — workstations and
+          servers — using host system logs and process telemetry, giving
+          device-level visibility, and responds by isolating an endpoint or killing
+          a process. XDR extends that across multiple layers — endpoints, network,
+          cloud, identity and email — correlating integrated cross-telemetry into
+          end-to-end visibility, and responds across vectors: blocking at the
+          firewall, revoking an identity token, isolating a host. EDR is
+          agent-based and moderate to deploy; XDR is more complex because it needs
+          cross-platform API integration.</p>
+          <p><b>Scenario EDR misses.</b> An attacker phishes a set of credentials —
+          no malware, no file dropped. They sign in to the company's cloud email
+          from an unusual country, create a mail-forwarding rule to exfiltrate
+          invoices, and then use the same credentials to authenticate to a cloud
+          storage service. <em>No endpoint is ever compromised</em>, so EDR sees
+          nothing at all: there is no malicious process to observe and no host
+          anomaly to flag. XDR correlates the identity telemetry (impossible-travel
+          sign-in), the email telemetry (a newly created forwarding rule) and the
+          cloud telemetry (unusual data access) into a single multi-stage detection,
+          and can respond by revoking the session token — a response option EDR does
+          not have because the compromise never touched an endpoint.</p>
+          <p><b>Link back.</b> This is the same argument as Question 1's case for
+          centralising a SOC: detection that depends on joining evidence across
+          domains is impossible when each tool sees only its own domain. XDR is that
+          principle applied at the product level.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <section class="topic" id="t6">
+    <span class="topic-num">Topic 06</span>
+    <h2>SOC metrics — the maths, from zero</h2>
+    <p class="subtitle">Syllabus 2.6.1. Every formula the faculty gave, grouped so you can pick the right denominator.</p>
+
+    <p>None of this maths is hard. Every single formula on the sheet is one of two
+    shapes:</p>
+
+    <div class="formula">
+      <div class="label">The only two shapes on the whole sheet</div>
+      \[ \text{a mean} = \frac{\text{total time}}{\text{number of things}} \qquad\qquad \text{a rate} = \frac{\text{part}}{\text{whole}} \times 100 \]
+    </div>
+
+    <p>So the entire skill is <b>choosing the right denominator</b>. Almost every
+    mark lost in this topic is lost by dividing by total alerts when the formula
+    wanted total incidents, or by total incidents when it wanted actual attacks.
+    The three groups below are organised by denominator for exactly that reason.</p>
+
+    <div class="callout key">
+      <span class="tag">The denominator rule</span>
+      <p>Ask what the metric is <em>about</em>. If it is about <b>incidents</b>,
+      divide by incidents. If it is about <b>alerts</b>, divide by alerts. If it is
+      about <b>attacks that really happened</b>, divide by actual attacks. Write the
+      denominator down <em>before</em> you reach for the calculator.</p>
+    </div>
+
+    <h3>Group A — time-based metrics (denominator: a count of events)</h3>
+
+    <div class="formula">
+      <div class="label">Time metrics</div>
+      \[ \text{MTTD} = \frac{\text{Total Detection Time}}{\text{Number of Incidents}} \qquad
+         \text{MTTR}_{\text{resp}} = \frac{\text{Total Response Time}}{\text{Number of Incidents}} \]
+      \[ \text{MTTR}_{\text{rec}} = \frac{\text{Total Recovery Time}}{\text{Number of Incidents}} \qquad
+         \text{MTTA} = \frac{\text{Total Acknowledgement Time}}{\text{Number of Alerts}} \]
+      \[ \text{MTBF} = \frac{\text{Total Operating Time}}{\text{Number of Failures}} \qquad
+         \text{MTBI} = \frac{\text{Total Operating Time}}{\text{Number of Incidents}} \]
+    </div>
+
+    <p>What each one actually means, in plain terms:</p>
+    <ul>
+      <li><b>MTTD — Mean Time to Detect.</b> On average, how long from an attack
+      starting to the SOC noticing it. <em>Lower is better.</em> This is the SOC's
+      eyesight.</li>
+      <li><b>MTTR — Mean Time to Respond.</b> How long from noticing to acting.
+      <em>Lower is better.</em> The SOC's reflexes.</li>
+      <li><b>MTTR (Recovery) — Mean Time to Recover.</b> How long to get the systems
+      back to normal service. <em>Lower is better.</em> The SOC's healing rate.</li>
+      <li><b>MTTA — Mean Time to Acknowledge.</b> How long an alert sits unclaimed
+      before an analyst picks it up. Note this one is per <b>alert</b>, not per
+      incident — the denominator changes and that is deliberate.</li>
+      <li><b>MTBF — Mean Time Between Failures.</b> Average uptime between system
+      failures. <em>Higher is better</em> — this is the one metric on the sheet
+      where up is good.</li>
+      <li><b>MTBI — Mean Time Between Incidents.</b> Average calm period between
+      security incidents. <em>Higher is better.</em></li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the MTTR ambiguity</span>
+      <p>"MTTR" is used for <b>two different metrics</b>: Mean Time to
+      <em>Respond</em> and Mean Time to <em>Recover</em>. Your faculty lists both,
+      and in his exercises both appear in the same question with different totals.
+      <b>Always label which one you are computing</b> — write "MTTR (Response)" and
+      "MTTR (Recovery)" in full. Recovery is always the larger number, because
+      recovering takes longer than reacting.</p>
+    </div>
+
+    <h3>Group B — rate and quality metrics</h3>
+
+    <div class="formula">
+      <div class="label">Rate &amp; quality metrics — note which denominator each uses</div>
+      \[ \text{Resolution Rate} = \frac{\text{Resolved Incidents}}{\text{Total Incidents}} \times 100 \qquad
+         \text{Detection Rate} = \frac{\text{Detected Threats}}{\text{Actual Threats}} \times 100 \]
+      \[ \text{False Positive Rate} = \frac{\text{False Positives}}{\text{Total Alerts}} \times 100 \qquad
+         \text{False Negative Rate} = \frac{\text{Missed Threats}}{\text{Actual Threats}} \times 100 \]
+      \[ \text{TPR (Recall)} = \frac{TP}{TP + FN} \times 100 \qquad
+         \text{Precision} = \frac{TP}{TP + FP} \times 100 \]
+      \[ F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} \qquad
+         \text{Alert Accuracy} = \frac{\text{Correct Alerts}}{\text{Total Alerts}} \times 100 \]
+    </div>
+
+    <p>Two of these are worth a second look before you go near a question.</p>
+    <p><b>Detection Rate and Recall are the same number.</b> "Actual threats" equals
+    the threats you caught plus the threats you missed, which is \(TP + FN\). So
+    \(\frac{\text{Detected}}{\text{Actual}}\) and \(\frac{TP}{TP+FN}\) are the same
+    fraction written two ways. Your faculty's own worked example makes this explicit:
+    detection rate \(=190/200=95\%\) and recall \(=190/(190+10)=95\%\).</p>
+    <p><b>Detection Rate and False Negative Rate always sum to 100%.</b> Every
+    actual attack was either detected or missed. So if detection rate is 94%, FNR is
+    6% without any calculation. Use this as a free sanity check on every question.</p>
+
+    <h3>Group C — operational and efficiency metrics</h3>
+
+    <div class="formula">
+      <div class="label">Operational metrics</div>
+      \[ \text{SLA Compliance} = \frac{\text{Resolved Within SLA}}{\text{Total Incidents}} \times 100 \qquad
+         \text{Escalation Rate} = \frac{\text{Escalated Incidents}}{\text{Total Incidents}} \times 100 \]
+      \[ \text{Analyst Utilisation} = \frac{\text{Time Spent Handling}}{\text{Total Working Time}} \times 100 \qquad
+         \text{Alert Volume per Analyst} = \frac{\text{Total Alerts}}{\text{Number of Analysts}} \]
+      \[ \text{Incident Closure Rate} = \frac{\text{Closed Incidents}}{\text{Total Incidents}} \times 100 \qquad
+         \text{Cost per Incident} = \frac{\text{Total SOC Operating Cost}}{\text{Number of Incidents}} \]
+      \[ \text{Threat Containment Rate} = \frac{\text{Contained Threats}}{\text{Detected Threats}} \times 100 \qquad
+         \text{Automation Rate} = \frac{\text{Automated Responses}}{\text{Total Responses}} \times 100 \]
+      \[ \text{Security Incident Rate} = \frac{\text{Security Incidents}}{\text{Total Systems}} \times 100 \qquad
+         \text{Log Coverage} = \frac{\text{Systems Sending Logs}}{\text{Total Systems}} \times 100 \]
+    </div>
+
+    <p>Two traps live in this group. <b>Threat containment rate</b> divides by
+    <em>detected</em> threats, not actual threats — you cannot contain what you never
+    saw. And <b>security incident rate</b> and <b>log coverage</b> both divide by
+    total <em>systems</em>, which is the only place that denominator appears; if a
+    question gives you an endpoint or system count, one of those two is almost
+    certainly being asked for.</p>
+
+    <h3>ROSI — Return on Security Investment</h3>
+    <p>Not in the formula box but used in the faculty's Exercise 6, so learn it.</p>
+
+    <div class="formula">
+      <div class="label">Return on Security Investment</div>
+      \[ \text{ROSI} = \frac{\text{Loss Avoided} - \text{SOC Cost}}{\text{SOC Cost}} \times 100 \]
+      \[ \text{where } \text{Loss Avoided} = \text{Breaches Prevented} \times \text{Average Loss per Breach} \]
+    </div>
+
+    <p>Read the numerator as <em>net</em> benefit: what you saved, minus what you
+    spent. Dividing by cost expresses that net benefit as a percentage of the
+    investment. A ROSI of 800% means every taka spent returned eight in avoided
+    loss, on top of getting the original taka's worth back.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — a genuine inconsistency in the slides</span>
+      <p>The faculty defines <b>False Positive Rate</b> two different ways. In the
+      formula sheet it is \(\frac{FP}{\text{Total Alerts}}\times100\), which is the
+      <em>operational</em> definition — what fraction of my analysts' work was
+      wasted. But in his confusion-matrix exercise he computes
+      \(\frac{FP}{FP+TN}\times100\), the <em>statistical</em> definition — what
+      fraction of genuinely benign events were wrongly flagged.</p>
+      <p>These give different numbers from the same data and both are correct in
+      their own context. <b>The rule for the exam:</b> if the question gives you a
+      confusion matrix with TN in it, use \(\frac{FP}{FP+TN}\). If it gives you a
+      total alert count and a false positive count with no TN, use
+      \(\frac{FP}{\text{Total Alerts}}\). <b>State which definition you used in one
+      line</b> — that turns a possible mark loss into a demonstration that you
+      understood the difference.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t7">
+    <span class="topic-num">Topic 07 · priority</span>
+    <h2>The confusion matrix — precision vs. recall</h2>
+    <p class="subtitle">The diagnostic gap. Read this section before attempting Exercise 4.</p>
+
+    <p>A detection system looks at events and labels each one "attack" or "normal."
+    It can be right or wrong in two directions each way, which gives four boxes. The
+    grid of those four counts is the <strong>confusion matrix</strong>, and every
+    metric in this part of the syllabus is built from it.</p>
+
+    <div class="formula" style="text-align:center">
+      <div class="label" style="text-align:left">The four outcomes</div>
+      <svg viewBox="0 0 620 290" width="100%" style="max-width:580px;height:auto" role="img" aria-label="Confusion matrix showing true positive, false negative, false positive and true negative">
+        <g font-family="'Space Grotesk', system-ui, sans-serif">
+          <text x="310" y="18" text-anchor="middle" font-size="11.5" fill="#5A6B72" letter-spacing="1">ACTUAL REALITY</text>
+          <text x="215" y="42" text-anchor="middle" font-size="12" font-weight="600" fill="#1E2A32">Actually an attack</text>
+          <text x="450" y="42" text-anchor="middle" font-size="12" font-weight="600" fill="#1E2A32">Actually normal</text>
+          <text x="22" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#1E2A32" transform="rotate(-90 22 120)">Flagged attack</text>
+          <text x="22" y="220" text-anchor="middle" font-size="12" font-weight="600" fill="#1E2A32" transform="rotate(-90 22 220)">Flagged normal</text>
+
+          <rect x="100" y="56" width="230" height="94" rx="10" fill="#E9F1EA" stroke="#2E6B3E"/>
+          <text x="215" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#2E6B3E">TRUE POSITIVE (TP)</text>
+          <text x="215" y="110" text-anchor="middle" font-size="11.5" fill="#1E2A32">Real attack, correctly caught</text>
+          <text x="215" y="130" text-anchor="middle" font-size="11.5" fill="#5A6B72">✓ the SOC did its job</text>
+
+          <rect x="340" y="56" width="230" height="94" rx="10" fill="#FBF1E1" stroke="#B4690E"/>
+          <text x="455" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#B4690E">FALSE POSITIVE (FP)</text>
+          <text x="455" y="110" text-anchor="middle" font-size="11.5" fill="#1E2A32">Benign event wrongly flagged</text>
+          <text x="455" y="130" text-anchor="middle" font-size="11.5" fill="#5A6B72">costs analyst time → fatigue</text>
+
+          <rect x="100" y="160" width="230" height="94" rx="10" fill="#FBE4E4" stroke="#B03A2E"/>
+          <text x="215" y="192" text-anchor="middle" font-size="14" font-weight="700" fill="#B03A2E">FALSE NEGATIVE (FN)</text>
+          <text x="215" y="214" text-anchor="middle" font-size="11.5" fill="#1E2A32">Real attack, completely missed</text>
+          <text x="215" y="234" text-anchor="middle" font-size="11.5" fill="#5A6B72">a live breach nobody sees</text>
+
+          <rect x="340" y="160" width="230" height="94" rx="10" fill="#E8F0EF" stroke="#CFE2E0"/>
+          <text x="455" y="192" text-anchor="middle" font-size="14" font-weight="700" fill="#2F6F6B">TRUE NEGATIVE (TN)</text>
+          <text x="455" y="214" text-anchor="middle" font-size="11.5" fill="#1E2A32">Benign event, correctly ignored</text>
+          <text x="455" y="234" text-anchor="middle" font-size="11.5" fill="#5A6B72">the silent majority</text>
+
+          <text x="310" y="278" text-anchor="middle" font-size="11" fill="#8A979D">Precision reads the TOP ROW · Recall reads the LEFT COLUMN</text>
+        </g>
+      </svg>
+    </div>
+
+    <p>Now the two metrics, and the trick that makes them impossible to mix up.</p>
+
+    <div class="formula">
+      <div class="label">Precision and Recall</div>
+      \[ \text{Precision} = \frac{TP}{TP + FP} \times 100 \qquad\qquad \text{Recall (TPR)} = \frac{TP}{TP + FN} \times 100 \]
+    </div>
+
+    <p><strong>Precision reads across the top row of the matrix.</strong> Its
+    denominator, \(TP+FP\), is <em>everything the system flagged</em>. So precision
+    answers: <b>"of all the alarms I raised, what fraction were real?"</b> It is a
+    measure of how much you can trust an alert. Low precision means your analysts
+    keep chasing nothing.</p>
+
+    <p><strong>Recall reads down the left column of the matrix.</strong> Its
+    denominator, \(TP+FN\), is <em>everything that was actually an attack</em>. So
+    recall answers: <b>"of all the real attacks, what fraction did I catch?"</b> It
+    is a measure of coverage. Low recall means attacks are getting through unseen.</p>
+
+    <div class="callout key">
+      <span class="tag">The one line that fixes this permanently</span>
+      <p><b>Precision is about the alerts you raised. Recall is about the attacks
+      that existed.</b> Or geometrically: precision is the top row, recall is the
+      left column. They share \(TP\) on top; only the denominator differs, and the
+      denominator is the whole question.</p>
+    </div>
+
+    <h3>Which matters more to a SOC — and why</h3>
+    <p>Your faculty answers this explicitly in his own solved exercise, so it is
+    almost certainly a discussion question on the paper. The answer is
+    <b>recall</b>, and the reasoning matters more than the verdict:</p>
+    <ul>
+      <li>A <b>false positive</b> costs analyst time. It is expensive and it causes
+      alert fatigue, but the organisation is still safe. The damage is
+      <em>operational</em>.</li>
+      <li>A <b>false negative</b> is an attack in progress that nobody knows about.
+      The adversary keeps escalating privileges, moving laterally and exfiltrating
+      data for as long as they go unseen. The damage is <em>existential</em>.</li>
+    </ul>
+    <p>So the asymmetry is: a false positive wastes an hour, a false negative can
+    cost the business. That is why a SOC tunes for high recall and then manages the
+    resulting false positive burden with SOAR automation, alert enrichment and rule
+    tuning — rather than tuning for precision and quietly missing breaches.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the trade-off is real</span>
+      <p>Precision and recall pull against each other. Loosen the detection rules to
+      catch more attacks and recall rises while precision falls (more alarms, more of
+      them wrong). Tighten them and precision rises while recall falls. That is what
+      the <b>F1 score</b> is for — the harmonic mean of the two, giving a single
+      number that only stays high when <em>both</em> are high. If a question asks for
+      one overall figure of merit, F1 is the answer; if it asks which to
+      <em>prioritise</em>, the answer is recall.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">F1 score and Accuracy</div>
+      \[ F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} \qquad\qquad
+         \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN} \times 100 \]
+    </div>
+
+    <p>One warning about <b>accuracy</b>. In security data, \(TN\) is enormous —
+    most events are benign. A detector that flagged nothing at all would still score
+    around 95% accuracy simply by being right about all the normal traffic, while
+    catching zero attacks. So accuracy looks impressive and says very little. If a
+    question asks you to <em>evaluate</em> a detector rather than just compute,
+    saying this earns marks.</p>
+
+    <div class="callout key">
+      <span class="tag">Compute F1 in fractions, not percentages</span>
+      <p>Convert precision and recall to decimals first (84.15% → 0.8415), compute
+      \(F1\), then multiply by 100 at the end. Feeding percentages straight into the
+      formula gives an answer 100× too large. The faculty does it this way in his
+      worked example, and so should you.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="t8">
+    <span class="topic-num">Topic 08</span>
+    <h2>Nine worked exercises</h2>
+    <p class="subtitle">Syllabus 2.6.2. Fresh numbers in the faculty's exact exercise formats.</p>
+
+    <p>These follow the shape of the ten exercises Rakib Hossen worked in class, with
+    different data so you are practising the method. Do them with a calculator and
+    paper. Every solution names the reason for each line.</p>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 1 — time metrics <span class="diff">· easy · warm-up</span></span>
+      </div>
+      <div class="qbody">
+        <p>Over one month a SOC recorded the following. Total incidents: 180. Total
+        detection time: 2,340 minutes. Total alerts: 450. Total acknowledgement
+        time: 1,350 minutes. Total system operating time: 7,200 hours with 9
+        failures. Compute the MTTD, MTTA and MTBF, and state for each whether a
+        higher or lower value is better.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{MTTD} = \dfrac{\text{Total Detection Time}}{\text{Number of Incidents}} \)</p>
+              <p class="why"><b>Choose the denominator first.</b> MTTD is about incidents, so it divides by the incident count — not the alert count sitting in the same question as a distractor.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTD} = \dfrac{2{,}340}{180} = 13 \text{ min} \)</p>
+              <p class="why"><b>Substitute and divide.</b> Units: minutes ÷ incidents = minutes per incident, which is what a "mean time" must be.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTA} = \dfrac{\text{Total Acknowledgement Time}}{\text{Number of Alerts}} = \dfrac{1{,}350}{450} \)</p>
+              <p class="why"><b>Different denominator, deliberately.</b> MTTA is the one time metric measured per <em>alert</em>, because acknowledgement happens to alerts before they are ever classified as incidents.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTA} = 3 \text{ min} \)</p>
+              <p class="why">Divide. Three minutes from an alert appearing to an analyst claiming it.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTBF} = \dfrac{\text{Total Operating Time}}{\text{Number of Failures}} = \dfrac{7{,}200}{9} \)</p>
+              <p class="why"><b>Third denominator: failures.</b> MTBF measures the gap between failures, so the count of failures is what the operating time is spread across.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTBF} = 800 \text{ hours} \)</p>
+              <p class="why">Divide. Units stay in hours because the operating time was given in hours — do not convert unless asked.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p><b>MTTD = 13 minutes</b> (lower is better — faster detection).
+            <b>MTTA = 3 minutes</b> (lower is better — alerts picked up sooner).
+            <b>MTBF = 800 hours</b> (<em>higher</em> is better — longer stretches
+            without failure).</p>
+            <p><b>Sanity check:</b> 7,200 hours is about ten months of continuous
+            running, and 9 failures across it gives roughly one failure a month —
+            800 hours is about 33 days, which matches. Order of magnitude confirmed.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 2 — rate metrics <span class="diff">· easy · warm-up</span></span>
+      </div>
+      <div class="qbody">
+        <p>A SOC handled 12,000 alerts in a quarter, of which 1,920 were false
+        positives. There were 480 actual attacks, of which 456 were detected. Of 450
+        incidents, 414 were resolved within SLA and 72 were escalated to Tier 2. Of
+        1,200 total responses, 840 were automated. The estate has 2,400 systems, of
+        which 2,280 send logs to the SIEM.</p>
+        <p>Compute: false positive rate, detection rate, false negative rate, SLA
+        compliance, escalation rate, automation rate and log coverage.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <p>This exercise is entirely about denominator discipline — four different
+          denominators appear.</p>
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{FPR} = \dfrac{\text{False Positives}}{\text{Total Alerts}} \times 100 = \dfrac{1{,}920}{12{,}000} \times 100 = 16\% \)</p>
+              <p class="why"><b>Denominator = alerts.</b> No TN is given, so this is the operational definition of FPR from the formula sheet, not the confusion-matrix one.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Detection Rate} = \dfrac{\text{Detected Threats}}{\text{Actual Threats}} \times 100 = \dfrac{456}{480} \times 100 = 95\% \)</p>
+              <p class="why"><b>Denominator = actual attacks.</b> Detection rate asks what share of real threats you caught, so the base is what really happened, not what you alerted on.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Missed} = 480 - 456 = 24 \)</p>
+              <p class="why"><b>Every actual attack was either detected or missed</b>, so the missed count is the remainder.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FNR} = \dfrac{24}{480} \times 100 = 5\% \)</p>
+              <p class="why">Same denominator as detection rate, because FNR is also measured against actual threats. <b>Check:</b> \(95\% + 5\% = 100\%\) — detection rate and FNR must always sum to 100.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{SLA Compliance} = \dfrac{414}{450} \times 100 = 92\% \)</p>
+              <p class="why"><b>Denominator = incidents.</b> The SLA is a promise about incidents, so total incidents (450) is the base — not the 12,000 alerts.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Escalation Rate} = \dfrac{72}{450} \times 100 = 16\% \)</p>
+              <p class="why">Also per incident: escalation is something that happens to a confirmed incident on its way from Tier 1 to Tier 2.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Automation Rate} = \dfrac{840}{1{,}200} \times 100 = 70\% \)</p>
+              <p class="why"><b>Denominator = total responses.</b> A fifth base appears here — automation rate compares automated responses against all responses, so neither alerts nor incidents is correct.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Log Coverage} = \dfrac{2{,}280}{2{,}400} \times 100 = 95\% \)</p>
+              <p class="why"><b>Denominator = total systems.</b> Whenever a system or endpoint count appears in a question, log coverage or security incident rate is being asked for — those are the only two metrics that use it.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answer</span>
+            <p>FPR <b>16%</b> · Detection rate <b>95%</b> · FNR <b>5%</b> · SLA
+            compliance <b>92%</b> · Escalation rate <b>16%</b> · Automation rate
+            <b>70%</b> · Log coverage <b>95%</b>.</p>
+            <p><b>Sanity check:</b> detection rate + FNR = 100%. ✓ And 5% of log
+            sources missing (120 systems) is a real finding worth one line of
+            comment: those 120 systems are invisible to the SIEM, so any attack that
+            touches only them cannot be detected at all.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 3 — monthly SOC performance <span class="diff">· medium · core exam format</span></span>
+      </div>
+      <div class="qbody">
+        <p>A SOC reports the following for one month:</p>
+        <ul>
+          <li>Total incidents: 320 · Total detection time: 4,160 min · Total response time: 6,720 min</li>
+          <li>Total recovery time: 12,800 min · Resolved incidents: 304 · Total alerts: 10,000</li>
+          <li>False positives: 1,650 · Actual attacks: 350 · Detected attacks: 329</li>
+        </ul>
+        <p>Compute MTTD, MTTR (Response), MTTR (Recovery), incident resolution rate,
+        false positive rate and detection rate. Then evaluate the SOC's performance,
+        identifying strengths and weaknesses.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{MTTD} = \dfrac{4{,}160}{320} = 13 \text{ min} \)</p>
+              <p class="why"><b>Total detection time ÷ incidents.</b> All three time metrics in this question share the same denominator of 320 — only the numerator changes, so compute the denominator once.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR (Response)} = \dfrac{6{,}720}{320} = 21 \text{ min} \)</p>
+              <p class="why">Same denominator, response-time numerator. <b>Label it "Response"</b> — the next line computes the other MTTR.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR (Recovery)} = \dfrac{12{,}800}{320} = 40 \text{ min} \)</p>
+              <p class="why">Same denominator, recovery-time numerator. <b>Check:</b> recovery (40) exceeds response (21), as it must — reacting is always quicker than restoring.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Resolution Rate} = \dfrac{304}{320} \times 100 = 95\% \)</p>
+              <p class="why"><b>Resolved ÷ total incidents.</b> Switching from a mean to a rate means the \(\times 100\) reappears.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR} = \dfrac{1{,}650}{10{,}000} \times 100 = 16.5\% \)</p>
+              <p class="why"><b>Denominator changes to alerts.</b> This is the trap in this question: 320 is incidents, 10,000 is alerts, and FPR is about alerts.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Detection Rate} = \dfrac{329}{350} \times 100 = 94\% \)</p>
+              <p class="why"><b>Denominator changes again, to actual attacks.</b> Three different denominators in one question — 320, 10,000 and 350 — which is exactly how the faculty builds these.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>MTTD <b>13 min</b> · MTTR Response <b>21 min</b> · MTTR Recovery
+            <b>40 min</b> · Resolution rate <b>95%</b> · FPR <b>16.5%</b> ·
+            Detection rate <b>94%</b>.</p>
+          </div>
+          <p><b>Evaluation</b> — the marks here are for judgement, not arithmetic.
+          Structure it as strengths, then weaknesses, then a recommendation.</p>
+          <p><b>Strengths.</b> Detection is fast at 13 minutes, comfortably inside a
+          typical sub-15-minute target. The 95% resolution rate shows incidents are
+          being closed out rather than accumulating. Response at 21 minutes is
+          acceptable and close to the common 20-minute SLA.</p>
+          <p><b>Weaknesses.</b> Three, in priority order. The <b>detection rate of
+          94%</b> means \(350-329=21\) real attacks were never seen at all — the FNR
+          is 6%, and those 21 are live exposure. The <b>false positive rate of
+          16.5%</b> means 1,650 of the 10,000 alerts were wrong, driving alert
+          fatigue and, very likely, contributing to those missed attacks. The
+          <b>recovery time of 40 minutes</b> is nearly double the response time,
+          suggesting restoration is manual and under-rehearsed.</p>
+          <p><b>Recommendation.</b> Tune the SIEM correlation rules to cut the false
+          positive rate, invest in behavioural analytics to close the 6% detection
+          gap, and automate recovery and host isolation through SOAR playbooks to
+          bring the 40-minute recovery down.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 4 — confusion matrix <span class="diff">· medium · priority</span></span>
+      </div>
+      <div class="qbody">
+        <p>A machine-learning detection engine was evaluated on 8,000 network events
+        with the following results:</p>
+        <ul>
+          <li>True Positives (TP) = 1,380 · False Negatives (FN) = 120</li>
+          <li>False Positives (FP) = 260 · True Negatives (TN) = 6,240</li>
+        </ul>
+        <p>Compute precision, recall, false positive rate, false negative rate,
+        accuracy and F1 score. Then discuss which metric is most critical for a SOC
+        and justify your choice.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Total} = 1{,}380 + 120 + 260 + 6{,}240 = 8{,}000 \)</p>
+              <p class="why"><b>Verify the matrix first.</b> The four cells must sum to the stated sample size. If they do not, you have misread a value — catch it now, not three metrics later.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Precision} = \dfrac{TP}{TP+FP} = \dfrac{1{,}380}{1{,}380+260} = \dfrac{1{,}380}{1{,}640} \)</p>
+              <p class="why"><b>Precision reads the top row:</b> everything the system <em>flagged</em>, right or wrong. \(TP+FP\) is that row's total.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Precision} = 0.8415 \times 100 = 84.15\% \)</p>
+              <p class="why">Divide, then convert. <b>Meaning:</b> of every 100 alarms raised, about 84 were genuine attacks and 16 wasted an analyst's time.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Recall} = \dfrac{TP}{TP+FN} = \dfrac{1{,}380}{1{,}380+120} = \dfrac{1{,}380}{1{,}500} = 92.00\% \)</p>
+              <p class="why"><b>Recall reads the left column:</b> everything that actually <em>was</em> an attack. \(TP+FN = 1{,}500\) real attacks occurred, and 1,380 were caught.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR} = \dfrac{FP}{FP+TN} = \dfrac{260}{260+6{,}240} = \dfrac{260}{6{,}500} = 4.00\% \)</p>
+              <p class="why"><b>Confusion-matrix definition, because TN is available.</b> The denominator is every genuinely benign event; 4% of them were wrongly flagged. (Had the question given only "total alerts", the formula-sheet version \(FP/\text{Total Alerts}\) would apply instead — say which you used.)</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FNR} = \dfrac{FN}{TP+FN} = \dfrac{120}{1{,}500} = 8.00\% \)</p>
+              <p class="why">Same denominator as recall — both are measured against actual attacks. <b>Check:</b> \(92\% + 8\% = 100\%\). ✓</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Accuracy} = \dfrac{TP+TN}{\text{Total}} = \dfrac{1{,}380+6{,}240}{8{,}000} = \dfrac{7{,}620}{8{,}000} = 95.25\% \)</p>
+              <p class="why"><b>Both correct boxes over everything.</b> Accuracy is the only metric here using the full sample as its denominator.</p>
+            </li>
+            <li>
+              <p class="math-line">\( F1 = 2 \times \dfrac{0.8415 \times 0.9200}{0.8415 + 0.9200} \)</p>
+              <p class="why"><b>Convert to decimals before substituting.</b> Feeding 84.15 and 92.00 in as percentages gives an answer 100× too large — the single most common error on this formula.</p>
+            </li>
+            <li>
+              <p class="math-line">\( F1 = 2 \times \dfrac{0.7742}{1.7615} = \dfrac{1.5484}{1.7615} = 0.8790 \)</p>
+              <p class="why">Multiply the numerator out, add the denominator, divide. Doubling can be done before or after the division — same result.</p>
+            </li>
+            <li>
+              <p class="math-line">\( F1 = 87.90\% \)</p>
+              <p class="why">Convert back to a percentage at the very end.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>Precision <b>84.15%</b> · Recall <b>92.00%</b> · FPR <b>4.00%</b> ·
+            FNR <b>8.00%</b> · Accuracy <b>95.25%</b> · F1 <b>87.90%</b>.</p>
+            <p><b>Sanity check:</b> F1 must lie between precision and recall and
+            closer to the smaller of the two — 87.90% sits between 84.15% and 92.00%,
+            nearer the lower. ✓ Recall + FNR = 100%. ✓</p>
+          </div>
+
+          <p><b>Discussion — which metric matters most.</b></p>
+          <p><b>Recall is the most critical metric for a SOC.</b> The reason is the
+          asymmetry of the two errors. A false positive — one of the 260 here — costs
+          an analyst's time and contributes to alert fatigue, but the organisation
+          remains protected. A false negative — one of the 120 here — is a real
+          attack that nobody knows about, and the attacker continues escalating
+          privileges, moving laterally and exfiltrating data for as long as it goes
+          unseen. One error wastes an hour; the other can cost the business.</p>
+          <p>Concretely: at 92% recall, 120 genuine attacks reached this network
+          undetected during the evaluation period. That is the number a CISO cares
+          about, and it is why detection engineering tunes for coverage first and
+          then manages the resulting noise with SOAR automation and rule tuning
+          rather than the reverse.</p>
+          <p><b>Why not accuracy.</b> Worth one line, because it is the trap. At
+          95.25% accuracy this detector looks excellent, but the figure is inflated by
+          the 6,240 true negatives — benign traffic is the overwhelming majority of
+          events, so simply being right about normal traffic carries the score. A
+          detector that flagged <em>nothing at all</em> would score
+          \(6{,}500/8{,}000 = 81.25\%\) accuracy while catching zero attacks. Accuracy
+          is misleading on imbalanced security data.</p>
+          <p><b>Where F1 fits.</b> If a single overall figure of merit is needed —
+          for instance to compare two vendors' engines — F1 at 87.90% is the right
+          one, because as the harmonic mean it stays low if <em>either</em> precision
+          or recall is poor. But for deciding what to <em>improve</em>, recall is the
+          priority.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 5 — comparing two SOC teams <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>Two SOC teams handled the same workload last quarter:</p>
+        <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:10px 0">
+          <thead><tr style="border-bottom:2px solid #1E2A32;text-align:left"><th style="padding:6px 8px 6px 0">Metric</th><th style="padding:6px 8px">Team A</th><th style="padding:6px 0 6px 8px">Team B</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Incidents</td><td style="padding:7px 8px">200</td><td style="padding:7px 0 7px 8px">200</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Detection time</td><td style="padding:7px 8px">3,000 min</td><td style="padding:7px 0 7px 8px">2,200 min</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Response time</td><td style="padding:7px 8px">4,800 min</td><td style="padding:7px 0 7px 8px">3,600 min</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Alerts</td><td style="padding:7px 8px">4,500</td><td style="padding:7px 0 7px 8px">3,800</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">False positives</td><td style="padding:7px 8px">900</td><td style="padding:7px 0 7px 8px">456</td></tr>
+            <tr><td style="padding:7px 8px 7px 0">Resolved incidents</td><td style="padding:7px 8px">182</td><td style="padding:7px 0 7px 8px">194</td></tr>
+          </tbody>
+        </table>
+        <p>Compute MTTD, MTTR, resolution rate and false positive rate for each team.
+        Which team performs better, and justify with reference to every metric.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{MTTD}_A = \dfrac{3{,}000}{200} = 15 \text{ min}, \qquad \text{MTTD}_B = \dfrac{2{,}200}{200} = 11 \text{ min} \)</p>
+              <p class="why"><b>Same formula applied twice.</b> Because both teams handled 200 incidents, the comparison is fair without any normalising — note that explicitly, because it is what makes a direct comparison valid.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR}_A = \dfrac{4{,}800}{200} = 24 \text{ min}, \qquad \text{MTTR}_B = \dfrac{3{,}600}{200} = 18 \text{ min} \)</p>
+              <p class="why">Response-time numerators, same incident denominator. B is 6 minutes faster per incident.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{RR}_A = \dfrac{182}{200} \times 100 = 91\%, \qquad \text{RR}_B = \dfrac{194}{200} \times 100 = 97\% \)</p>
+              <p class="why"><b>Resolved ÷ incidents.</b> A left 18 incidents unresolved, B left 6.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR}_A = \dfrac{900}{4{,}500} \times 100 = 20\%, \qquad \text{FPR}_B = \dfrac{456}{3{,}800} \times 100 = 12\% \)</p>
+              <p class="why"><b>Denominator switches to each team's own alert count</b> — 4,500 for A, 3,800 for B. Using one team's alert total for both is the classic error here.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{relative reduction} = \dfrac{20 - 12}{20} \times 100 = 40\% \)</p>
+              <p class="why"><b>Relative change = difference ÷ original baseline.</b> B's false positive rate is 8 percentage points lower, which is a 40% relative improvement — quote both figures, they answer different questions.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>MTTD: A <b>15 min</b>, B <b>11 min</b> · MTTR: A <b>24 min</b>, B
+            <b>18 min</b> · Resolution rate: A <b>91%</b>, B <b>97%</b> · FPR:
+            A <b>20%</b>, B <b>12%</b>.</p>
+          </div>
+          <p><b>Verdict: Team B performs better on every dimension measured.</b>
+          Justify metric by metric rather than asserting it: B detects 4 minutes
+          faster (11 vs 15), responds 6 minutes faster (18 vs 24), resolves 6
+          percentage points more of its incidents (97% vs 91%), and generates
+          markedly cleaner alerts — a 12% false positive rate against A's 20%, a
+          40% relative reduction.</p>
+          <p><b>The connection worth drawing.</b> These results are not four
+          independent facts; the alert quality plausibly explains the rest. Team B's
+          analysts wade through 456 wrong alerts while Team A's wade through 900. Less
+          noise means less alert fatigue, which means real alerts are picked up
+          sooner (lower MTTD), acted on sooner (lower MTTR), and followed through to
+          closure more often (higher resolution rate). Identifying <b>false positive
+          rate as the likely root cause rather than a fourth symptom</b> is what
+          lifts this answer into the top band.</p>
+          <p><b>One caveat for full marks.</b> The data does not include detection
+          rate or false negatives for either team, so we cannot tell whether B is
+          better or merely <em>quieter</em> — a team can lower its false positive
+          rate by tightening rules and thereby miss more real attacks. A complete
+          evaluation would ask for each team's recall before declaring B superior
+          outright.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 6 — analyst productivity and workload <span class="diff">· medium</span></span>
+      </div>
+      <div class="qbody">
+        <p>A SOC employs 16 analysts. Last month it received 24,000 alerts, of which
+        20,400 were investigated, producing 960 confirmed security incidents.
+        Analysts logged 2,448 hours of investigation work, and each analyst's
+        contracted month is 180 working hours.</p>
+        <p>Compute alerts per analyst, investigation rate, incidents per analyst and
+        analyst utilisation. Are the analysts at risk of burnout? Justify.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Alerts per Analyst} = \dfrac{24{,}000}{16} = 1{,}500 \text{ alerts/analyst} \)</p>
+              <p class="why"><b>Total alerts ÷ headcount.</b> No \(\times 100\) here — this is a workload count, not a rate, so it keeps its units.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Investigation Rate} = \dfrac{20{,}400}{24{,}000} \times 100 = 85\% \)</p>
+              <p class="why"><b>Investigated ÷ total alerts.</b> The 15% gap matters: 3,600 alerts were never looked at, and any real attack inside them is invisible.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Incidents per Analyst} = \dfrac{960}{16} = 60 \text{ incidents/analyst} \)</p>
+              <p class="why">Same headcount denominator, incident numerator. This is the <em>real</em> caseload — the 1,500 alerts mostly evaporate in triage; the 60 confirmed incidents are the work.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Total Available Time} = 16 \times 180 = 2{,}880 \text{ hours} \)</p>
+              <p class="why"><b>Build the denominator before using it.</b> Utilisation needs total working time across the whole team, which the question gives only per analyst — multiply by headcount first.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Analyst Utilisation} = \dfrac{2{,}448}{2{,}880} \times 100 = 85\% \)</p>
+              <p class="why"><b>Time spent handling ÷ total working time.</b> Both figures are in hours, so the units cancel and the result is a clean percentage.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>Alerts per analyst <b>1,500</b> · Investigation rate <b>85%</b> ·
+            Incidents per analyst <b>60</b> · Analyst utilisation <b>85%</b>.</p>
+          </div>
+          <p><b>Burnout assessment: yes, these analysts are at significant risk.</b></p>
+          <p><b>Utilisation is the decisive figure.</b> At 85%, analysts spend 2,448
+          of their 2,880 contracted hours actively handling work. The sustainable
+          band for SOC environments is roughly <b>60–75%</b>, so this team is running
+          about ten percentage points above the top of it. The remaining 15% — around
+          432 hours across sixteen people, or 27 hours each per month — has to absorb
+          <em>everything else</em>: training, threat hunting, documentation, handover
+          meetings, and simple recovery time. It cannot.</p>
+          <p><b>The investigation rate corroborates it.</b> Only 85% of alerts were
+          investigated, meaning 3,600 alerts went untouched. That is the visible
+          signature of a team at capacity: when there is no slack, the queue is
+          triaged by what fits in the day rather than by risk.</p>
+          <p><b>Why it is self-reinforcing.</b> No spare capacity means no time for
+          Tier 3 proactive threat hunting or for tuning correlation rules. Untuned
+          rules keep the alert volume at 1,500 per analyst, which keeps utilisation
+          high, which keeps the rules untuned. The SOC is locked into being reactive.</p>
+          <p><b>Recommendations.</b> Deploy SOAR automation to handle repetitive
+          triage — Exercise 8 shows what that does to the numbers; tune the SIEM rules
+          to cut alert volume at source; and increase Tier 1 headcount to bring
+          utilisation into the 60–75% band. Note that hiring alone is the weakest of
+          the three, because it treats the symptom rather than the alert volume
+          causing it.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 7 — cost-benefit and ROSI <span class="diff">· hard</span></span>
+      </div>
+      <div class="qbody">
+        <p>An enterprise SOC costs $1,800,000 per year to run and employs 15
+        analysts. Last year it handled 4,500 incidents and, according to the security
+        team's assessment, prevented 360 breaches. The average financial loss per
+        breach in this industry is $45,000.</p>
+        <p>Compute the cost per incident, the total financial loss avoided, and the
+        Return on Security Investment. Should management approve a budget increase?
+        Justify your recommendation and state one limitation of this analysis.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{Cost per Incident} = \dfrac{\text{Total SOC Operating Cost}}{\text{Number of Incidents}} = \dfrac{\$1{,}800{,}000}{4{,}500} \)</p>
+              <p class="why"><b>Denominator = incidents handled.</b> Not analysts and not breaches prevented — cost per incident spreads the whole running cost across the caseload.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Cost per Incident} = \$400 \text{ per incident} \)</p>
+              <p class="why">Divide. Carry the currency through — a bare "400" loses a mark in a financial question.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Loss Avoided} = \text{Breaches Prevented} \times \text{Average Loss per Breach} = 360 \times \$45{,}000 \)</p>
+              <p class="why"><b>Multiply, do not divide.</b> Each prevented breach saves one average loss, so the total saving scales with the count.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Loss Avoided} = \$16{,}200{,}000 \)</p>
+              <p class="why">Compute. <b>Order-of-magnitude check:</b> 360 × 45,000 ≈ 360 × 45 thousand ≈ 16,200 thousand = $16.2 million. ✓</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{ROSI} = \dfrac{\text{Loss Avoided} - \text{SOC Cost}}{\text{SOC Cost}} \times 100 = \dfrac{\$16{,}200{,}000 - \$1{,}800{,}000}{\$1{,}800{,}000} \times 100 \)</p>
+              <p class="why"><b>Subtract the cost in the numerator first.</b> ROSI measures <em>net</em> return — the benefit above and beyond what was spent — which is why the cost appears in both numerator and denominator.</p>
+            </li>
+            <li>
+              <p class="math-line">\( = \dfrac{\$14{,}400{,}000}{\$1{,}800{,}000} \times 100 = 8 \times 100 = 800\% \)</p>
+              <p class="why">Divide, then scale. The currency units cancel, leaving a pure ratio — which is correct, since a return is dimensionless.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>Cost per incident <b>$400</b> · Total loss avoided <b>$16,200,000</b>
+            · Net benefit <b>$14,400,000</b> · <b>ROSI = 800%</b>.</p>
+            <p><b>Sanity check:</b> $16.2M of benefit for $1.8M of cost is a factor
+            of nine, so the <em>net</em> return is eight times the investment —
+            800%. ✓ A ROSI of 0% would mean the SOC exactly paid for itself; anything
+            positive means it more than did.</p>
+          </div>
+          <p><b>Recommendation: yes, management should approve the budget increase.</b>
+          The SOC returns $9 of avoided loss for every $1 spent, delivering $14.4
+          million of net financial protection against a $1.8 million outlay. At a
+          cost of $400 per incident handled, it is difficult to name another control
+          in the business with a comparable return. Framed for a board, the argument
+          the risk-management lecture uses applies directly: breach recovery and
+          remediation typically costs five to ten times more than proactive defence,
+          and these figures are consistent with that.</p>
+          <p><b>Limitation — say this, it is where the top marks are.</b> The entire
+          calculation rests on "breaches prevented = 360", and that number is
+          inherently unverifiable. You cannot observe an attack that did not happen;
+          it is an estimate produced by the same team requesting the budget, which is
+          a clear conflict of interest. The $45,000 average is also an industry
+          figure that may not reflect this organisation's actual exposure, and
+          averages conceal a skewed distribution — one catastrophic breach can dwarf
+          hundreds of minor ones. A stronger business case would present a range
+          rather than a point estimate, and support it with the harder metrics that
+          <em>are</em> observable: MTTD, MTTR, detection rate and containment rate.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 8 — before vs. after SOAR <span class="diff">· hard</span></span>
+      </div>
+      <div class="qbody">
+        <p>A SOC deployed SOAR automation six months ago. Compare the two periods:</p>
+        <table style="width:100%;border-collapse:collapse;font-size:.93rem;margin:10px 0">
+          <thead><tr style="border-bottom:2px solid #1E2A32;text-align:left"><th style="padding:6px 8px 6px 0">Parameter</th><th style="padding:6px 8px">Before SOAR</th><th style="padding:6px 0 6px 8px">After SOAR</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">MTTD</td><td style="padding:7px 8px">24 min</td><td style="padding:7px 0 7px 8px">10 min</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">MTTR</td><td style="padding:7px 8px">50 min</td><td style="padding:7px 0 7px 8px">30 min</td></tr>
+            <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Total alerts</td><td style="padding:7px 8px">15,000</td><td style="padding:7px 0 7px 8px">16,000</td></tr>
+            <tr><td style="padding:7px 8px 7px 0">False positives</td><td style="padding:7px 8px">2,700</td><td style="padding:7px 0 7px 8px">1,280</td></tr>
+          </tbody>
+        </table>
+        <p>Compute the percentage improvement in MTTD and MTTR, the false positive
+        rate before and after, and the relative reduction in false positive rate.
+        Evaluate whether the SOAR deployment was successful.</p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{MTTD reduction} = \dfrac{24 - 10}{24} \times 100 \)</p>
+              <p class="why"><b>Percentage change = (old − new) ÷ old.</b> The <em>original</em> value is always the denominator — dividing by the new value is the standard error and inflates the improvement.</p>
+            </li>
+            <li>
+              <p class="math-line">\( = \dfrac{14}{24} \times 100 = 58.33\% \text{ reduction} \)</p>
+              <p class="why">Divide and scale. Detection time cut by well over half.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR reduction} = \dfrac{50 - 30}{50} \times 100 = \dfrac{20}{50} \times 100 = 40\% \)</p>
+              <p class="why">Same formula, response figures. Twenty minutes saved on every incident.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR}_{\text{before}} = \dfrac{2{,}700}{15{,}000} \times 100 = 18\% \)</p>
+              <p class="why"><b>Each period uses its own alert total.</b> Comparing raw false positive counts (2,700 vs 1,280) would be misleading because the alert volume changed between periods — the rate normalises for that.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR}_{\text{after}} = \dfrac{1{,}280}{16{,}000} \times 100 = 8\% \)</p>
+              <p class="why">Same formula with the post-deployment figures. Note the denominator <em>rose</em> to 16,000 while the numerator fell — both movements push the rate down.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{relative reduction} = \dfrac{18 - 8}{18} \times 100 = \dfrac{10}{18} \times 100 = 55.56\% \)</p>
+              <p class="why"><b>Percentage change applied to the rates.</b> Quote both forms: a fall of <em>10 percentage points</em> and a <em>55.56% relative</em> reduction. They are different statements and examiners look for the distinction.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{alert volume change} = \dfrac{16{,}000 - 15{,}000}{15{,}000} \times 100 = 6.67\% \text{ increase} \)</p>
+              <p class="why"><b>Worth computing even though not asked.</b> It shows the improvement was not achieved by monitoring less — coverage grew while noise fell, which is the strongest possible reading of the data.</p>
+            </li>
+          </ol>
+          <div class="callout key">
+            <span class="tag">Answers</span>
+            <p>MTTD <b>58.33% reduction</b> · MTTR <b>40% reduction</b> · FPR
+            <b>18% → 8%</b>, a <b>55.56% relative reduction</b> (10 percentage
+            points) · alert volume <b>+6.67%</b>.</p>
+          </div>
+          <p><b>Evaluation: the deployment was a clear success, on every measure.</b></p>
+          <p><b>Detection and response.</b> MTTD fell by 58.33% and MTTR by 40%.
+          Combined, the total time from an attack starting to it being contained went
+          from 74 minutes to 40 minutes — a 46% reduction in the attacker's window.
+          That is the number to quote to management, because dwell time is what
+          determines how much damage an intrusion does.</p>
+          <p><b>Alert quality.</b> The false positive rate more than halved, from 18%
+          to 8%. In absolute terms analysts now investigate 1,280 wrong alerts instead
+          of 2,700 — roughly 1,400 hours of wasted effort returned to the team, which
+          directly addresses the alert fatigue and analyst utilisation problems seen
+          in Exercise 6.</p>
+          <p><b>The critical detail.</b> Alert volume <em>rose</em> 6.67% while the
+          false positive rate fell. This rules out the obvious sceptical explanation
+          — that the SOC simply narrowed its monitoring and looked at less. Coverage
+          expanded and quality improved simultaneously, which is exactly what SOAR is
+          supposed to do: automate the repetitive triage so humans handle only what
+          needs judgement.</p>
+          <p><b>One caveat for full marks.</b> The data contains no detection rate or
+          recall figure for either period. Faster response to the alerts you receive
+          is not the same as missing fewer attacks, and a complete evaluation would
+          confirm that recall held steady or improved before declaring unqualified
+          success.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead">
+        <span class="qlabel">Exercise 9 — full enterprise audit <span class="diff">· hard · stretch</span></span>
+      </div>
+      <div class="qbody">
+        <p>Conduct a complete performance audit of an enterprise SOC from the
+        following month's data:</p>
+        <ul>
+          <li>8,000 systems monitored (7,600 sending logs to the SIEM) · 42,000 alerts · 24 analysts</li>
+          <li>1,400 incidents · Detection time 15,400 min · Response time 25,200 min · Recovery time 56,000 min</li>
+          <li>Resolved 1,344 · Actual attacks 1,500 · Detected attacks 1,410 · False positives 6,300</li>
+          <li>Escalations 224 · Monthly operating cost $540,000</li>
+        </ul>
+        <p>Compute all applicable metrics, compare them against the enterprise
+        targets below, and write a short executive summary with recommendations.</p>
+        <p><em>Targets: MTTD &lt; 10 min · MTTR (Response) ≤ 20 min · Resolution rate
+        ≥ 95% · Detection rate &gt; 98% · False positive rate &lt; 12% · Log coverage
+        ≥ 98%.</em></p>
+      </div>
+      <details class="solution">
+        <summary>Show worked solution</summary>
+        <div class="soln-body">
+          <ol class="steps">
+            <li>
+              <p class="math-line">\( \text{MTTD} = \dfrac{15{,}400}{1{,}400} = 11.0 \text{ min} \)</p>
+              <p class="why"><b>Incidents denominator.</b> With ten metrics to compute, identify each denominator before starting: 1,400 incidents, 42,000 alerts, 1,500 actual attacks, 8,000 systems, 24 analysts. Five different bases in one question.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR (Response)} = \dfrac{25{,}200}{1{,}400} = 18.0 \text{ min} \)</p>
+              <p class="why">Same denominator, response numerator.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{MTTR (Recovery)} = \dfrac{56{,}000}{1{,}400} = 40.0 \text{ min} \)</p>
+              <p class="why">Same denominator, recovery numerator. <b>Check:</b> recovery (40) &gt; response (18). ✓</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Resolution Rate} = \dfrac{1{,}344}{1{,}400} \times 100 = 96.0\% \)</p>
+              <p class="why">Resolved ÷ incidents. 56 incidents remain unresolved.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Detection Rate} = \dfrac{1{,}410}{1{,}500} \times 100 = 94.0\% \)</p>
+              <p class="why"><b>Denominator switches to actual attacks.</b> Immediately follows: \(1{,}500-1{,}410 = 90\) attacks were never detected, and FNR = 6%.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{FPR} = \dfrac{6{,}300}{42{,}000} \times 100 = 15.0\% \)</p>
+              <p class="why"><b>Denominator switches to alerts.</b> Operational definition — no TN is supplied, so the formula-sheet version applies.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Escalation Rate} = \dfrac{224}{1{,}400} \times 100 = 16.0\% \)</p>
+              <p class="why">Back to the incidents denominator — escalation happens to incidents, not alerts.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Alerts per Analyst} = \dfrac{42{,}000}{24} = 1{,}750 \text{ alerts/analyst} \)</p>
+              <p class="why">Headcount denominator. A workload count, so no \(\times 100\).</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Cost per Incident} = \dfrac{\$540{,}000}{1{,}400} = \$385.71 \)</p>
+              <p class="why">Operating cost ÷ incidents. <b>Round to two decimal places</b> because it is currency.</p>
+            </li>
+            <li>
+              <p class="math-line">\( \text{Log Coverage} = \dfrac{7{,}600}{8{,}000} \times 100 = 95.0\% \)</p>
+              <p class="why"><b>Systems denominator</b> — the only metric here that uses it. 400 systems send no logs at all.</p>
+            </li>
+          </ol>
+
+          <div class="callout key">
+            <span class="tag">Computed results</span>
+            <p>MTTD <b>11.0 min</b> · MTTR Response <b>18.0 min</b> · MTTR Recovery
+            <b>40.0 min</b> · Resolution rate <b>96.0%</b> · Detection rate
+            <b>94.0%</b> · FPR <b>15.0%</b> · Escalation rate <b>16.0%</b> · Alerts
+            per analyst <b>1,750</b> · Cost per incident <b>$385.71</b> · Log
+            coverage <b>95.0%</b>.</p>
+          </div>
+
+          <p><b>Target comparison.</b></p>
+          <table style="width:100%;border-collapse:collapse;font-size:.92rem;margin:10px 0">
+            <thead><tr style="border-bottom:2px solid #1E2A32;text-align:left"><th style="padding:6px 8px 6px 0">Metric</th><th style="padding:6px 8px">Target</th><th style="padding:6px 8px">Actual</th><th style="padding:6px 0 6px 8px">Status</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">MTTD</td><td style="padding:7px 8px">&lt; 10 min</td><td style="padding:7px 8px">11.0 min</td><td style="padding:7px 0 7px 8px"><b>Missed</b> — over by 1.0 min</td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">MTTR (Response)</td><td style="padding:7px 8px">≤ 20 min</td><td style="padding:7px 8px">18.0 min</td><td style="padding:7px 0 7px 8px"><b>Met</b> — 2.0 min inside</td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Resolution rate</td><td style="padding:7px 8px">≥ 95%</td><td style="padding:7px 8px">96.0%</td><td style="padding:7px 0 7px 8px"><b>Met</b></td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">Detection rate</td><td style="padding:7px 8px">&gt; 98%</td><td style="padding:7px 8px">94.0%</td><td style="padding:7px 0 7px 8px"><b>Missed</b> — under by 4.0 pts · <b>Priority 1</b></td></tr>
+              <tr style="border-bottom:1px solid #E4E1D8"><td style="padding:7px 8px 7px 0">False positive rate</td><td style="padding:7px 8px">&lt; 12%</td><td style="padding:7px 8px">15.0%</td><td style="padding:7px 0 7px 8px"><b>Missed</b> — over by 3.0 pts</td></tr>
+              <tr><td style="padding:7px 8px 7px 0">Log coverage</td><td style="padding:7px 8px">≥ 98%</td><td style="padding:7px 8px">95.0%</td><td style="padding:7px 0 7px 8px"><b>Missed</b> — under by 3.0 pts</td></tr>
+            </tbody>
+          </table>
+
+          <p><b>Executive summary.</b></p>
+          <div class="link-map">
+            <span class="tag">Model executive summary — the shape to copy</span>
+            <p>During the review period the SOC processed 42,000 alerts and handled
+            1,400 security incidents at an operating cost of $385.71 per incident.
+            <b>Response efficiency met expectations</b>: mean time to respond was
+            18.0 minutes against a 20-minute target, and 96.0% of incidents were
+            resolved, exceeding the 95% threshold.</p>
+            <p><b>However, three findings require corrective action.</b> First and
+            most serious, the detection rate of 94.0% against a &gt;98% target means
+            <b>90 genuine attacks went entirely undetected</b> — this is unremediated
+            exposure and is ranked Priority 1. Second, log coverage of 95.0% leaves
+            400 systems invisible to the SIEM; these two findings are almost certainly
+            related, since an attack touching only an unmonitored system cannot be
+            detected at all. Third, a 15.0% false positive rate against a &lt;12%
+            target means analysts investigated approximately 6,300 non-events, and at
+            1,750 alerts per analyst this workload contributed to the missed MTTD
+            target of 11.0 minutes and to a prolonged 40-minute recovery time.</p>
+            <p><b>Recommended actions, in priority order:</b> (1) onboard the 400
+            unmonitored systems to the SIEM and deploy behavioural analytics to close
+            the detection gap; (2) tune correlation rules to suppress low-fidelity
+            alert signatures, reducing false positives and freeing analyst capacity;
+            (3) implement automated alert enrichment so triage begins with context
+            already gathered, which targets MTTD directly; (4) automate host isolation
+            and recovery playbooks through SOAR to reduce the 40-minute recovery time.</p>
+          </div>
+          <p><b>The analytical move that earns the top band</b> is joining findings
+          rather than listing them. Log coverage of 95% and detection rate of 94% are
+          not two separate problems — 400 blind systems are a plausible mechanical
+          cause of undetected attacks, and fixing coverage is therefore the highest
+          leverage action available. Similarly, the false positive rate and the missed
+          MTTD target are linked through analyst workload. Examiners reward causal
+          structure over enumeration.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — SOC</h2>
+    <div class="grid">
+      <div class="item"><h4>Definition</h4><p>Centralised unit that <b>continuously monitors, detects, analyses and responds</b> to threats across the enterprise.</p></div>
+      <div class="item"><h4>3 pillars</h4><p><b>People</b> (Tier 1/2/3 + Manager), <b>Process</b> (SOPs + playbooks), <b>Technology</b> (SIEM, SOAR, EDR/XDR, TIP).</p></div>
+      <div class="item"><h4>Tier ladder</h4><p>T1 "is it real?" → T2 "what happened, contain it" → T3 "what did we miss?" → Manager "how are we performing?"</p></div>
+      <div class="item"><h4>4 TI types</h4><p><b>Strategic</b> (execs) · <b>Tactical</b> (IoCs, T1/T2) · <b>Operational</b> (campaigns, IR) · <b>Technical</b> (artefacts, researchers).</p></div>
+      <div class="item"><h4>IR lifecycle</h4><p>Alert → Triage → Investigation → <b>Containment → Eradication → Recovery</b> → Reporting. Order is examinable.</p></div>
+      <div class="item"><h4>STIX vs TAXII</h4><p>STIX = the <b>language</b>. TAXII = the <b>taxi</b> that transports it over HTTPS.</p></div>
+      <div class="item"><h4>Time metrics</h4><p>\( \text{MTTD}=\frac{\text{det. time}}{\text{incidents}} \), \( \text{MTTA}=\frac{\text{ack time}}{\text{alerts}} \), \( \text{MTBF}=\frac{\text{op. time}}{\text{failures}} \).</p></div>
+      <div class="item"><h4>Precision vs Recall</h4><p>Precision \(=\frac{TP}{TP+FP}\) — <b>the alerts you raised</b>. Recall \(=\frac{TP}{TP+FN}\) — <b>the attacks that existed</b>.</p></div>
+      <div class="item"><h4>Which matters most</h4><p><b>Recall.</b> A false positive wastes an hour; a false negative is a live breach nobody sees.</p></div>
+      <div class="item"><h4>F1</h4><p>\( F1 = 2\times\frac{P \times R}{P + R} \). Use <b>decimals</b>, not percentages. Lies between P and R, nearer the smaller.</p></div>
+      <div class="item"><h4>ROSI</h4><p>\( \frac{\text{Loss Avoided} - \text{Cost}}{\text{Cost}}\times100 \), where Loss Avoided = breaches prevented × avg loss.</p></div>
+      <div class="item"><h4>Free check</h4><p>Detection rate + FNR = <b>100%</b>, always. Recovery time &gt; response time, always.</p></div>
+      <div class="item"><h4>% change</h4><p>\( \frac{\text{old}-\text{new}}{\text{old}}\times100 \). Divide by the <b>original</b>. Quote percentage points <em>and</em> relative %.</p></div>
+      <div class="item"><h4>Denominator map</h4><p>Incidents: MTTD, MTTR, resolution, SLA, escalation, cost/incident. Alerts: FPR, MTTA, accuracy. Actual attacks: detection rate, FNR, recall. Systems: log coverage, incident rate.</p></div>
+      <div class="item"><h4>Accuracy trap</h4><p>Huge TN inflates it. A detector flagging nothing still scores ~95%. Never use accuracy alone to judge a SOC.</p></div>
+      <div class="item"><h4>Utilisation band</h4><p>Sustainable is <b>60–75%</b>. Above that = burnout, no threat hunting, no rule tuning.</p></div>
+    </div>
+  </div>
+
+
+
+  <footer class="foot">
+    Guide 2 of 6 · CSE487 Final. Built from Rakib Hossen's lecture material. All exercise arithmetic independently verified. Verify against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
