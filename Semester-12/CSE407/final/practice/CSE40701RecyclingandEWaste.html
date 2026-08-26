@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-Waste &amp; Recycling — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#scale">E-waste: scale &amp; consequences</a></li>
+      <li><a href="#materials">What is inside the device</a></li>
+      <li><a href="#lifecycle">Lifecycle &amp; EPR</a></li>
+      <li><a href="#process">The 6 recycling stages</a></li>
+      <li><a href="#circular">Circular economy hierarchy</a></li>
+      <li><a href="#bd">Bangladesh context</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Recycling &amp; E-Waste Management</h1>
+    <div class="meta">
+      <span><b>Class:</b> 7 of 22 — Recycling &amp; E-Waste Management</span>
+      <span><b>Reading:</b> Velete Ch.7 (all)</span>
+      <span><b>Outcome:</b> CO2 · EP1, EP2, EP5</span>
+      <span><b>Delivered:</b> 25 Jun 2025 + ICS &amp; Logistics guest lecture</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 7 — Recycling &amp; E-Waste Management. Velete Ch.7 (all). Course outcome CO2.</p>
+
+    <p>This is one of six topic guides for CSE407. It assumes you know nothing about e-waste
+    and builds every idea from the ground up. Read the explanation sections first, then attempt
+    each practice question <em>before</em> opening its solution — the solutions are hidden
+    behind a click on purpose.</p>
+
+    <p>Your exam is maths, analytical reasoning, and scenario-style long answers. So the practice
+    here is split three ways: <b>numerical problems</b> (worked line by line, with a reason
+    attached to every single line), <b>analytical questions</b> that ask you to distinguish
+    between things the faculty deliberately contrasted, and <b>scenario answers</b> written the
+    way you would actually write them in a script book, with a note above each one telling you
+    exactly which part of the lecture the examiner is fishing for.</p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 7</span>
+      <p>Electronics contain both a fortune in recoverable metals and a load of poison, almost
+      none of it is recovered properly, and the single biggest lever on that problem sits with
+      the engineer who decided how the device was built in the first place.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="scale">
+    <span class="topic-num">Topic 01</span>
+    <h2>What e-waste is, and why the numbers matter</h2>
+    <p class="subtitle">The four figures the faculty put on the title slide are the four figures most likely to appear in a question.</p>
+
+    <p>Start with the plainest possible definition, because the exam will want it stated cleanly:
+    <b>e-waste</b> is any discarded electrical or electronic device. Not "broken" — <em>discarded</em>.
+    A working phone in a drawer that nobody will ever switch on again is, in practice, e-waste
+    waiting to happen. That distinction matters, and the faculty made a point of it by opening
+    the class with a homework tally of old devices sitting in students' drawers.</p>
+
+    <p>Now picture the flow. Somewhere, metal is dug out of the ground. It gets refined, shipped,
+    assembled into a phone, sold, used for a couple of years, and then it stops. At that moment
+    one of two things happens to it. Either it enters a <b>formal</b> system — a licensed,
+    certified recycler with industrial equipment and pollution controls — or it enters an
+    <b>informal</b> one, meaning someone burns the plastic off the wires in an open yard to get at
+    the copper. Globally, the split between those two paths is roughly one to five.</p>
+
+    <div class="formula">
+      <div class="label">The four headline figures from Class 7</div>
+      <p style="margin:0">
+      <b>62 Mt</b> — e-waste generated globally in 2023, a record.<br>
+      <b>17.4%</b> — the share formally recycled. The other ~83% is dumped, burned, or handled informally.<br>
+      <b>$57 billion</b> — the value of raw materials lost inside unrecycled e-waste each year.<br>
+      <b>2.6 kg</b> — e-waste generated per person globally per year, and rising.
+      </p>
+    </div>
+
+    <p>Learn those four. They are the kind of thing that gets asked as a one-mark recall question
+    and then re-used as the input to a calculation later in the same paper.</p>
+
+    <h3>Why it is growing faster than anything else</h3>
+
+    <p>The faculty listed e-waste as growing at <b>3–4× the rate of any other waste category</b>,
+    and gave five drivers. They are worth memorising as a list because "explain why e-waste is the
+    fastest-growing waste stream" is a natural short-answer question:</p>
+
+    <ul>
+      <li><b>Shortening lifespans.</b> The average smartphone is now replaced every 2.5 years, down from 4+ years in 2010.</li>
+      <li><b>Falling hardware prices</b> mean more devices per household, so more devices eventually discarded.</li>
+      <li><b>The IoT explosion</b> — 50 billion+ connected devices projected by 2030, every one of them with a finite life.</li>
+      <li><b>Planned obsolescence</b> — software updates stop, batteries degrade, repairability is designed out.</li>
+      <li><b>A fast-growing middle class</b> in Asia and Africa buying first-time electronics.</li>
+    </ul>
+
+    <h3>What actually happens to the 83%</h3>
+
+    <p>Three specific mechanisms were named, and each has a specific pollutant attached to it.
+    Do not blur them together — the examiner can ask about any one on its own.</p>
+
+    <ul>
+      <li><b>Open burning.</b> Wire insulation is set alight to expose the copper inside. This releases
+      dioxins, furans, and polyaromatic hydrocarbons straight into air and soil. Named locations:
+      Agbogbloshie in Ghana, Guiyu in China, and parts of Bangladesh.</li>
+      <li><b>Landfill leaching.</b> Lead, cadmium, and mercury from batteries and solder seep into
+      groundwater. One CRT monitor alone holds up to <b>4 kg of lead</b>.</li>
+      <li><b>Informal acid baths.</b> Circuit boards are dunked in acid to dissolve out the gold,
+      and the spent acid — full of heavy metals — goes into the waterway.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>Don't say "e-waste is bad because it fills landfills." That is a rubbish answer and it
+      throws away the actual content of the lecture. The problem is <em>dual</em>: it is
+      simultaneously a <b>toxicity</b> problem (lead, mercury, cadmium, dioxins reaching people)
+      and a <b>resource loss</b> problem ($57 bn of metal burned or buried). Any good answer names
+      both halves.</p>
+    </div>
+
+    <h3>Who generates it, who suffers from it</h3>
+
+    <p>The lecture drew a deliberate line between these two groups, and that gap is the moral core
+    of the topic. High-income countries generate the most per person — Norway at roughly
+    22 kg/person/year against a global average of 2.6. But a great deal of it is exported to
+    lower-income countries, often mislabelled as "second-hand goods" to slip past the rules.
+    The workers who then process it informally, frequently children, take the direct toxic
+    exposure. Bangladesh sits on the receiving end of this, taking in material from India, the
+    Gulf states, and informal trade networks. The <b>Basel Convention</b> bans hazardous e-waste
+    export, but as the faculty put it, enforcement is weak.</p>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/S2lmPIa1iWE" title="How 6 Million Pounds Of Electronic Waste Gets Recycled A Month"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=S2lmPIa1iWE" target="_blank" rel="noopener">How 6 Million Pounds Of Electronic Waste Gets Recycled A Month | Big Business</a>.
+      Why it helps: Section 5 of the lecture lists the six formal recycling stages as bullet points. Seeing the
+      shredders, the eddy-current separators and the manual pre-processing line actually running makes those
+      six stages stick in a way the bullet list won't.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="materials">
+    <span class="topic-num">Topic 02</span>
+    <h2>What is inside the device — the eight materials</h2>
+    <p class="subtitle">The faculty built an interactive panel around exactly eight materials. Expect at least one question drawn from it.</p>
+
+    <p>A modern smartphone contains over <b>60 different elements</b>. The lecture picked out eight
+    and sorted them into three jobs: <b>precious metals</b> worth recovering, <b>critical minerals</b>
+    with fragile supply chains, and <b>toxic materials</b> that cause harm if released. Getting the
+    category right matters as much as the number, because analytical questions tend to be phrased as
+    "which of these is a conflict mineral" rather than "how much gold is in a phone".</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Material</th><th style="padding:8px 6px">Category</th>
+        <th style="padding:8px 6px">Per phone</th><th style="padding:8px 6px">The fact to remember</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Gold (Au)</b></td><td style="padding:8px 6px">Precious</td><td style="padding:8px 6px">~0.03 g (~$2)</td><td style="padding:8px 6px">1 tonne of phones ≈ 300 g gold — <b>40–80× richer than gold ore</b>. Urban mining is 6–13× more economical than primary mining.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Silver (Ag)</b></td><td style="padding:8px 6px">Precious</td><td style="padding:8px 6px">~0.3 g (~$0.20)</td><td style="padding:8px 6px">1 tonne of phones ≈ 3 kg silver. Formal recovery ~85%. Burning boards loses it in the slag.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Copper (Cu)</b></td><td style="padding:8px 6px">Base metal</td><td style="padding:8px 6px">~15 g (~$0.15)</td><td style="padding:8px 6px">By weight the most valuable common metal in e-waste. 1 t of phones ≈ 15 kg Cu at ~$9,000/t. Formal recovery <b>95%+</b>.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Cobalt (Co)</b></td><td style="padding:8px 6px">Critical mineral</td><td style="padding:8px 6px">5–10 g (battery)</td><td style="padding:8px 6px">~70% of primary supply from the DRC; artisanal mining linked to child labour. Global recycling recovery only <b>~5%</b>.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Lithium (Li)</b></td><td style="padding:8px 6px">Critical mineral</td><td style="padding:8px 6px">1–3 g (battery)</td><td style="padding:8px 6px">Recycling is technically possible but not yet economic. Global rate <b>~1%</b>. EV demand will change the maths.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Lead (Pb)</b></td><td style="padding:8px 6px">Toxic</td><td style="padding:8px 6px">~0.01 g modern; <b>up to 4 kg in a CRT</b></td><td style="padding:8px 6px">Was in solder and CRT glass. RoHS cut it from new devices. Causes irreversible neurological damage, worst in children.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Mercury (Hg)</b></td><td style="padding:8px 6px">Highly toxic</td><td style="padding:8px 6px">Backlights, switches</td><td style="padding:8px 6px">In older fluorescent-lit LCDs. LED backlights eliminated it — the lecture's named <b>design-for-environment success story</b>.</td></tr>
+      <tr><td style="padding:8px 6px"><b>Tantalum (Ta)</b></td><td style="padding:8px 6px">Conflict mineral</td><td style="padding:8px 6px">Capacitors</td><td style="padding:8px 6px">~60% from the DRC and neighbours. A "conflict mineral" under <b>US Dodd-Frank Act §1502</b> — supply chains must be audited.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the urban mine</span>
+      <p><b>Urban mining</b> means treating stockpiles of discarded electronics as an ore body to be
+      mined, rather than a waste problem to be disposed of. The reason this is not just a slogan is
+      concentration: a tonne of scrapped smartphones carries roughly 300 g of gold, while natural
+      gold ore might carry a few grams per tonne. UNEP puts the annual urban mine at over
+      <b>$57 billion</b> — which is currently being burned or buried.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the trap in this table</span>
+      <p>Gold has the highest value <em>per gram</em>, but <b>copper is the most valuable metal in
+      e-waste by weight</b>, because there is roughly 500 times more of it. If a question asks
+      "which material contributes most value" you must check whether it means per gram or in total.
+      The lecture's own phrasing is: copper is "by weight, the most valuable common metal in e-waste."</p>
+    </div>
+  </section>
+
+  <section class="topic" id="lifecycle">
+    <span class="topic-num">Topic 03</span>
+    <h2>Product lifecycle and Extended Producer Responsibility</h2>
+    <p class="subtitle">This is the conceptual heart of Class 7 and the most likely long-answer question.</p>
+
+    <p>Here is the problem EPR was invented to solve. A manufacturer designs a device, sells it, and
+    books the profit. Years later the device becomes waste, and the cost of dealing with that waste
+    lands on a municipality, a consumer, or an informal worker's lungs. The manufacturer, who made
+    every decision that determined how hard the thing would be to recycle, pays nothing. The
+    incentives point the wrong way.</p>
+
+    <p><b>Extended Producer Responsibility (EPR)</b> is the policy principle that the manufacturer is
+    responsible for the entire lifecycle of the product, including collection and recycling at end
+    of life. In one move it shifts the financial and operational burden from governments and
+    consumers back to the company that created the product.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea — why EPR is an <em>engineering</em> topic, not a legal one</span>
+      <p>Once a manufacturer pays the end-of-life bill, they gain a direct financial incentive to
+      design products that are cheaper to recycle: fewer materials, fewer <em>types</em> of material,
+      fewer toxic substances, and designed for disassembly. EPR therefore creates a
+      <b>feedback loop from end-of-life economics back into design decisions</b>. That loop is why
+      RoHS and WEEE together transformed European electronics design. The faculty flagged this
+      explicitly from Velete Ch.7 — it is the sentence to reproduce in an exam.</p>
+    </div>
+
+    <h3>The four lifecycle phases</h3>
+
+    <p>The lecture walked the lifecycle in four phases, plus the EPR frameworks that wrap around
+    them. Each phase has its own emissions scope and its own engineering lever.</p>
+
+    <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">1 · Raw materials — extraction, refining, supply chain</h4>
+    <p>Scope 3 emissions, conflict minerals, water use. Manufacturing a smartphone emits roughly
+    <b>70 kg CO₂e</b>, and 70–80% of the device's lifetime footprint occurs here and in
+    manufacturing, before the device is ever switched on — this is <b>embodied carbon</b>.
+    Supply is concentrated: cobalt in the DRC, lithium in South America, rare earths in China
+    (60%+). And semiconductor fabrication is brutally water-hungry — a single 300 mm silicon wafer
+    needs about <b>2,200 litres</b> of ultra-pure water.</p>
+
+    <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">2 · Manufacturing — assembly, testing, packaging</h4>
+    <p>Scope 1 and 2 emissions, chemical waste, packaging waste. A factory on coal versus one on
+    renewables can differ <b>10×</b> in carbon intensity for the identical process. PCB etching,
+    soldering and cleaning all generate hazardous chemical waste. The lecture's packaging example:
+    Apple removing chargers and headphones from the iPhone box cut box size <b>70%</b>, fitting more
+    units per shipping container and cutting transport emissions. RoHS constrains material choice
+    at this stage.</p>
+
+    <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">3 · Use phase — operational energy and lifespan</h4>
+    <p>Only <b>20–30%</b> of lifetime emissions for most consumer devices. Which leads to the
+    counter-intuitive conclusion the faculty wanted you to reach: efficiency improvements here
+    matter <em>less</em> than extending the device's life. Two mechanisms shorten that life —
+    <b>software obsolescence</b> (updates stop, device becomes insecure though the hardware works;
+    the EU now requires 5–10 year support windows) and unrepairability (the EU Right to Repair
+    Regulation, 2021+, requires spare parts for 7–10 years and public repair manuals). Extending a
+    phone from 2 years to 4 halves its per-year manufacturing emissions.</p>
+
+    <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">4 · End of life — collection, sorting, recovery, disposal</h4>
+    <p>EPR obligation, Basel Convention, informal sector. <b>Collection rate is the primary
+    bottleneck</b> — the hard part is not the recycling technology, it is getting devices out of
+    people's hands and into certified facilities. Design for disassembly (snap-fits instead of glue,
+    fewer material types, accessible batteries, modular components) cuts recycling cost and lifts
+    recovery rates; the frameworks named were <b>IEC 62474</b> and <b>iNEMI</b>.</p>
+
+    <h3>The three legal frameworks</h3>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Framework</th><th style="padding:8px 6px">Jurisdiction</th><th style="padding:8px 6px">What it actually requires</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>WEEE Directive</b></td><td style="padding:8px 6px">EU</td>
+      <td style="padding:8px 6px">Manufacturers must finance collection and recycling. Collection target <b>65%</b> of average weight placed on market over last 3 years; recovery targets <b>75–85%</b> by device type. Producer Responsibility Organisations (PROs) pool the cost.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>E-Waste Management Rules 2021</b></td><td style="padding:8px 6px">Bangladesh</td>
+      <td style="padding:8px 6px">Establishes EPR for EEE manufacturers and importers: <b>registration with the DoE</b> (Department of Environment), <b>take-back schemes</b>, and <b>certified recycler partnerships</b>. Framework exists; enforcement is limited.</td></tr>
+      <tr><td style="padding:8px 6px"><b>Basel Convention</b></td><td style="padding:8px 6px">International</td>
+      <td style="padding:8px 6px">Controls transboundary movement of hazardous waste. The <b>Basel Ban Amendment (2019)</b> prohibits hazardous e-waste export from developed to developing nations. 187 parties; enforcement varies widely. Bangladesh is a signatory.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — RoHS is not EPR</span>
+      <p>Students mix these up constantly. <b>RoHS</b> restricts <em>substances</em> (lead, mercury,
+      cadmium, hexavalent chromium, PBB, PBDE) inside new equipment — it is a materials rule.
+      <b>WEEE / EPR</b> assigns <em>financial responsibility</em> for end-of-life collection and
+      recycling — it is a money-and-logistics rule. They were introduced together and reinforce each
+      other, but they do different jobs. The lecture's phrasing: "RoHS + WEEE <em>together</em>
+      transformed European electronics design."</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The engineer's liability angle</span>
+      <p>The faculty ended this section with a line worth quoting back: under EPR, an engineer who
+      specifies toxic materials, designs a device that is hard to disassemble, or picks
+      non-recyclable material combinations is <b>creating a future financial liability for their
+      employer</b> — not merely causing environmental harm. That reframing (environmental decision
+      → balance-sheet decision) is exactly the kind of point that lifts a scenario answer.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="process">
+    <span class="topic-num">Topic 04</span>
+    <h2>How formal recycling actually works — the six stages</h2>
+    <p class="subtitle">Learn these in order. The order itself is the answer to several possible questions.</p>
+
+    <p>Formal recycling is a multi-stage industrial process, and each stage exists because of a
+    specific hazard or a specific recovery need. If you learn the <em>reason</em> for each stage
+    rather than just its name, you can reconstruct the list under pressure.</p>
+
+    <ol>
+      <li><b>Collection &amp; logistics.</b> Getting devices from consumers to certified facilities —
+      the biggest challenge in the whole chain. Methods: retail take-back (the lecture's example is
+      the Apple Genius Bar), municipal events, mail-in programmes, certified recycler drop-offs.
+      In Bangladesh: informal aggregators, DoE collection drives, and a handful of WEEE-accredited processors.</li>
+
+      <li><b>Data destruction.</b> Before any physical processing, storage media are cryptographically
+      wiped to the <b>NIST 800-88</b> standard or physically destroyed. This is a privacy-compliance
+      step (GDPR, Bangladesh Data Protection Act), and a business asset needs a
+      <b>certificate of destruction</b>.</li>
+
+      <li><b>Manual pre-processing.</b> Trained technicians remove <b>batteries</b> (a fire hazard if
+      they reach the shredder), capacitors, CRT screens (lead glass), mercury-containing components,
+      and large PCBs for separate handling. This stage protects both the downstream equipment and
+      the workers.</li>
+
+      <li><b>Mechanical shredding &amp; separation.</b> What's left goes into industrial shredders, and
+      the mixed stream is sorted by physics: <b>eddy-current separators</b> for non-ferrous metals,
+      <b>magnetic separators</b> for ferrous metals, <b>density separation</b> for plastics vs metals,
+      and optical/IR sorting.</li>
+
+      <li><b>Hydrometallurgical recovery.</b> Circuit board concentrates go through chemical leaching
+      and solvent extraction to pull out gold, silver, palladium and platinum-group metals. Needs
+      chemical expertise and waste-treatment infrastructure — this is the <em>controlled</em> cousin
+      of the informal acid bath.</li>
+
+      <li><b>Pyrometallurgical smelting.</b> High-temperature smelting (<b>1,300 °C+</b>) of mixed
+      metal fractions recovers copper, precious metals and other base metals. Energy-intensive, but
+      achieves very high recovery across several metal streams at once.</li>
+    </ol>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the two questions hiding in this list</span>
+      <p><b>(a) Why is battery removal before shredding?</b> Fire hazard — lithium cells ignite when
+      punctured. <b>(b) Why does data destruction come before physical processing, not after?</b>
+      Because once a device is shredded you can no longer produce a certificate proving <em>which</em>
+      drive was destroyed, and the chain of custody for the data is broken. Both are classic
+      "explain why this step is ordered where it is" questions.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="circular">
+    <span class="topic-num">Topic 05</span>
+    <h2>The circular economy hierarchy</h2>
+    <p class="subtitle">If you memorise one ordered list from this whole lecture, make it this one.</p>
+
+    <p>The current IT hardware model is <b>linear</b>: extract → manufacture → use → discard. A
+    <b>circular</b> model tries to keep materials in use at their highest value for as long as
+    possible. The word doing the work there is <em>highest value</em>, and it is what gives the
+    hierarchy its order.</p>
+
+    <div class="formula">
+      <div class="label">The circular hierarchy — highest to lowest value retention</div>
+      <p style="margin:0;font-size:1.05rem"><b>Reuse → Repair → Refurbish → Remanufacture → Recycle</b>
+      <span style="color:var(--muted)"> … and below all of these, landfill / burn.</span></p>
+    </div>
+
+    <ul>
+      <li><b>Reuse</b> — give or sell the working device to another user. Nothing is consumed; the full
+      embodied carbon keeps doing work.</li>
+      <li><b>Repair</b> — fix the one broken part and carry on using it.</li>
+      <li><b>Refurbish</b> — restore to good condition (clean, replace worn parts, re-certify).</li>
+      <li><b>Remanufacture</b> — industrial-scale restoration to like-new condition.</li>
+      <li><b>Recycle</b> — break it down to recover raw materials. <b>The last resort, not the goal.</b></li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea — recycling is the failure state</span>
+      <p>This is the single most counter-intuitive point in Class 7, and the faculty hammered it.
+      Recycling recovers <em>materials only</em>. Everything else — the design work, the fabrication
+      energy, the assembly, the functionality — is thrown away. Every earlier stage in the hierarchy
+      retains more of that. So an engineer who makes a battery user-replaceable (enabling Repair)
+      creates far more value than an engineer who optimises the recycling process.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out</span>
+      <p>An exam question that says "a device has reached end of useful life, what should the engineer
+      do <em>first</em>?" is testing this hierarchy. The wrong-but-tempting answer is "send it to a
+      certified recycler immediately" — it sounds responsible. The correct answer is <b>evaluate
+      whether it can be reused, repaired, or refurbished first</b>, and only recycle what fails all
+      of those tests.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="bd">
+    <span class="topic-num">Topic 06</span>
+    <h2>The Bangladesh context</h2>
+    <p class="subtitle">CO2 material, and the faculty's own local-focus section. Scenario questions will very likely be set here.</p>
+
+    <p>Bangladesh generates roughly <b>200,000–400,000 tonnes</b> of e-waste a year, driven by rapid
+    adoption of mobile phones, consumer electronics and industrial equipment. The overwhelming
+    majority is handled by the informal sector.</p>
+
+    <ul>
+      <li><b>~100,000 informal e-waste workers</b>, concentrated in Dhaka's <b>Nimtoli, Islampur and
+      Mitford</b> areas.</li>
+      <li>Bangladesh is a <b>net importer</b> of second-hand and end-of-life electronics — from India,
+      the Gulf states, and Southeast Asia.</li>
+      <li><b>Mobile penetration exceeds 90%</b>, which is a massive future e-waste pipeline, not just a
+      connectivity statistic.</li>
+      <li>Only a handful of <b>DoE-certified formal recyclers</b> currently operate.</li>
+      <li><b>Lead poisoning</b> from informal CRT and battery recycling is documented in Dhaka's
+      recycling clusters.</li>
+    </ul>
+
+    <p>On the regulatory side: the <b>E-Waste Management Rules 2021</b> set up the EPR framework
+    (registration, take-back, certified disposal); <b>DoE enforcement</b> is resource-limited, so most
+    formal activity is registration-only; the <b>National 3R Strategy</b> prioritises the waste
+    hierarchy; and Bangladesh is a <b>Basel Convention party</b>, so hazardous e-waste import is
+    technically regulated.</p>
+
+    <div class="callout key">
+      <span class="tag">The framing the faculty wanted</span>
+      <p>The gap between Bangladesh's formal framework and informal reality was presented as an
+      <b>engineering and entrepreneurial opportunity</b>, not just a failure. Four specific needs were
+      named: affordable informal-to-formal transition models; low-cost testing and sorting equipment
+      for small recyclers; IoT-enabled e-waste collection tracking; and public-private collection
+      schemes. Also note the pragmatic line from Section 4 — <b>formalising the informal sector
+      (training, equipment, certification) is more realistic than eliminating it</b>, because that
+      sector provides livelihoods. A scenario answer that proposes simply banning informal recycling
+      is missing the lecture's point.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">Every line's "why" tells you what rule licensed the step. Try each one on paper first.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>Global e-waste generation in 2023 was <b>62 Mt</b>, of which <b>17.4%</b> was formally
+        recycled. How many megatonnes were <em>not</em> formally recycled?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{Total} = 62\ \text{Mt},\quad r_{\text{formal}} = 17.4\% \)</p>
+              <p class="why">Write down what the question gives you, with units. Both figures are straight from the Class 7 title slide.</p></li>
+          <li><p class="math-line">\( r_{\text{informal}} = 100\% - 17.4\% = 82.6\% \)</p>
+              <p class="why"><b>Complement rule:</b> everything is either formally recycled or it isn't, so the two shares must sum to 100%.</p></li>
+          <li><p class="math-line">\( 82.6\% = 0.826 \)</p>
+              <p class="why"><b>Convert percentage to decimal</b> by dividing by 100, because you cannot multiply a quantity by a "%" symbol.</p></li>
+          <li><p class="math-line">\( 0.826 \times 62\ \text{Mt} = 51.2\ \text{Mt} \)</p>
+              <p class="why"><b>Fraction of a whole:</b> a share of a total is the decimal share multiplied by the total. Units carry through: (dimensionless) × Mt = Mt.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>≈ 51.2 Mt</b> not formally recycled. Sanity check: this should be a bit over four-fifths
+        of 62, and 4/5 of 62 is 49.6 — so 51.2 sits right where it should. The lecture's own rounding
+        ("~83% discarded unsafely") gives 51.5 Mt, which agrees.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>One tonne of scrapped smartphones yields about <b>300 g of gold</b>. A conventional gold ore
+        body yields about <b>5 g per tonne</b>. How many times richer is the e-waste stream, and what
+        term does the lecture use for exploiting this?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( C_{\text{ewaste}} = 300\ \text{g/t},\quad C_{\text{ore}} = 5\ \text{g/t} \)</p>
+              <p class="why">Both figures are concentrations in the same units (grams per tonne), so they can be compared directly with no conversion.</p></li>
+          <li><p class="math-line">\( \text{ratio} = \dfrac{C_{\text{ewaste}}}{C_{\text{ore}}} \)</p>
+              <p class="why"><b>Definition of "how many times richer":</b> it is a ratio of the two concentrations, not a difference.</p></li>
+          <li><p class="math-line">\( \dfrac{300\ \text{g/t}}{5\ \text{g/t}} = 60 \)</p>
+              <p class="why"><b>Divide.</b> The g/t units cancel top and bottom, leaving a pure number — which is what a "times richer" answer should be.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>60× richer.</b> The term is <b>urban mining</b>. This sits inside the lecture's stated
+        band of "40–80× richer than gold ore", which is your sanity check — an answer of 6 or 600
+        would tell you the decimal point slipped. The lecture adds that urban mining can be
+        <b>6–13× more economical</b> than primary mining.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A Dhaka recycler processes <b>2.5 tonnes</b> of scrapped smartphones. Using the lecture's
+        figures — 300 g gold and 15 kg copper per tonne — and taking gold at <b>$60/g</b> and copper at
+        <b>$9,000/tonne</b>, calculate the gross recoverable value of each metal. Then state which
+        metal contributes more, and explain why that might surprise someone.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( m = 2.5\ \text{t} \)</p>
+              <p class="why">The mass of feedstock. Everything below scales linearly from this, because the lecture's yields are given <em>per tonne</em>.</p></li>
+          <li><p class="math-line">\( M_{\text{Au}} = 300\ \text{g/t} \times 2.5\ \text{t} = 750\ \text{g} \)</p>
+              <p class="why"><b>Yield × mass:</b> a per-tonne yield multiplied by the number of tonnes gives total mass. Units: g/t × t = g.</p></li>
+          <li><p class="math-line">\( V_{\text{Au}} = 750\ \text{g} \times \$60/\text{g} = \$45{,}000 \)</p>
+              <p class="why"><b>Mass × unit price</b> gives value. Units: g × $/g = $, so the grams cancel — confirming the price was quoted in a compatible unit.</p></li>
+          <li><p class="math-line">\( M_{\text{Cu}} = 15\ \text{kg/t} \times 2.5\ \text{t} = 37.5\ \text{kg} \)</p>
+              <p class="why">Same yield × mass step, now for copper. Note the yield is in kg/t, not g/t — read the units before multiplying.</p></li>
+          <li><p class="math-line">\( 37.5\ \text{kg} = 0.0375\ \text{t} \)</p>
+              <p class="why"><b>Unit conversion:</b> copper is priced per <em>tonne</em>, so the mass must be in tonnes before multiplying. Divide by 1,000 because 1 t = 1,000 kg.</p></li>
+          <li><p class="math-line">\( V_{\text{Cu}} = 0.0375\ \text{t} \times \$9{,}000/\text{t} = \$337.50 \)</p>
+              <p class="why"><b>Mass × unit price</b> again, now with matching tonne units so they cancel cleanly.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>Gold ≈ <b>$45,000</b>; copper ≈ <b>$338</b>. <b>Gold contributes far more value here.</b></p>
+        <p>Why this can surprise: the lecture states copper is "by weight, the most valuable common
+        metal in e-waste", and by <em>mass</em> it certainly dominates — 37.5 kg of copper against
+        750 g of gold. But value is mass × price, and gold's price per gram is roughly 6,600 times
+        copper's. So copper wins on tonnage and gold wins on revenue. Read carefully which one the
+        question is asking for. Sanity check on the ratio: 750 g × $60 versus 37.5 kg × $9/kg — the
+        gold figure should land in the tens of thousands and the copper figure in the hundreds, and
+        it does.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>Bangladesh generates e-waste at the low end of the lecture's range, <b>200,000 t/year</b>,
+        with a population of about <b>170 million</b>. (a) Calculate the per-capita generation in
+        kg/person/year. (b) Compare it with the global average of 2.6 kg and with Norway's
+        ~22 kg. (c) What does this comparison imply about the <em>future</em> problem?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( W = 200{,}000\ \text{t/yr},\quad P = 170{,}000{,}000 \)</p>
+              <p class="why">Total annual waste and population. Per-capita anything is total ÷ population, so those are the only two inputs needed.</p></li>
+          <li><p class="math-line">\( W = 200{,}000 \times 1{,}000 = 2\times10^{8}\ \text{kg/yr} \)</p>
+              <p class="why"><b>Convert tonnes to kilograms</b> (×1,000) <em>before</em> dividing, because the answer is wanted in kg/person and mixing units mid-division is where marks get lost.</p></li>
+          <li><p class="math-line">\( \text{per capita} = \dfrac{W}{P} = \dfrac{2\times10^{8}}{1.7\times10^{8}} \)</p>
+              <p class="why"><b>Definition of per capita:</b> divide the total by the number of people. Writing both in scientific notation makes the division a one-line mental step.</p></li>
+          <li><p class="math-line">\( \approx 1.18\ \text{kg/person/yr} \)</p>
+              <p class="why">Divide the mantissas (2 ÷ 1.7 ≈ 1.18); the \(10^8\) terms cancel exactly, so no power of ten survives.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>≈ 1.2 kg/person/year.</b></p>
+        <p>(b) That is well under half the global average of 2.6 kg, and roughly <b>1/19th</b> of
+        Norway's 22 kg.</p>
+        <p>(c) The implication is the important part, and it is the analytical half of the mark.
+        Bangladesh's low per-capita figure reflects <em>lower historical device ownership</em>, not
+        better waste management. With mobile penetration already above 90% and a fast-growing
+        middle class buying first-time electronics, per-capita generation will climb toward the
+        global average. Meanwhile the country has only a handful of DoE-certified recyclers and
+        ~100,000 informal workers. So the current low number is a <b>window of opportunity to build
+        formal capacity before the wave arrives</b>, not evidence that the problem is small.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>An organisation retires <b>400 laptops</b>. Manufacturing each emitted <b>300 kg CO₂e</b>
+        (embodied carbon). Option A: send all 400 straight to a certified recycler, which recovers
+        materials but avoids no new manufacturing. Option B: assess them first — 25% are reusable
+        as-is, a further 40% are repairable, and the remaining 35% go to the recycler. Each device
+        kept in service under Option B displaces the manufacture of one new laptop.</p>
+        <p>(a) How much embodied CO₂e does Option B avoid that Option A does not? (b) Express that as
+        a percentage of the fleet's total embodied carbon. (c) Name the circular-economy principle
+        this demonstrates.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( N = 400,\quad e = 300\ \text{kg CO}_2\text{e per device} \)</p>
+              <p class="why">Fleet size and per-device embodied carbon — the two numbers everything else is built from.</p></li>
+          <li><p class="math-line">\( E_{\text{fleet}} = 400 \times 300 = 120{,}000\ \text{kg CO}_2\text{e} \)</p>
+              <p class="why"><b>Total = count × per-unit.</b> Needed for part (b), where the answer is a share of this total.</p></li>
+          <li><p class="math-line">\( f_{\text{kept}} = 25\% + 40\% = 65\% \)</p>
+              <p class="why"><b>Add the two retained categories.</b> Reuse and repair both keep a device in service, so both displace a new build — the recycled 35% does not.</p></li>
+          <li><p class="math-line">\( N_{\text{kept}} = 0.65 \times 400 = 260\ \text{devices} \)</p>
+              <p class="why"><b>Share × total</b> converts the percentage into a device count. Check it is a whole number — it is, so no rounding decision is needed.</p></li>
+          <li><p class="math-line">\( E_{\text{avoided}} = 260 \times 300 = 78{,}000\ \text{kg CO}_2\text{e} \)</p>
+              <p class="why"><b>Each retained device displaces one new manufacture</b> (stated in the problem), so the avoided emission is the retained count × the per-device embodied carbon.</p></li>
+          <li><p class="math-line">\( E_{\text{avoided}} = 78\ \text{t CO}_2\text{e} \)</p>
+              <p class="why"><b>Convert kg to tonnes</b> (÷1,000) — reporting environmental figures in tonnes is the convention used throughout the course.</p></li>
+          <li><p class="math-line">\( \dfrac{78{,}000}{120{,}000} \times 100\% = 65\% \)</p>
+              <p class="why"><b>Part as a percentage of whole.</b> It lands exactly on the retained share, which makes sense: every device carries identical embodied carbon, so the carbon share must equal the device share.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>78 tonnes CO₂e</b> avoided. (b) <b>65%</b> of the fleet's embodied carbon.
+        (c) The principle is that <b>recycling is the last resort in the circular hierarchy</b> —
+        Reuse and Repair sit above it precisely because they retain the embodied carbon and
+        functionality, whereas recycling recovers materials only.</p>
+        <p>Sanity check on (b): because every laptop has the same embodied carbon, the percentage of
+        carbon avoided must equal the percentage of laptops retained. If your two answers hadn't
+        matched, that would flag an arithmetic slip. Note also this calculation only counts embodied
+        carbon — the certified recycler in Option A still recovers materials, so the correct answer
+        is not "recycling is worthless", it is "recycling recovers materials but not the 65% of
+        embodied carbon that reuse and repair preserve."</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions — the distinctions the faculty set up</h2>
+    <p class="subtitle">These mirror the six questions in the faculty's own in-class quiz. Each answer explains why the wrong options are tempting.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A 30-year-old CRT television is being disposed of at an informal recycling yard.
+        Identify the principal toxic material, state the quantity involved, and explain the specific
+        health consequence and why it is worse at an informal site than a formal one.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This joins <b>Topic 02 (what's inside the device)</b> to <b>Topic 04 (the formal recycling
+        process)</b>. The examiner is not just checking whether you can name lead — they want you to
+        connect the <em>material</em> fact to the <em>process</em> fact, i.e. why manual pre-processing
+        exists as stage 3 and what happens when it is skipped.</div>
+        <p><b>Model answer.</b> The principal toxic material is <b>lead (Pb)</b>, present in the CRT's
+        glass screen in quantities of <b>up to 4 kg per unit</b>. The lead is there deliberately — it
+        shielded the viewer from X-rays emitted by the electron gun (Topic 02).</p>
+        <p>The health consequence is <b>serious and irreversible neurological damage</b>, and the
+        lecture stressed that children are worst affected, with impacts on IQ, behaviour and
+        development. This is not hypothetical for Bangladesh: lead poisoning from informal CRT and
+        battery recycling is <b>documented in Dhaka's recycling clusters</b> in Nimtoli, Islampur and
+        Mitford (Topic 06).</p>
+        <p>It is worse informally because of what the formal process does and the informal one doesn't.
+        In a certified facility, <b>stage 3 — manual pre-processing</b> — has trained technicians
+        remove CRT screens specifically so the lead glass is routed to specialist hazardous handling
+        before anything reaches the shredder. Informally the CRT is simply crushed or burned, which
+        releases the lead as dust and fume directly into the air, soil and the workers' bodies, with
+        no containment and no protective equipment. The same mass of lead exists in both cases; the
+        difference is entirely whether a containment step happens (Topic 04).</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Define Extended Producer Responsibility. Then explain its <em>most important</em> effect on
+        product engineering, and name the mechanism by which that effect operates.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        Straight from <b>Topic 03</b>, and the faculty flagged the answer explicitly as being from
+        Velete Ch.7. The trap is answering only the first half. The word "most important effect" is
+        the examiner telling you they want the <b>feedback loop into design</b>, not a list of legal
+        obligations. Answer the definition in one sentence, then spend the rest on the mechanism.</div>
+        <p><b>Model answer.</b> Extended Producer Responsibility is the policy principle that a
+        manufacturer is <b>financially and operationally responsible for its products across the entire
+        lifecycle, including collection and recycling at end of life</b>. Its immediate effect is to
+        shift end-of-life costs away from governments and consumers and back onto the company that
+        created the product.</p>
+        <p>The most important effect on engineering, however, is indirect. Once the manufacturer pays
+        the recycling bill, end-of-life cost becomes a line on their own balance sheet, which gives
+        them a <b>direct financial incentive to design products that are cheaper to recycle</b>. In
+        practice that pushes four specific design changes, all named in the lecture: reducing material
+        complexity (fewer material types means cheaper sorting), eliminating toxic substances (less
+        costly hazardous-waste handling), designing for disassembly (lower labour cost to process),
+        and extending product life (fewer units entering the waste stream at all).</p>
+        <p>The mechanism, then, is a <b>market feedback loop running from end-of-life economics back
+        into design decisions</b>. This is why the lecture pairs EPR with RoHS: WEEE (which implements
+        EPR in the EU) plus RoHS (which restricts substances) together transformed European
+        electronics design. And it is why the faculty framed the engineer's position as one of
+        liability — specifying a toxic material or a glued-shut enclosure now creates a
+        <b>future financial liability for the employer</b>, not merely an environmental harm.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Distinguish between RoHS, WEEE and the Basel Convention. For each, state what it regulates
+        and give one concrete requirement or threshold.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 03</b>, the regulatory frameworks. This is a pure discrimination question — the three
+        instruments are frequently mentioned in the same breath, and the examiner wants to know
+        whether you can separate them. The structure of your answer should make the separation
+        obvious: one sentence of <em>what kind of thing it regulates</em> before any detail.</div>
+        <p><b>RoHS — a substances rule.</b> The EU Restriction of Hazardous Substances Directive
+        prohibits specified hazardous substances <em>inside</em> new electrical and electronic
+        equipment. The six named in Class 7 are lead, mercury, cadmium, hexavalent chromium, PBB and
+        PBDE. Concrete effect: it forced the replacement of lead solder with tin-silver-copper alloys.
+        It constrains material choice at the manufacturing stage.</p>
+        <p><b>WEEE — a financial-responsibility rule.</b> The EU Waste Electrical and Electronic
+        Equipment Directive requires manufacturers to <em>finance</em> collection and recycling
+        systems; it is the instrument that implements EPR in the EU. Concrete requirement: a
+        collection target of <b>65% of the average weight placed on the market over the previous three
+        years</b>, and recovery targets of 75–85% depending on device type. Producer Responsibility
+        Organisations pool the cost across manufacturers.</p>
+        <p><b>Basel Convention — a movement rule.</b> An international treaty controlling the
+        <em>transboundary movement</em> of hazardous waste, including e-waste. Concrete requirement:
+        the <b>Basel Ban Amendment (2019)</b> prohibits export of hazardous e-waste from developed to
+        developing nations. It has 187 parties including Bangladesh, but the lecture notes that
+        enforcement varies widely — which is precisely why e-waste still reaches Bangladesh
+        mislabelled as second-hand goods.</p>
+        <p><b>The distinction in one line:</b> RoHS governs what goes <em>in</em> the product, WEEE
+        governs who <em>pays</em> when it comes out, and Basel governs where it is allowed to
+        <em>travel</em>.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Which mechanism does Bangladesh's E-Waste Management Rules 2021 establish for making
+        manufacturers responsible, and what are the three specific obligations it places on them?
+        Comment on the gap between the framework and reality.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 06</b> plus the framework table in <b>Topic 03</b>. The faculty asked a version of this
+        in the in-class quiz, and the phrasing "which specific mechanism" is a hint that they want the
+        term <b>EPR</b> named, not a general description. The final sentence about the gap is where
+        the analytical marks sit.</div>
+        <p><b>Model answer.</b> The Rules establish an <b>Extended Producer Responsibility (EPR)
+        framework</b> covering EEE manufacturers and importers. The three obligations are:
+        <b>(1) registration with the Department of Environment (DoE)</b>;
+        <b>(2) operating take-back schemes</b> for end-of-life products; and
+        <b>(3) partnering with certified recyclers</b> for disposal. The Rules also reference RoHS
+        thresholds as guidance for domestic product safety standards.</p>
+        <p>On the gap: the framework exists on paper but <b>DoE enforcement is resource-limited</b>, and
+        the lecture's assessment is that most formal activity is <b>registration-only</b> — companies
+        register, but the take-back and certified-disposal legs largely do not function. Meanwhile
+        200,000–400,000 t/year continues to flow through roughly 100,000 informal workers, with only a
+        handful of certified recyclers operating nationally.</p>
+        <p>The lecture's framing of that gap is worth reproducing: it is an <b>engineering and
+        entrepreneurial opportunity</b> rather than simply a policy failure. Four needs were named —
+        affordable informal-to-formal transition models, low-cost testing and sorting equipment for
+        small recyclers, IoT-enabled collection tracking, and public-private collection schemes. And
+        crucially, the realistic goal is <b>formalising the informal sector through training,
+        equipment and certification, not eliminating it</b>, because that sector currently provides
+        around 100,000 livelihoods.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+    <p class="subtitle">Written the way you would write them in the script book. These follow the faculty's own scenario cards.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A phone manufacturer glues the battery in place to achieve a thinner form factor. Analyse
+        the circular-economy consequences of this decision and state what the engineer should do,
+        with reference to relevant regulation.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the faculty's own design scenario from Section 6, and it asks you to trace a single
+        engineering decision through the <b>circular hierarchy (Topic 05)</b> and out into
+        <b>regulation (Topic 03)</b>. The examiner wants a causal chain: design choice → which stage of
+        the hierarchy it blocks → what value is lost → what should be done instead. A one-line answer
+        of "glue is bad" earns almost nothing.</div>
+        <p><b>Model answer.</b> The decision to glue the battery removes the possibility of user
+        replacement, and battery replacement is the single most common repair that extends a phone's
+        useful life. Lithium-ion cells degrade meaningfully after roughly <b>500 charge cycles</b>, so
+        this is not an edge case — it is the ordinary end-of-life trigger for a phone.</p>
+        <p>Tracing it through the circular hierarchy (Topic 05): the intended path when a battery
+        degrades is <b>Repair</b> — replace a ~$20 component and continue using the device. Gluing the
+        battery closes that path, and also makes <b>Refurbish</b> and <b>Remanufacture</b> harder,
+        because all three depend on being able to open the device and swap the consumable part. The
+        device therefore jumps straight from use to <b>Recycle</b>, which is the last resort in the
+        hierarchy. The value lost is large and specific: recycling recovers <em>materials only</em>,
+        so the embodied carbon — around 70 kg CO₂e for a smartphone, which is 70–80% of its lifetime
+        footprint (Topic 03) — is discarded along with the design, fabrication and assembly value.
+        An entire device is written off to avoid replacing a $20 part.</p>
+        <p>There is also a stage-4 recycling cost. Batteries must be removed manually before shredding
+        because they are a <b>fire hazard</b> (Topic 04, stage 3). Glued batteries make that manual
+        pre-processing slower and more dangerous, raising the recycler's per-unit cost — which, under
+        an EPR regime, is a cost the manufacturer itself will eventually bear.</p>
+        <p><b>What the engineer should do:</b> advocate for an accessible, user-replaceable battery
+        design — mechanical fasteners or pull-tab adhesives rather than permanent glue — and treat the
+        marginal thickness gained as a trade-off to be justified, not a free win. This is no longer
+        merely good practice: the <b>EU Right to Repair regulation</b> now requires accessible battery
+        design for many product categories, along with spare parts availability for 7–10 years and
+        publicly available repair manuals (Topic 03). An engineer specifying a glued battery for a
+        product sold in the EU is designing in a compliance problem as well as an environmental one.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>EWU's IT department must replace 100 computers. A vendor offers new machines at $500 each,
+        or certified refurbished machines at $280 each. Recommend a course of action, justify it on
+        both financial and environmental grounds, and specify what due diligence you would require.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's procurement scenario from Section 6. It tests whether you can apply the
+        <b>circular hierarchy (Topic 05)</b> to a purchasing decision rather than a disposal decision —
+        the hierarchy usually gets taught as "what to do with old kit", and the examiner is checking
+        you understand it also governs <em>what you buy</em>. The due-diligence part is what separates
+        a good answer from a complete one.</div>
+        <p><b>Recommendation: buy the certified refurbished machines.</b></p>
+        <p><b>Financial case.</b> 100 × ($500 − $280) = <b>$22,000 saved</b> on acquisition, a 44%
+        reduction in capital outlay for the same fleet size.</p>
+        <p><b>Environmental case.</b> Buying refurbished keeps 100 devices circulating in the
+        <b>Remanufacture</b> loop rather than triggering demand for 100 newly manufactured units. Since
+        70–80% of a computer's lifetime carbon is embodied in manufacturing (Topic 03), avoiding that
+        manufacture is where nearly all the environmental benefit sits — far more than any operational
+        efficiency difference between the two options. It also delays 100 devices entering the waste
+        stream, which matters given only a handful of DoE-certified recyclers operate in Bangladesh
+        (Topic 06).</p>
+        <p><b>Due diligence required before signing.</b> "Refurbished" is only as good as the
+        refurbisher, so the tender should require:</p>
+        <ul>
+          <li><b>A recognised certification standard</b> — the lecture names <b>R2</b> or <b>RIOS</b>.</li>
+          <li><b>A data wipe certificate</b> from the refurbisher, to the NIST 800-88 standard
+          (Topic 04, stage 2) — these machines held someone else's data.</li>
+          <li><b>Warranty coverage</b>, since the reliability risk is the genuine trade-off against the
+          lower price.</li>
+          <li><b>Performance specification compatibility</b> with the intended workload.</li>
+        </ul>
+        <p><b>Conclusion.</b> With those four conditions met, this is the better decision financially
+        <em>and</em> environmentally — which is the wider point the faculty was making. Green
+        procurement is frequently framed as paying a premium for virtue; here, as in most of the
+        circular-economy cases in this course, the circular option is simply cheaper.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>You are asked to design an e-waste collection system for a university campus in Dhaka.
+        Describe your design: how devices are collected, where they go, and how the scheme is made
+        financially self-sustaining. Reference the relevant Bangladeshi regulatory and sector context.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the faculty's own discussion prompt from Section 7, so it is a strong candidate for a
+        long-answer question. It pulls together <b>Topic 04 (the process stages)</b>,
+        <b>Topic 05 (the hierarchy)</b> and <b>Topic 06 (the Bangladesh context)</b>. The examiner
+        wants a design that is <em>ordered by the hierarchy</em> and <em>honest about the local
+        constraints</em> — a generic "put bins in the corridor" answer misses both.</div>
+        <p><b>Design principle.</b> The system must be organised around the circular hierarchy
+        (Topic 05), not around a recycling bin. Recycling is the last resort, so the collection flow
+        should be a <b>triage funnel</b> in which every device is assessed before disposal is even
+        considered.</p>
+        <p><b>1 · Collection.</b> Staffed drop-off points in each faculty building plus the library,
+        with periodic collection drives timed to semester end when students discard the most.
+        Collection rate is the primary bottleneck in the whole chain (Topic 04, stage 1), so the
+        design priority is convenience and visibility, not container sophistication. Log every intake
+        item — device type, age, condition — because that register is what makes the later stages
+        and any Scope 3 reporting possible.</p>
+        <p><b>2 · Data destruction before anything else.</b> Staff and student devices carry personal
+        data. Every storage device is cryptographically wiped to <b>NIST 800-88</b> or physically
+        destroyed, with a certificate issued for university-owned assets (Topic 04, stage 2). Doing
+        this at intake, not at disposal, preserves the chain of custody.</p>
+        <p><b>3 · Triage down the hierarchy.</b> Working devices go to <b>Reuse</b> — reallocation to
+        departments with lower specification needs, student loan pools, or IoT and lab sensor
+        projects. Devices needing minor work go to <b>Repair</b>, which can be run as a supervised
+        student workshop, giving the scheme an academic function as well as a logistical one.
+        Devices beyond economic repair but structurally sound go to <b>Refurbish</b> for donation to
+        schools or NGOs. Only what fails all three goes onward.</p>
+        <p><b>4 · Certified disposal.</b> The residue goes to a <b>DoE-certified recycler</b>. This is
+        the hard constraint in the Bangladeshi context — only a handful operate nationally
+        (Topic 06) — so the partnership must be secured before the scheme launches, not after.
+        Hazardous items identified at intake (CRT monitors with up to 4 kg of lead, batteries,
+        mercury-containing backlights) are segregated for specialist handling, mirroring stage 3
+        manual pre-processing.</p>
+        <p><b>5 · Financial self-sustainability.</b> Four revenue and cost-avoidance streams:</p>
+        <ul>
+          <li><b>Material value</b> from the certified recycler — the urban mine is real, and copper
+          and precious-metal content in bulk PCB and cabling has a market price (Topic 02).</li>
+          <li><b>Avoided procurement cost</b> — every reused or repaired device is a machine the
+          university does not buy, which is the largest financial line by a distance and should be
+          accounted for explicitly.</li>
+          <li><b>Refurbished sales</b> of devices surplus to internal need, into the local
+          second-hand market.</li>
+          <li><b>Manufacturer take-back</b> — under the <b>E-Waste Management Rules 2021</b>,
+          manufacturers and importers are obliged to operate take-back schemes, so the university
+          should push collection cost onto vendors as a contractual term in its hardware tenders
+          rather than absorbing it.</li>
+        </ul>
+        <p><b>Regulatory framing.</b> The scheme sits inside the E-Waste Management Rules 2021 EPR
+        framework and supports the National 3R Strategy's waste hierarchy. Given that DoE enforcement
+        is limited and most formal activity is registration-only (Topic 06), a functioning university
+        scheme is genuinely useful as a demonstration model — which is the entrepreneurial opportunity
+        the faculty pointed at. A realistic design also <b>engages the informal sector rather than
+        excluding it</b>: local aggregators already have collection reach the university does not, and
+        the lecture's stated position is that formalising that sector through training and
+        certification is more achievable than eliminating it.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 13 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>An employee finds 30 old but functional smartphones in a storage room, about to be sent to
+        the e-waste bin. Set out the correct organisational response, and explain what reporting
+        obligation attaches to the outcome.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's third scenario card from Section 6. It looks trivial but there is a specific
+        trap: the instinctive "responsible" answer is to send them to a certified recycler, and that
+        is <b>wrong</b> under the hierarchy because the devices still work. The reporting clause at the
+        end connects <b>Topic 05</b> to the governance material that returns in Class 13.</div>
+        <p><b>Model answer.</b> The devices are functional, so the circular hierarchy (Topic 05)
+        requires that they be assessed against each stage in order before disposal is considered at
+        all. Sending working hardware to a recycler destroys functional value and is the wrong first
+        move.</p>
+        <p><b>Step 1 — Reuse.</b> Are any suitable for redeployment as-is? The lecture's own examples:
+        security staff handsets, a student loan pool, or repurposing as IoT sensor nodes — an outdated
+        smartphone still has a camera, radios and a processor far beyond what a sensor node needs.</p>
+        <p><b>Step 2 — Refurbish for donation.</b> If not needed internally, can they be restored to
+        good condition and donated to schools or NGOs? This retains almost all the embodied value.</p>
+        <p><b>Step 3 — Repair.</b> Are any recoverable with minor work — a battery, a screen — that
+        would make them viable for either of the two routes above?</p>
+        <p><b>Step 4 — Certified recycling</b> for whatever genuinely fails all of the above, with
+        data destruction to NIST 800-88 first (Topic 04, stage 2), which for phones is
+        non-negotiable given what they store.</p>
+        <p><b>Reporting obligation.</b> The disposal route must be documented as part of the
+        organisation's <b>Scope 3 e-waste reporting</b>. This matters for two reasons. First,
+        Scope 3 covers supply-chain and end-of-life emissions, so how a device leaves the organisation
+        is an accounting fact, not just an operational one. Second, an organisation cannot demonstrate
+        compliance with EPR-linked take-back obligations, or claim credit for circular practice in an
+        ESG report, without a documented chain of custody — which is exactly why the asset register
+        and certificate of destruction exist.</p>
+        <p><b>The general rule to state at the end:</b> the circular hierarchy should be applied
+        <em>before</em> the recycling bin, not after it.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 7</h2>
+    <div class="grid">
+      <div class="item"><h4>The four headline numbers</h4><p>62 Mt generated (2023) · 17.4% formally recycled · $57 bn value lost/yr · 2.6 kg per person per year.</p></div>
+      <div class="item"><h4>The hierarchy (memorise the order)</h4><p><b>Reuse → Repair → Refurbish → Remanufacture → Recycle.</b> Recycling is the LAST resort, not the goal.</p></div>
+      <div class="item"><h4>EPR in one line</h4><p>Manufacturer pays for end-of-life → financial incentive to design for recyclability → feedback loop from disposal economics into design.</p></div>
+      <div class="item"><h4>RoHS vs WEEE vs Basel</h4><p>RoHS = what goes IN (6 substances). WEEE = who PAYS (65% collection target). Basel = where it may TRAVEL (Ban Amendment 2019).</p></div>
+      <div class="item"><h4>The 6 recycling stages</h4><p>Collection → Data destruction → Manual pre-processing → Shred &amp; separate → Hydrometallurgy → Pyrometallurgy (1,300 °C+).</p></div>
+      <div class="item"><h4>Why batteries come out first</h4><p>Fire hazard in the shredder. Why data destruction is stage 2: once shredded, chain of custody is unprovable.</p></div>
+      <div class="item"><h4>Urban mine</h4><p>1 t of phones ≈ 300 g gold, 40–80× richer than ore. Urban mining 6–13× more economical than primary mining.</p></div>
+      <div class="item"><h4>Gold vs copper trap</h4><p>Gold = highest value per gram. Copper = most valuable BY WEIGHT (~15 kg/t, 95%+ recovery). Read which one is asked.</p></div>
+      <div class="item"><h4>Toxic four</h4><p>Lead (CRT glass, up to 4 kg) · Mercury (backlights) · Cadmium (batteries) · Chromium VI (coatings). All RoHS-restricted.</p></div>
+      <div class="item"><h4>Critical / conflict minerals</h4><p>Cobalt (DRC ~70%, recycled ~5%) · Lithium (recycled ~1%) · Tantalum (conflict mineral, Dodd-Frank §1502).</p></div>
+      <div class="item"><h4>Bangladesh numbers</h4><p>200,000–400,000 t/yr · ~100,000 informal workers (Nimtoli, Islampur, Mitford) · &gt;90% mobile penetration · net importer.</p></div>
+      <div class="item"><h4>BD regulation</h4><p>E-Waste Rules 2021 = EPR: DoE registration + take-back + certified recycler. Enforcement weak, mostly registration-only.</p></div>
+      <div class="item"><h4>Embodied carbon</h4><p>70–80% of a device's lifetime CO₂e is manufacturing, before first use. Smartphone ≈ 70 kg CO₂e. Wafer ≈ 2,200 L water.</p></div>
+      <div class="item"><h4>The informal sector line</h4><p>Formalise it (training, equipment, certification) — do NOT propose eliminating it. It provides ~100,000 livelihoods.</p></div>
+      <div class="item"><h4>Engineer's liability framing</h4><p>Under EPR, specifying toxic materials or a glued enclosure creates a future FINANCIAL liability for the employer.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

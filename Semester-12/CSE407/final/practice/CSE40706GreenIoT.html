@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green IoT — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#paradox">The Green IoT paradox</a></li>
+      <li><a href="#lowpower">Low-power hardware &amp; the 1% rule</a></li>
+      <li><a href="#lpwan">LPWAN protocols</a></li>
+      <li><a href="#harvest">Energy harvesting</a></li>
+      <li><a href="#bd">Bangladesh context</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Green IoT Technologies — Part 1</h1>
+    <div class="meta">
+      <span><b>Class:</b> 16 of 22 — Green IoT Technologies (Part 1)</span>
+      <span><b>Reading:</b> Lecture Slides — Green IoT</span>
+      <span><b>Outcome:</b> CO3 · EP1, EP2</span>
+      <span><b>Delivered:</b> 24 Aug 2025</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 16 — Green IoT Technologies (Part 1). Lecture slides — Green IoT. Course outcome CO3.</p>
+
+    <p>This class turns away from the data centre and toward the edge — billions of small devices,
+    each drawing almost nothing. The faculty's framing was that at planetary scale, "almost nothing"
+    adds up, and that the term "Green IoT" is used in two different senses that are routinely
+    confused.</p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 16</span>
+      <p>A battery-powered sensor spends over 99% of its life asleep, so its energy budget is dominated
+      by <em>sleep current</em> rather than active current — and every design decision, from the
+      microcontroller chosen to the radio protocol used, follows from that single fact.</p>
+    </div>
+
+    <p>The maths here is the simplest of the six topics — the faculty said so directly:
+    "duty cycle, battery life, coverage area and harvested energy are all short, direct calculations
+    once you know the formula." The risk is therefore not difficulty but <b>unit handling</b>. Almost
+    every mistake in this topic is a milliamp/microamp or seconds/minutes conversion error, so the
+    worked solutions below flag every conversion explicitly.</p>
+  </section>
+
+  <section class="topic" id="paradox">
+    <span class="topic-num">Topic 01</span>
+    <h2>The Green IoT paradox — two meanings of one term</h2>
+    <p class="subtitle">Getting this distinction right is worth easy marks, and mixing them up is a common failure.</p>
+
+    <p>"Green IoT" is used in two related but distinct senses, and the faculty's opening point was
+    that mixing them up causes real confusion in research and industry alike. Both matter.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:10px 6px">Greening <em>of</em> IoT</th><th style="padding:10px 6px">Greening <em>by</em> IoT</th></tr></thead>
+      <tbody>
+      <tr><td style="padding:10px 6px">Making the IoT devices and networks <b>themselves</b> energy-efficient: low-power hardware, efficient protocols, energy harvesting, and responsible end-of-life recycling for the devices.</td>
+      <td style="padding:10px 6px">Using IoT sensing and control to <b>reduce energy use elsewhere</b>: smart thermostats, smart grids, precision irrigation, leak detection, traffic optimisation — IoT as a sustainability tool for other systems.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">The paradox in one line (the faculty's own phrasing)</span>
+      <p>IoT can be an enormous <b>tool</b> for sustainability while simultaneously being an enormous
+      <b>source</b> of energy and e-waste burden if devices, networks and data pipelines are not
+      designed efficiently. Both statements are true at once — that is what makes it a paradox rather
+      than simply a trade-off.</p>
+    </div>
+
+    <h3>The four supporting figures</h3>
+    <ul>
+      <li><b>1.5%</b> — estimated share of global electricity consumption attributable to ICT devices
+      and networks including IoT (the faculty noted this varies by study).</li>
+      <li><b>30%+</b> — potential energy savings in a building from smart sensing and automated
+      HVAC/lighting control. This is the "greening by" side of the ledger.</li>
+      <li><b>1000s</b> — sensor nodes deployable for the embodied-carbon cost of a single server.
+      The faculty called this "a real trade-off to weigh".</li>
+      <li><b>2–5 years</b> — typical replacement cycle for poorly designed IoT devices, which is
+      <b>a major e-waste driver at scale</b>. This is the "greening of" side, and it links directly
+      back to Class 7.</li>
+    </ul>
+
+    <p>Also worth memorising from the title slide: <b>29 billion</b> connected IoT devices projected
+    worldwide by 2030, <b>under 1 W</b> typical power draw of a low-power sensor node, <b>10+ years</b>
+    of battery life achievable with proper low-power design, and <b>15 km+</b> typical LoRaWAN range
+    in open rural environments.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the trade-off hidden in "1000s of nodes per server"</span>
+      <p>That figure cuts both ways and a good answer says so. It means IoT monitoring is cheap in
+      embodied-carbon terms relative to the compute infrastructure it feeds — a strong argument for
+      deploying sensing. But multiply thousands of nodes by a <b>2–5 year replacement cycle</b> from
+      poor design and you have generated a substantial e-waste stream that did not exist before. The
+      resolution is exactly what the rest of the lecture teaches: design for 10+ year life so the
+      "greening by" benefit is not cancelled by the "greening of" cost.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="lowpower">
+    <span class="topic-num">Topic 02</span>
+    <h2>Low-power hardware design and the 1% rule</h2>
+    <p class="subtitle">The power-state table and three design techniques. This is the conceptual core of the class.</p>
+
+    <p>Start with the design problem. A battery-powered sensor that must run for years cannot simply
+    stay on. The entire design philosophy revolves around <b>spending as much time as possible in the
+    deepest sleep state the application allows</b>, waking briefly only to sense, compute and
+    transmit.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the 1% rule</span>
+      <p>Well-designed IoT sensor nodes are often <b>active for well under 1% of their lifetime</b>.
+      The faculty's worked example: a soil-moisture sensor that wakes for 100 milliseconds every
+      10 minutes is awake roughly <b>0.017%</b> of the time. The consequence is the one to remember —
+      <b>nearly all of its energy budget is spent on sleep current, not active current.</b></p>
+    </div>
+
+    <h3>The five power states</h3>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Power state</th><th style="padding:8px 6px">Typical current</th><th style="padding:8px 6px">What is running</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Active / transmit</b></td><td style="padding:8px 6px"><b>10–120 mA</b></td>
+        <td style="padding:8px 6px">CPU at full clock, radio transmitting — the most power-hungry state, kept as brief as possible</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Active / compute only</b></td><td style="padding:8px 6px"><b>1–15 mA</b></td>
+        <td style="padding:8px 6px">CPU processing sensor readings, radio off</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Idle</b></td><td style="padding:8px 6px"><b>0.5–2 mA</b></td>
+        <td style="padding:8px 6px">CPU clocked down, peripherals mostly off, waiting for a timer or interrupt</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Sleep / standby</b></td><td style="padding:8px 6px"><b>1–50 µA</b></td>
+        <td style="padding:8px 6px">Only a real-time clock and wake logic powered; RAM often retained</td></tr>
+      <tr><td style="padding:8px 6px"><b>Deep sleep / shutdown</b></td><td style="padding:8px 6px"><b>0.02–1 µA</b></td>
+        <td style="padding:8px 6px">Nearly everything off; wake only via external reset or long timer</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the unit change between rows</span>
+      <p>Look carefully at the units. The top three states are in <b>milliamps (mA)</b>; the bottom two
+      are in <b>microamps (µA)</b>. That is a factor of <b>1,000</b>, and it is where the arithmetic
+      goes wrong. Transmitting at 120 mA versus deep sleep at 1 µA is a ratio of 120,000:1 — which is
+      exactly why duty cycling works so dramatically, and why a single missed conversion turns a
+      20-year answer into a 20-day one.</p>
+    </div>
+
+    <h3>The four design techniques</h3>
+    <ul>
+      <li><b>Duty cycling</b> — sensing and radio hardware are powered on only for short, scheduled
+      bursts, then returned to sleep. The faculty called this <b>the single biggest lever for battery
+      life</b>.</li>
+      <li><b>Event-driven wake</b> — instead of polling on a timer, hardware interrupts (motion, a
+      threshold crossing) wake the device only when something actually changes. Strictly better than
+      timer polling when events are rare.</li>
+      <li><b>Radio efficiency</b> — radio transmission is typically <b>the single most expensive
+      operation per event</b>, so minimising payload size and transmission frequency matters more than
+      CPU efficiency in most designs. This is a counter-intuitive point and a likely exam question:
+      optimise the radio before the processor.</li>
+      <li><b>Right-sized compute</b> — ultra-low-power microcontrollers, not general-purpose CPUs,
+      chosen specifically for their <b>sleep-current specifications</b>, sometimes trading raw speed
+      for standby efficiency.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="lpwan">
+    <span class="topic-num">Topic 03</span>
+    <h2>LPWAN protocols — LoRaWAN, NB-IoT, Zigbee, BLE</h2>
+    <p class="subtitle">A four-way comparison table. Learn the table, and learn which application each one is for.</p>
+
+    <p>No single wireless protocol is best for every IoT application — each trades off range, power,
+    bandwidth and cost differently. The faculty was direct about the stakes: choosing the wrong one is
+    <b>one of the most common (and expensive) green-IoT design mistakes</b>.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Protocol</th><th style="padding:8px 6px">Typical range</th><th style="padding:8px 6px">Power</th>
+        <th style="padding:8px 6px">Data rate</th><th style="padding:8px 6px">Spectrum</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>LoRaWAN</b></td><td style="padding:8px 6px"><b>2–15+ km</b></td>
+        <td style="padding:8px 6px">Very low</td><td style="padding:8px 6px">0.3–50 kbps</td><td style="padding:8px 6px">Unlicensed</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>NB-IoT</b></td><td style="padding:8px 6px">1–10 km</td>
+        <td style="padding:8px 6px">Very low</td><td style="padding:8px 6px">Up to ~250 kbps</td><td style="padding:8px 6px"><b>Licensed cellular</b></td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Zigbee</b></td><td style="padding:8px 6px">10–100 m per hop</td>
+        <td style="padding:8px 6px">Low</td><td style="padding:8px 6px">Up to 250 kbps</td><td style="padding:8px 6px">Unlicensed (<b>mesh</b>)</td></tr>
+      <tr><td style="padding:8px 6px"><b>BLE</b></td><td style="padding:8px 6px">10–50 m</td>
+        <td style="padding:8px 6px">Very low</td><td style="padding:8px 6px"><b>Up to ~2 Mbps</b></td><td style="padding:8px 6px">Unlicensed</td></tr>
+      </tbody>
+    </table>
+
+    <h3>What each one is actually for</h3>
+
+    <p><b>LoRaWAN</b> — Long Range, Wide Area Network. Unlicensed spectrum, so it is
+    <b>operator-independent</b>: you own the gateways and pay no carrier. Range is 2–5 km urban and
+    <b>15+ km rural line-of-sight</b>. Power is extremely low — years of battery life on a coin cell
+    for infrequent, small messages. Designed for small, infrequent payloads, not streaming.
+    <b>Best for:</b> agricultural sensors, rural utility metering, environmental monitoring across
+    large unpowered areas.</p>
+
+    <p><b>NB-IoT</b> — Narrowband IoT. <b>Licensed cellular spectrum</b>, running on existing telecom
+    towers, so it benefits from dense coverage with <b>no new gateways to build or maintain</b>. Power
+    is very low, though somewhat higher than LoRaWAN. <b>Best for:</b> smart metering and asset
+    tracking where telecom coverage already exists.</p>
+
+    <p><b>Zigbee</b> — a <b>mesh networking</b> protocol with a self-healing topology. Range is only
+    10–100 m per hop, but devices <b>relay for each other</b>, so a mesh can span a whole building.
+    Note the power nuance the faculty gave: <b>relay nodes (routers) draw more than simple end
+    devices</b>, which stay in deep sleep. <b>Best for:</b> dense indoor deployments — smart lighting,
+    home automation, building sensor networks.</p>
+
+    <p><b>BLE</b> — Bluetooth Low Energy. Short range and <b>ubiquitous smartphone compatibility</b>.
+    The <b>fastest data rate of the four</b> at up to ~2 Mbps, useful for occasional bulk syncs.
+    Very low power for advertisement and beacon use cases. <b>Best for:</b> wearables, proximity
+    beacons, and any device that syncs directly with a nearby smartphone.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the selection logic to apply</span>
+      <p>Do not memorise the table alone; memorise the <em>decision</em>. Ask three questions in order.
+      <b>(1) How far apart are the nodes?</b> Kilometres → LoRaWAN or NB-IoT. Metres → Zigbee or BLE.
+      <b>(2) Is there existing cellular coverage, and do you want to avoid running gateways?</b> Yes →
+      NB-IoT. No, or you want operator independence → LoRaWAN. <b>(3) Indoors and dense, or paired to a
+      phone?</b> Mesh through a building → Zigbee. Talks to a phone, or needs the higher data rate →
+      BLE. Answering in that order gets you the right protocol nearly every time.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/HCei5Q3NKaU" title="What is LoRaWAN Technology?"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=HCei5Q3NKaU" target="_blank" rel="noopener">What is LoRaWAN Technology?</a>
+      Why it helps: LoRaWAN is the protocol the Bangladesh scenarios keep landing on, and its
+      architecture — end device to gateway to network server — is much easier to hold in your head
+      once you have seen it drawn. It also makes the gateway-coverage calculation in Practice A
+      question 3 feel concrete rather than abstract.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="harvest">
+    <span class="topic-num">Topic 04</span>
+    <h2>Energy harvesting</h2>
+    <p class="subtitle">Four sources, and why this matters more at fleet scale than per device.</p>
+
+    <p>The faculty's opening line for this section is the one to quote: <b>"the greenest battery is the
+    one you never have to replace or dispose of."</b> When paired with the ultra-low power budgets from
+    Topic 02, small amounts of harvested ambient energy can keep a sensor running indefinitely.</p>
+
+    <ul>
+      <li><b>Photovoltaic (solar)</b> — small solar cells, even indoors under artificial light, can
+      generate <b>10–200 mW outdoors</b> — often more than enough to trickle-charge a supercapacitor
+      or small battery for a duty-cycled sensor.</li>
+      <li><b>Piezoelectric (vibration)</b> — converts mechanical vibration or strain into electricity.
+      Used on industrial machinery, bridges, and railway sensors <b>where vibration is constant and
+      free</b>.</li>
+      <li><b>Thermoelectric</b> — harvests energy from <b>temperature differentials</b>, for example a
+      pipe's surface against ambient air. Useful in industrial monitoring near heat sources.</li>
+      <li><b>RF harvesting</b> — captures ambient radio-frequency energy from Wi-Fi or cellular
+      signals. Powers only extremely low-draw devices, but requires <b>zero dedicated
+      infrastructure</b>.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea — why this matters at scale</span>
+      <p>The faculty's fleet-scale argument is the answer to any "why does this matter" question. A
+      sensor needing a battery swap every 18 months versus one lasting 10 years is not a convenience
+      difference. Across a <b>10,000-node deployment</b>, it is the difference between roughly
+      <b>6,700 truck-rolls and battery replacements per year versus almost none</b>. Design choices at
+      the single-device level <b>compound enormously at fleet scale</b> — in maintenance cost, in
+      transport emissions, and in battery waste.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — harvesting only works with the power budget already solved</span>
+      <p>Harvesting is not an alternative to low-power design; it is a <em>complement</em> to it. The
+      lecture is explicit that harvesting works "when paired with the ultra-low power budgets from the
+      previous section". A solar panel generating 300 mWh/day cannot sustain a device that draws
+      continuously at 30 mA — that would need roughly 100 mWh <em>per hour</em>. Get the duty cycle
+      right first, then harvest to cover what remains. An exam answer proposing harvesting without
+      mentioning duty cycling has the logic backwards.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="bd">
+    <span class="topic-num">Topic 05</span>
+    <h2>The Bangladesh context</h2>
+    <p class="subtitle">The faculty's argument that Bangladesh is an ideal proving ground for Green IoT.</p>
+
+    <p>Bangladesh is, in the faculty's framing, an ideal proving ground for Green IoT — a large
+    agricultural sector, real flood risk to monitor, and a rural population not always well served by
+    continuous grid power. The key line: <b>low-power design here is not a nice-to-have; it is often
+    the only thing that makes deployment feasible at all.</b></p>
+
+    <ul>
+      <li><b>Smart agriculture.</b> Soil moisture and irrigation sensors across dispersed farmland
+      benefit directly from <b>LoRaWAN's long range and multi-year battery life</b> — no mains power
+      and no frequent site visits needed.</li>
+      <li><b>Flood and water-level sensing.</b> Remote river and embankment sensors in flood-prone
+      regions must <b>survive years unattended</b>, often solar-powered, reporting infrequently to
+      conserve energy — exactly the low-duty-cycle design pattern from Topic 02.</li>
+      <li><b>Cellular coverage advantage.</b> Bangladesh's relatively dense mobile network coverage
+      makes <b>NB-IoT attractive for metering and tracking</b> — no private gateway infrastructure to
+      build.</li>
+      <li><b>Off-grid power reality.</b> Rural and even some urban deployment sites cannot rely on
+      continuous mains power, so <b>solar or battery-only operation is not optional — it is the
+      default design constraint from day one</b>.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">The protocol choice in the Bangladesh context</span>
+      <p>Note that the local section points at <em>both</em> long-range protocols for different
+      reasons, and a good answer distinguishes them. <b>LoRaWAN</b> for dispersed agricultural and
+      flood-monitoring deployments where there may be no reliable cellular coverage and you want
+      operator independence and maximum battery life. <b>NB-IoT</b> for metering and asset tracking in
+      areas already covered by the dense mobile network, where avoiding the cost and maintenance of
+      private gateways is the deciding factor.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">These extend the faculty's own five math cards. Watch the unit conversions — that is where marks are lost here.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A sensor wakes up and is active for <b>2 seconds</b> every <b>10 minutes</b>. What is its
+        duty cycle as a percentage, and what fraction of its life is spent asleep?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( t_{\text{active}} = 2\ \text{s},\quad T_{\text{period}} = 10\ \text{min} \)</p>
+              <p class="why">Active time and the repeat period. Note they are in <em>different units</em> — that must be fixed before dividing.</p></li>
+          <li><p class="math-line">\( T = 10 \times 60 = 600\ \text{s} \)</p>
+              <p class="why"><b>Convert minutes to seconds</b> (×60) so both quantities share a unit. Dividing 2 by 10 would give 20%, which is wrong by a factor of 60.</p></li>
+          <li><p class="math-line">\( \text{Duty cycle} = \dfrac{t_{\text{active}}}{T} \times 100\% \)</p>
+              <p class="why"><b>Definition of duty cycle:</b> the fraction of each period spent active, expressed as a percentage.</p></li>
+          <li><p class="math-line">\( = \dfrac{2}{600} \times 100\% \approx 0.33\% \)</p>
+              <p class="why">Divide and scale. The seconds cancel, leaving a dimensionless percentage.</p></li>
+          <li><p class="math-line">\( \text{asleep} = 100\% - 0.33\% = 99.67\% \)</p>
+              <p class="why"><b>Complement:</b> the device is either active or asleep, so the two shares sum to 100%.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>Duty cycle ≈ 0.33%</b>; the sensor spends <b>99.67%</b> of its life asleep.</p>
+        <p>The faculty's interpretation is the part that earns the analytical mark: this is exactly why
+        <b>sleep current, not active current, dominates the total energy budget</b>. This duty cycle
+        also satisfies <b>the 1% rule</b> — well-designed nodes are active for well under 1% of their
+        lifetime. Sanity check: 2 seconds out of 600 is roughly 1 part in 300, and 1/300 ≈ 0.33%.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A sensor draws a steady <b>5 µA</b> in deep sleep (ignore brief wake spikes). Its battery is
+        rated <b>1000 mAh</b>. Roughly how many years will it last?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( C = 1000\ \text{mAh},\quad I = 5\ \mu\text{A} \)</p>
+              <p class="why">Battery capacity and steady current. Again the units differ — mAh against µA — so a conversion is required first.</p></li>
+          <li><p class="math-line">\( I = 5\ \mu\text{A} = 0.005\ \text{mA} \)</p>
+              <p class="why"><b>Convert µA to mA</b> by dividing by 1,000, because capacity is in <em>milli</em>amp-hours. This single step is the most common source of error in the whole topic.</p></li>
+          <li><p class="math-line">\( t = \dfrac{C}{I} \)</p>
+              <p class="why"><b>Definition:</b> capacity divided by current gives time. Units: mAh ÷ mA = h, which confirms the conversion was done correctly.</p></li>
+          <li><p class="math-line">\( t = \dfrac{1000}{0.005} = 200{,}000\ \text{h} \)</p>
+              <p class="why">Divide. Dividing by a small number gives a large answer — expected here, since 5 µA is a tiny draw.</p></li>
+          <li><p class="math-line">\( t = \dfrac{200{,}000}{8{,}760} \approx 22.8\ \text{years} \)</p>
+              <p class="why"><b>Convert hours to years</b> by dividing by 8,760 (the hours in a year) — the same constant used throughout the data centre topics.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>≈ 22.8 years.</b></p>
+        <p>The faculty's own caveat, which belongs in your answer: in practice
+        <b>self-discharge and wake spikes shorten this</b> — a real coin cell loses charge on its own
+        even with nothing connected. But the figure demonstrates the point that
+        <b>a well-designed sleep current can make the battery outlast the product itself</b>, which
+        connects straight to the fleet-scale argument in Topic 04. Sanity check on units: if you had
+        forgotten the µA→mA conversion you would get 200 hours, or about 8 days — an answer so
+        obviously wrong for a deep-sleep sensor that it should catch itself.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A LoRaWAN gateway has a usable range of <b>15 km</b> in every direction. (a) Approximately
+        how large an area, in km², can one gateway cover? (b) How many gateways would be needed for a
+        3,000 km² rural district, ignoring overlap?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( r = 15\ \text{km} \)</p>
+              <p class="why">The range in every direction is the <b>radius</b> of a circular coverage area, not the diameter — reading it as diameter would quarter the answer.</p></li>
+          <li><p class="math-line">\( A = \pi r^2 \)</p>
+              <p class="why"><b>Area of a circle.</b> Coverage radiating equally in all directions from a point is a disc.</p></li>
+          <li><p class="math-line">\( A = \pi \times 15^2 = \pi \times 225 \)</p>
+              <p class="why"><b>Square the radius first</b>, then multiply by π — order of operations.</p></li>
+          <li><p class="math-line">\( A \approx 706.9\ \text{km}^2 \)</p>
+              <p class="why">Evaluate. Units: km × km = km², as required for an area.</p></li>
+          <li><p class="math-line">\( n = \dfrac{3000}{706.9} \approx 4.24 \Rightarrow 5\ \text{gateways} \)</p>
+              <p class="why"><b>Total area ÷ coverage per gateway</b>, then <b>round up</b> — four gateways would leave a gap, and you cannot install a fraction of one.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>≈ 707 km²</b> per gateway · (b) <b>5 gateways</b> (rounding up from 4.24).</p>
+        <p>The faculty's note: this is why a single LoRaWAN gateway can <b>economically cover a large
+        rural district with a sparse network of sensors</b>. Add a caveat for full marks — real
+        deployments need <em>more</em> than the ideal figure, because circles do not tile without
+        overlap, terrain and vegetation reduce effective range below the line-of-sight maximum, and
+        redundant coverage is usually wanted for reliability. Treat 5 as a lower bound. Sanity check:
+        707 km² is roughly a 26 km × 26 km square, which is plausible for a 15 km radius.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A network has <b>500 sensors</b>, each sending a <b>20-byte</b> message every <b>10
+        minutes</b>. (a) How many messages does the network send per day? (b) How much total data per
+        day? (c) Comment on the result.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( 1\ \text{day} = 24 \times 60 = 1{,}440\ \text{min} \)</p>
+              <p class="why">Convert the day into the same unit as the message interval, so the two can be divided.</p></li>
+          <li><p class="math-line">\( \text{msgs per sensor} = \dfrac{1{,}440}{10} = 144 \)</p>
+              <p class="why"><b>Period ÷ interval</b> gives the number of transmissions each sensor makes in a day.</p></li>
+          <li><p class="math-line">\( \text{total msgs} = 144 \times 500 = 72{,}000 \)</p>
+              <p class="why"><b>Per-sensor count × number of sensors</b> scales to the whole network.</p></li>
+          <li><p class="math-line">\( D = 72{,}000 \times 20\ \text{B} = 1{,}440{,}000\ \text{B} \)</p>
+              <p class="why"><b>Message count × payload size</b> gives total bytes. Units: messages × B/message = B.</p></li>
+          <li><p class="math-line">\( D = \dfrac{1{,}440{,}000}{1{,}000{,}000} = 1.44\ \text{MB/day} \)</p>
+              <p class="why"><b>Convert bytes to megabytes.</b> Using the decimal convention (10⁶ B per MB) as the faculty's own solution does; the binary convention would give 1.37 MiB — state which you used.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>72,000 messages/day</b> · (b) <b>≈ 1.44 MB/day</b>.</p>
+        <p>(c) The faculty's comment is the point of the question: despite 500 devices running
+        continuously, <b>the entire network's daily traffic is smaller than a single typical photo</b>
+        — a hallmark of well-designed IoT traffic. This is also why LoRaWAN's modest 0.3–50 kbps data
+        rate is not a limitation for this class of application: the constraint that matters is
+        <em>range and power</em>, not bandwidth. It further explains why <b>minimising payload size</b>
+        is one of the four low-power design techniques — every byte transmitted costs radio energy,
+        which is the most expensive operation per event.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A small solar panel produces an average of <b>50 mW</b> over <b>6 hours</b> of usable
+        sunlight per day. (a) How much energy in mWh does it harvest daily? (b) A coin cell holds about
+        <b>1000 mAh at 3 V</b> — how does one day's harvest compare with the cell's total stored energy?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P = 50\ \text{mW},\quad t = 6\ \text{h} \)</p>
+              <p class="why">Average harvested power and the usable window. "Average over 6 hours" means the variation within that window is already accounted for.</p></li>
+          <li><p class="math-line">\( E = P \times t = 50 \times 6 = 300\ \text{mWh/day} \)</p>
+              <p class="why"><b>Energy = power × time.</b> Units: mW × h = mWh, exactly what was asked for.</p></li>
+          <li><p class="math-line">\( E_{\text{cell}} = C \times V = 1000\ \text{mAh} \times 3\ \text{V} \)</p>
+              <p class="why"><b>Energy = charge × voltage.</b> A capacity in mAh is a <em>charge</em>, not an energy — it must be multiplied by the cell voltage to be comparable with mWh.</p></li>
+          <li><p class="math-line">\( E_{\text{cell}} = 3{,}000\ \text{mWh} \)</p>
+              <p class="why">Multiply. Units: mAh × V = mWh, which confirms the two quantities are now directly comparable.</p></li>
+          <li><p class="math-line">\( \dfrac{3{,}000}{300} = 10\ \text{days} \)</p>
+              <p class="why"><b>Ratio of the two energies</b> tells you how many days of harvesting equal the cell's entire stored energy.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>300 mWh/day.</b> (b) The coin cell holds about <b>3,000 mWh</b>, so
+        <b>ten days of harvesting equals the cell's entire lifetime stored energy</b>.</p>
+        <p>The faculty's framing: one good day of harvesting can rival an entire battery's stored
+        energy — and over a device's life, harvesting delivers many multiples of what any single cell
+        could store. That is the argument for <b>"the greenest battery is the one you never have to
+        replace"</b>. Note the step that catches people: <b>mAh is a charge, not an energy</b>. You
+        cannot compare 1000 mAh directly with 300 mWh without multiplying by voltage. Practical
+        caveat worth adding: the harvest must be buffered in a supercapacitor or rechargeable cell to
+        cover nights and cloudy days, which is exactly the design the flood-sensor scenario calls for.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>A soil-moisture node wakes for <b>4 seconds</b> every <b>15 minutes</b>. During the wake it
+        draws <b>28 mA</b>; in deep sleep it draws <b>6 µA</b>. Battery capacity is <b>1200 mAh</b>.</p>
+        <p>(a) Duty cycle. (b) Average current. (c) Estimated battery life in years. (d) What
+        proportion of the energy budget goes to active versus sleep? (e) If the wake time were halved
+        to 2 s, what is the new battery life — and what does the comparison tell you?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( t_a = 4\ \text{s},\quad T = 15 \times 60 = 900\ \text{s} \)</p>
+              <p class="why"><b>Convert the period to seconds</b> first so both times share a unit.</p></li>
+          <li><p class="math-line">\( d = \dfrac{4}{900} = 0.00444 = 0.444\% \)</p>
+              <p class="why"><b>Duty cycle = active ÷ period.</b> Comfortably under the 1% rule threshold, as a well-designed node should be.</p></li>
+          <li><p class="math-line">\( I_{\text{sleep}} = 6\ \mu\text{A} = 0.006\ \text{mA} \)</p>
+              <p class="why"><b>Convert µA to mA</b> so both currents are in the same unit as the mAh capacity.</p></li>
+          <li><p class="math-line">\( I_{\text{avg}} = d \times I_a + (1-d) \times I_s \)</p>
+              <p class="why"><b>Time-weighted average:</b> the device spends fraction \(d\) drawing the active current and fraction \(1-d\) drawing the sleep current. This is the correct way to combine two currents over time.</p></li>
+          <li><p class="math-line">\( = 0.00444 \times 28 + 0.99556 \times 0.006 \)</p>
+              <p class="why"><b>Substitute</b> the duty cycle and the two currents, both now in mA.</p></li>
+          <li><p class="math-line">\( = 0.1244 + 0.00597 = 0.1304\ \text{mA} \)</p>
+              <p class="why">Evaluate each term separately before adding — keeping them apart is what makes part (d) immediate.</p></li>
+          <li><p class="math-line">\( t = \dfrac{1200}{0.1304} = 9{,}202\ \text{h} \)</p>
+              <p class="why"><b>Capacity ÷ average current = time.</b> Units: mAh ÷ mA = h.</p></li>
+          <li><p class="math-line">\( t = \dfrac{9{,}202}{8{,}760} \approx 1.05\ \text{years} \)</p>
+              <p class="why"><b>Convert hours to years</b> (÷8,760).</p></li>
+          <li><p class="math-line">\( \dfrac{0.1244}{0.1304} = 95.4\%,\quad \dfrac{0.00597}{0.1304} = 4.6\% \)</p>
+              <p class="why"><b>Each term as a share of the total average current.</b> Because both are averaged over the same period, the current shares equal the energy shares.</p></li>
+          <li><p class="math-line">\( d' = \dfrac{2}{900} = 0.00222 \)</p>
+              <p class="why">Recompute the duty cycle with the halved wake time.</p></li>
+          <li><p class="math-line">\( I'_{\text{avg}} = 0.00222 \times 28 + 0.99778 \times 0.006 = 0.0682\ \text{mA} \)</p>
+              <p class="why">Same time-weighted average with the new duty cycle. The active term halves; the sleep term barely moves.</p></li>
+          <li><p class="math-line">\( t' = \dfrac{1200}{0.0682 \times 8{,}760} \approx 2.01\ \text{years} \)</p>
+              <p class="why"><b>Capacity ÷ current, converted to years</b> in one step. Life has almost exactly doubled.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>0.444%</b> · (b) <b>≈ 0.130 mA average</b> · (c) <b>≈ 1.05 years</b> ·
+        (d) <b>≈ 95.4% active, 4.6% sleep</b> · (e) <b>≈ 2.01 years</b> — halving the wake time nearly
+        doubles battery life.</p>
+        <p><b>The interesting result, and the reason this is a stretch question:</b> here the
+        <em>active</em> current dominates the budget at 95%, which appears to contradict the lecture's
+        claim that sleep current dominates. It does not — it shows the claim is
+        <b>conditional on the design</b>. In question 2, sleep was the entire budget because the sensor
+        essentially never woke. Here the node wakes for 4 s every 15 min at a relatively hungry 28 mA,
+        so the active term dominates.</p>
+        <p><b>The design lesson:</b> always check <em>which</em> term dominates before optimising, because
+        it determines where effort should go. Here, cutting wake time is highly effective (part e proves
+        it), while switching to a lower-sleep-current microcontroller would buy almost nothing — even
+        driving sleep current to zero would only extend life by about 4.6%. Had sleep dominated, the
+        priorities would reverse. This is also why <b>radio efficiency</b> is listed as a design
+        technique: shortening the transmit burst is usually the highest-leverage change available.</p>
+        <p>Sanity check: 1 year is short for an IoT node — a real deployment would extend it by reducing
+        wake time, reporting less often, adding a solar harvester, or all three. That is precisely the
+        design conversation the flood-monitoring scenario asks for.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain the Green IoT paradox, distinguishing clearly between the two senses of the term,
+        and give an example of each.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 01</b>, the foundation section. This is a definition question with a twist — the
+        examiner wants the <em>tension</em> between the two senses, not just two definitions side by
+        side. Name both, give examples, then state why holding both at once is a paradox rather than a
+        simple trade-off.</div>
+        <p><b>The two senses.</b> "Green IoT" is used in two related but distinct ways, and the lecture
+        was explicit that confusing them causes real problems in research and industry.</p>
+        <p><b>Greening <em>of</em> IoT</b> means making the IoT devices and networks themselves
+        energy-efficient: low-power hardware design, efficient wireless protocols, energy harvesting,
+        and responsible end-of-life recycling for the devices. <em>Example:</em> designing a
+        soil-moisture node that duty-cycles at under 1%, uses an ultra-low-power microcontroller
+        selected for its sleep current, transmits small payloads over LoRaWAN, and runs on a solar
+        harvester so its battery never needs replacing.</p>
+        <p><b>Greening <em>by</em> IoT</b> means using IoT sensing and control to reduce energy use
+        elsewhere in other systems. <em>Example:</em> smart building sensing with automated HVAC and
+        lighting control, which the lecture puts at <b>30%+ potential energy savings</b> for a
+        building. Other examples given: smart grids, precision irrigation, leak detection, traffic
+        optimisation.</p>
+        <p><b>The paradox itself.</b> The faculty's own formulation is that IoT can be an enormous
+        <b>tool</b> for sustainability while simultaneously being an enormous <b>source</b> of energy
+        and e-waste burden if devices, networks and data pipelines are not designed efficiently. Both
+        propositions are true at the same time, about the same technology — which is what makes it a
+        paradox rather than a straightforward cost-benefit calculation.</p>
+        <p><b>Why it is a live tension and not an academic one.</b> Two figures from the lecture make
+        it concrete. First, <b>thousands of sensor nodes can be deployed for the embodied-carbon cost
+        of a single server</b>, which argues strongly for deploying sensing widely. Second, the typical
+        replacement cycle for <b>poorly designed IoT devices is 2–5 years</b>, which the lecture calls
+        <b>a major e-waste driver at scale</b>. Multiply a large fleet by a short replacement cycle and
+        the e-waste burden can erase the savings the deployment was justified on. Note also that ICT
+        devices and networks including IoT already account for an estimated <b>1.5% of global
+        electricity consumption</b>.</p>
+        <p><b>The resolution.</b> The two senses are not actually in opposition — they are sequential.
+        Greening <em>of</em> IoT is the precondition for greening <em>by</em> IoT to deliver a net
+        benefit. A deployment designed for 10+ year life with harvested power delivers its
+        sustainability benefit without generating a compensating waste stream; one designed carelessly
+        does not. Which is exactly why the rest of Class 16 is about power states, duty cycling,
+        protocol selection and harvesting.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A designer proposes optimising their sensor firmware's computation to run 40% faster, in
+        order to extend battery life. Evaluate this proposal.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 02</b>, specifically the <b>radio efficiency</b> design technique and the power-state
+        table. The proposal sounds sensible and is the intuitive move for a software engineer — the
+        examiner wants to know whether you have absorbed the counter-intuitive point that the radio,
+        not the CPU, usually dominates.</div>
+        <p><b>The proposal is not wrong, but it is very likely optimising the wrong thing.</b></p>
+        <p><b>Why.</b> The lecture's design guidance is explicit: <b>radio transmission is typically the
+        single most expensive operation per event</b>, so <b>minimising payload size and transmission
+        frequency matters more than CPU efficiency in most designs</b>. The power-state table shows why.
+        <b>Active/transmit</b> — CPU at full clock with the radio transmitting — draws <b>10–120 mA</b>.
+        <b>Active/compute only</b> — CPU processing with the radio off — draws just <b>1–15 mA</b>. So
+        the compute-only state can be an order of magnitude cheaper than the transmit state. Making the
+        compute phase 40% faster shortens the cheaper of the two active phases, leaving the expensive
+        one untouched.</p>
+        <p><b>What to check first.</b> Before any optimisation, compute the <b>time-weighted average
+        current</b> and determine which term actually dominates the budget: sleep, compute, or transmit.
+        That single calculation determines where effort should go, and without it any optimisation is
+        guesswork. If the node has a very low duty cycle, sleep current may dominate and neither active
+        optimisation will matter much. If it transmits often, the radio will dominate.</p>
+        <p><b>Higher-leverage alternatives, roughly in order:</b></p>
+        <ul>
+          <li><b>Reduce transmission frequency</b> — report every 30 minutes instead of every 10, or
+          transmit only when a reading changes meaningfully. This attacks the largest term directly.</li>
+          <li><b>Reduce payload size</b> — send deltas rather than absolute values, pack fields tightly,
+          drop redundant headers. Every byte costs radio-on time.</li>
+          <li><b>Aggregate locally.</b> This is where the firmware work genuinely pays off — using the
+          cheap compute state to average or filter several readings and send one message instead of
+          several trades expensive radio time for cheap CPU time. That is a much better use of the
+          developer's effort than making the computation faster.</li>
+          <li><b>Switch to event-driven wake</b> — hardware interrupts on a threshold crossing rather
+          than timer polling, so the device wakes only when something actually changes.</li>
+          <li><b>Deepen the sleep state</b> — moving from sleep/standby (1–50 µA) to deep
+          sleep/shutdown (0.02–1 µA) is up to a 50× reduction in the baseline, if the application can
+          tolerate losing RAM retention.</li>
+        </ul>
+        <p><b>One genuine benefit of the proposal.</b> Faster computation does shorten the active
+        window, and if the radio is idling powered-on during that computation, the saving is real and
+        larger than the compute-only figures suggest. So the answer is not "don't do it" — it is
+        <b>measure first, and expect the radio to be where the budget actually goes</b>.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Compare LoRaWAN, NB-IoT, Zigbee and BLE. For each, state the deployment scenario it suits
+        and explain what makes it suitable.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 03.</b> A four-way comparison, which means structure matters more than volume. Give
+        the discriminating characteristics rather than reciting every cell of the table, and make sure
+        each protocol's <em>reason</em> for suiting its use case is explicit — the lecture's warning is
+        that choosing wrongly is one of the most common and expensive green-IoT mistakes.</div>
+        <p><b>The overarching point:</b> no single protocol is best for every application. Each trades
+        off range, power, bandwidth and cost differently, so selection is an engineering decision made
+        against the deployment, not a preference.</p>
+        <p><b>LoRaWAN — sparse, wide-area, unpowered deployments.</b> Range of 2–5 km urban and
+        <b>15+ km rural line-of-sight</b>, with extremely low power giving years of battery life on a
+        coin cell. It runs on <b>unlicensed spectrum, making it operator-independent</b> — you own the
+        gateways and pay no carrier fees. Data rate is only 0.3–50 kbps, designed for small infrequent
+        payloads rather than streaming. <b>Suits:</b> agricultural sensors, rural utility metering,
+        environmental monitoring across large unpowered areas. <b>Why:</b> a single gateway covers
+        roughly 700 km², so one or two gateways can serve an entire district, and the low power budget
+        pairs naturally with solar or multi-year batteries where no mains supply exists.</p>
+        <p><b>NB-IoT — metering and tracking where cellular already reaches.</b> Range 1–10 km,
+        benefiting from existing dense tower coverage, with <b>no new gateways to build or
+        maintain</b>. Runs on <b>licensed cellular spectrum</b>, so quality of service is managed but a
+        carrier subscription is required. Power is very low, though somewhat higher than LoRaWAN; data
+        rate up to ~250 kbps gives more headroom. <b>Suits:</b> smart metering and asset tracking.
+        <b>Why:</b> where coverage exists, the infrastructure burden disappears entirely — the trade is
+        carrier dependence and slightly higher power in exchange for zero gateway maintenance.</p>
+        <p><b>Zigbee — dense indoor networks.</b> Only 10–100 m per hop, but it is a <b>self-healing
+        mesh</b> in which devices relay for each other, so a mesh can span a whole building. Up to
+        250 kbps. Note the power nuance: <b>relay nodes (routers) draw more than simple end
+        devices</b>, which stay in deep sleep — so a mesh is not uniformly low-power, and routers
+        usually need mains power. <b>Suits:</b> smart lighting, home automation, building sensor
+        networks. <b>Why:</b> indoor environments defeat long-range radio through walls and structure,
+        and mesh relaying solves that by hopping rather than by raw transmit power.</p>
+        <p><b>BLE — anything that talks to a phone.</b> 10–50 m, personal-area rather than wide-area,
+        with <b>ubiquitous smartphone compatibility</b> and the <b>highest data rate of the four</b> at
+        up to ~2 Mbps, useful for occasional bulk syncs. Very low power for advertisement and beacon
+        use. <b>Suits:</b> wearables, proximity beacons, devices syncing directly with a nearby phone.
+        <b>Why:</b> the receiver infrastructure already exists in everyone's pocket, so there is no
+        network to deploy at all.</p>
+        <p><b>The selection logic in three questions:</b> How far apart are the nodes — kilometres or
+        metres? If kilometres, is there cellular coverage you can exploit (NB-IoT) or do you want
+        operator independence and maximum battery life (LoRaWAN)? If metres, does it need to mesh
+        through a building (Zigbee) or pair with a phone (BLE)?</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A team wants to deploy <b>200 soil-moisture sensors</b> across a large rice field in
+        Bangladesh with no mains power nearby. Recommend a protocol and a power strategy, and justify
+        both.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's own deployment scenario from Section 7. It requires
+        <b>Topic 03 (protocol selection)</b> and <b>Topic 02 (low-power design)</b> applied to the
+        <b>Bangladesh constraints in Topic 05</b>. The examiner wants both halves of the question
+        answered — protocol <em>and</em> power strategy — with the reasoning shown, not just the
+        conclusion.</div>
+        <p><b>Recommended protocol: LoRaWAN.</b></p>
+        <p><b>Justification.</b> Apply the selection logic. The nodes are dispersed across a large
+        field, so this is a kilometre-scale rather than metre-scale problem, which rules out Zigbee
+        (10–100 m per hop, and its relay nodes draw more power and would need their own supply) and BLE
+        (10–50 m, and designed to pair with a nearby phone). That leaves the two long-range options.</p>
+        <p>Between them, LoRaWAN wins here on three grounds. Its range — <b>15+ km rural
+        line-of-sight</b> — means <b>one or two gateways cover the entire field</b>; at a 15 km radius
+        a single gateway covers roughly 700 km². Its power profile is the lowest of the four, giving
+        <b>years of battery life on a coin cell for infrequent small messages</b>, which matters
+        enormously when there is no mains power and 200 nodes to maintain. And it runs on
+        <b>unlicensed spectrum, so it is operator-independent</b> — no carrier subscription for 200
+        devices, and no dependence on cellular coverage reaching every corner of the field.</p>
+        <p>Its data rate of 0.3–50 kbps is no constraint at all for this application. Soil moisture is a
+        few bytes reported occasionally: 200 nodes sending 20-byte messages every 10 minutes would
+        generate well under a megabyte a day across the whole network.</p>
+        <p><b>When NB-IoT would be the better choice instead</b> — worth stating, because it shows
+        judgement rather than pattern-matching. If the field sits inside good cellular coverage and the
+        team would rather not own and maintain gateways, NB-IoT becomes attractive: the lecture notes
+        that <b>Bangladesh's relatively dense mobile coverage makes NB-IoT attractive for metering and
+        tracking</b> precisely because there is <b>no private gateway infrastructure to maintain</b>.
+        The trade is a carrier subscription per device and slightly higher power draw.</p>
+        <p><b>Power strategy: solar harvesting with aggressive duty cycling.</b> These are not
+        alternatives — the design only works with both, and harvesting must sit on top of a power
+        budget that has already been minimised.</p>
+        <ul>
+          <li><b>Aggressive duty cycling</b> first. Soil moisture changes slowly, so reporting every
+          15–30 minutes rather than continuously is entirely adequate. This puts the node comfortably
+          within the <b>1% rule</b> — active for well under 1% of its lifetime — which is the single
+          biggest lever on battery life.</li>
+          <li><b>Deep sleep between wakes</b> (0.02–1 µA), not merely standby, using an
+          <b>ultra-low-power microcontroller chosen for its sleep-current specification</b> rather than
+          for raw speed.</li>
+          <li><b>Minimise radio time</b> — small payloads, and aggregate several readings locally into
+          one transmission where possible, since radio is the most expensive operation per event.</li>
+          <li><b>A small solar panel with a supercapacitor or rechargeable buffer.</b> Outdoor panels
+          generate 10–200 mW, and even 50 mW over 6 usable hours yields 300 mWh/day — comparable to an
+          entire coin cell's stored energy, and far more than a duty-cycled node consumes. The buffer
+          covers nights and the monsoon overcast period, which is the local design constraint that
+          matters most.</li>
+        </ul>
+        <p><b>Why this combination is the right answer for Bangladesh specifically.</b> The lecture's
+        framing is that <b>off-grid operation is not optional here — it is the default design
+        constraint from day one</b>, and that low-power design is often <b>the only thing that makes
+        deployment feasible at all</b>. With 200 nodes across a large field, the cost that dominates is
+        not hardware but <b>site visits</b>. A design lasting one season means repeated trips across
+        farmland to swap batteries; a design lasting years means almost none. That is the fleet-scale
+        argument from Topic 04 applied at a smaller but still decisive scale — and it is why the answer
+        is a long-range, low-power, harvested design rather than anything faster or more capable.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A river water-level sensor must run unattended for <b>5+ years</b> in a remote flood-prone
+        area of Bangladesh. Set out the design choices that matter most, and explain the reasoning
+        behind each.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's flood-monitoring scenario from Section 7. It pulls together
+        <b>Topic 02 (duty cycling and sleep states)</b>, <b>Topic 03 (protocol)</b>,
+        <b>Topic 04 (harvesting)</b> and <b>Topic 05 (the local context)</b>. The constraint
+        "unattended for 5+ years" is doing the work — every design choice should be justified by
+        reference to it.</div>
+        <p><b>The governing constraint.</b> Five years unattended in a remote location means a site
+        visit is effectively a project, not a maintenance task. Every design decision should be
+        evaluated against one question: does this reduce the probability of needing to visit? That
+        reframes the problem from "make it efficient" to "make it not require attention", which is a
+        stricter requirement.</p>
+        <p><b>1 · Aggressive duty cycling — the single biggest lever.</b> Report every 15–30 minutes,
+        not continuously. Water levels in a river change over hours, not seconds, so a high sampling
+        rate buys no useful information while consuming the entire energy budget. The faculty's own
+        answer to this scenario specifies exactly this. It also puts the node inside the <b>1% rule</b>,
+        where a well-designed sensor is active for well under 1% of its lifetime.</p>
+        <p>An important refinement: consider an <b>adaptive duty cycle</b>. During normal conditions
+        report infrequently; when the level crosses a threshold, increase the reporting rate. This is
+        the <b>event-driven wake</b> technique — using a hardware interrupt on a threshold crossing
+        rather than pure timer polling — and it means the energy is spent precisely when the data
+        actually matters, which for a flood sensor is the whole point of the deployment.</p>
+        <p><b>2 · Deep-sleep hardware.</b> Use an <b>ultra-low-power microcontroller selected for its
+        sleep-current specification</b>, trading raw speed for standby efficiency, and use the
+        <b>deep sleep / shutdown</b> state (0.02–1 µA) rather than sleep/standby (1–50 µA) between
+        wakes. That is up to a 50× difference in the baseline current, and over five years the baseline
+        is what accumulates.</p>
+        <p><b>3 · Solar panel with a supercapacitor buffer.</b> The faculty's answer names this
+        specifically, and the reasoning is that no primary battery should be trusted to last five years
+        unattended given self-discharge. A small panel generating even 50 mW over six usable hours
+        yields 300 mWh/day — comfortably more than a duty-cycled node consumes — while the
+        <b>supercapacitor buffers cloudy days</b> and nights. In Bangladesh the monsoon is the binding
+        case: the design must survive an extended overcast period, which is precisely when flood
+        monitoring matters most. Size the buffer for the worst realistic run of dark days, not the
+        average.</p>
+        <p><b>4 · A long-range, low-power protocol — LoRaWAN.</b> The site is remote, so cellular
+        coverage cannot be assumed, and LoRaWAN's operator independence and 15+ km rural range mean a
+        single gateway at a serviceable location can cover a wide stretch of river. Its very low power
+        profile is what makes multi-year unattended operation achievable, and its modest data rate is
+        irrelevant for a few bytes of level reading. The faculty's stated rationale is
+        <b>avoiding frequent site visits</b>, which is exactly the governing constraint.</p>
+        <p><b>5 · Physical and environmental design</b> — not in the lecture's list but implied by
+        "flood-prone" and worth a mark for judgement. The enclosure must survive submersion, humidity
+        and debris; the solar panel needs mounting above the expected flood line and positioning to
+        shed silt; and the sensor itself should ideally be non-contact (ultrasonic or radar) rather
+        than a float mechanism that can foul. A five-year electronic design defeated by a blocked
+        float is a common real failure.</p>
+        <p><b>6 · Fail-safe behaviour.</b> With no one attending the device, it must recover on its own:
+        a watchdog timer to reset a hung processor, brown-out protection so a depleted buffer does not
+        corrupt state, and periodic heartbeat messages so the network can distinguish "no flood" from
+        "sensor died". Without heartbeats, silence is ambiguous — and for a flood warning system,
+        ambiguous silence is the dangerous failure mode.</p>
+        <p><b>Why the whole design hangs together.</b> The lecture's framing for Bangladesh is that
+        low-power design here is <b>often the only thing that makes deployment feasible at all</b>, and
+        that off-grid operation is the default constraint rather than an edge case. Every choice above
+        is subordinate to the fleet-scale logic from Topic 04: the cost of a deployment like this is
+        dominated by visits, not hardware, so the design target is not efficiency for its own sake but
+        <b>years of untouched operation</b>.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>A city proposes deploying 10,000 IoT sensors to optimise street lighting, projecting a 35%
+        reduction in lighting energy. A critic argues the deployment's own footprint will negate the
+        benefit. Evaluate both positions and state what would determine which is right.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the <b>Green IoT paradox (Topic 01)</b> posed as an argument rather than a definition,
+        and it pulls in the <b>fleet-scale reasoning from Topic 04</b> and the <b>e-waste material from
+        Class 7</b>. The examiner wants you to refuse to pick a side reflexively and instead identify
+        the variables that decide it — the answer is genuinely conditional.</div>
+        <p><b>Framing: both positions are coherent, and which is correct depends entirely on the
+        design.</b> That is precisely what makes this the Green IoT paradox rather than a
+        disagreement about facts. The lecture's formulation applies directly: IoT can be an enormous
+        <b>tool</b> for sustainability while simultaneously being an enormous <b>source</b> of energy
+        and e-waste burden if devices, networks and data pipelines are not designed efficiently.</p>
+        <p><b>The case for the deployment — greening <em>by</em> IoT.</b> Street lighting is a large,
+        continuous municipal load, and sensing-driven control (dimming when no one is present, adapting
+        to ambient light) is exactly the category the lecture identifies as delivering
+        <b>30%+ energy savings in a building from smart sensing and automated control</b>. A 35%
+        projection for street lighting is therefore plausible rather than optimistic. There is also a
+        strong embodied-carbon argument on the deployment's side: the lecture notes that
+        <b>thousands of sensor nodes can be deployed for the embodied-carbon cost of a single
+        server</b>, so 10,000 nodes may represent a modest one-off carbon investment against a
+        continuous recurring saving. And each node draws <b>under 1 W</b>, so their operational
+        consumption is negligible beside the lighting load they control.</p>
+        <p><b>The case for the critic — greening <em>of</em> IoT.</b> The concern is not primarily
+        operational energy; it is <b>lifecycle</b>. The lecture identifies the typical replacement cycle
+        for <b>poorly designed IoT devices as 2–5 years</b>, and calls this <b>a major e-waste driver at
+        scale</b>. At 10,000 nodes on a 3-year cycle, the city generates roughly 3,300 discarded
+        electronic devices per year, indefinitely. Each carries embodied carbon, each contains a battery
+        and a radio, and — critically for Bangladesh — Class 7 establishes that only a handful of
+        DoE-certified recyclers operate nationally, with roughly 100,000 informal workers handling most
+        e-waste using hazardous methods. So the disposal end of that stream is a real and unresolved
+        problem, not a theoretical one.</p>
+        <p>The maintenance footprint compounds it. The faculty's fleet-scale example is directly
+        applicable: across a <b>10,000-node deployment</b>, the difference between an 18-month battery
+        swap and a 10-year design is roughly <b>6,700 truck-rolls and battery replacements per year
+        versus almost none</b>. Those truck-rolls carry their own fuel emissions and labour cost, and
+        they are invisible in a naive energy-savings projection.</p>
+        <p><b>What actually determines the outcome — the variables to specify.</b></p>
+        <ul>
+          <li><b>Device lifetime.</b> The single most decisive factor. A 10+ year design — achievable
+          with proper low-power engineering, per the lecture — versus a 2–5 year one changes the
+          e-waste and maintenance figures by a factor of three or more.</li>
+          <li><b>Power source.</b> Battery-only means periodic swaps at fleet scale. <b>Energy
+          harvesting</b> — solar is the obvious fit for street furniture, which is already positioned
+          for sun exposure — can eliminate battery replacement entirely, and "the greenest battery is
+          the one you never have to replace or dispose of".</li>
+          <li><b>Duty cycle and protocol.</b> A node reporting continuously over a power-hungry link
+          drains far faster than one duty-cycled under the 1% rule on LoRaWAN or NB-IoT. Protocol
+          choice here is not a detail; it directly sets the replacement interval.</li>
+          <li><b>End-of-life planning.</b> Is there a take-back and certified recycling arrangement
+          contracted at procurement, per the EPR framework in Bangladesh's E-Waste Rules 2021? A
+          deployment with no disposal plan is exactly what the critic is describing.</li>
+          <li><b>The counterfactual.</b> How large is the lighting load actually being reduced, and
+          could a simpler intervention — LED replacement, or timer-based control with no sensors at all
+          — capture most of the benefit with none of the fleet?</li>
+        </ul>
+        <p><b>Conclusion.</b> The critic is right about a <em>badly designed</em> deployment and wrong
+        about a well-designed one, and the projection alone does not tell you which this is. The
+        productive response is not to accept or reject the proposal but to make the answer conditional:
+        require a specified minimum device lifetime, solar harvesting, a duty-cycled low-power protocol,
+        and a contracted take-back and certified-recycling arrangement. With those specified, the
+        greening-<em>by</em> benefit is real and the greening-<em>of</em> cost is contained. Without
+        them, the city has bought a 35% lighting saving and a permanent e-waste stream — and the
+        lecture's whole argument is that this is a design choice, not an inherent property of IoT.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 16</h2>
+    <div class="grid">
+      <div class="item"><h4>The paradox</h4><p>Greening <b>OF</b> IoT = efficient devices/networks. Greening <b>BY</b> IoT = using sensing to cut energy elsewhere. IoT is both tool and source.</p></div>
+      <div class="item"><h4>The 1% rule</h4><p>Well-designed nodes are active <b>well under 1%</b> of their lifetime. Example: 100 ms every 10 min = 0.017%.</p></div>
+      <div class="item"><h4>Duty cycle</h4><p>\( d = \dfrac{t_{\text{active}}}{T_{\text{period}}}\times 100\% \) — convert both to the SAME unit first.</p></div>
+      <div class="item"><h4>Battery life</h4><p>\( t_{\text{hrs}} = \dfrac{C\ (\text{mAh})}{I\ (\text{mA})} \), then ÷ 8,760 for years. <b>Convert µA → mA by ÷1000.</b></p></div>
+      <div class="item"><h4>Average current</h4><p>\( I_{\text{avg}} = d\,I_{\text{active}} + (1-d)\,I_{\text{sleep}} \) — time-weighted. Check WHICH term dominates before optimising.</p></div>
+      <div class="item"><h4>Coverage area</h4><p>\( A = \pi r^2 \). r = 15 km → ≈ <b>707 km²</b>. Gateways = area ÷ coverage, <b>round up</b>.</p></div>
+      <div class="item"><h4>Harvested energy</h4><p>\( E = P \times t \). 50 mW × 6 h = 300 mWh/day. Cell energy = mAh × V (mAh is CHARGE, not energy).</p></div>
+      <div class="item"><h4>Power states (mA)</h4><p>Active/transmit <b>10–120 mA</b> · Compute only <b>1–15 mA</b> · Idle <b>0.5–2 mA</b>.</p></div>
+      <div class="item"><h4>Power states (µA)</h4><p>Sleep/standby <b>1–50 µA</b> (RTC + wake logic, RAM retained) · Deep sleep <b>0.02–1 µA</b> (wake by reset/long timer only).</p></div>
+      <div class="item"><h4>4 design techniques</h4><p>Duty cycling (biggest lever) · Event-driven wake · <b>Radio efficiency</b> · Right-sized compute (pick MCU by sleep current).</p></div>
+      <div class="item"><h4>Radio &gt; CPU</h4><p>Radio transmission is the <b>most expensive operation per event</b>. Minimise payload and frequency BEFORE optimising CPU.</p></div>
+      <div class="item"><h4>LoRaWAN</h4><p><b>2–15+ km</b> · very low power · 0.3–50 kbps · <b>unlicensed, operator-independent</b>. Agriculture, rural metering, environmental.</p></div>
+      <div class="item"><h4>NB-IoT</h4><p>1–10 km · very low power · ~250 kbps · <b>licensed cellular, no gateways needed</b>. Smart metering, asset tracking.</p></div>
+      <div class="item"><h4>Zigbee</h4><p>10–100 m <b>per hop</b> · low power · 250 kbps · <b>self-healing mesh</b>. Routers draw more than end devices. Indoor/building.</p></div>
+      <div class="item"><h4>BLE</h4><p>10–50 m · very low power · <b>up to 2 Mbps (fastest)</b> · smartphone compatible. Wearables, beacons.</p></div>
+      <div class="item"><h4>4 harvesting sources</h4><p>Photovoltaic (10–200 mW outdoors) · Piezoelectric (vibration) · Thermoelectric (temp differential) · RF (Wi-Fi/cellular ambient).</p></div>
+      <div class="item"><h4>Fleet-scale argument</h4><p>10,000 nodes: 18-month battery vs 10-year design = <b>~6,700 truck-rolls/yr vs almost none</b>.</p></div>
+      <div class="item"><h4>Key figures</h4><p><b>29 B</b> devices by 2030 · <b>&lt;1 W</b> per node · <b>1.5%</b> of global electricity (ICT) · <b>30%+</b> building savings · <b>2–5 yr</b> bad-design replacement cycle.</p></div>
+      <div class="item"><h4>Bangladesh</h4><p>Smart agriculture &amp; flood sensing → <b>LoRaWAN</b>. Metering/tracking on dense mobile coverage → <b>NB-IoT</b>. Off-grid is the DEFAULT constraint.</p></div>
+      <div class="item"><h4>Flood sensor design</h4><p>Aggressive duty cycling (15–30 min) + deep-sleep hardware + <b>solar with supercapacitor buffer</b> + LoRaWAN → avoids site visits.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

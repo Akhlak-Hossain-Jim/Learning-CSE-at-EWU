@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green IT Transformation — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#lifecycle">The 4-phase lifecycle</a></li>
+      <li><a href="#change">Change management &amp; Kotter</a></li>
+      <li><a href="#roi">Metrics, ROI &amp; TCO</a></li>
+      <li><a href="#governance">Governance &amp; compliance</a></li>
+      <li><a href="#bd">Bangladesh context</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Managing &amp; Maintaining Green IT Transformation</h1>
+    <div class="meta">
+      <span><b>Class:</b> 13 of 22 — Managing &amp; Maintaining Green IT Transformation</span>
+      <span><b>Reading:</b> Velete Ch.13 &amp; 14 · Lamb Ch.12 &amp; App A</span>
+      <span><b>Outcome:</b> CO3 · EP1, EP2, EP5</span>
+      <span><b>Delivered:</b> 10 Aug 2025 + digital transformation guest lecture</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 13 — Managing &amp; Maintaining Green IT Transformation. Velete Ch.13 &amp; 14, Lamb Ch.12 &amp; Appendix A. Course outcome CO3.</p>
+
+    <p>Every previous class gave you a technology. This one gives you the organisational machinery
+    that makes technology stick. The faculty's framing in the opening was blunt: after Class 12's
+    consolidation work, <em>"technology alone won't keep an organisation green. Without policy,
+    governance, and active change management, virtual sprawl quickly cancels out efficiency gains."</em></p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 13</span>
+      <p>Technology accounts for only 20% of transformation failure and human factors for the other
+      80%, so a Green IT programme succeeds on change management and governance — and it only gets
+      funded if you can present it to a CFO as CapEx, payback period and ROI rather than as
+      environmental goodwill.</p>
+    </div>
+
+    <p>The numerical work here is the most business-oriented of the six topics, and it is also the
+    most formulaic — four formulas cover essentially everything. The faculty even put them in a
+    sidebar quick-reference, which is a strong hint. Learn those four and most of the calculation
+    marks are secured.</p>
+
+    <div class="formula">
+      <div class="label">The faculty's own four-formula quick reference</div>
+      \[ \text{① Annual \$ saved} = \text{kWh saved} \times \text{Tariff} \]
+      \[ \text{② Simple payback (years)} = \frac{\text{CapEx}}{\text{Annual \$ saved}} \]
+      \[ \text{③ Tonnes CO}_2\text{e} = \frac{\text{kWh} \times \text{Emission factor}}{1{,}000} \]
+      \[ \text{④ ROI \%} = \frac{\text{Total savings} - \text{CapEx}}{\text{CapEx}} \times 100\% \]
+    </div>
+  </section>
+
+  <section class="topic" id="lifecycle">
+    <span class="topic-num">Topic 01</span>
+    <h2>The four-phase transformation lifecycle</h2>
+    <p class="subtitle">Learn the four phase names in order, and know what each one contains.</p>
+
+    <p>The faculty's central structural claim is that a Green IT transformation is
+    <b>not a single project but an iterative lifecycle</b>. The standard enterprise framework has
+    four phases, designed to move an organisation from reactive compliance to proactive leadership,
+    and the whole enterprise typically takes <b>3–5 years</b> to reach maturity.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Phase</th><th style="padding:8px 6px">Name</th><th style="padding:8px 6px">What happens</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Phase 1</b></td><td style="padding:8px 6px"><b>Assess &amp; Plan</b></td>
+        <td style="padding:8px 6px">Baselining the current footprint and gap analysis. Establish <b>Scope 1, 2 and 3 energy baselines</b>; perform a <b>Maturity Model assessment</b> (e.g. CMMI-aligned Green IT models).</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Phase 2</b></td><td style="padding:8px 6px"><b>Architect &amp; Implement</b></td>
+        <td style="padding:8px 6px">Deploying quick wins and core infrastructure. Identify <b>low-hanging fruit</b> — consolidation, PC power management. Execute <b>green procurement requirements</b> for hardware.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Phase 3</b></td><td style="padding:8px 6px"><b>Measure &amp; Optimize</b></td>
+        <td style="padding:8px 6px">Continuous KPI tracking and refinement. Implement <b>automated DCIM and IoT monitoring dashboards</b>.</td></tr>
+      <tr><td style="padding:8px 6px"><b>Phase 4</b></td><td style="padding:8px 6px"><b>Institutionalize</b></td>
+        <td style="padding:8px 6px">Embedding policies into culture. Link Green IT KPIs to <b>executive and department performance reviews</b>; establish formal <b>e-waste and recycling vendor audits</b>; publish <b>annual ESG and sustainability reports</b>.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the "set and forget" risk</span>
+      <p>The faculty called this out specifically, and it is the reason Phase 4 exists as a separate
+      phase rather than as an afterthought. <b>Without institutionalisation, efficiency gains erode
+      over time.</b> Three named mechanisms: staff turn over and the knowledge leaves with them,
+      legacy hardware creeps back in, and virtualisation ratios degrade without active enforcement.
+      A transformation that stops at Phase 3 will quietly unwind. If a question asks why initiatives
+      stall or regress, this is the answer.</p>
+    </div>
+
+    <p>Note the shorthand the wrap-up slide used for the same four phases: <b>Plan, Implement,
+    Measure, Sustain</b>. Either naming is acceptable, but use one consistently.</p>
+  </section>
+
+  <section class="topic" id="change">
+    <span class="topic-num">Topic 02</span>
+    <h2>Change management and Kotter's 8 steps</h2>
+    <p class="subtitle">The 80/20 claim, and the eight steps mapped onto sustainability.</p>
+
+    <p>Start with the number that justifies the whole section: <b>70% of digital transformations fail
+    due to poor change management and culture</b>, and the faculty's split is that
+    <b>technology accounts for only 20% of transformation failure while human factors account for the
+    other 80%</b>. That is why a green computing course spends fifteen minutes on organisational
+    behaviour.</p>
+
+    <p>The framework applied is <b>Kotter's 8-Step Model</b>, which the lecture presented in four
+    pairs. Learn the pairs — it halves the memorisation and matches how the faculty grouped them.</p>
+
+    <h3>Steps 1 &amp; 2 — Create urgency &amp; build a guiding coalition</h3>
+    <ul>
+      <li><b>Urgency drivers:</b> rising energy tariffs, regulatory compliance penalties, corporate
+      reputation risk. Note these are all <em>business</em> risks — urgency is manufactured from
+      commercial pressure, not from environmental appeal.</li>
+      <li><b>Guiding coalition:</b> form a <b>Green Steering Committee</b> combining
+      <b>IT, Facilities, Finance and HR</b> leadership. The cross-functional composition matters —
+      an IT-only committee cannot change procurement policy or performance reviews.</li>
+    </ul>
+
+    <h3>Steps 3 &amp; 4 — Develop the vision &amp; communicate buy-in</h3>
+    <ul>
+      <li><b>Green vision:</b> set <em>tangible</em> targets. The lecture's model phrasing:
+      <b>"30% energy reduction in 24 months with zero performance compromise."</b> Note the structure —
+      a number, a deadline, and an explicit reassurance about the thing people fear losing.</li>
+      <li><b>Communication:</b> departmental dashboards, town halls, and internal
+      <b>green champion networks</b>.</li>
+    </ul>
+
+    <h3>Steps 5 &amp; 6 — Empower action &amp; generate quick wins</h3>
+    <ul>
+      <li><b>Empowerment:</b> remove the friction. Specifically, <b>remove policies that force paper
+      printing or require always-on desktop hardware</b> — you cannot ask staff to behave sustainably
+      while a policy compels the opposite.</li>
+      <li><b>Quick wins:</b> execute rapid server virtualisation or PC sleep-policy rollouts to
+      demonstrate <b>immediate dollar savings</b>. The purpose of a quick win is political, not
+      environmental — it buys credibility for the harder phases.</li>
+    </ul>
+
+    <h3>Steps 7 &amp; 8 — Sustain acceleration &amp; anchor in culture</h3>
+    <ul>
+      <li><b>Sustain gains:</b> <b>reinvest energy cost savings into next-generation sustainable
+      technologies</b> — creating a self-funding cycle rather than competing for fresh budget each year.</li>
+      <li><b>Cultural anchor:</b> embed green criteria into <b>hiring, employee onboarding, and annual
+      performance reviews</b>. This is the same mechanism as Phase 4 of the lifecycle, viewed from the
+      people side.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea — why initiatives stall after the easy wins</span>
+      <p>The faculty opened the class with this as a discussion question, which makes it very likely
+      to appear. The answer combines both frameworks: <b>easy wins are technical and require no
+      behavioural change</b> — switching off unused servers costs nobody anything. The next tier of
+      savings requires people to <em>work differently</em>, which is where the 80% human factor bites.
+      Without Kotter steps 7 and 8 and lifecycle Phase 4 — reinvestment, performance-review linkage,
+      cultural anchoring — there is no mechanism to carry a programme past the point where it starts
+      asking something of people.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="roi">
+    <span class="topic-num">Topic 03</span>
+    <h2>Metrics, ROI and TCO — building the CFO-ready case</h2>
+    <p class="subtitle">The four formulas, and what the resulting numbers mean.</p>
+
+    <p>The faculty's framing here is the sentence to quote in any business-case question:
+    <b>"CFOs do not approve projects based on environmental goodwill."</b> Every Green IT initiative
+    must present a rigorous business case comparing upfront <b>Capital Expenditure (CapEx)</b>
+    against long-term <b>Operational Expenditure (OpEx)</b> savings.</p>
+
+    <h3>Simple payback period</h3>
+    <p>The most-used metric, and the one most likely to be asked for. It answers: how long until the
+    investment has paid for itself out of the savings it generates?</p>
+    <div class="formula">
+      <div class="label">Simple payback period</div>
+      \[ \text{Payback (years)} = \frac{\text{CapEx}}{\text{Annual savings}} \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)"><b>"Simple"</b> means future cash
+      flows are not discounted — a dollar saved in year 5 is counted the same as a dollar saved in
+      year 1. That is the method's known limitation and worth one sentence in an exam answer.</p>
+    </div>
+
+    <p>The faculty's interpretation bands, taken from their interactive calculator:
+    <b>under 2 years = excellent</b>, over <b>4 years = poor</b>. They also noted specifically that
+    <b>a 2-year payback is considered excellent for software-driven Green IT projects</b>.</p>
+
+    <h3>Return on investment</h3>
+    <div class="formula">
+      <div class="label">Net ROI over a period</div>
+      \[ \text{ROI \%} = \frac{\text{Total savings} - \text{CapEx}}{\text{CapEx}} \times 100\% \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">The numerator is the
+      <b>net return</b> — savings after the investment has been recovered. Compute total savings across
+      the full period <em>first</em>, then subtract.</p>
+    </div>
+
+    <h3>Carbon accounting</h3>
+    <div class="formula">
+      <div class="label">Energy to emissions</div>
+      \[ \text{Tonnes CO}_2\text{e} = \frac{\text{kWh saved} \times \text{Emission factor (kg CO}_2\text{e/kWh)}}{1{,}000} \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">The faculty's stated figure for
+      <b>Bangladesh's grid carbon intensity is 0.6 kg CO₂e per kWh</b>. Use it unless a question
+      supplies a different one. The ÷1,000 converts kilograms to metric tonnes.</p>
+    </div>
+
+    <p>The lecture's note on why this conversion matters: it is <b>crucial for mandatory corporate
+    Scope 2 carbon reporting</b>. Electricity purchased is Scope 2, so any energy saving converts
+    directly into a reportable Scope 2 reduction.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — payback and ROI are not the same question</span>
+      <p><b>Payback</b> asks <em>how long</em> until you break even, and is measured in years.
+      <b>ROI</b> asks <em>how much</em> you gained over a stated period, and is a percentage. A project
+      can have an attractive payback and an unimpressive ROI if the horizon is short, and vice versa.
+      Read which one is being asked for, and always state the period for an ROI figure — "+75%" is
+      meaningless without "over 5 years".</p>
+    </div>
+  </section>
+
+  <section class="topic" id="governance">
+    <span class="topic-num">Topic 04</span>
+    <h2>Governance, compliance and policy</h2>
+    <p class="subtitle">Four instruments. Know what each is <em>for</em>, since they are easily confused.</p>
+
+    <p>Governance provides the legal and procedural guardrails for transformation. The faculty's
+    framing: compliance frameworks help organisations <b>avoid greenwashing while meeting regulatory
+    auditing requirements</b> — note that both halves matter, internal discipline and external proof.</p>
+
+    <ul>
+      <li><b>ISO 14001</b> — the framework for an <b>Environmental Management System (EMS)</b>, used to
+      continuously measure and improve environmental impacts. It is a <em>management system</em>
+      standard: it certifies that you have a process, not that you have achieved a particular outcome.</li>
+      <li><b>GHG Protocol (Scope 1, 2, 3)</b> — the standard accounting framework for emissions.
+      <b>Scope 1</b> = direct emissions (your own generators, vehicles). <b>Scope 2</b> = purchased
+      electricity. <b>Scope 3</b> = supply chain and vendor footprint, including manufacturing of
+      equipment you buy and end-of-life disposal. This is required for regulatory ESG reporting.</li>
+      <li><b>Sustainable Procurement Policy</b> — mandating <b>Energy Star, EPEAT Gold or TCO
+      Certified</b> ratings for all new hardware acquisitions. This is the Class 8 procurement
+      multiplier expressed as organisational policy rather than as an individual decision.</li>
+      <li><b>E-Waste Governance (WEEE)</b> — <b>certified chain-of-custody recycling</b> to ensure zero
+      hazardous electronic waste reaches landfill. This is Class 7's EPR material appearing as an
+      internal control.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the three scopes, with course examples</span>
+      <p><b>Scope 1</b> — the diesel generators a Dhaka data centre needs because of grid unreliability
+      (Class 11). <b>Scope 2</b> — every kWh a data centre draws, which is what PUE improvement and
+      consolidation reduce (Classes 11 and 12). <b>Scope 3</b> — the 70–80% embodied carbon in every
+      device procured, and the e-waste leaving at end of life (Classes 7 and 8). Being able to place
+      each of the other five topics into the right scope is a strong answer to any question about
+      emissions boundaries.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="bd">
+    <span class="topic-num">Topic 05</span>
+    <h2>The Bangladesh context</h2>
+    <p class="subtitle">Three specific local drivers, all of which make good scenario material.</p>
+
+    <p>Transformation drivers in Bangladesh are heavily influenced by commercial electricity price
+    rises, national energy shortages, and green banking guidelines from Bangladesh Bank.</p>
+
+    <ul>
+      <li><b>Rising electricity tariffs.</b> Commercial power tariffs have risen steadily, so server
+      room energy efficiency <b>directly affects operating margins</b> for tech firms and commercial
+      banks in Dhaka. This is the urgency driver a local Green Steering Committee would lead with.</li>
+      <li><b>Bangladesh Bank Green Guidelines.</b> Central bank regulations require commercial banks to
+      <b>allocate specific funds to green finance</b>, <b>implement in-house green office policies</b>,
+      and <b>report annual Scope 1 &amp; 2 footprints</b>. For a bank, Green IT is therefore a
+      compliance obligation, not a discretionary programme.</li>
+      <li><b>SREDA</b> — the Sustainable &amp; Renewable Energy Development Authority. Its role, per the
+      lecture: providing <b>energy audit standards</b>, <b>guidelines for rooftop solar integration for
+      data centres</b>, and <b>certification for energy-efficient commercial buildings</b>.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the thin client figure</span>
+      <p>The faculty's answer to the branch-bank scenario contains a number worth memorising:
+      centralised automated PC power management combined with <b>thin-client deployment cuts
+      per-terminal draw from 150 W to 15 W</b> — a factor of ten. Paired with enforced off-hours
+      shutdown, this is the standard "most effective policy-first initiative" answer for a
+      branch-network scenario.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">All four formulas, individually and combined. These extend the faculty's own five practice cards.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>An enterprise invests <b>$60,000</b> in dynamic power management software. It cuts annual
+        electricity usage by <b>200,000 kWh</b>. Electricity costs <b>$0.15/kWh</b>.
+        (a) Annual saving? (b) Simple payback period? (c) Is this a good result?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( E = 200{,}000\ \text{kWh/yr},\quad r = \$0.15/\text{kWh} \)</p>
+              <p class="why">Annual energy saved and the tariff — the two inputs to formula ①.</p></li>
+          <li><p class="math-line">\( S = E \times r = 200{,}000 \times 0.15 \)</p>
+              <p class="why"><b>Formula ①: Annual $ = kWh × tariff.</b> Units: kWh × $/kWh = $, so kWh cancels.</p></li>
+          <li><p class="math-line">\( S = \$30{,}000/\text{yr} \)</p>
+              <p class="why">Multiply.</p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{\text{CapEx}}{S} = \dfrac{60{,}000}{30{,}000} \)</p>
+              <p class="why"><b>Formula ②: payback = CapEx ÷ annual savings.</b> Units: $ ÷ ($/yr) = yr, which confirms the answer is a time.</p></li>
+          <li><p class="math-line">\( = 2.0\ \text{years} \)</p>
+              <p class="why">Divide.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>$30,000/year</b> · (b) <b>2.0 years</b> · (c) Yes — the faculty's own note on this
+        problem is that <b>a 2-year payback is considered excellent for software-driven Green IT
+        projects</b>, and their calculator bands put under 2 years at "excellent" and over 4 at "poor".</p>
+        <p>Worth adding: software-driven projects like DPM typically pay back faster than hardware
+        projects because the CapEx is licensing rather than equipment, and there is no embodied carbon
+        in the investment itself. Sanity check: the CapEx is exactly twice the annual saving, so a
+        2-year payback is arithmetically obvious — a useful pattern to spot quickly under time pressure.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>Bangladesh's grid carbon intensity is <b>0.6 kg CO₂e per kWh</b>. How many metric tonnes of
+        CO₂e are offset by saving <b>150,000 kWh</b>? Which GHG Protocol scope does this reduction
+        fall under?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( E = 150{,}000\ \text{kWh},\quad f = 0.6\ \text{kg CO}_2\text{e/kWh} \)</p>
+              <p class="why">Energy saved and the grid emission factor. The factor converts electricity into emissions.</p></li>
+          <li><p class="math-line">\( m = E \times f = 150{,}000 \times 0.6 = 90{,}000\ \text{kg} \)</p>
+              <p class="why"><b>Energy × emission factor.</b> Units: kWh × kg/kWh = kg, so kWh cancels — confirming the factor was applied the right way round.</p></li>
+          <li><p class="math-line">\( m = \dfrac{90{,}000}{1{,}000} = 90\ \text{metric tonnes} \)</p>
+              <p class="why"><b>Formula ③'s ÷1,000 step:</b> convert kilograms to metric tonnes, since 1 t = 1,000 kg and corporate reporting uses tonnes.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>90 metric tonnes CO₂e.</b> This is a <b>Scope 2</b> reduction, because Scope 2 covers
+        emissions from <em>purchased electricity</em>.</p>
+        <p>The lecture's note on why this conversion matters: it is <b>crucial for mandatory corporate
+        Scope 2 carbon reporting</b>. In the Bangladeshi banking context this connects directly to
+        Bangladesh Bank's requirement that commercial banks report annual Scope 1 and 2 footprints.
+        Sanity check: 0.6 is roughly half, so the tonnage should be a bit over half the kWh figure
+        divided by a thousand — 150 → 90 fits.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A company replaces <b>100 legacy servers (400 W each)</b> with <b>10 virtualised hosts
+        (600 W each)</b>, running 24/7 for a year (8,760 hrs). (a) How many kWh are saved annually?
+        (b) At $0.15/kWh, what is the annual monetary saving? (c) At 0.6 kg CO₂e/kWh, how many tonnes
+        of CO₂e are avoided?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{legacy}} = 100 \times 0.4\ \text{kW} = 40\ \text{kW} \)</p>
+              <p class="why"><b>Count × per-unit power.</b> Convert 400 W to 0.4 kW immediately, because energy will be wanted in kWh and mixing W with kWh is where marks are lost.</p></li>
+          <li><p class="math-line">\( P_{\text{new}} = 10 \times 0.6\ \text{kW} = 6\ \text{kW} \)</p>
+              <p class="why">Same pattern after consolidation. Note the per-host figure rose from 0.4 to 0.6 kW — the non-linear power curve from Class 12, since the surviving hosts work harder.</p></li>
+          <li><p class="math-line">\( \Delta P = 40 - 6 = 34\ \text{kW} \)</p>
+              <p class="why"><b>Difference of the two loads</b> is the continuous power saved.</p></li>
+          <li><p class="math-line">\( E = \Delta P \times t = 34 \times 8{,}760 = 297{,}840\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time.</b> 8,760 h is one continuous year, which the question specifies as 24/7 operation.</p></li>
+          <li><p class="math-line">\( S = 297{,}840 \times \$0.15 = \$44{,}676/\text{yr} \)</p>
+              <p class="why"><b>Formula ①.</b> kWh × $/kWh = $.</p></li>
+          <li><p class="math-line">\( m = \dfrac{297{,}840 \times 0.6}{1{,}000} = 178.7\ \text{tonnes} \)</p>
+              <p class="why"><b>Formula ③.</b> Energy × emission factor, then ÷1,000 for tonnes.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>297,840 kWh/year</b> — the faculty's note calls this "nearly 300 MWh of annual energy
+        reduction". (b) <b>≈ $44,676/year</b>. (c) <b>≈ 178.7 tonnes CO₂e/year</b>.</p>
+        <p>Add for marks: this counts only the <b>direct IT electricity</b>. Applying the facility PUE
+        from Class 12's multiplier point would increase all three figures by 30–60% depending on the
+        facility. Sanity check: 34 kW continuous is a big saving, and 34 × 8,760 ≈ 300,000 kWh is the
+        right order of magnitude — if you had got 3,000 or 3,000,000 a factor of 8,760 has gone wrong.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A legacy PC fleet draws <b>50 kW</b> during non-working hours because sleep policies are
+        disabled. Enforcing night sleep cuts this off-hours draw to <b>5 kW</b> across <b>12 off-peak
+        hours per day</b>. (a) Energy saved per day? (b) Over a 250-day working year?
+        (c) What is the CapEx, and what does that imply for payback?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{before}} = 50\ \text{kW},\quad P_{\text{after}} = 5\ \text{kW} \)</p>
+              <p class="why">The off-hours draw before and after the policy. Note both are <em>off-peak</em> figures — the working-hours draw is unaffected and is irrelevant to this calculation.</p></li>
+          <li><p class="math-line">\( \Delta P = 50 - 5 = 45\ \text{kW} \)</p>
+              <p class="why"><b>Difference in power.</b> The residual 5 kW represents machines that must stay awake — servers, always-on terminals — so it cannot be driven to zero.</p></li>
+          <li><p class="math-line">\( E_{\text{day}} = \Delta P \times h = 45 \times 12 = 540\ \text{kWh/day} \)</p>
+              <p class="why"><b>Energy = power × time</b>, using only the <b>12 off-peak hours</b> because the saving only exists during those hours.</p></li>
+          <li><p class="math-line">\( E_{\text{yr}} = 540 \times 250 = 135{,}000\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Daily saving × working days.</b> Use 250, not 365 — the question specifies a working year, and the fleet is presumably already off at weekends.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>540 kWh/day</b> · (b) <b>135,000 kWh/year</b> ·
+        (c) The CapEx is effectively <b>$0</b> — this is a Group Policy configuration change, not a
+        purchase. With zero investment, the payback period is <b>immediate</b>, and formula ② is
+        undefined (division by zero), which is the correct thing to say rather than forcing a number.</p>
+        <p>The faculty's own note: "over a 250-day working year, that simple policy tweak saves
+        135,000 kWh with $0 CapEx!" This is the archetypal <b>quick win</b> from Kotter steps 5 and 6 —
+        rapid, visible, no capital request, and it demonstrates ROI fast enough to buy credibility for
+        the harder phases. At $0.15/kWh it is worth about $20,250/year.</p>
+        <p>Note the connection to Kotter step 5 (<b>empowerment</b>): the barrier here was a
+        <em>policy</em> that required always-on desktop hardware, not a technical limitation. The saving
+        was available all along and was blocked by an organisational rule — which is exactly the
+        faculty's point that human factors dominate.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>An enterprise spends <b>$100,000</b> on a green data centre retrofit. Over 5 years it saves
+        <b>$35,000</b> per year in electricity. (a) What is the 5-year Net ROI percentage?
+        (b) What is the simple payback period? (c) Would a CFO approve this?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{CapEx} = \$100{,}000,\quad S_{\text{yr}} = \$35{,}000/\text{yr},\quad n = 5 \)</p>
+              <p class="why">The investment, the annual saving, and the evaluation period. ROI is meaningless without stating the period.</p></li>
+          <li><p class="math-line">\( S_{\text{total}} = 35{,}000 \times 5 = \$175{,}000 \)</p>
+              <p class="why"><b>Total savings = annual × years.</b> Compute the gross figure before subtracting anything — this is the step most often skipped.</p></li>
+          <li><p class="math-line">\( \text{Net return} = 175{,}000 - 100{,}000 = \$75{,}000 \)</p>
+              <p class="why"><b>Subtract the CapEx</b> to get the net return. The investment must be recovered before anything counts as gain.</p></li>
+          <li><p class="math-line">\( \text{ROI \%} = \dfrac{75{,}000}{100{,}000} \times 100\% \)</p>
+              <p class="why"><b>Formula ④:</b> net return ÷ CapEx, expressed as a percentage. Note the denominator is CapEx, not total savings.</p></li>
+          <li><p class="math-line">\( = +75\% \)</p>
+              <p class="why">Divide and scale. The plus sign matters — a negative ROI would mean the project never recovered its cost.</p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{100{,}000}{35{,}000} \approx 2.86\ \text{years} \)</p>
+              <p class="why"><b>Formula ②.</b> Consistent with the ROI: breaking even at 2.86 years leaves about 2.14 years of pure saving inside the 5-year window, and 2.14 × 35,000 ≈ 75,000. The two answers cross-check.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>+75% over 5 years</b> · (b) <b>≈ 2.9 years payback</b> ·
+        (c) The faculty's assessment: <b>"a +75% net return over 5 years easily secures CFO project
+        authorisation."</b></p>
+        <p>Nuance worth a mark: the payback of 2.9 years sits between the "excellent" band (under 2)
+        and the "poor" band (over 4), so on payback alone it is merely acceptable. It is the
+        <b>5-year ROI that makes the case</b>, which illustrates why you present both metrics — a
+        project can look ordinary on one and strong on the other. Note also that this is
+        <b>simple</b> payback, undiscounted; a CFO applying a discount rate would see a somewhat lower
+        real return, and acknowledging that in an answer shows you understand the method's limits.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>A Dhaka bank runs <b>1,200 branch desktops</b> at <b>150 W</b> each. It proposes replacing
+        them with <b>thin clients at 15 W</b> each, plus centralised power management enforcing
+        shutdown outside a 10-hour working day. Terminals currently run 24/7. Thin clients cost
+        <b>$180</b> each; the supporting server infrastructure costs <b>$95,000</b>. Electricity is
+        <b>$0.16/kWh</b>; grid intensity <b>0.6 kg CO₂e/kWh</b>.</p>
+        <p>(a) Current annual energy. (b) New annual energy. (c) Annual saving in kWh and dollars.
+        (d) Total CapEx and simple payback. (e) 5-year ROI. (f) Annual CO₂e avoided, and which
+        Bangladesh Bank obligation this supports.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{now}} = 1{,}200 \times 0.15\ \text{kW} = 180\ \text{kW} \)</p>
+              <p class="why"><b>Count × per-unit power</b>, converting 150 W to 0.15 kW up front so all later steps stay in kW and kWh.</p></li>
+          <li><p class="math-line">\( E_{\text{now}} = 180 \times 8{,}760 = 1{,}576{,}800\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time.</b> The current terminals run <b>24/7</b>, so the full 8,760 hours applies.</p></li>
+          <li><p class="math-line">\( P_{\text{new}} = 1{,}200 \times 0.015\ \text{kW} = 18\ \text{kW} \)</p>
+              <p class="why">Same count × per-unit step at the thin-client draw of 15 W. Note this is exactly one tenth of the current load — the 150 W → 15 W factor the lecture quotes.</p></li>
+          <li><p class="math-line">\( t_{\text{new}} = 10\ \text{h/day} \times 365 = 3{,}650\ \text{h/yr} \)</p>
+              <p class="why"><b>The hours change too.</b> Power management enforces shutdown outside a 10-hour working day, so the new operating time is not 8,760 — this is the step the question is really testing.</p></li>
+          <li><p class="math-line">\( E_{\text{new}} = 18 \times 3{,}650 = 65{,}700\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time</b>, using the reduced load <em>and</em> the reduced hours. Both factors compound.</p></li>
+          <li><p class="math-line">\( \Delta E = 1{,}576{,}800 - 65{,}700 = 1{,}511{,}100\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Difference of the two annual energies.</b></p></li>
+          <li><p class="math-line">\( S = 1{,}511{,}100 \times \$0.16 = \$241{,}776/\text{yr} \)</p>
+              <p class="why"><b>Formula ①:</b> kWh × tariff.</p></li>
+          <li><p class="math-line">\( \text{CapEx} = 1{,}200 \times 180 + 95{,}000 = \$311{,}000 \)</p>
+              <p class="why"><b>Sum both capital components</b> — the terminals and the supporting infrastructure. Forgetting the server cost is the obvious trap.</p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{311{,}000}{241{,}776} \approx 1.29\ \text{years} \)</p>
+              <p class="why"><b>Formula ②:</b> CapEx ÷ annual saving.</p></li>
+          <li><p class="math-line">\( S_{5} = 241{,}776 \times 5 = \$1{,}208{,}880 \)</p>
+              <p class="why"><b>Total savings over the 5-year horizon</b>, needed before the ROI subtraction.</p></li>
+          <li><p class="math-line">\( \text{ROI} = \dfrac{1{,}208{,}880 - 311{,}000}{311{,}000} \times 100\% \approx +289\% \)</p>
+              <p class="why"><b>Formula ④:</b> (total savings − CapEx) ÷ CapEx × 100.</p></li>
+          <li><p class="math-line">\( m = \dfrac{1{,}511{,}100 \times 0.6}{1{,}000} = 906.7\ \text{tonnes} \)</p>
+              <p class="why"><b>Formula ③:</b> energy × emission factor ÷ 1,000 for metric tonnes.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>1,576,800 kWh/yr</b> · (b) <b>65,700 kWh/yr</b> · (c) <b>1,511,100 kWh saved ≈
+        $241,776/yr</b> · (d) CapEx <b>$311,000</b>, payback <b>≈ 1.3 years</b> ·
+        (e) <b>≈ +289% over 5 years</b> · (f) <b>≈ 907 tonnes CO₂e/year avoided</b>.</p>
+        <p><b>Why it is so dramatic:</b> two multipliers compound. The hardware change cuts draw by a
+        factor of ten (150 W → 15 W), and the policy change cuts operating hours by a factor of 2.4
+        (8,760 → 3,650). Together that is roughly a 96% energy reduction. This is the faculty's point
+        that the <b>most effective initiative is policy-first</b> — the power management policy is free
+        and delivers a large share of the benefit on its own.</p>
+        <p><b>On the Bangladesh Bank obligation (f):</b> this supports the requirement that commercial
+        banks <b>report annual Scope 1 and 2 footprints</b>, since purchased electricity is Scope 2.
+        It also serves the <b>in-house green office policy</b> requirement, and the capital spend could
+        potentially be framed within the bank's <b>green finance allocation</b>. For a bank, this is a
+        compliance deliverable as well as a cost saving — which is the strongest possible framing for
+        a CFO.</p>
+        <p><b>Two caveats to state for full marks.</b> First, the thin clients depend on server
+        infrastructure that itself draws power continuously — a rigorous analysis would add that load,
+        which the $95,000 figure implies but does not quantify. Second, this ignores the
+        <b>embodied carbon</b> of 1,200 new thin clients (Class 8): if the existing desktops are
+        serviceable, the circular hierarchy would ask whether they can be repurposed rather than
+        replaced. Payback in energy terms is 1.3 years; payback in <em>carbon</em> terms would be
+        longer once manufacturing is counted.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Why do most corporate sustainability initiatives stall after the initial easy wins, such as
+        turning off unused servers or printing less? Explain with reference to the transformation
+        lifecycle and change management.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the faculty's own warm-up discussion question from Section 1, which makes it a strong
+        exam candidate. It requires you to combine <b>Topic 01 (the four-phase lifecycle, particularly
+        the "set and forget" risk)</b> with <b>Topic 02 (Kotter and the 80% human factor)</b>. A good
+        answer explains <em>what changes</em> between the easy wins and the next tier of savings.</div>
+        <p><b>The core reason: the easy wins are technical, and everything after them is behavioural.</b>
+        Switching off unused servers or enabling a sleep policy costs nobody anything and asks nobody
+        to work differently. It is a configuration change with an immediate, visible dollar saving.
+        The next tier of savings — changing procurement standards, altering refresh cycles, enforcing
+        virtualisation ratios, redesigning workflows to eliminate printing — requires people to change
+        established habits and accept constraints on their own decisions. That is where resistance
+        appears, and the faculty's split is that <b>technology accounts for only 20% of transformation
+        failure while human factors account for the other 80%</b>. More broadly, <b>70% of digital
+        transformations fail due to poor change management and culture</b>.</p>
+        <p><b>The lifecycle explanation.</b> Easy wins sit in <b>Phase 2 (Architect &amp; Implement)</b>,
+        which the lecture describes as identifying "low-hanging fruit". Organisations that stop there
+        never reach <b>Phase 3 (Measure &amp; Optimize)</b>, which requires investment in DCIM and IoT
+        monitoring dashboards and ongoing KPI tracking, or <b>Phase 4 (Institutionalize)</b>. Phase 4
+        is where the gains are made permanent, and skipping it produces the <b>"set and forget"
+        risk</b>: efficiency gains erode over time because staff turn over and take the knowledge with
+        them, legacy hardware creeps back in, and virtualisation ratios degrade without active
+        enforcement. So a programme that stalls after the easy wins does not merely plateau — it
+        <em>regresses</em>.</p>
+        <p><b>The change management explanation.</b> In Kotter's terms, easy wins <em>are</em>
+        step 6 — generate quick wins to demonstrate ROI fast. But step 6 is a means to an end, and
+        organisations frequently treat it as the destination. What is missing is <b>step 7 (sustain
+        acceleration)</b> — reinvesting the energy cost savings into next-generation sustainable
+        technologies, creating a self-funding cycle rather than an annual budget fight — and
+        <b>step 8 (anchor in culture)</b> — embedding green criteria into hiring, onboarding and
+        <b>annual performance reviews</b>. Without step 8 in particular, nobody's job depends on the
+        programme continuing, so when attention moves elsewhere it simply stops.</p>
+        <p><b>Two supporting factors worth naming.</b> First, the <b>guiding coalition</b> (step 2) is
+        often too narrow — an IT-only initiative cannot change procurement policy, facilities practice
+        or HR performance criteria, so it exhausts the savings available within IT's own authority and
+        halts. The lecture specifies a Green Steering Committee spanning <b>IT, Facilities, Finance
+        and HR</b> precisely to avoid this. Second, the easy wins are cheap <em>and</em> highly
+        visible, so they create an impression of success that reduces the perceived urgency
+        (step 1) needed to justify the harder work.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain the GHG Protocol's three scopes, and classify the following into the correct scope:
+        a data centre's diesel generators, purchased grid electricity, the embodied carbon of newly
+        procured laptops, and e-waste sent to a recycler.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 04 (governance)</b>, but it is really a cross-course question — the examiner is using
+        the scopes as a framework to test whether you can place material from Classes 7, 8, 11 and 12
+        into the right emissions boundary. Define the three scopes crisply first, then classify with a
+        one-line justification each.</div>
+        <p><b>The three scopes.</b> The GHG Protocol is the standard accounting framework for corporate
+        emissions, and it divides them by <em>who controls the source</em>:</p>
+        <ul>
+          <li><b>Scope 1 — direct emissions</b> from sources the organisation owns or controls. Fuel
+          burned on site, company vehicles, on-site generation.</li>
+          <li><b>Scope 2 — indirect emissions from purchased energy</b>, principally electricity. The
+          emission happens at the power station, but the organisation caused it by buying the power.</li>
+          <li><b>Scope 3 — all other indirect emissions</b> across the value chain: the supply chain
+          and vendor footprint, including the manufacture of purchased equipment and its end-of-life
+          disposal. It is the broadest and hardest to measure, and for IT hardware it is usually the
+          largest.</li>
+        </ul>
+        <p><b>Classification:</b></p>
+        <ul>
+          <li><b>Diesel generators — Scope 1.</b> The fuel is burned on the organisation's own site
+          under its own control. This is directly relevant in Bangladesh, where grid unreliability makes
+          <b>N+1 generator capacity close to mandatory</b> (Class 11), so local facilities carry Scope 1
+          emissions that better-supplied grids avoid.</li>
+          <li><b>Purchased grid electricity — Scope 2.</b> This is what PUE improvement (Class 11) and
+          server consolidation (Class 12) reduce, and it is what the kWh × emission factor conversion
+          quantifies.</li>
+          <li><b>Embodied carbon of newly procured laptops — Scope 3.</b> The emissions occurred in
+          someone else's factory, but they were caused by the purchase. This is the
+          <b>70–80% of a device's lifetime footprint</b> from Class 8 — which is why green procurement
+          is a Scope 3 lever and why specification is the highest-leverage moment.</li>
+          <li><b>E-waste sent to a recycler — Scope 3.</b> End-of-life treatment is a value-chain
+          emission. This is why Class 7 stressed documenting the disposal route as part of
+          <b>Scope 3 e-waste reporting</b>, and why certified chain-of-custody recycling is listed as a
+          governance control.</li>
+        </ul>
+        <p><b>Why the distinction matters practically.</b> Regulatory ESG reporting frequently mandates
+        Scope 1 and 2 while treating Scope 3 as voluntary — Bangladesh Bank's green guidelines, for
+        instance, require commercial banks to report <b>annual Scope 1 and 2 footprints</b>. That
+        creates a real risk: an organisation can show falling reported emissions while its Scope 3
+        footprint grows, simply by refreshing hardware more often. It also explains why the Class 8
+        greenwashing test asks whether a "carbon neutral" pledge <b>includes Scope 3</b> — a
+        neutrality claim covering only Scopes 1 and 2 omits most of a hardware company's actual
+        footprint.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A project has a simple payback of 3.5 years and a 5-year ROI of +43%. A second project has
+        a payback of 1.8 years and a 5-year ROI of +178%. Explain what each metric tells you, why both
+        are presented, and what neither captures.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 03.</b> The examiner is checking that you understand these are answers to
+        <em>different questions</em>, not two versions of the same number. The final part — what
+        neither captures — invites you to show the limits of the method, which is where the top marks
+        sit.</div>
+        <p><b>What payback tells you.</b> Simple payback answers <em>how long until the investment is
+        recovered</em>, measured in years: CapEx ÷ annual savings. It is fundamentally a
+        <b>risk</b> metric. A short payback means capital is at risk for less time, which matters if
+        the technology may be superseded, the organisation's circumstances may change, or the
+        electricity tariff assumption may not hold. Using the faculty's bands, project 2 at 1.8 years
+        is <b>excellent</b> (under 2), while project 1 at 3.5 years is acceptable but approaching the
+        <b>poor</b> threshold of 4 years.</p>
+        <p><b>What ROI tells you.</b> ROI answers <em>how much total value the investment generates
+        over a stated period</em>, as a percentage: (total savings − CapEx) ÷ CapEx × 100. It is a
+        <b>magnitude</b> metric. Project 2's +178% means it returns nearly three times its cost over
+        five years; project 1's +43% means it returns less than half its cost again.</p>
+        <p><b>Why both are presented.</b> They can diverge, and each alone can mislead. A project with
+        a very short payback but a short useful life may show a modest ROI. A project with a long
+        payback but a long life may show a strong ROI while tying up capital for years. Presenting
+        both lets a CFO see the trade-off between <em>speed of recovery</em> and <em>total value</em>.
+        Here they happen to agree — project 2 dominates on both — so the choice is straightforward,
+        and it is worth saying so rather than manufacturing complexity.</p>
+        <p><b>What neither captures.</b> Four things, and naming them shows command of the method:</p>
+        <ul>
+          <li><b>The time value of money.</b> Both are <em>simple</em> and undiscounted — a dollar saved
+          in year 5 is counted equally with one saved in year 1. A CFO applying a discount rate or
+          computing NPV would see lower real returns, and the longer-payback project would be penalised
+          more.</li>
+          <li><b>Risk and certainty of the savings.</b> Savings dependent on a projected tariff, or on
+          sustained behavioural compliance, are less certain than savings from decommissioned hardware.</li>
+          <li><b>Strategic and compliance value.</b> A project may be required regardless of return —
+          for a Bangladeshi bank, Bangladesh Bank's green guidelines make certain measures a
+          <b>compliance obligation</b>, which no ROI figure reflects.</li>
+          <li><b>Carbon and embodied impact.</b> Neither metric counts tonnes of CO₂e, and neither
+          accounts for the embodied carbon of hardware the project itself purchases (Class 8). A
+          project can have a strong financial ROI and a weak carbon case if it involves replacing
+          serviceable equipment.</li>
+        </ul>
+        <p><b>Conclusion.</b> The correct practice is to present payback, ROI, and the carbon figure
+        together — the first two for the CFO, the third for the ESG report — since the lecture's point
+        is that a Green IT case must satisfy both audiences at once.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A commercial bank in Dhaka wants to reduce branch IT energy costs by 25%. Recommend the most
+        effective policy-first initiative and justify it, including how you would build the case for
+        the CFO and the board.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's own corporate scenario from Section 7. The phrase <b>"policy-first"</b> is the
+        key instruction — the examiner wants an answer that leads with governance and behaviour rather
+        than hardware, drawing on <b>Topic 02 (Kotter)</b>, <b>Topic 03 (the business case)</b> and
+        <b>Topic 05 (the Bangladesh drivers)</b>.</div>
+        <p><b>Recommendation.</b> The faculty's answer, and the right one:
+        <b>centralised automated PC power management combined with thin-client deployment in
+        branches</b>. This cuts per-terminal draw from <b>150 W to 15 W</b> while enforcing off-hours
+        shutdown across the branch network.</p>
+        <p><b>Why this is the strongest option.</b> Two independent multipliers compound. The thin
+        clients cut the load by a factor of ten. The enforced shutdown policy cuts the operating hours
+        — typically from 24/7 to a ten-hour working day, a further factor of about 2.4. Together these
+        far exceed the 25% target, which means the programme can be phased and still hit its number.
+        Crucially, the <b>power management policy alone is free</b>: it is a Group Policy configuration
+        with essentially zero CapEx, delivering a large share of the benefit before any hardware is
+        purchased. That makes it the ideal Kotter <b>quick win</b> (step 6) — rapid, visible, and
+        requiring no capital request to demonstrate ROI.</p>
+        <p><b>Why "policy-first" is the right framing.</b> The barrier to off-hours shutdown is almost
+        never technical; it is organisational — a policy or habit that keeps machines always on,
+        perhaps for overnight updates or remote access. Kotter's <b>step 5 (empowerment)</b> is
+        precisely about <em>removing policies that require always-on desktop hardware</em>. The saving
+        is already available and is being blocked by a rule, which is the clearest possible illustration
+        of the lecture's claim that human factors account for 80% of the outcome.</p>
+        <p><b>Building the CFO case.</b> Present it in the CFO's own terms, since
+        <b>CFOs do not approve projects on environmental goodwill</b>:</p>
+        <ul>
+          <li><b>Annual savings</b> = kWh saved × tariff, with the tariff assumption stated explicitly
+          — Bangladesh's commercial tariffs have risen steadily, so a sensitivity showing the saving
+          improving if tariffs rise further strengthens the case.</li>
+          <li><b>Simple payback</b> = CapEx ÷ annual savings. Present the policy component separately
+          from the hardware component, since the policy element has effectively zero CapEx and
+          immediate payback.</li>
+          <li><b>5-year net ROI</b> = (total savings − CapEx) ÷ CapEx × 100.</li>
+          <li><b>Carbon offset</b> = (kWh × 0.6) ÷ 1,000 tonnes CO₂e.</li>
+        </ul>
+        <p><b>The regulatory argument — decisive for a bank.</b> This is not merely a cost programme.
+        <b>Bangladesh Bank green guidelines</b> require commercial banks to implement
+        <b>in-house green office policies</b> and to <b>report annual Scope 1 and 2 footprints</b>.
+        Branch electricity is Scope 2, so the carbon figure is a reportable compliance deliverable, and
+        the power management policy is itself an in-house green office policy. The banks are also
+        required to allocate funds to green finance, which may create framing options for the capital
+        component. A programme that satisfies a regulator and reduces cost is far easier to approve
+        than one that only does the latter.</p>
+        <p><b>Making it stick — the part most answers omit.</b> Without <b>Phase 4
+        (Institutionalize)</b> the gains will erode: staff will request exemptions, new machines will
+        arrive with default settings, and the fleet will drift back. So the recommendation must include
+        centralised enforcement rather than local configuration, <b>Green IT KPIs linked to branch
+        manager performance reviews</b> (Kotter step 8), and periodic compliance reporting through the
+        <b>Green Steering Committee</b> spanning IT, Facilities, Finance and HR. Savings should be
+        <b>reinvested</b> in the next phase of the programme (step 7) rather than absorbed into general
+        budget, so the initiative becomes self-funding.</p>
+        <p><b>One caution to include.</b> Replacing 1,200 serviceable desktops carries substantial
+        embodied carbon (Class 8, where manufacturing is 70–80% of a device's lifetime footprint). The
+        circular hierarchy from Class 7 would ask first whether existing desktops can be repurposed as
+        thin clients via software, or redeployed elsewhere, before new units are bought. Phasing the
+        hardware replacement to coincide with the natural refresh cycle captures the operational saving
+        without triggering an early manufacturing event — and the free policy change delivers benefit
+        in the meantime.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>You have been appointed to lead a Green IT transformation at a mid-sized Bangladeshi IT
+        services company. Set out your programme across the transformation lifecycle, explaining what
+        happens in each phase and how you would manage the human side.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The synthesis question for Class 13 — it requires <b>Topic 01 (the four phases)</b>,
+        <b>Topic 02 (Kotter)</b>, <b>Topic 03 (metrics)</b>, <b>Topic 04 (governance)</b> and
+        <b>Topic 05 (local drivers)</b> woven together. The best structure is to run the four phases in
+        order and fold the Kotter steps into them where they naturally fall, rather than presenting two
+        separate lists.</div>
+        <p><b>Framing.</b> A Green IT transformation is <b>an iterative lifecycle, not a project</b>,
+        and enterprise-wide maturity typically takes <b>3–5 years</b>. I would plan on that horizon and
+        say so up front, because a programme sold as a quick fix will be judged a failure at month
+        eighteen.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Phase 1 — Assess &amp; Plan</h4>
+        <p>Establish <b>Scope 1, 2 and 3 energy baselines</b> — generator fuel, purchased electricity,
+        and the embodied footprint of procured hardware plus e-waste. Nothing can be claimed later
+        without a baseline now. Run a <b>Maturity Model assessment</b> (CMMI-aligned Green IT models)
+        to establish where the organisation actually sits, and perform a gap analysis against target.</p>
+        <p>In parallel, <b>Kotter steps 1 and 2</b>. Create urgency using business risk, not
+        environmental appeal: <b>rising commercial electricity tariffs</b> in Bangladesh directly
+        eroding operating margins, regulatory compliance exposure, and reputational risk with EU/US
+        clients who increasingly require supplier sustainability data. Then build the
+        <b>guiding coalition</b> — a <b>Green Steering Committee</b> spanning <b>IT, Facilities,
+        Finance and HR</b>. The cross-functional composition is essential: an IT-only committee cannot
+        change procurement standards or performance review criteria, and will stall once it exhausts
+        savings within its own authority.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Phase 2 — Architect &amp; Implement</h4>
+        <p>Deploy the <b>low-hanging fruit</b> first, both for the savings and for the political
+        capital: <b>server virtualisation and consolidation</b> (Class 12 — targeting 65–80%
+        utilisation on Type 1 hypervisors, then physically decommissioning surplus hosts) and
+        <b>PC power management policies</b>, which cost essentially nothing. Simultaneously execute
+        <b>green procurement requirements</b> — writing Energy Star, EPEAT Gold or TCO Certified and
+        80 PLUS Gold into hardware specifications (Class 8), which is the highest-leverage single act
+        available given the procurement multiplier.</p>
+        <p>This is <b>Kotter steps 3 to 6</b>. Set a tangible vision on the lecture's model —
+        <b>"30% energy reduction in 24 months with zero performance compromise"</b>, where the second
+        clause pre-empts the objection that sustainability costs performance. Communicate through
+        departmental dashboards, town halls and a <b>green champion network</b>. Empower action by
+        <b>removing the policies that force always-on hardware or mandatory printing</b>. And publicise
+        the quick wins in dollars, because a visible saving buys permission for the harder phases.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Phase 3 — Measure &amp; Optimize</h4>
+        <p>Implement <b>automated DCIM and IoT monitoring dashboards</b> for continuous KPI tracking —
+        PUE, utilisation ratios, kWh per unit of service delivered. Without instrumentation the
+        programme is running blind and any later claim is unverifiable, which is itself a greenwashing
+        risk. Refine continuously: revisit consolidation ratios, tune DRS and DPM thresholds, and check
+        that procurement standards are actually being applied rather than waived under deadline
+        pressure.</p>
+        <p>Engage <b>SREDA</b> at this stage for <b>energy audit standards</b>, and evaluate its
+        <b>rooftop solar guidance</b> for the data centre, which addresses Scope 2 at source rather
+        than by reduction alone.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Phase 4 — Institutionalize</h4>
+        <p>This is the phase that determines whether any of the preceding work survives.
+        <b>Link Green IT KPIs to executive and departmental performance reviews</b>, so the programme's
+        continuation does not depend on my personal attention. Establish formal <b>e-waste and
+        recycling vendor audits</b> with certified chain of custody (Class 7). Adopt <b>ISO 14001</b>
+        as the EMS framework, and publish <b>annual ESG and sustainability reports</b> using GHG
+        Protocol scopes — which also positions the company well with European institutional clients.</p>
+        <p><b>Kotter steps 7 and 8</b> live here. <b>Reinvest the energy cost savings</b> into the next
+        generation of sustainable technology rather than letting them disappear into general budget —
+        this converts the programme into a self-funding cycle. And <b>anchor it culturally</b> by
+        embedding green criteria into <b>hiring, onboarding and annual reviews</b>.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Managing the human side throughout</h4>
+        <p>The single most important design principle: <b>technology is only 20% of the risk; human
+        factors are 80%</b>, and 70% of digital transformations fail on change management and culture.
+        Practically this means every technical intervention needs a matching organisational one — a
+        virtualisation ratio needs an enforcement owner, a procurement standard needs someone
+        authorised to reject a non-compliant bid, a sleep policy needs an exemption process that is
+        deliberately slightly inconvenient. And I would guard explicitly against the
+        <b>"set and forget" risk</b>: efficiency erodes because staff turn over, legacy hardware creeps
+        back, and virtualisation ratios degrade. Scheduled re-audits and KPI ownership are the
+        countermeasure.</p>
+        <h4 style="font-family:'Space Grotesk',system-ui,sans-serif;margin:20px 0 6px">Reporting to the board</h4>
+        <p>Every proposal goes forward with <b>CapEx, annual OpEx savings, simple payback period,
+        5-year net ROI, and tonnes of CO₂e avoided</b>. The first four are for the CFO; the last is for
+        the ESG report and, for clients who ask, for the supplier questionnaire. Presenting both at
+        once is the practical expression of the lecture's core claim — sustainability must map directly
+        to <b>cost reduction, risk mitigation and ESG compliance</b> if it is to survive a budget cycle.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>Two years after a successful virtualisation programme, an organisation finds its
+        consolidation ratio has fallen from 12:1 to 6:1, and its server count is climbing again.
+        Diagnose what has happened and set out how to fix it.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the <b>"set and forget" risk (Topic 01)</b> made concrete, combined with the
+        <b>virtual sprawl</b> warning the faculty gave in the Class 13 opening. It tests whether you
+        understand that Phase 4 exists to prevent a specific, predictable failure — and it rewards a
+        diagnosis before a prescription.</div>
+        <p><b>Diagnosis: this is virtual sprawl, and it is the predicted consequence of stopping at
+        Phase 3.</b> The faculty warned of it explicitly when bridging from Class 12:
+        <em>"high consolidation ratios maximise hardware yield, but unmanaged VM sprawl creates phantom
+        power waste."</em> The programme achieved its technical goal and then failed to institutionalise
+        it.</p>
+        <p><b>The mechanism.</b> Virtualisation makes provisioning almost frictionless — the lecture
+        contrasts legacy provisioning measured in weeks with VM provisioning in minutes. That is a
+        genuine benefit, but it removes the natural brake that used to constrain server growth. When
+        creating a VM required a purchase order, a procurement cycle and rack space, the cost was
+        visible and someone had to approve it. When it takes a few clicks, nobody sees a cost at all.
+        The result is predictable:</p>
+        <ul>
+          <li><b>Zombie VMs</b> — machines created for a project, test or migration that ended, never
+          decommissioned because no one owns the decision to delete them.</li>
+          <li><b>Over-provisioning</b> — VMs allocated far more vCPU and RAM than they use, because
+          requesting generously is free to the requester and protects them against complaint.</li>
+          <li><b>Ratio degradation</b> — as allocated resources rise, fewer VMs fit per host, so new
+          hosts are purchased. The ratio halving from 12:1 to 6:1 is precisely this.</li>
+        </ul>
+        <p>The consequence is that the organisation is paying twice: the idle-power baseline of the
+        additional hosts (Class 12 — an idle server still draws 50–70% of peak), multiplied by the
+        facility PUE, plus the embodied carbon and capital of hardware it did not need (Class 8).</p>
+        <p><b>Which phase failed.</b> This is a clean <b>Phase 4 (Institutionalize)</b> failure. The
+        lecture names three erosion mechanisms and two are visibly present: <b>legacy hardware creeps
+        back in</b> and <b>virtualisation ratios degrade without active enforcement</b>. The third —
+        <b>staff turn over</b> — is likely also a factor two years on, with the original programme
+        knowledge having left. In Kotter terms, <b>step 8 (anchor in culture)</b> was never completed:
+        nobody's performance review depends on the ratio, so nobody defends it.</p>
+        <p><b>The fix, in order:</b></p>
+        <ol>
+          <li><b>Measure before acting.</b> Reinstate <b>Phase 3</b> instrumentation — DCIM and
+          monitoring dashboards tracking consolidation ratio, per-host utilisation, VM count and
+          allocated-versus-consumed resources. You cannot govern what is not visible, and the current
+          situation exists because visibility lapsed.</li>
+          <li><b>Reclaim.</b> Run a VM audit to identify zombie and over-provisioned VMs. Right-size
+          allocations to actual consumption, decommission the orphans, and re-consolidate onto fewer
+          hosts. Then <b>physically decommission the surplus hardware</b> — powering it off is not
+          enough, since it will be quietly re-energised.</li>
+          <li><b>Introduce lifecycle governance for VMs.</b> Every VM gets a named owner, a business
+          justification and an <b>expiry date requiring active renewal</b>. Default-expire rather than
+          default-persist: the burden of proof should sit with keeping a VM, not with deleting it.</li>
+          <li><b>Reintroduce friction deliberately.</b> A lightweight approval or internal chargeback
+          for VM provisioning restores the cost signal that virtualisation removed. Chargeback is
+          particularly effective because it makes the consuming department feel the expense.</li>
+          <li><b>Anchor it (Kotter step 8).</b> Add consolidation ratio and VM hygiene to the
+          <b>IT department's KPIs and performance reviews</b>, with periodic reporting to the
+          <b>Green Steering Committee</b>. This is the step that prevents recurrence.</li>
+          <li><b>Enable DPM with hysteresis</b> so off-peak demand automatically consolidates further
+          and idle hosts enter deep standby — an automated backstop that partially compensates for
+          lapses in human discipline.</li>
+        </ol>
+        <p><b>The general lesson to close on.</b> This case demonstrates why the lifecycle has four
+        phases rather than three. Phases 1 to 3 deliver the gain; <b>Phase 4 is what makes it
+        permanent</b>. An organisation that treats institutionalisation as optional does not merely
+        plateau — it regresses, and it pays for the same savings twice. Governance is not overhead on
+        top of the technical work; it is the component that makes the technical work durable.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 13</h2>
+    <div class="grid">
+      <div class="item"><h4>① Annual savings</h4><p>\( \$ = \text{kWh saved} \times \text{tariff} \)</p></div>
+      <div class="item"><h4>② Simple payback</h4><p>\( \text{yrs} = \dfrac{\text{CapEx}}{\text{Annual \$}} \) — under 2 yrs = excellent, over 4 = poor.</p></div>
+      <div class="item"><h4>③ Carbon</h4><p>\( \text{t CO}_2\text{e} = \dfrac{\text{kWh}\times f}{1000} \). Bangladesh grid factor <b>f = 0.6 kg/kWh</b>.</p></div>
+      <div class="item"><h4>④ ROI</h4><p>\( \text{ROI\%} = \dfrac{\text{Total savings}-\text{CapEx}}{\text{CapEx}}\times 100 \). Always state the period.</p></div>
+      <div class="item"><h4>4-phase lifecycle</h4><p><b>1 Assess &amp; Plan · 2 Architect &amp; Implement · 3 Measure &amp; Optimize · 4 Institutionalize.</b> (= Plan, Implement, Measure, Sustain.)</p></div>
+      <div class="item"><h4>Phase 1 contents</h4><p>Scope 1/2/3 baselines · Maturity Model assessment (CMMI-aligned) · gap analysis.</p></div>
+      <div class="item"><h4>Phase 4 contents</h4><p>KPIs into performance reviews · e-waste vendor audits · annual ESG reports. <b>Without it, gains erode.</b></p></div>
+      <div class="item"><h4>Set-and-forget risk</h4><p>Three erosion mechanisms: staff turn over · legacy hardware creeps back · virtualisation ratios degrade.</p></div>
+      <div class="item"><h4>The 80/20 claim</h4><p>Technology = <b>20%</b> of failure. Human factors = <b>80%</b>. And <b>70%</b> of digital transformations fail on change management/culture.</p></div>
+      <div class="item"><h4>Kotter 1–2</h4><p>Urgency (tariffs, penalties, reputation) + <b>Green Steering Committee</b> = IT + Facilities + Finance + HR.</p></div>
+      <div class="item"><h4>Kotter 3–4</h4><p>Tangible vision — <b>"30% energy reduction in 24 months with zero performance compromise"</b> — dashboards, town halls, green champions.</p></div>
+      <div class="item"><h4>Kotter 5–6</h4><p>Remove always-on / forced-printing policies. Quick wins: virtualisation, PC sleep policy — show $ fast.</p></div>
+      <div class="item"><h4>Kotter 7–8</h4><p><b>Reinvest savings</b> into next-gen tech. Embed green criteria in <b>hiring, onboarding, annual reviews</b>.</p></div>
+      <div class="item"><h4>GHG scopes</h4><p><b>1</b> = direct (gensets). <b>2</b> = purchased electricity. <b>3</b> = supply chain + embodied carbon + e-waste.</p></div>
+      <div class="item"><h4>Governance instruments</h4><p>ISO 14001 (EMS) · GHG Protocol (accounting) · Sustainable Procurement Policy (Energy Star/EPEAT/TCO) · WEEE chain-of-custody.</p></div>
+      <div class="item"><h4>Bangladesh Bank</h4><p>Banks must: allocate green finance funds · in-house green office policies · report annual <b>Scope 1 &amp; 2</b>.</p></div>
+      <div class="item"><h4>SREDA</h4><p>Energy audit standards · rooftop solar guidance for data centres · energy-efficient building certification.</p></div>
+      <div class="item"><h4>Thin client figure</h4><p>Branch terminals <b>150 W → 15 W</b> with thin clients + enforced off-hours shutdown. The standard branch-bank answer.</p></div>
+      <div class="item"><h4>Virtual sprawl</h4><p>Frictionless provisioning → zombie VMs + over-provisioning → ratio degrades → host count climbs. Fix = VM lifecycle governance + chargeback + KPIs.</p></div>
+      <div class="item"><h4>Timeline</h4><p><b>3–5 years</b> for enterprise-wide Green IT maturity. Sell it on that horizon.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

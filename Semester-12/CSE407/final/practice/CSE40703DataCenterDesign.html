@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Center Design — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#design">Designing from scratch</a></li>
+      <li><a href="#tiers">Uptime Institute Tiers</a></li>
+      <li><a href="#redundancy">N / N+1 / 2N / 2N+1</a></li>
+      <li><a href="#pue">PUE, DCiE &amp; capacity maths</a></li>
+      <li><a href="#redesign">Redesigning a facility</a></li>
+      <li><a href="#bd">Bangladesh context</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Data Center Design &amp; Redesign</h1>
+    <div class="meta">
+      <span><b>Class:</b> 11 of 22 — Data Center Design &amp; Redesign</span>
+      <span><b>Reading:</b> Velete Ch.12 (all) · Lamb Ch.6 (all)</span>
+      <span><b>Outcome:</b> CO3 · EP1, EP2, EP5</span>
+      <span><b>Delivered:</b> 5 Aug 2025 + data centre field trip</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 11 — Data Center Design &amp; Redesign. Velete Ch.12 (all), Lamb Ch.6 (all). Course outcome CO3.</p>
+
+    <p>This is the most calculation-heavy topic in the six. The faculty said so themselves in the
+    wrap-up: <em>"the formulas are simple — PUE, DCiE, and capacity planning are all one- or two-step
+    calculations; the engineering judgment is in choosing the right inputs."</em> That sentence tells
+    you exactly how this material will be examined. You will not be asked to do difficult
+    arithmetic. You will be asked to pick the right formula, use the right inputs, and then
+    <em>interpret</em> the result — and the interpretation is where most of the marks are.</p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 11</span>
+      <p>A data centre's reliability is bought with redundancy, redundancy is described by the
+      N / N+1 / 2N notation and certified by the Uptime Institute's four Tiers, and its efficiency is
+      measured by PUE — and because site and structure are fixed the day construction begins, all of
+      this has to be decided before the first rack arrives.</p>
+    </div>
+
+    <p>There are six things to be able to do cold, and everything in this guide serves them:
+    compute a PUE, convert PUE to DCiE, convert an uptime percentage to downtime minutes, size a
+    redundancy model, do an area-and-density capacity plan, and explain the difference between
+    Tier II and Tier III without hesitating.</p>
+  </section>
+
+  <section class="topic" id="design">
+    <span class="topic-num">Topic 01</span>
+    <h2>Designing from scratch — the decisions that lock in</h2>
+    <p class="subtitle">Why data centre design is unlike software: you cannot patch a site selection.</p>
+
+    <p>The faculty opened with a framing worth keeping: a data centre is one of the few pieces of
+    civil engineering where <b>a bad early decision cannot be patched with software later</b>. Site
+    selection, structural loading and electrical capacity are largely fixed once construction begins.
+    Design therefore starts long before the first server rack arrives, and a purpose-built enterprise
+    facility takes <b>18–24 months</b> to construct.</p>
+
+    <div class="callout key">
+      <span class="tag">The core design question</span>
+      <p>Every design decision traces back to one question: <b>what level of risk is acceptable, and
+      what will the organisation pay to reduce it?</b> A bank's core transaction system and a
+      university's research file server have very different answers, and that difference drives
+      everything downstream — Tier level, redundancy model, and site choice. If a scenario question
+      asks you to justify a design, start here.</p>
+    </div>
+
+    <h3>The numbers from the foundation section</h3>
+    <ul>
+      <li><b>18–24 months</b> — typical construction timeline for a purpose-built enterprise facility.</li>
+      <li><b>2–4×</b> — land footprint multiplier needed beyond the building itself, for cooling plant,
+      generators and expansion.</li>
+      <li><b>≥2</b> independent utility power feeds, from <em>separate substations</em>.</li>
+      <li><b>≥2</b> diverse fibre paths, <em>physically separated</em> — the faculty's phrasing was
+      "to avoid a single backhoe cutting both", which is a memorable way of saying that redundancy
+      only counts if the two paths cannot fail from the same cause.</li>
+      <li><b>15–20 years</b> — typical design life before a major redesign is triggered.</li>
+    </ul>
+
+    <h3>Site selection criteria</h3>
+    <p>The faculty's point was that these criteria rarely change — only their <em>relative
+    importance</em> does, which is why the Bangladesh section later reorders them.</p>
+    <ul>
+      <li>Grid power availability and cost per kWh</li>
+      <li>Natural disaster risk — flood, earthquake, cyclone</li>
+      <li>Climate — cooling potential, humidity</li>
+      <li>Fibre connectivity and network latency to users</li>
+      <li>Water availability for cooling</li>
+      <li>Land cost, zoning and tax incentives</li>
+    </ul>
+
+    <h3>Early design decisions</h3>
+    <ul>
+      <li>Target <b>Tier level</b> — the reliability-versus-cost trade</li>
+      <li><b>Raised floor vs slab</b> — cabling and airflow strategy</li>
+      <li><b>Modular vs monolithic</b> build-out</li>
+      <li>Target <b>rack density (kW/rack)</b> for the building's whole life</li>
+      <li><b>Structural load rating</b> for future high-density racks</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the over-build vs under-build trap</span>
+      <p>Building for peak day-one capacity wastes capital <em>and</em> runs the infrastructure at
+      inefficient partial load for years (partial load is where PUE gets bad). Building too small
+      forces a disruptive expansion later. The industry-standard compromise, and the answer the
+      faculty wants, is <b>modular design</b>: build the shell for full capacity, but install power
+      and cooling in phases as demand grows.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="tiers">
+    <span class="topic-num">Topic 02</span>
+    <h2>The Uptime Institute Tier classification</h2>
+    <p class="subtitle">Four rows of a table. Learn the table, then learn the one distinction that trips everyone up.</p>
+
+    <p>When someone says a facility is "Tier III", they are referencing a specific, certifiable
+    standard from the <b>Uptime Institute</b>. Four tiers describe increasing levels of redundancy
+    and fault tolerance, and each step up costs significantly more to build and to run.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Tier</th><th style="padding:8px 6px">Description</th>
+        <th style="padding:8px 6px">Uptime %</th><th style="padding:8px 6px">Max downtime/yr</th><th style="padding:8px 6px">Redundancy</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Tier I</b></td>
+        <td style="padding:8px 6px">Basic capacity — single path for power &amp; cooling, no redundancy</td>
+        <td style="padding:8px 6px">99.671%</td><td style="padding:8px 6px">28.8 hrs</td><td style="padding:8px 6px">N</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Tier II</b></td>
+        <td style="padding:8px 6px">Redundant components, still a <em>single distribution path</em></td>
+        <td style="padding:8px 6px">99.741%</td><td style="padding:8px 6px">22.0 hrs</td><td style="padding:8px 6px">N+1</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Tier III</b></td>
+        <td style="padding:8px 6px"><b>Concurrently maintainable</b> — any component can be serviced without downtime</td>
+        <td style="padding:8px 6px">99.982%</td><td style="padding:8px 6px">1.6 hrs</td><td style="padding:8px 6px">N+1</td></tr>
+      <tr><td style="padding:8px 6px"><b>Tier IV</b></td>
+        <td style="padding:8px 6px"><b>Fault tolerant</b> — a single failure anywhere causes no impact</td>
+        <td style="padding:8px 6px">99.995%</td><td style="padding:8px 6px">0.4 hrs (26 min)</td><td style="padding:8px 6px">2N or 2N+1</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Key idea — redundancy vs concurrent maintainability</span>
+      <p>Look at the redundancy column: <b>Tier II and Tier III are both N+1</b>. So what separates
+      them? Tier II has spare <em>components</em>, but taking the single <em>distribution path</em>
+      down for maintenance still causes an outage. Tier III's defining feature is that <b>every
+      capacity component and every distribution path can be shut down for planned maintenance with
+      zero impact on IT operations</b>. That is what "concurrently maintainable" means. It is a
+      subtle but critical engineering difference, and it is the single most likely conceptual
+      question from this section.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the phrasing that distinguishes III from IV</span>
+      <p>Tier III is about <b>planned maintenance</b> — you can take things down deliberately without
+      an outage. Tier IV is about <b>unplanned failure</b> — a single failure <em>anywhere</em> causes
+      no impact, which requires two fully independent paths (2N), not just a spare unit.
+      "Concurrently maintainable" ≠ "fault tolerant". If a question says a component failed
+      unexpectedly and the load survived, that is Tier IV behaviour.</p>
+    </div>
+
+    <h3>Cost and who needs what</h3>
+    <ul>
+      <li>Each Tier step adds roughly <b>20–50%</b> to both capital and operating cost. A Tier IV
+      facility can cost <b>2× or more per kW of IT capacity</b> than Tier I.</li>
+      <li><b>Core banking systems and stock exchanges</b> typically demand Tier III or IV.</li>
+      <li><b>Most enterprise back-office and university systems</b> are well served by Tier II or III.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="redundancy">
+    <span class="topic-num">Topic 03</span>
+    <h2>Redundancy models — N, N+1, 2N, 2N+1</h2>
+    <p class="subtitle">The notation is simple once you fix what N means. Most errors come from misreading N.</p>
+
+    <p>Redundancy notation describes how much spare capacity exists beyond what is strictly needed to
+    run the load. The definition to anchor on:</p>
+
+    <div class="formula">
+      <div class="label">Definition of N</div>
+      <p style="margin:0"><b>N</b> is the number of units <em>required</em> to meet demand.
+      Everything else is expressed relative to N.</p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Model</th><th style="padding:8px 6px">What is installed</th>
+        <th style="padding:8px 6px">Reliability</th><th style="padding:8px 6px">Typical use</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>N</b></td>
+        <td style="padding:8px 6px">Bare minimum — every unit installed is required, no spares</td>
+        <td style="padding:8px 6px">Any single component failure causes an outage. Lowest cost, lowest reliability.</td>
+        <td style="padding:8px 6px">Dev/test environments, non-critical internal tools, Tier I facilities</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>N+1</b></td>
+        <td style="padding:8px 6px">One extra unit beyond what is required</td>
+        <td style="padding:8px 6px">Tolerates one component failure, or one unit down for maintenance, without impact</td>
+        <td style="padding:8px 6px">Most Tier II/III enterprise data centres — <b>the most common commercial standard</b></td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>2N</b></td>
+        <td style="padding:8px 6px">The entire capacity path built twice, end to end</td>
+        <td style="padding:8px 6px">Two completely independent power/cooling paths — a failure in one has zero effect on the other</td>
+        <td style="padding:8px 6px">Tier IV facilities, financial exchanges, national critical infrastructure</td></tr>
+      <tr><td style="padding:8px 6px"><b>2N+1</b></td>
+        <td style="padding:8px 6px">Two full paths, each with its own N+1 spare</td>
+        <td style="padding:8px 6px">Highest commercially deployed reliability — extremely rare given the cost</td>
+        <td style="padding:8px 6px">Central bank settlement systems, stock exchange matching engines, hyperscale flagship sites</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the two classic mistakes</span>
+      <p><b>(1) N+1 means "one spare in total", not "one spare each".</b> If N = 3 chillers, N+1 is
+      <b>4 chillers</b>, not 6. <b>(2) 2N is not "N+2".</b> 2N doubles the <em>whole path</em>, so
+      with N = 3 that is <b>6 units</b> arranged as two independent sets of 3 — and the independence
+      is the point, not just the count. 2N+1 with N = 3 would be 8 units (two paths of 3, each with
+      one spare).</p>
+    </div>
+
+    <p>Note the mapping the faculty's calculator used: <b>N → roughly Tier I</b>, <b>N+1 → Tier II/III</b>,
+    <b>2N → Tier IV</b>. And note the overbuild cost that comes with it — under 2N you install twice
+    the capacity you need, so a 800 kW load requires 1,600 kW of installed infrastructure, running
+    permanently at partial load.</p>
+  </section>
+
+  <section class="topic" id="pue">
+    <span class="topic-num">Topic 04</span>
+    <h2>PUE and DCiE — the two efficiency metrics</h2>
+    <p class="subtitle">Two formulas, one relationship. This is the most examinable maths in the topic.</p>
+
+    <p>Here is the idea before the formula. Electricity enters a data centre building. Some of it
+    reaches the servers and does actual computing. The rest runs the air conditioning, the power
+    conversion losses, the lighting, the UPS. <b>Power Usage Effectiveness (PUE)</b> asks: for every
+    watt that reaches a server, how many watts did the building draw in total?</p>
+
+    <div class="formula">
+      <div class="label">PUE — Power Usage Effectiveness</div>
+      \[ \text{PUE} = \frac{\text{Total facility power}}{\text{IT equipment power}} \]
+    </div>
+
+    <p>Because total facility power always includes the IT power plus overhead, <b>PUE is always
+    ≥ 1</b>. A PUE of 1.0 would be a perfect facility with zero overhead — physically impossible.
+    The lecture's worked example: 600 kW IT load, 900 kW total, giving PUE = 1.5, which it describes
+    as "roughly industry average" and interprets as <em>0.5 kW of overhead for every 1 kW that
+    actually reaches computing</em>.</p>
+
+    <p><b>Data Center Infrastructure Efficiency (DCiE)</b> asks the same question the other way
+    round: what <em>fraction</em> of total power reaches the IT equipment? It is simply the inverse,
+    expressed as a percentage.</p>
+
+    <div class="formula">
+      <div class="label">DCiE — Data Center Infrastructure Efficiency</div>
+      \[ \text{DCiE} = \frac{\text{IT equipment power}}{\text{Total facility power}} \times 100\% = \frac{1}{\text{PUE}} \times 100\% \]
+    </div>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the relationship in both directions</span>
+      <p>\( \text{DCiE} = 1/\text{PUE} \) and \( \text{PUE} = 1/\text{DCiE} \). Lower PUE is better;
+      higher DCiE is better. Useful reference points to memorise: PUE 1.25 → DCiE 80% (the lecture
+      calls 80% "a strong, well above average result"). PUE 1.5 → DCiE 66.7% (industry average).
+      PUE 2.0 → DCiE 50% (half the electricity never reaches a computer).</p>
+    </div>
+
+    <h3>Downtime from an uptime percentage</h3>
+
+    <p>The Tier table gives uptime as a percentage; questions often ask you to convert it to actual
+    time. The method is the same regardless of the unit you want the answer in.</p>
+
+    <div class="formula">
+      <div class="label">Allowed downtime</div>
+      \[ \text{Downtime} = (1 - \text{uptime fraction}) \times \text{period} \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">One year = <b>525,600 minutes</b> = 8,760 hours = 365 days. Memorise 525,600 and 8,760.</p>
+    </div>
+
+    <h3>Capacity planning from area and density</h3>
+
+    <div class="formula">
+      <div class="label">Rack count and IT capacity</div>
+      \[ \text{Racks} = \frac{\text{Hall area}}{\text{Footprint per rack}} \qquad
+         \text{Capacity} = \text{Racks} \times \text{Density per rack} \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">Note the faculty's convention: the
+      per-rack footprint <b>already includes aisle space</b>, so do not deduct aisles separately.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/DQ-SVFxE8lE" title="What is PUE? - Data Center Efficiency"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=DQ-SVFxE8lE" target="_blank" rel="noopener">What is PUE? — Data Center Efficiency</a>.
+      Why it helps: PUE is easy to compute and easy to misinterpret. Seeing where the overhead power
+      physically goes — chillers, CRAC units, UPS conversion losses — makes the ratio mean something
+      rather than being a number you divide.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="redesign">
+    <span class="topic-num">Topic 05</span>
+    <h2>Redesigning an existing facility</h2>
+    <p class="subtitle">Five triggers, and the greenfield vs brownfield trade-off table.</p>
+
+    <p>Most data centres running today were not built for today's workloads — the faculty singled out
+    <b>GPU-dense AI clusters</b> as the pressure point. Redesign is rarely a full rebuild; it is
+    usually a series of targeted interventions layered onto an existing facility.</p>
+
+    <h3>The five redesign triggers</h3>
+    <ol>
+      <li><b>Density growth</b> — new equipment, especially AI/HPC, exceeds the original per-rack
+      design limit. This is a <em>structural and electrical</em> constraint, not a software one.</li>
+      <li><b>PUE degradation</b> — ageing cooling plant becomes less efficient than modern
+      alternatives, raising operating cost.</li>
+      <li><b>End of equipment life</b> — UPS batteries, chillers and generators typically need
+      replacement every <b>10–15 years</b>, which is a natural moment to upgrade rather than replace
+      like-for-like.</li>
+      <li><b>New compliance requirements</b> — a regulator (the lecture's example: a central bank
+      mandating Tier III for banking data) can force reliability upgrades.</li>
+      <li><b>Sustainability targets</b> — corporate net-zero commitments driving efficiency retrofits
+      and renewable power sourcing.</li>
+    </ol>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px"></th><th style="padding:8px 6px">Greenfield (new build)</th><th style="padding:8px 6px">Brownfield (retrofit)</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Design freedom</b></td><td style="padding:8px 6px">Full control of layout, density, site</td><td style="padding:8px 6px">Constrained by existing structure &amp; layout</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Downtime risk</b></td><td style="padding:8px 6px">None — built before go-live</td><td style="padding:8px 6px"><b>High</b> — must work around live systems</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Capital cost</b></td><td style="padding:8px 6px">Highest — land, structure, everything new</td><td style="padding:8px 6px">Lower — reuses existing shell &amp; some infrastructure</td></tr>
+      <tr><td style="padding:8px 6px"><b>Time to deploy</b></td><td style="padding:8px 6px">18–24+ months</td><td style="padding:8px 6px">Often 3–9 months for targeted upgrades</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">Modular &amp; containerised data centres</span>
+      <p>Prefabricated modules — power, cooling and IT space built off-site and shipped in — let
+      operators add capacity in discrete chunks rather than committing to a full facility upfront.
+      This shortens deployment from <b>years to months</b>, and is used both for greenfield expansion
+      and for rapid capacity relief at brownfield sites. If a scenario asks how to add capacity
+      quickly without a two-year build, this is the answer.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="bd">
+    <span class="topic-num">Topic 06</span>
+    <h2>The Bangladesh context</h2>
+    <p class="subtitle">The faculty's point: the criteria are universal, but their ranking here is different.</p>
+
+    <p>Bangladesh's geography and infrastructure make certain design criteria far more decisive here
+    than elsewhere. This is the section most likely to generate a scenario question.</p>
+
+    <ul>
+      <li><b>Flood and elevation risk.</b> Much of the country is low-lying and flood-prone.
+      <b>Site elevation and drainage are often the single deciding constraint on location.</b> The
+      example given: the National Data Center is deliberately sited on elevated, well-drained land at
+      <b>Kaliakoir Hi-Tech Park, Gazipur</b>.</li>
+      <li><b>Grid reliability.</b> Voltage fluctuation and load shedding make <b>N+1 diesel generator
+      capacity close to mandatory rather than optional</b> — adding capital cost and Scope 1 emissions
+      that greener grids elsewhere avoid.</li>
+      <li><b>Regulatory pressure.</b> Bangladesh Bank's data protection and IT governance guidance
+      increasingly pushes banks toward <b>Tier III-equivalent facilities</b> for core systems.</li>
+      <li><b>Retrofit reality.</b> Most existing private data centres in Dhaka were not built to
+      modern Tier standards, so redesign here typically means <b>phased retrofits</b> — containment,
+      UPS upgrades, generator redundancy — rather than full rebuilds.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the Bangladesh-specific carbon trade-off</span>
+      <p>There is a genuine tension the faculty flagged and it makes a good analytical point: an
+      unreliable grid forces N+1 <em>diesel</em> generator redundancy, which is Scope 1 emissions the
+      facility would not otherwise have. So the same reliability requirement that is environmentally
+      neutral in Norway is carbon-positive in Dhaka. Reliability and sustainability are not always
+      aligned, and saying so shows you have understood the local section rather than memorised it.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">These extend the faculty's own five math-practice cards. Do them on paper first.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A facility's IT equipment load is <b>600 kW</b>. Total facility power draw is <b>900 kW</b>.
+        (a) What is the PUE? (b) What is the DCiE? (c) Interpret both.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{IT}} = 600\ \text{kW},\quad P_{\text{total}} = 900\ \text{kW} \)</p>
+              <p class="why">Identify which figure is which. "Total facility power" includes IT <em>plus</em> cooling and everything else — if you swap them you get a PUE below 1, which is impossible and is your check.</p></li>
+          <li><p class="math-line">\( \text{PUE} = \dfrac{P_{\text{total}}}{P_{\text{IT}}} \)</p>
+              <p class="why"><b>Definition of PUE:</b> total facility power divided by IT equipment power.</p></li>
+          <li><p class="math-line">\( \text{PUE} = \dfrac{900}{600} = 1.5 \)</p>
+              <p class="why">Divide. The kW units cancel, leaving a dimensionless ratio — as PUE must be.</p></li>
+          <li><p class="math-line">\( \text{DCiE} = \dfrac{1}{\text{PUE}} \times 100\% \)</p>
+              <p class="why"><b>DCiE is the reciprocal of PUE</b>, expressed as a percentage — it asks what share of total power reaches IT.</p></li>
+          <li><p class="math-line">\( = \dfrac{1}{1.5} \times 100\% = 66.7\% \)</p>
+              <p class="why">Compute the reciprocal and scale by 100. Cross-check directly from the raw figures: 600/900 = 0.667, same answer.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>PUE = 1.5</b> · (b) <b>DCiE ≈ 66.7%</b></p>
+        <p>(c) Interpretation, which is where the marks are: a PUE of 1.5 means <b>0.5 kW of overhead
+        for every 1 kW that actually reaches computing</b> — the facility draws half as much again as
+        the servers need. Equivalently, only two-thirds of the electricity entering the building does
+        useful work; one-third is consumed by cooling, power conversion and lighting. The lecture
+        describes 1.5 as <b>roughly industry average</b>, so this facility is neither efficient nor
+        unusually poor.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A cooling system needs exactly <b>3 chillers (N = 3)</b> to meet full load.
+        (a) Under N+1, how many chillers are installed? (b) Under 2N? (c) Under 2N+1?
+        (d) For each, how many simultaneous chiller failures can the facility survive?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( N = 3 \)</p>
+              <p class="why"><b>Definition of N:</b> the number of units required to meet demand. Everything else is expressed relative to this.</p></li>
+          <li><p class="math-line">\( N+1 = 3 + 1 = 4\ \text{chillers} \)</p>
+              <p class="why"><b>N+1 adds one spare in total</b>, not one per unit. This is the most common arithmetic slip in the whole topic.</p></li>
+          <li><p class="math-line">\( 2N = 2 \times 3 = 6\ \text{chillers} \)</p>
+              <p class="why"><b>2N duplicates the entire capacity path</b>, so you install two independent sets of 3 — not 3 plus 2.</p></li>
+          <li><p class="math-line">\( 2N+1 = 2 \times (3+1) = 8\ \text{chillers} \)</p>
+              <p class="why"><b>2N+1 is two full paths, each with its own N+1 spare</b> (the lecture's own wording). So it is 2 × 4, giving 8 — not 6 + 1 = 7.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>4</b> · (b) <b>6</b> · (c) <b>8</b></p>
+        <p>(d) Survivable failures: <b>N+1 survives 1</b> — any one chiller can fail or be taken
+        offline for maintenance while the remaining three cover the full load. <b>2N survives 3</b> if
+        all three failures fall in the same path, since the other path independently carries the whole
+        load; but only 1 guaranteed if failures are distributed arbitrarily. <b>2N+1 survives at least
+        1 per path plus a whole path.</b></p>
+        <p>Note the important qualitative point: with 2N the value is not merely the extra units, it is
+        that the two paths are <b>completely independent</b>, so a fault in one has zero effect on the
+        other. That independence is what buys Tier IV fault tolerance; simply owning six chillers on
+        one distribution path would not.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>Tier III promises <b>99.982%</b> uptime. There are 525,600 minutes in a year.
+        (a) How many minutes of downtime does that allow? (b) Repeat for Tier IV at <b>99.995%</b>.
+        (c) How many times more downtime does Tier III permit than Tier IV?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( U_{\text{III}} = 99.982\% = 0.99982 \)</p>
+              <p class="why"><b>Convert percentage to a fraction</b> (÷100) so it can be subtracted from 1. Keep all the decimal places — rounding to 99.98% changes the answer by over 10%.</p></li>
+          <li><p class="math-line">\( D_{\text{frac}} = 1 - 0.99982 = 0.00018 \)</p>
+              <p class="why"><b>Complement:</b> the facility is either up or down, so the downtime fraction is one minus the uptime fraction.</p></li>
+          <li><p class="math-line">\( D_{\text{III}} = 0.00018 \times 525{,}600 = 94.6\ \text{min} \)</p>
+              <p class="why"><b>Downtime = downtime fraction × period.</b> Using minutes per year gives the answer directly in minutes.</p></li>
+          <li><p class="math-line">\( 1 - 0.99995 = 0.00005 \)</p>
+              <p class="why">Same complement step for Tier IV.</p></li>
+          <li><p class="math-line">\( D_{\text{IV}} = 0.00005 \times 525{,}600 = 26.3\ \text{min} \)</p>
+              <p class="why">Same multiplication. This matches the "≈26 min" figure the faculty put on the title slide, confirming the method.</p></li>
+          <li><p class="math-line">\( \dfrac{94.6}{26.3} \approx 3.6 \)</p>
+              <p class="why"><b>Ratio of the two downtimes</b> answers "how many times more". Both are in minutes so the units cancel.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>≈ 94.6 minutes</b> — under 1 hour 35 minutes for an entire year.
+        (b) <b>≈ 26.3 minutes.</b> (c) Tier III permits about <b>3.6×</b> as much downtime as Tier IV.</p>
+        <p>Sanity check against the Tier table: it lists Tier III at 1.6 hrs, and 94.6 min = 1.58 hrs.
+        Agreement confirms the arithmetic. The engineering point worth adding: that 68-minute
+        difference between Tier III and Tier IV per year is what costs an extra 20–50% in capital and
+        operating expenditure — which is why the lecture says most enterprise and university systems
+        are well served by Tier II or III, and only core banking and exchanges justify Tier IV.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A server hall is <b>500 m²</b>. Each rack, including aisle space, needs <b>2 m²</b>, and
+        average density is <b>6 kW/rack</b>. (a) How many racks fit? (b) What is the hall's total IT
+        capacity? (c) If the facility runs at PUE 1.4, what total facility power must the electrical
+        design support?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( A = 500\ \text{m}^2,\quad a = 2\ \text{m}^2/\text{rack} \)</p>
+              <p class="why">Hall area and per-rack footprint. Note the footprint <b>already includes aisle space</b> (stated in the problem), so no further deduction is made.</p></li>
+          <li><p class="math-line">\( n = \dfrac{A}{a} = \dfrac{500}{2} = 250\ \text{racks} \)</p>
+              <p class="why"><b>Area ÷ footprint per unit = number of units.</b> Units: m² ÷ (m²/rack) = racks.</p></li>
+          <li><p class="math-line">\( P_{\text{IT}} = n \times d = 250 \times 6\ \text{kW} \)</p>
+              <p class="why"><b>Count × density per unit = total capacity.</b> This is the same "per-unit × count" pattern as the rack calculation, one level up.</p></li>
+          <li><p class="math-line">\( P_{\text{IT}} = 1{,}500\ \text{kW} = 1.5\ \text{MW} \)</p>
+              <p class="why">Multiply, then convert to MW (÷1,000) since facility capacity at this scale is conventionally quoted in megawatts.</p></li>
+          <li><p class="math-line">\( \text{PUE} = \dfrac{P_{\text{total}}}{P_{\text{IT}}} \Rightarrow P_{\text{total}} = \text{PUE} \times P_{\text{IT}} \)</p>
+              <p class="why"><b>Rearrange the PUE definition</b> for total power. This is the form you need whenever a question gives you IT load and PUE and asks for facility draw.</p></li>
+          <li><p class="math-line">\( P_{\text{total}} = 1.4 \times 1{,}500 = 2{,}100\ \text{kW} = 2.1\ \text{MW} \)</p>
+              <p class="why">Substitute and multiply. The result must exceed the IT load, since PUE &gt; 1 always — that is the check.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>250 racks</b> · (b) <b>1,500 kW (1.5 MW) IT capacity</b> · (c) <b>2,100 kW (2.1 MW)</b>
+        total facility power.</p>
+        <p>The faculty called this "the starting point for any electrical and cooling capacity plan",
+        and part (c) shows why: the electrical design must be sized for the <em>facility</em> figure,
+        not the IT figure. Designing the incoming supply for 1.5 MW when the building will actually
+        draw 2.1 MW is a 600 kW error — which is the kind of early decision that, as Topic 01 puts it,
+        cannot be patched later. Sanity check: 6 kW/rack is a moderate density; modern AI/GPU racks
+        can exceed 30 kW, which is exactly the <b>density growth</b> redesign trigger from Topic 05.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A data centre has an IT load of <b>800 kW</b>. (a) Under a 2N redundancy model, how much
+        total infrastructure capacity must be installed, and what is the overbuild in kW and as a
+        percentage? (b) Which Tier does this roughly map to, and what annual downtime does that
+        imply?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{required}} = 800\ \text{kW} \Rightarrow N = 800\ \text{kW} \)</p>
+              <p class="why"><b>N is the capacity required to meet demand</b>, so here N is expressed directly in kW rather than as a unit count — the notation works either way.</p></li>
+          <li><p class="math-line">\( P_{\text{installed}} = 2N = 2 \times 800 = 1{,}600\ \text{kW} \)</p>
+              <p class="why"><b>2N duplicates the whole capacity path</b>, so installed capacity is exactly twice the required load.</p></li>
+          <li><p class="math-line">\( \text{Overbuild} = 1{,}600 - 800 = 800\ \text{kW} \)</p>
+              <p class="why"><b>Installed minus required</b> is the spare capacity — infrastructure that is paid for and maintained but does no work under normal conditions.</p></li>
+          <li><p class="math-line">\( \dfrac{800}{800} \times 100\% = 100\% \)</p>
+              <p class="why"><b>Overbuild as a percentage of the required load.</b> For 2N this is always 100% — a useful shortcut worth remembering.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>1,600 kW installed</b>, an overbuild of <b>800 kW (100%)</b>.
+        (b) 2N maps to <b>Tier IV</b>, which allows <b>0.4 hrs ≈ 26 minutes</b> of downtime per year
+        at 99.995% uptime.</p>
+        <p>Add this for the analytical marks: 100% overbuild means the facility permanently runs its
+        power and cooling infrastructure at roughly <b>50% load</b>, and equipment at partial load is
+        less efficient than at design load — so a 2N facility tends to carry a worse PUE than an
+        equivalent N+1 one. That is the real cost of Tier IV: not just the 20–50% capital premium the
+        lecture quotes, but a permanent efficiency penalty. It is also the reason the
+        <b>over-build vs under-build trap</b> from Topic 01 recommends modular phasing.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>A Dhaka facility has an IT load of <b>400 kW</b> and a PUE of <b>1.8</b>. A retrofit —
+        hot-aisle containment plus a modern chiller plant — will bring PUE down to <b>1.35</b>.
+        Electricity costs <b>$0.14/kWh</b> and the retrofit costs <b>$260,000</b>.</p>
+        <p>(a) Annual facility energy before and after. (b) Annual money saved. (c) Simple payback
+        period. (d) At a grid carbon intensity of <b>0.6 kg CO₂e/kWh</b>, annual carbon saved in
+        tonnes. (e) Which redesign trigger does this represent?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{IT}} = 400\ \text{kW},\ \text{PUE}_1 = 1.8,\ \text{PUE}_2 = 1.35 \)</p>
+              <p class="why">The IT load is unchanged by the retrofit — containment and chillers affect <em>overhead</em>, not the servers. That is why the same \(P_{\text{IT}}\) is used for both cases.</p></li>
+          <li><p class="math-line">\( P_{\text{total},1} = 1.8 \times 400 = 720\ \text{kW} \)</p>
+              <p class="why"><b>Rearranged PUE definition:</b> total = PUE × IT. Before the retrofit the building draws 720 kW to run 400 kW of servers.</p></li>
+          <li><p class="math-line">\( P_{\text{total},2} = 1.35 \times 400 = 540\ \text{kW} \)</p>
+              <p class="why">Same rearrangement with the improved PUE.</p></li>
+          <li><p class="math-line">\( E_1 = 720 \times 8{,}760 = 6{,}307{,}200\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time</b>, with 8,760 h for continuous annual operation — data centres run 24/7 by definition.</p></li>
+          <li><p class="math-line">\( E_2 = 540 \times 8{,}760 = 4{,}730{,}400\ \text{kWh/yr} \)</p>
+              <p class="why">Same calculation after the retrofit.</p></li>
+          <li><p class="math-line">\( \Delta E = 6{,}307{,}200 - 4{,}730{,}400 = 1{,}576{,}800\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Difference of the two annual energies.</b> Shortcut check: \(\Delta P = (1.8-1.35)\times400 = 180\) kW, and 180 × 8,760 = 1,576,800 — same figure, which validates the longer route.</p></li>
+          <li><p class="math-line">\( S = 1{,}576{,}800 \times \$0.14 = \$220{,}752/\text{yr} \)</p>
+              <p class="why"><b>Energy × tariff = money.</b> kWh × $/kWh leaves dollars.</p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{260{,}000}{220{,}752} \approx 1.18\ \text{years} \)</p>
+              <p class="why"><b>Simple payback = CapEx ÷ annual saving.</b> Units: $ ÷ ($/yr) = yr.</p></li>
+          <li><p class="math-line">\( C = \dfrac{1{,}576{,}800 \times 0.6}{1{,}000} = 946.1\ \text{t CO}_2\text{e/yr} \)</p>
+              <p class="why"><b>Carbon = energy × grid intensity</b>, then ÷1,000 to convert kg to metric tonnes, which is the reporting convention.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>6,307,200 kWh/yr</b> before, <b>4,730,400 kWh/yr</b> after.
+        (b) <b>≈ $220,752/year saved.</b> (c) <b>≈ 1.2 years payback.</b>
+        (d) <b>≈ 946 tonnes CO₂e/year avoided.</b>
+        (e) This is <b>PUE degradation</b> — trigger 2 from Topic 05, where ageing cooling plant
+        becomes less efficient than modern alternatives and raises operating cost.</p>
+        <p>Sanity check on the payback: the retrofit costs roughly one year's saving, so a payback just
+        over 1 year is exactly what you should expect — if you had got 12 years, you would know a
+        factor of 8,760 had gone astray. Note that the IT load never changes here; the entire saving
+        comes from shrinking the overhead multiplier. That is the defining characteristic of a
+        <b>facility-layer</b> intervention, and it is worth contrasting with the Class 12
+        virtualisation material, which attacks the IT load itself and then gets the PUE saving on top
+        as a multiplier.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Both Tier II and Tier III use N+1 redundancy, yet Tier III allows only 1.6 hours of annual
+        downtime against Tier II's 22 hours. Explain how the same redundancy model produces a
+        14-fold difference in reliability.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is <b>the</b> conceptual question of Class 11, joining <b>Topic 02 (the Tier table)</b> to
+        <b>Topic 03 (redundancy notation)</b>. The examiner has deliberately picked the one place where
+        the redundancy column does not explain the uptime column, and wants the term
+        <b>concurrent maintainability</b>. If you only discuss spare components you cannot answer it.</div>
+        <p><b>Model answer.</b> The difference is not in the number of spare components — both tiers
+        are N+1, so both have one unit of spare capacity beyond what the load requires. The difference
+        is in the <b>distribution path</b>.</p>
+        <p><b>Tier II has redundant components but a single distribution path.</b> So if a chiller
+        fails, the spare picks up the load and nothing happens. But if the single power or cooling
+        distribution path itself needs maintenance — a UPS module replaced, a switchgear inspection, a
+        pipe section isolated — the load must be dropped, because there is no alternative route to the
+        racks. Since that maintenance is <em>routine and scheduled</em>, not a rare failure, it
+        happens several times a year, and that is where the 22 hours goes.</p>
+        <p><b>Tier III is concurrently maintainable</b>, which is the lecture's defining phrase. Every
+        capacity component <em>and every distribution path</em> can be shut down for planned
+        maintenance with zero impact on IT operations. Practically that means dual power paths to each
+        rack — dual-corded PDUs — and isolatable cooling loops, so any single element can be taken out
+        of service live while the load continues on the alternative route.</p>
+        <p><b>Why the effect on annual downtime is so large:</b> in a well-run facility, the dominant
+        source of downtime is not component failure at all — it is <b>planned maintenance</b>. Tier II
+        eliminates outages from component failure but not from maintenance. Tier III eliminates both.
+        Removing the larger of the two categories is what produces the drop from 22 hours to 1.6.</p>
+        <p><b>Worth adding for a final mark:</b> Tier III still is not fault tolerant. It guarantees
+        that <em>planned</em> work causes no outage. Tier IV, at 2N, guarantees that an
+        <em>unplanned</em> single failure anywhere causes no impact — a stronger and more expensive
+        promise.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A facility reports PUE 1.2 and claims to be highly efficient. Its servers run at 8% average
+        CPU utilisation. Critique the claim.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This bridges <b>Topic 04 (PUE)</b> to the Class 12 virtualisation material, and it is exactly
+        the bridge the faculty built in the Class 12 opening: <em>"even the greenest Tier IV data
+        centre with a 1.15 PUE is inherently wasteful if its underlying servers sit idle at 10%
+        utilisation."</em> The examiner is testing whether you know <b>what PUE does not measure</b>.</div>
+        <p><b>Model answer.</b> The PUE figure itself is genuinely good. At 1.2, the DCiE is
+        1/1.2 = <b>83.3%</b>, so 83% of the electricity entering the building reaches the IT equipment
+        — well above the industry-average 1.5 (66.7%). The facility layer is efficient.</p>
+        <p>But PUE measures only the <b>ratio of total facility power to IT power</b>. It says nothing
+        whatsoever about whether the IT power is doing useful work. A server drawing 200 W while
+        computing nothing counts as "IT power" in the numerator's denominator just as much as a server
+        running at full utilisation. <b>PUE can therefore be improved by making the servers less
+        efficient</b> — if idle servers drew more power, the IT figure would rise and PUE would
+        <em>fall</em>, which is a clear sign the metric cannot be the whole story.</p>
+        <p>At 8% CPU utilisation the facility is badly wasteful in a way PUE is structurally incapable
+        of detecting. An idle server draws roughly <b>50–70% of its peak power</b>, so nearly all of
+        that "efficiently delivered" electricity is powering idle silicon. The facility has optimised
+        the overhead multiplier while ignoring the base it multiplies.</p>
+        <p><b>What should be done instead:</b> attack the IT load itself through server consolidation
+        and virtualisation, raising utilisation toward the 65–80% target and decommissioning the
+        surplus hosts. This is strictly more valuable than a facility retrofit, because
+        <b>every watt eliminated at the IT layer is multiplied by the PUE</b> — removing 1 kW of IT
+        load removes 1.2 kW of facility load here. The correct sequence is therefore: reduce IT load
+        first, then optimise PUE, not the reverse.</p>
+        <p><b>Conclusion.</b> The claim is not false but it is incomplete, and relying on it would lead
+        to the wrong investment decision. A complete efficiency picture needs PUE <em>and</em> a
+        utilisation or work-delivered metric alongside it.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Explain why modular design has become the industry-standard approach to build-out, with
+        reference to both capital efficiency and operating efficiency.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 01 (the over-build vs under-build trap)</b> and <b>Topic 05 (modular and containerised
+        facilities)</b>. The phrase "both capital and operating efficiency" is the examiner signposting
+        that there are two distinct arguments and they want both — most students give only the capital one.</div>
+        <p><b>The problem modular design solves.</b> A data centre must be designed for a load that
+        does not exist yet. Two failure modes follow. Building for peak day-one capacity ties up
+        capital in infrastructure that sits unused for years. Building too small forces a disruptive
+        expansion later — and expansion at a live site is a brownfield project with high downtime risk,
+        constrained by the existing structure and layout.</p>
+        <p><b>The capital argument.</b> Modular design builds the <em>shell</em> for full capacity but
+        installs power and cooling <em>in phases as demand grows</em>. The expensive, slow, hard-to-change
+        elements — land, structure, structural load rating — are committed once, since those genuinely
+        cannot be patched later (Topic 01). The expensive but modular elements are deferred, so capital
+        is spent closer to the point it earns a return. Prefabricated containerised modules take this
+        further, shortening deployment from <b>years to months</b> and letting capacity be added in
+        discrete chunks.</p>
+        <p><b>The operating argument</b>, which is the half usually missed. Power and cooling
+        infrastructure is <em>less efficient at partial load</em> than at design load. A facility built
+        for 5 MW but running 1 MW of IT does not simply waste the unused capital — it runs its chillers,
+        UPS and distribution far below their efficient operating point, which shows up directly as a
+        worse PUE for years. Phasing installation keeps the installed plant closer to its design load,
+        so the facility runs at a better PUE throughout the ramp-up rather than only once it is full.</p>
+        <p><b>Connecting to redesign.</b> Modularity also helps later: when a redesign trigger arrives —
+        density growth from AI/HPC racks, or end-of-life chillers and UPS batteries at 10–15 years —
+        a modular facility can absorb targeted upgrades in 3–9 months instead of requiring a
+        greenfield rebuild at 18–24 months. It converts a structural constraint into an incremental one.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A bank wants to build a new data centre near the Buriganga River, citing cheap land and easy
+        access to cooling water. Evaluate the proposal and recommend a course of action.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's own site scenario from Section 7. It tests whether you can take the
+        <b>generic site-selection criteria (Topic 01)</b> and <b>re-rank them for Bangladesh (Topic 06)</b>.
+        The examiner's key point is that the criteria are universal but their <em>relative importance</em>
+        is local. A good answer does not just say "flooding" — it explains why flooding outranks the
+        other criteria here and then solves the cooling problem the site was chosen for.</div>
+        <p><b>First objection: flood and monsoon risk.</b> Riverside sites are attractive for water-side
+        cooling, but they carry high inundation risk. Much of Bangladesh is low-lying and flood-prone,
+        and in this country <b>site elevation and drainage are frequently the single deciding
+        constraint on location</b> — outranking land cost, cooling access and even grid proximity. The
+        precedent is the National Data Center, deliberately sited on elevated, well-drained land at
+        <b>Kaliakoir Hi-Tech Park, Gazipur</b>, rather than anywhere cheaper or closer to water.</p>
+        <p><b>Why the risk is disqualifying rather than merely costly.</b> Site selection is one of the
+        decisions that is fixed the moment construction begins (Topic 01) — it cannot be patched later
+        the way a cooling plant or a UPS can be replaced. And the consequence of getting it wrong is
+        not degraded efficiency but total loss of the facility. For a bank this is compounded by
+        Bangladesh Bank's data protection and IT governance guidance, which pushes core banking systems
+        toward <b>Tier III-equivalent</b> reliability. A facility that can be inundated cannot credibly
+        offer 99.982% availability regardless of how much redundancy is installed inside it, because
+        the risk is to the whole site rather than to any component the N+1 model protects.</p>
+        <p><b>The cheap-land argument.</b> Land near a flood-prone river is cheap <em>because</em> it
+        floods. That discount is the market pricing the risk the bank would be assuming. Note also
+        that the site must accommodate a <b>2–4× footprint multiplier</b> beyond the building for
+        cooling plant, generators and expansion — so raw land price is a smaller share of project cost
+        than it appears.</p>
+        <p><b>Recommendation.</b> Reject the riverside site. Select on <b>adequate elevation and
+        drainage first</b>, then apply the remaining criteria — grid power availability and cost,
+        fibre connectivity with <b>≥2 physically separated diverse paths</b>, and land cost and zoning.
+        Solve the cooling-water requirement independently through <b>closed-loop cooling systems or
+        piped supply</b>, which decouples the water need from the site choice entirely. That is the key
+        insight: the river was solving a cooling problem that has other solutions, while creating a
+        flood problem that has none.</p>
+        <p><b>Additional Bangladesh-specific design requirements</b> for whichever site is chosen:
+        given voltage fluctuation and load shedding, <b>N+1 diesel generator capacity is close to
+        mandatory rather than optional</b>. The bank should budget for that capital cost and note the
+        associated Scope 1 emissions — an unavoidable trade-off where grid reliability is poor.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>An existing Dhaka data centre is Tier II. A new central bank guideline requires Tier III for
+        core banking systems. The operations director proposes buying additional UPS units and
+        chillers. Assess this proposal and set out what is actually required.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's redesign scenario from Section 7, and it is deliberately a trap. The director's
+        proposal is the intuitive one and it is <b>wrong</b>. It tests the
+        <b>concurrent maintainability distinction (Topic 02)</b> against the
+        <b>redundancy notation (Topic 03)</b>, plus the brownfield realities from <b>Topic 05</b>.</div>
+        <p><b>Assessment: the proposal misdiagnoses the gap.</b> The facility is already Tier II, which
+        means it is <em>already</em> N+1 — it already has redundant components. Buying more UPS units
+        and chillers adds spare capacity the facility already possesses. It would increase capital and
+        maintenance cost while moving the facility no closer to Tier III certification.</p>
+        <p><b>What actually separates Tier II from Tier III.</b> Both are N+1. The distinguishing
+        requirement is <b>concurrent maintainability</b>: every capacity component and every
+        distribution path must be able to be shut down for planned maintenance with zero impact on IT
+        operations. Tier II fails this not because it lacks spares but because it has a <b>single
+        distribution path</b> — so servicing that path drops the load. The gap is in the
+        <em>topology</em>, not the <em>inventory</em>.</p>
+        <p><b>What is actually required.</b> The minimum change is <b>redundant distribution paths</b>,
+        specifically:</p>
+        <ul>
+          <li><b>Dual power paths to every rack</b> — dual-corded PDUs, with each cord fed from an
+          independent distribution path, so either path can be isolated for maintenance while the racks
+          continue on the other.</li>
+          <li><b>Isolatable cooling loops</b>, so any section of the cooling distribution can be valved
+          off and serviced without removing cooling from the hall.</li>
+          <li>Corresponding <b>switchgear and distribution board changes</b> to make the paths genuinely
+          independent rather than nominally separate but sharing a common element.</li>
+        </ul>
+        <p><b>Practical implications for a brownfield project.</b> This is a retrofit on a live
+        facility, so downtime risk is high and the work is constrained by the existing structure and
+        layout (Topic 05). Capital cost is lower than a new build and the timeline is far shorter —
+        typically <b>3–9 months</b> for targeted upgrades against 18–24 months for greenfield — but
+        the sequencing must be planned so that core banking systems stay up throughout. In practice
+        this means phasing the work rack row by rack row, and it may require temporary distribution
+        during the transition. The lecture notes that <b>most existing private data centres in Dhaka
+        were not built to modern Tier standards</b>, so phased retrofit is the normal path here rather
+        than the exception.</p>
+        <p><b>A caution to include.</b> Dual-corded PDUs only deliver Tier III if the servers themselves
+        have dual power supplies. Single-corded equipment plugged into a dual-path facility reintroduces
+        a single point of failure at the last metre, so an equipment audit belongs in the project scope.</p>
+        <p><b>Recommendation.</b> Redirect the budget from additional capacity units to distribution
+        path redundancy, commission an Uptime Institute assessment to confirm what the certification
+        actually requires for this facility, and phase the work to protect live systems. And be
+        explicit with the board that Tier III delivers <em>concurrent maintainability</em>, not fault
+        tolerance — if the central bank's intent is survival of unplanned single failures, that is
+        Tier IV at 2N, a materially larger project.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>You are walking the floor of a data centre on a site visit. Describe the physical evidence
+        you would look for to judge whether the facility is closer to Tier II or Tier III, and explain
+        the reasoning behind each observation.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the faculty's own field-trip discussion prompt from Section 7, so it is a strong exam
+        candidate. It tests whether your understanding of <b>concurrent maintainability (Topic 02)</b>
+        is concrete enough to be <em>observed</em> rather than merely recited. Every observation you
+        list must be tied to the reasoning — an unexplained checklist earns little.</div>
+        <p><b>The single question to answer by observation:</b> can every distribution path be taken
+        out of service without dropping the load? Tier II has redundant components on one path;
+        Tier III has redundant paths. So look for evidence of <em>duality of route</em>, not
+        <em>quantity of equipment</em>.</p>
+        <p><b>1 · Look at the back of the racks — power cords per server.</b> The clearest single
+        indicator. <b>Dual-corded servers</b>, with the two cords running to two <em>different</em>
+        PDUs, indicate dual power paths and point to Tier III. Single-corded equipment means servicing
+        that one path drops those servers, which is Tier II behaviour regardless of what is installed
+        upstream.</p>
+        <p><b>2 · Trace the PDUs back.</b> Two PDUs per rack is only meaningful if they are fed from
+        genuinely independent distribution boards. If both trace back to the same panel or the same
+        UPS output, the redundancy is cosmetic and there is still a single point of failure. Colour-coded
+        A/B power infrastructure — separate cable trays, distinct labelling — is strong evidence of a
+        deliberate dual-path design.</p>
+        <p><b>3 · Cooling loop isolation valves.</b> Look for valves that allow a section of the chilled
+        water loop to be isolated and drained while the rest of the hall stays cooled. Their presence
+        indicates cooling distribution designed for concurrent maintenance. A single loop with no
+        isolation points means any cooling pipework maintenance requires shutting down the hall.</p>
+        <p><b>4 · UPS and switchgear arrangement.</b> Tier II typically shows N+1 UPS modules feeding a
+        single distribution bus. Tier III shows two separate systems with independent output paths.
+        Ask whether a UPS can be put into maintenance bypass without the load riding on raw utility
+        power — if the answer is no, that is not concurrently maintainable.</p>
+        <p><b>5 · Ask the operational question, not the equipment question.</b> The most revealing thing
+        to ask the facility manager is: <em>"when you last replaced a UPS battery string or serviced a
+        chiller, did the IT load stay up?"</em> Tier III means yes, routinely, as normal practice.
+        Tier II means it was done in a scheduled maintenance window with systems down — and their
+        maintenance-window calendar is documentary evidence either way.</p>
+        <p><b>6 · Generator and fuel arrangements</b> — particularly relevant in Dhaka. Given grid
+        voltage fluctuation and load shedding, <b>N+1 generator capacity is close to mandatory here</b>,
+        so its presence indicates local necessity rather than Tier level. What is more informative is
+        whether generators feed both distribution paths independently, and whether on-site fuel storage
+        and refuelling contracts match the claimed autonomy.</p>
+        <p><b>Interpreting what you find.</b> The faculty's framing is worth stating in conclusion: the
+        difference between the tiers is <b>a subtle but critical engineering difference</b>, and it
+        lives in topology. A facility can look impressive — plenty of units, clean halls, good
+        containment — and still be Tier II, because Tier II is defined by having only one road to the
+        racks, however many vehicles are parked on it.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 11</h2>
+    <div class="grid">
+      <div class="item"><h4>PUE</h4><p>\( \text{PUE} = \dfrac{\text{Total facility power}}{\text{IT power}} \) — always ≥ 1. Lower is better. 1.5 ≈ industry average.</p></div>
+      <div class="item"><h4>DCiE</h4><p>\( \text{DCiE} = \dfrac{1}{\text{PUE}}\times 100\% \) — higher is better. PUE 1.25 → 80%. PUE 1.5 → 66.7%. PUE 2.0 → 50%.</p></div>
+      <div class="item"><h4>Downtime</h4><p>\( D = (1-\text{uptime})\times \text{period} \). Year = <b>525,600 min</b> = <b>8,760 hrs</b>.</p></div>
+      <div class="item"><h4>Capacity plan</h4><p>Racks = area ÷ footprint (footprint INCLUDES aisles). Capacity = racks × kW/rack. Facility kW = PUE × IT kW.</p></div>
+      <div class="item"><h4>Tier I</h4><p>Single path, no redundancy. <b>N</b>. 99.671% → <b>28.8 hrs/yr</b>. Dev/test.</p></div>
+      <div class="item"><h4>Tier II</h4><p>Redundant components, SINGLE distribution path. <b>N+1</b>. 99.741% → <b>22.0 hrs/yr</b>.</p></div>
+      <div class="item"><h4>Tier III</h4><p><b>Concurrently maintainable</b>. <b>N+1</b>. 99.982% → <b>1.6 hrs/yr (≈94.6 min)</b>. Dual-corded PDUs.</p></div>
+      <div class="item"><h4>Tier IV</h4><p><b>Fault tolerant</b> — single failure anywhere = no impact. <b>2N / 2N+1</b>. 99.995% → <b>0.4 hrs (26 min)</b>.</p></div>
+      <div class="item"><h4>The II vs III answer</h4><p>Both are N+1. Difference = distribution PATH, not components. III can service ANY path live. That's concurrent maintainability.</p></div>
+      <div class="item"><h4>III vs IV</h4><p>III = planned maintenance causes no outage. IV = UNPLANNED single failure causes no impact. Different promises.</p></div>
+      <div class="item"><h4>Redundancy counts (N=3)</h4><p>N = 3 · N+1 = <b>4</b> · 2N = <b>6</b> · 2N+1 = <b>8</b> (two paths of N+1). 2N overbuild is always 100%.</p></div>
+      <div class="item"><h4>Tier cost</h4><p>Each step ≈ <b>+20–50%</b> capital and operating. Tier IV can be <b>2×+</b> per kW vs Tier I.</p></div>
+      <div class="item"><h4>5 redesign triggers</h4><p>Density growth (AI/HPC) · PUE degradation · Equipment end-of-life (10–15 yrs) · New compliance · Sustainability targets.</p></div>
+      <div class="item"><h4>Greenfield vs brownfield</h4><p>Greenfield: full freedom, no downtime risk, highest cost, 18–24 mo. Brownfield: constrained, HIGH downtime risk, lower cost, 3–9 mo.</p></div>
+      <div class="item"><h4>Design numbers</h4><p>18–24 mo build · 2–4× land footprint · ≥2 utility feeds (separate substations) · ≥2 diverse fibre paths · 15–20 yr design life.</p></div>
+      <div class="item"><h4>Over/under-build</h4><p>Answer is always <b>modular</b>: shell for full capacity, power &amp; cooling installed in phases.</p></div>
+      <div class="item"><h4>Bangladesh</h4><p>Flood/elevation is the DECIDING constraint (Kaliakoir, Gazipur). N+1 diesel gensets near-mandatory. BB pushes Tier III for core banking. Retrofit not rebuild.</p></div>
+      <div class="item"><h4>What PUE can't see</h4><p>PUE ignores server UTILISATION. A 1.15 PUE facility at 10% CPU is still wasteful. Cut IT load first — the saving multiplies by PUE.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

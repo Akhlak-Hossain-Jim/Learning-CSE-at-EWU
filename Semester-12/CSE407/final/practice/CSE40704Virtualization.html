@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Virtualization — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#basics">Virtualisation &amp; server sprawl</a></li>
+      <li><a href="#hypervisor">Hypervisors: Type 1 vs Type 2</a></li>
+      <li><a href="#powercurve">Consolidation &amp; the power curve</a></li>
+      <li><a href="#migration">Live migration, DRS &amp; DPM</a></li>
+      <li><a href="#bd">Bangladesh context</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Virtualization &amp; Server Consolidation</h1>
+    <div class="meta">
+      <span><b>Class:</b> 12 of 22 — Virtualization &amp; Server Consolidation</span>
+      <span><b>Reading:</b> Velete Ch.12 (all) · Lamb Ch.6 (all)</span>
+      <span><b>Outcome:</b> CO3 · EP1, EP2, EP5</span>
+      <span><b>Delivered:</b> 7 Aug 2025 + VM consolidation lab</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 12 — Virtualization &amp; Server Consolidation. Velete Ch.12 (all), Lamb Ch.6 (all). Course outcome CO3.</p>
+
+    <p>Class 11 dealt with the building. Class 12 deals with what runs inside it. The faculty made
+    the connection explicit in the opening, and it is the sentence that frames the whole topic:
+    <em>"even the greenest Tier IV data centre with a 1.15 PUE is inherently wasteful if its
+    underlying servers sit idle at 10% utilisation."</em></p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 12</span>
+      <p>An idle server still draws 50–70% of its peak power, so a data centre running at 10–15%
+      CPU utilisation is burning most of its electricity on nothing — and virtualisation fixes this
+      by collapsing many workloads onto fewer physical hosts so the surplus machines can be switched
+      off entirely.</p>
+    </div>
+
+    <p>The numerical work here is straightforward but there are five distinct calculation types, and
+    the exam is likely to combine two of them in a single question. Make sure you can do each on its
+    own before you try them combined: <b>power before/after consolidation</b>, <b>the non-linear
+    power curve</b>, <b>consolidation ratio and host count</b>, <b>the PUE multiplier</b>, and
+    <b>annual energy from continuous power</b>.</p>
+  </section>
+
+  <section class="topic" id="basics">
+    <span class="topic-num">Topic 01</span>
+    <h2>Virtualisation fundamentals and server sprawl</h2>
+    <p class="subtitle">What the problem was before virtualisation existed, and why it was so wasteful.</p>
+
+    <p>Before virtualisation, the enterprise standard was <b>one application per physical server</b>.
+    The reason was isolation: if two applications share a machine and one crashes it or hogs the CPU,
+    the other suffers. Giving each application its own hardware guaranteed safety, and for a long
+    time that was worth the cost.</p>
+
+    <p>The cost turned out to be enormous. Applications rarely need a whole server, so this practice
+    produced <b>server sprawl</b> — racks of machines running at <b>5% to 15% average CPU
+    utilisation</b>, drawing large base electrical power 24 hours a day to do very little.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the virtualisation promise</span>
+      <p>Virtualisation introduces a <b>software abstraction layer between the hardware and the
+      operating systems</b>. By running multiple <b>Virtual Machines (VMs)</b> on a single physical
+      host, hardware resources — CPU, RAM, storage, NICs — are pooled and dynamically shared,
+      <b>transforming idle capacity into active compute</b>. The isolation that justified one-app-per-server
+      is preserved, but it now happens in software rather than by owning separate metal.</p>
+    </div>
+
+    <div class="formula">
+      <div class="label">The four utilisation figures from Class 12</div>
+      <p style="margin:0">
+      <b>10–15%</b> — typical legacy physical server utilisation.<br>
+      <b>65–80%</b> — target utilisation for a well-consolidated virtualised host cluster.<br>
+      <b>50–70%</b> — average reduction in physical server hardware footprint after virtualisation.<br>
+      <b>3:1 to 15:1</b> — typical VM-to-physical-host consolidation ratios in enterprise environments
+      (10:1 is the figure the faculty used as "typical").</p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">The bare-metal trap (legacy)</th><th style="padding:8px 6px">The virtualised paradigm (modern)</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px">1 application = 1 physical server</td><td style="padding:8px 6px">N applications isolated safely on 1 physical host</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px">Power consumed primarily by idle baseline overhead</td><td style="padding:8px 6px">Power consumption scales proportionally with actual work</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px">High capital cost (CapEx) and floor space consumption</td><td style="padding:8px 6px">Drastic reduction in power, cooling and rack footprint</td></tr>
+      <tr><td style="padding:8px 6px">Complex disaster recovery, slow provisioning (weeks)</td><td style="padding:8px 6px">Rapid VM provisioning (minutes), live migration capability</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="topic" id="hypervisor">
+    <span class="topic-num">Topic 02</span>
+    <h2>Hypervisors — Type 1 vs Type 2</h2>
+    <p class="subtitle">A comparison table the faculty presented in full. Expect a direct question on it.</p>
+
+    <p>The <b>hypervisor</b> — also called the Virtual Machine Monitor or VMM — is the core software
+    engine that manages hardware resources and isolates VMs from one another. Where it sits in the
+    software stack determines its efficiency, and that architectural placement is the entire basis of
+    the Type 1 / Type 2 distinction.</p>
+
+    <p>Picture two stacks. In <b>Type 1</b>, the hypervisor sits directly on the hardware, and the
+    guest operating systems sit on the hypervisor. In <b>Type 2</b>, there is a full host operating
+    system on the hardware first, the hypervisor runs as an application on top of that, and the guest
+    operating systems sit on the hypervisor. Type 2 therefore has one extra complete OS in the path
+    between every guest and the physical CPU.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">Feature</th><th style="padding:8px 6px">Type 1 (Bare-Metal)</th><th style="padding:8px 6px">Type 2 (Hosted)</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Architecture</b></td><td style="padding:8px 6px">Runs directly on bare-metal hardware</td><td style="padding:8px 6px">Runs on top of a host operating system</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Performance overhead</b></td><td style="padding:8px 6px">Near-zero (<b>~1–3%</b>)</td><td style="padding:8px 6px">Moderate to high (<b>~10–20%</b>)</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Energy efficiency</b></td><td style="padding:8px 6px">Optimal — full control of hardware CPU states</td><td style="padding:8px 6px">Suboptimal — wasted OS overhead layer</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Security isolation</b></td><td style="padding:8px 6px">High — thin attack surface</td><td style="padding:8px 6px">Lower — vulnerable to host OS exploits</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Typical examples</b></td><td style="padding:8px 6px"><b>VMware ESXi, KVM, Microsoft Hyper-V, Xen</b></td><td style="padding:8px 6px"><b>Oracle VirtualBox, VMware Workstation</b></td></tr>
+      <tr><td style="padding:8px 6px"><b>Target deployment</b></td><td style="padding:8px 6px">Enterprise data centres &amp; cloud infrastructure</td><td style="padding:8px 6px">Developer workstations, testing, client desktops</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="tag">The Green IT rule for virtualisation architecture</span>
+      <p>Always deploy <b>Type 1 (bare-metal)</b> hypervisors in enterprise environments. The faculty
+      gave three specific reasons, and the third is the one most students miss: Type 2 hypervisors
+      <b>(1)</b> duplicate OS overhead, <b>(2)</b> waste CPU cycles on host system kernel calls, and
+      <b>(3)</b> <b>prevent direct CPU low-power state adjustments (C-states / P-states)</b>, creating
+      unnecessary thermal and power overhead. That third point is why this is a green computing
+      question and not just a performance one.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the C-states / P-states point</span>
+      <p>If asked <em>why</em> Type 2 is energy-inefficient, "it is slower" is a weak answer.
+      The specific mechanism is that the host OS sits between the hypervisor and the hardware, so the
+      hypervisor cannot directly manage the CPU's low-power states. C-states are idle states (how
+      deeply the core sleeps when doing nothing) and P-states are performance states (voltage and
+      frequency scaling under load). Losing direct control of those means the CPU cannot drop into
+      its most efficient states even when the workload would allow it.</p>
+    </div>
+
+    <div class="video">
+      <div class="frame">
+        <iframe src="https://www.youtube.com/embed/LMAEbB2a50M" title="What is a Hypervisor?"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="cap">▶ <a href="https://www.youtube.com/watch?v=LMAEbB2a50M" target="_blank" rel="noopener">What is a Hypervisor?</a>
+      Why it helps: the Type 1 / Type 2 difference is fundamentally a picture of where a layer sits in
+      a stack. Watching someone draw the two stacks side by side fixes it far better than reading the
+      comparison table, and the table then becomes easy to reconstruct.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="powercurve">
+    <span class="topic-num">Topic 03</span>
+    <h2>Server consolidation and the power curve</h2>
+    <p class="subtitle">The single most important idea in Class 12. Everything numerical follows from it.</p>
+
+    <p>Here is the fact that makes virtualisation a green computing topic rather than merely an
+    operations one: <b>server power draw is not linear</b>. If you halve a server's workload, its
+    power consumption does not halve. It barely moves.</p>
+
+    <div class="formula">
+      <div class="label">The idle power fact</div>
+      <p style="margin:0">An <b>idle physical server consumes roughly 50% to 70% of its maximum power
+      draw</b>. That baseline is paid continuously, regardless of utilisation.</p>
+    </div>
+
+    <p>The consequence is the whole argument for consolidation. A server at 10% utilisation is not
+    using 10% of its energy budget — it is using perhaps 60%. So ten servers at 10% load consume
+    roughly six times more power than one server at 100% load doing the same total work. The waste is
+    not in the computing; it is in the <em>existing</em>.</p>
+
+    <p>Since power scales so weakly with load, the only way to make a real saving is to
+    <b>eliminate physical machines entirely</b> — not to run them more gently. This is why the goal
+    of consolidation is decommissioning hosts, and why Dynamic Power Management (below) puts idle
+    hosts fully to sleep rather than just idling them.</p>
+
+    <h3>The faculty's three-state worked example</h3>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px">State</th><th style="padding:8px 6px">Configuration</th><th style="padding:8px 6px">Power</th><th style="padding:8px 6px">Result</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Unconsolidated sprawl</b></td>
+        <td style="padding:8px 6px">10 physical servers, each running 1 light workload at 10% load</td>
+        <td style="padding:8px 6px">10 × 140 W = <b>1,400 W</b></td>
+        <td style="padding:8px 6px">Extremely wasteful — 90% of the electricity powers idle silicon</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Static consolidation</b></td>
+        <td style="padding:8px 6px">Workloads combined onto 2 active hosts at 50% load; 8 decommissioned</td>
+        <td style="padding:8px 6px">2 × 180 W = <b>360 W</b></td>
+        <td style="padding:8px 6px"><b>74% power reduction</b> versus the unconsolidated baseline</td></tr>
+      <tr><td style="padding:8px 6px"><b>Dynamic (DPM)</b></td>
+        <td style="padding:8px 6px">Live migration shifts VMs by load; off-peak = 1 host at 70%, others in deep ACPI sleep</td>
+        <td style="padding:8px 6px"><b>200 W</b> off-peak</td>
+        <td style="padding:8px 6px">Up to <b>85% off-peak savings</b> while fully maintaining SLA guarantees</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — read the power figures carefully</span>
+      <p>Notice that the consolidated hosts draw <em>more</em> per machine (180 W at 50% load versus
+      140 W at 10% load). That is the non-linear curve at work: a busier server does use more power.
+      The saving comes entirely from there being <b>two machines instead of ten</b>, not from each
+      machine using less. If a question tries to catch you by noting that the surviving hosts draw
+      more, this is the answer.</p>
+    </div>
+
+    <h3>The linear-interpolation formula for power at a given load</h3>
+
+    <p>Several problems ask for a server's power draw at some utilisation. The faculty's convention
+    treats the <em>dynamic</em> portion as linear above the idle baseline:</p>
+
+    <div class="formula">
+      <div class="label">Power at a given CPU load</div>
+      \[ P = P_{\text{idle}} + \text{Load}\% \times \left( P_{\max} - P_{\text{idle}} \right) \]
+      <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">The bracketed term
+      \( P_{\max} - P_{\text{idle}} \) is the <b>dynamic power range</b> — the only part of the budget
+      that responds to workload at all.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="migration">
+    <span class="topic-num">Topic 04</span>
+    <h2>Live migration and dynamic resource management</h2>
+    <p class="subtitle">Three technologies with three distinct jobs. Do not blur them together.</p>
+
+    <p>Virtualisation is not static. Once workloads are decoupled from specific hardware, they can be
+    moved while running — and that capability is what turns consolidation from a one-off exercise
+    into a continuous optimisation.</p>
+
+    <ul>
+      <li><b>Live VM Migration</b> (VMware vMotion, KVM Live Migration) — transfers a running VM's
+      <b>memory state, CPU execution context and network bindings</b> across hosts over dedicated
+      network links, <b>without dropping client connections</b>. This is the enabling primitive; the
+      other two are built on it.</li>
+      <li><b>Dynamic Resource Scheduler (DRS)</b> — continuously monitors CPU and RAM demand across a
+      host cluster and migrates VMs to <b>eliminate hot spots and maintain application performance
+      SLAs</b>. Its objective is <em>performance</em>.</li>
+      <li><b>Distributed Power Management (DPM)</b> — when cluster demand drops, say at night, DPM
+      consolidates VMs onto a minimal subset of hosts and uses <b>IPMI / iLO</b> to place the idle
+      hosts into deep standby (S5 / Wake-on-LAN). When demand spikes, hosts wake automatically. Its
+      objective is <em>energy</em>.</li>
+    </ul>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the live migration energy trade-off</span>
+      <p>The faculty flagged this explicitly and it is a good analytical question. Live migration
+      itself <b>consumes network bandwidth and temporary CPU overhead on both the source and the
+      destination host</b> during state transfer. Migrating VMs <em>too frequently</em> can produce an
+      overall <b>energy net-loss</b> — you spend more moving workloads around than you save by
+      powering hosts down. The fix named in the lecture is that DRS and DPM algorithms must enforce
+      <b>threshold hysteresis</b> before triggering migrations: the load must cross a boundary by a
+      meaningful margin, and stay there, before a move is authorised. Otherwise the cluster oscillates.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="tag">The distinction to state cleanly</span>
+      <p><b>DRS optimises for performance</b> — it moves VMs away from congested hosts.
+      <b>DPM optimises for power</b> — it moves VMs <em>together</em> so hosts can be switched off.
+      They pull in opposite directions, which is why they run as a coordinated pair with thresholds
+      rather than independently.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="bd">
+    <span class="topic-num">Topic 05</span>
+    <h2>The Bangladesh context</h2>
+    <p class="subtitle">A locally specific benefit that has nothing to do with electricity bills.</p>
+
+    <p>In Bangladesh, virtualisation serves a dual purpose: besides cutting long-term operational
+    costs, it directly mitigates local infrastructure challenges — generator fuel expense and UPS
+    battery wear.</p>
+
+    <ul>
+      <li><b>Prolonging UPS runtime.</b> This is the distinctive local point. During grid load-shedding,
+      reducing the server load extends UPS battery autonomy. The faculty's formulation:
+      <b>halving IT power consumption through VM consolidation effectively doubles the backup runtime
+      available on battery banks.</b> That is a survival benefit, not just a cost benefit.</li>
+      <li><b>Bank compliance and private cloud.</b> Bangladesh Bank regulatory circulars require strict
+      isolation and high availability for <b>core banking software (CBS)</b>. Hypervisor HA clusters
+      let local financial institutions achieve that compliance <b>without duplicate hardware sprawl</b>.</li>
+      <li><b>Legacy application support.</b> Virtualisation encapsulates an old 32-bit OS inside a VM,
+      letting legacy software run on efficient modern high-density hardware — which removes the need
+      to keep power-hungry legacy physical servers alive purely to host one application.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">These extend the faculty's own five math-practice cards. All five calculation types appear here.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>An enterprise has <b>80 physical servers</b> drawing an average of <b>150 W</b> each. After
+        virtualisation, the workloads run on <b>8 hosts</b> drawing <b>250 W</b> each.
+        (a) Total power saved in kW? (b) Percentage reduction?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{orig}} = 80 \times 150 = 12{,}000\ \text{W} \)</p>
+              <p class="why"><b>Count × per-unit power</b> gives the fleet's total draw before consolidation.</p></li>
+          <li><p class="math-line">\( P_{\text{new}} = 8 \times 250 = 2{,}000\ \text{W} \)</p>
+              <p class="why">Same pattern after consolidation. Note the per-host figure <em>rose</em> from 150 W to 250 W — the surviving hosts work harder, which is the non-linear power curve in action.</p></li>
+          <li><p class="math-line">\( \Delta P = 12{,}000 - 2{,}000 = 10{,}000\ \text{W} \)</p>
+              <p class="why"><b>Difference of the two totals</b> is the saving. Both are in watts so no conversion is needed yet.</p></li>
+          <li><p class="math-line">\( \Delta P = 10\ \text{kW} \)</p>
+              <p class="why"><b>Convert W to kW</b> (÷1,000), as the question asks for kW.</p></li>
+          <li><p class="math-line">\( \dfrac{10{,}000}{12{,}000} \times 100\% = 83.3\% \)</p>
+              <p class="why"><b>Saving as a percentage of the original</b> — always divide by the <em>before</em> figure, not the after.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>10 kW saved</b> · (b) <b>83.3% reduction</b>.</p>
+        <p>Point worth adding for marks: this is the <b>direct electrical reduction only</b>. The
+        cooling savings that follow are not counted here — and via the PUE multiplier they add
+        roughly another 50% on top in a typical facility. Sanity check: 72 of 80 servers were removed
+        (90%), and the saving is 83%, slightly less than 90% because the surviving hosts each draw
+        more. That relationship is the expected shape of the answer.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A server has a maximum load power of <b>300 W</b> and an idle power of <b>180 W</b> (60% of
+        max). Assuming power rises linearly with CPU load above idle, what is its draw at
+        <b>70% CPU load</b>? What is the dynamic power range?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\max} = 300\ \text{W},\quad P_{\text{idle}} = 180\ \text{W} \)</p>
+              <p class="why">The two endpoints of the power curve. Everything between them is interpolated.</p></li>
+          <li><p class="math-line">\( P = P_{\text{idle}} + \text{Load}\% \times (P_{\max} - P_{\text{idle}}) \)</p>
+              <p class="why"><b>The linear interpolation formula.</b> The idle power is paid unconditionally; only the <em>range above it</em> responds to load.</p></li>
+          <li><p class="math-line">\( P_{\max} - P_{\text{idle}} = 300 - 180 = 120\ \text{W} \)</p>
+              <p class="why">Compute the <b>dynamic power range</b> first — this is the portion of the budget that workload can actually influence.</p></li>
+          <li><p class="math-line">\( P = 180 + 0.70 \times 120 \)</p>
+              <p class="why"><b>Substitute</b>, converting 70% to the decimal 0.70 so it can multiply.</p></li>
+          <li><p class="math-line">\( P = 180 + 84 = 264\ \text{W} \)</p>
+              <p class="why">Multiply then add. The result must lie between 180 W and 300 W — it does, which is the check.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>264 W</b> at 70% load. The <b>dynamic power range is only 120 W</b>.</p>
+        <p>The interpretation is the important half: <b>180 W is drawn continuously regardless of
+        utilisation</b>. So going from 0% to 70% CPU load — a very large change in useful work —
+        raises power by only 84 W, or 47%. This is precisely why running servers "more gently" saves
+        almost nothing and why the only real lever is <b>switching machines off</b>. Note also that a
+        server at 0% load still draws 60% of peak, which is where the "10 servers at 10% load waste
+        90% of their energy" claim comes from.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A data centre consolidates <b>120 physical workloads</b> into a cluster with a consolidation
+        ratio of <b>12:1</b>. (a) How many physical hosts are needed? (b) How many servers are
+        decommissioned? (c) If the ratio were only 8:1, how many additional hosts would be required?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( V = 120\ \text{workloads},\quad R = 12 \)</p>
+              <p class="why">Total VMs and the consolidation ratio. "12:1" means twelve VMs per physical host.</p></li>
+          <li><p class="math-line">\( H = \dfrac{V}{R} = \dfrac{120}{12} = 10\ \text{hosts} \)</p>
+              <p class="why"><b>Hosts = total VMs ÷ ratio.</b> Check it divides cleanly — if it did not, you would round <em>up</em>, since a partial host cannot exist.</p></li>
+          <li><p class="math-line">\( D = V - H = 120 - 10 = 110\ \text{servers} \)</p>
+              <p class="why"><b>Decommissioned = original count − new host count.</b> This assumes each original workload occupied one physical server, which is the pre-virtualisation "one app per server" model.</p></li>
+          <li><p class="math-line">\( H' = \dfrac{120}{8} = 15\ \text{hosts} \)</p>
+              <p class="why">Same division with the lower ratio. A lower ratio packs fewer VMs per host, so more hosts are needed.</p></li>
+          <li><p class="math-line">\( H' - H = 15 - 10 = 5\ \text{additional hosts} \)</p>
+              <p class="why"><b>Difference of the two host counts</b> answers the comparative part.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>10 hosts</b> · (b) <b>110 servers decommissioned</b> · (c) <b>5 additional hosts</b>
+        at 8:1.</p>
+        <p>Both ratios sit inside the lecture's stated enterprise range of 3:1 to 15:1, so both are
+        realistic. Add for marks: decommissioning 110 physical units cuts far more than electricity —
+        it reduces <b>floor space, switch port consumption and maintenance cost</b>, and it defers the
+        embodied carbon of future replacements for all 110 machines. Sanity check: doubling the ratio
+        should roughly halve the host count, and 12:1 versus 8:1 (a factor of 1.5) gives 10 versus 15
+        (also a factor of 1.5), which is consistent.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>Decommissioning 20 idle servers saves <b>3 kW</b> of continuous IT load. The data centre has
+        a <b>PUE of 1.5</b>. (a) What is the total facility power reduction including cooling?
+        (b) Over a year at <b>$0.13/kWh</b>, what does that save? (c) Explain why the facility saving
+        exceeds the IT saving.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \Delta P_{\text{IT}} = 3\ \text{kW},\quad \text{PUE} = 1.5 \)</p>
+              <p class="why">The IT-layer saving and the facility's efficiency ratio.</p></li>
+          <li><p class="math-line">\( P_{\text{facility}} = P_{\text{IT}} \times \text{PUE} \)</p>
+              <p class="why"><b>Rearranged PUE definition</b> (PUE = total ÷ IT). It applies to a <em>change</em> in load just as it does to a total, because the relationship is proportional.</p></li>
+          <li><p class="math-line">\( \Delta P_{\text{facility}} = 3 \times 1.5 = 4.5\ \text{kW} \)</p>
+              <p class="why">Multiply. The result must exceed the IT figure since PUE &gt; 1 — that is the check.</p></li>
+          <li><p class="math-line">\( E = 4.5 \times 8{,}760 = 39{,}420\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time</b>, with 8,760 hours for continuous annual operation.</p></li>
+          <li><p class="math-line">\( C = 39{,}420 \times \$0.13 = \$5{,}124.60 \)</p>
+              <p class="why"><b>Energy × tariff = cost.</b> kWh × $/kWh leaves dollars.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>4.5 kW</b> total facility reduction · (b) <b>≈ $5,125/year</b>.</p>
+        <p>(c) The explanation, which is the conceptual half: every watt consumed by IT equipment
+        becomes heat, and that heat must be removed by the cooling system, which itself draws power.
+        A PUE of 1.5 means the facility draws 1.5 W for every 1 W reaching IT. So eliminating 1 W of
+        IT load eliminates that watt <em>and</em> the 0.5 W of cooling and distribution overhead it
+        was generating. <b>Every watt saved at the IT layer is multiplied by the PUE.</b></p>
+        <p>This is the strategic point of the whole class: IT-layer interventions are inherently more
+        valuable than facility-layer ones, because facility improvements reduce only the multiplier
+        while IT improvements reduce the base <em>and</em> get the multiplier applied to the saving.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A virtualised cluster saves <b>15 kW</b> of continuous power. (a) How many kWh are saved
+        over a full year? (b) At $0.10/kWh, what is the annual monetary saving? (c) At a grid
+        intensity of 0.6 kg CO₂e/kWh, how many tonnes of CO₂e are avoided?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P = 15\ \text{kW},\quad t = 8{,}760\ \text{h} \)</p>
+              <p class="why">Continuous power and the hours in a year (365 × 24). Any "continuous" or "24/7" problem uses 8,760.</p></li>
+          <li><p class="math-line">\( E = P \times t = 15 \times 8{,}760 = 131{,}400\ \text{kWh} \)</p>
+              <p class="why"><b>Energy = power × time.</b> Units: kW × h = kWh, which is what was asked for.</p></li>
+          <li><p class="math-line">\( C = 131{,}400 \times \$0.10 = \$13{,}140 \)</p>
+              <p class="why"><b>Energy × tariff.</b> kWh cancels, leaving dollars.</p></li>
+          <li><p class="math-line">\( m = 131{,}400 \times 0.6 = 78{,}840\ \text{kg CO}_2\text{e} \)</p>
+              <p class="why"><b>Energy × grid carbon intensity</b> converts electricity into emissions. Units: kWh × kg/kWh = kg.</p></li>
+          <li><p class="math-line">\( m = \dfrac{78{,}840}{1{,}000} = 78.8\ \text{tonnes} \)</p>
+              <p class="why"><b>Convert kg to metric tonnes</b> (÷1,000) — the reporting convention for corporate carbon disclosure.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>131,400 kWh/year</b> · (b) <b>$13,140/year</b> · (c) <b>≈ 78.8 tonnes CO₂e/year</b>.</p>
+        <p>The faculty's own note on this problem: a simple consolidation initiative generating $13,140
+        in annual utility savings is the kind of figure that gets a project approved. The carbon
+        figure is what goes into <b>Scope 2 reporting</b>. Sanity check: 15 kW is roughly the draw of
+        100 idle legacy servers, and 131,400 kWh is about the annual consumption of 30 average
+        households — plausible for a mid-sized consolidation.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>A Dhaka company runs <b>60 legacy servers</b>, each drawing <b>145 W</b> at their typical
+        12% utilisation. They virtualise at a <b>10:1</b> ratio onto new hosts with
+        \(P_{\max}\) = <b>400 W</b> and \(P_{\text{idle}}\) = <b>240 W</b>, running at <b>70%</b>
+        utilisation. Facility PUE is <b>1.6</b>, electricity is <b>$0.14/kWh</b>, and the six new
+        hosts cost <b>$54,000</b>.</p>
+        <p>(a) IT power before and after. (b) Facility power saving. (c) Annual money saved.
+        (d) Simple payback period. (e) Their UPS bank supported 20 minutes of runtime at the old load
+        — estimate the new runtime and explain why this matters in Dhaka.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{IT,before}} = 60 \times 145 = 8{,}700\ \text{W} = 8.7\ \text{kW} \)</p>
+              <p class="why"><b>Count × per-unit power.</b> The 12% utilisation is given as context — the 145 W already accounts for it, so do not apply the load formula again here.</p></li>
+          <li><p class="math-line">\( H = \dfrac{60}{10} = 6\ \text{hosts} \)</p>
+              <p class="why"><b>Workloads ÷ consolidation ratio</b> gives the new host count, consistent with the six hosts costed in the problem.</p></li>
+          <li><p class="math-line">\( P_{\text{host}} = 240 + 0.70 \times (400 - 240) \)</p>
+              <p class="why"><b>Linear interpolation formula</b> from Topic 03. The new hosts run at a stated utilisation, so their draw must be computed rather than assumed.</p></li>
+          <li><p class="math-line">\( = 240 + 0.70 \times 160 = 240 + 112 = 352\ \text{W} \)</p>
+              <p class="why">Dynamic range is 160 W; 70% of it is 112 W, added to the 240 W idle baseline.</p></li>
+          <li><p class="math-line">\( P_{\text{IT,after}} = 6 \times 352 = 2{,}112\ \text{W} = 2.112\ \text{kW} \)</p>
+              <p class="why"><b>Per-host draw × host count</b> gives the new IT total.</p></li>
+          <li><p class="math-line">\( \Delta P_{\text{IT}} = 8.7 - 2.112 = 6.588\ \text{kW} \)</p>
+              <p class="why"><b>Difference of before and after</b> at the IT layer.</p></li>
+          <li><p class="math-line">\( \Delta P_{\text{facility}} = 6.588 \times 1.6 = 10.54\ \text{kW} \)</p>
+              <p class="why"><b>Apply the PUE multiplier</b> — each IT watt removed also removes its share of cooling and distribution overhead.</p></li>
+          <li><p class="math-line">\( E = 10.54 \times 8{,}760 = 92{,}331\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time</b> over a full continuous year.</p></li>
+          <li><p class="math-line">\( C = 92{,}331 \times \$0.14 = \$12{,}926/\text{yr} \)</p>
+              <p class="why"><b>Energy × tariff = annual saving.</b></p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{54{,}000}{12{,}926} \approx 4.2\ \text{years} \)</p>
+              <p class="why"><b>Simple payback = CapEx ÷ annual saving.</b> Units: $ ÷ ($/yr) = yr.</p></li>
+          <li><p class="math-line">\( t_{\text{new}} \approx 20 \times \dfrac{8.7}{2.112} \approx 82\ \text{min} \)</p>
+              <p class="why"><b>UPS runtime is approximately inversely proportional to load</b> — halve the draw and the battery lasts roughly twice as long. Scale the old runtime by the ratio of old load to new load.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>8.7 kW → 2.112 kW</b> IT · (b) <b>≈ 10.54 kW</b> facility saving ·
+        (c) <b>≈ $12,926/year</b> · (d) <b>≈ 4.2 years</b> payback ·
+        (e) UPS runtime rises from 20 min to roughly <b>80 minutes</b>.</p>
+        <p><b>Why (e) matters in Dhaka</b>, which is the analytical half: the lecture's own framing is
+        that <b>halving IT power through consolidation effectively doubles UPS backup runtime</b>. Here
+        the load falls by more than a factor of four, so runtime rises correspondingly. During grid
+        load-shedding, the lower discharge rate gives diesel generators enough time to start and
+        stabilise without dropping the load, and it reduces battery wear from deep discharge cycles.
+        For a Motijheel enterprise facing frequent 30-minute power cuts, moving from 20 minutes to
+        80 minutes of autonomy is the difference between riding out an outage and losing service —
+        a resilience benefit that does not appear anywhere in the payback calculation.</p>
+        <p><b>A caveat worth stating:</b> the inverse-proportionality used in step 11 is an
+        approximation. Real batteries deliver less total energy at higher discharge rates (the
+        Peukert effect), so the actual improvement is usually somewhat <em>better</em> than the simple
+        ratio suggests. Note it as an estimate and you protect the mark.</p>
+        <p>Sanity check on the payback: 4.2 years is longer than the 2-year figure the lecture calls
+        "excellent", which is realistic — this project buys hardware, whereas software-only initiatives
+        like power management policies pay back much faster. It still sits inside a normal 5-year
+        refresh cycle, so it is a defensible investment.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Why does a physical server drawing 200 W at peak still consume around 120 W when doing zero
+        active processing? Explain the implication for green computing strategy.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the faculty's own opening discussion question from Section 1, which makes it a strong
+        exam candidate. It tests <b>Topic 03 (the power curve)</b>. The examiner wants both halves:
+        the <em>mechanism</em> (why the baseline exists) and the <em>strategic consequence</em>
+        (what you should therefore do about it).</div>
+        <p><b>The mechanism.</b> A server's power consumption is dominated by a fixed baseline that is
+        paid whenever the machine is powered on, independent of workload. That baseline covers the
+        CPU maintaining its operating voltage and clock domains, RAM refresh cycles (DRAM must be
+        continuously refreshed to retain data whether or not it is being read), spinning disks or
+        idling SSD controllers, network interface cards remaining link-active, cooling fans, and
+        power-supply conversion losses which themselves are worst at low load. The lecture's figure is
+        that an idle server draws <b>50–70% of its maximum</b> — here 120 W out of 200 W is exactly
+        60%.</p>
+        <p>Only the remainder — the <b>dynamic power range</b>, 80 W in this example — actually
+        responds to workload. So the relationship between useful work and power is deeply non-linear:
+        going from zero to full utilisation only raises consumption by 67%, while increasing useful
+        output infinitely.</p>
+        <p><b>The strategic implication.</b> Because power scales so weakly with load, <b>running
+        servers more gently saves almost nothing</b>. A fleet at 10–15% utilisation — the legacy
+        enterprise norm — is spending roughly 90% of its electricity on idle silicon. Reducing that
+        utilisation further would barely change the bill.</p>
+        <p>The only effective intervention is therefore to <b>eliminate physical machines entirely</b>.
+        That is precisely what consolidation does: pack workloads onto fewer hosts, accept that those
+        hosts will each draw <em>more</em> power because they are busier, and decommission the rest.
+        The lecture's worked example makes the arithmetic plain — ten hosts at 140 W is 1,400 W, while
+        two busier hosts at 180 W is 360 W, a <b>74% reduction</b> even though every surviving machine
+        uses more power than before.</p>
+        <p>It also explains why <b>Distributed Power Management puts idle hosts into deep ACPI sleep
+        (S5) rather than merely leaving them idle</b> — an idle host is nearly as expensive as a busy
+        one, so only full shutdown captures the saving. And it explains the multiplier effect: since
+        every eliminated IT watt also eliminates its cooling overhead, the facility saving is the IT
+        saving times the PUE.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Compare Type 1 and Type 2 hypervisors, and justify the Green IT rule that Type 1 should
+        always be used in enterprise environments.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 02</b>, straight from the faculty's comparison table. The word "justify" means the
+        examiner wants the <em>energy</em> reasoning, not just the table reproduced — and the
+        distinctive point they taught is the C-states / P-states one. Reproduce the table quickly,
+        then spend the answer on the mechanism.</div>
+        <p><b>The architectural difference.</b> A <b>Type 1 (bare-metal)</b> hypervisor runs directly
+        on the hardware, with guest operating systems above it. A <b>Type 2 (hosted)</b> hypervisor
+        runs as an application on top of a full host operating system, so there is an entire extra OS
+        in the path between every guest and the physical CPU.</p>
+        <p><b>The measurable consequences</b> the lecture gives: performance overhead of
+        <b>~1–3% for Type 1</b> against <b>~10–20% for Type 2</b>; high security isolation with a thin
+        attack surface for Type 1 against lower isolation and exposure to host OS exploits for Type 2.
+        Typical Type 1 products are <b>VMware ESXi, KVM, Microsoft Hyper-V and Xen</b>; typical Type 2
+        products are <b>Oracle VirtualBox and VMware Workstation</b>, and their target deployment is
+        developer workstations and testing rather than data centres.</p>
+        <p><b>The energy justification</b> — three distinct mechanisms, per the lecture:</p>
+        <ul>
+          <li><b>Duplicated OS overhead.</b> The host operating system consumes CPU, memory and I/O
+          resources purely to exist, and none of that work serves any guest workload.</li>
+          <li><b>Wasted cycles on host kernel calls.</b> Guest I/O and privileged operations must
+          traverse the host OS kernel rather than reaching hardware directly, spending CPU cycles on
+          translation.</li>
+          <li><b>Loss of direct CPU power-state control.</b> This is the decisive one for green
+          computing. A Type 1 hypervisor manages the CPU's <b>C-states</b> (idle states — how deeply a
+          core sleeps when unused) and <b>P-states</b> (performance states — voltage and frequency
+          scaling under load) directly. A Type 2 hypervisor cannot, because the host OS owns that
+          relationship. The result is that cores cannot enter their most efficient states even when
+          the workload would permit it, producing <b>unnecessary thermal and power overhead</b>.</li>
+        </ul>
+        <p><b>Why this compounds at scale.</b> A 10–20% performance overhead means more physical hosts
+        are needed for the same workload, which raises both operational power and the embodied carbon
+        of the additional hardware. Combined with the lost power-state management, the penalty is
+        paid on every host, continuously, and is then multiplied by the facility PUE. In a
+        single-workstation context the difference is negligible, which is why Type 2 remains
+        appropriate for development and testing — but in an enterprise cluster it is a structural
+        inefficiency, hence the rule.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Distinguish between live migration, DRS and DPM. Explain the energy trade-off inherent in
+        live migration and how it is managed.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 04.</b> Three terms that sit together and are easily blurred. The examiner wants
+        clean separation — and the trade-off question is the faculty's own "watch out", which means
+        they consider it the non-obvious part.</div>
+        <p><b>Live VM Migration</b> (VMware vMotion, KVM Live Migration) is the underlying
+        <em>capability</em>: transferring a running VM's <b>memory state, CPU execution context and
+        network bindings</b> from one physical host to another over dedicated network links,
+        <b>without dropping client connections</b>. It is a mechanism, not a policy — it moves a VM
+        when told to.</p>
+        <p><b>DRS (Dynamic Resource Scheduler)</b> is a <em>performance</em> policy built on that
+        mechanism. It continuously monitors CPU and RAM demand across a host cluster and migrates VMs
+        to <b>eliminate hot spots and maintain application performance SLAs</b>. Its instinct is to
+        <em>spread workloads out</em>.</p>
+        <p><b>DPM (Distributed Power Management)</b> is an <em>energy</em> policy on the same
+        mechanism. When cluster demand drops — typically overnight — DPM consolidates VMs onto a
+        minimal subset of hosts and uses <b>IPMI / iLO</b> to place the now-idle hosts into deep
+        standby (S5 / Wake-on-LAN), waking them automatically when demand rises. Its instinct is to
+        <em>pack workloads together</em>.</p>
+        <p><b>The key relationship:</b> DRS and DPM optimise for opposing objectives on the same
+        cluster, which is why they run as a coordinated pair rather than independently. DPM is only
+        able to power hosts down within whatever headroom DRS's SLA constraints allow.</p>
+        <p><b>The energy trade-off in live migration.</b> Migration is not free. Transferring a VM's
+        memory state <b>consumes network bandwidth and imposes temporary CPU overhead on both the
+        source and the destination host</b>. Each migration therefore has an energy cost, paid up
+        front, against a saving that accrues only while the host stays powered down.</p>
+        <p>If migrations are triggered too readily, the cluster can end up in an <b>overall energy
+        net-loss</b> — continually shuffling workloads and waking and sleeping hosts, spending more on
+        movement than it recovers. The pathological case is oscillation: load crosses a threshold, DPM
+        consolidates and sleeps a host, load rises slightly, the host wakes, load falls again, and the
+        cycle repeats.</p>
+        <p><b>How it is managed:</b> DRS and DPM algorithms enforce <b>threshold hysteresis</b> before
+        triggering migrations. Load must cross a boundary by a meaningful margin and <em>remain</em>
+        there for a sustained period before a move is authorised, and the thresholds for
+        consolidating and for expanding are deliberately set apart so the two do not trip against each
+        other. This trades a little theoretical efficiency for stability, which nets out positive.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A local enterprise in Motijheel suffers frequent 30-minute power cuts and its UPS battery
+        bank is degrading. Explain how virtualisation improves their emergency resilience, and set out
+        what you would recommend.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's Dhaka data centre scenario from Section 7. It tests whether you can connect
+        <b>Topic 03 (the power curve)</b> to <b>Topic 05 (the Bangladesh context)</b> — that is, whether
+        you understand that consolidation buys <em>resilience</em>, not only cost savings. Note that
+        the question says "emergency survival", so the electricity bill is the secondary argument here,
+        not the primary one.</div>
+        <p><b>The mechanism.</b> UPS runtime is governed by battery capacity against discharge rate.
+        Reduce the load and the same battery bank sustains it for proportionally longer. The lecture's
+        formulation is direct: <b>halving IT power consumption through VM consolidation effectively
+        doubles the backup runtime available on battery banks.</b></p>
+        <p>Virtualisation reduces that load substantially because of the non-linear power curve
+        (Topic 03). Legacy servers at 10–15% utilisation each draw 50–70% of their peak power while
+        doing almost nothing. Consolidating those workloads onto a small number of well-utilised hosts
+        and <b>decommissioning the rest</b> removes their idle baselines entirely. The faculty's answer
+        to this scenario puts it as consolidating onto roughly 30% of the host fleet, which
+        significantly drops overall rack draw.</p>
+        <p><b>Why this is decisive during load-shedding.</b> The lower discharge rate extends UPS
+        autonomy, which gives the <b>diesel generators sufficient time to start and stabilise without
+        dropping the load</b>. A generator start-and-transfer sequence has to complete inside the UPS
+        window; if the batteries are degraded and the load is high, that window may be shorter than
+        the transfer takes, and the site goes dark despite having a generator. Extending runtime turns
+        a marginal situation into a comfortable one.</p>
+        <p>There is a second-order benefit worth stating: a lower discharge rate means <b>shallower
+        discharge cycles</b>, which reduces battery wear and extends the life of the bank. Since the
+        bank is already degrading, consolidation slows the degradation as well as compensating for it.</p>
+        <p><b>Recommendations, in order:</b></p>
+        <ol>
+          <li><b>Audit current utilisation</b> across the physical fleet. If it sits in the typical
+          10–15% legacy band, the consolidation opportunity is large and should be quantified before
+          any battery spend is committed.</li>
+          <li><b>Consolidate onto Type 1 (bare-metal) hypervisors</b> — ESXi, KVM or Hyper-V — targeting
+          the 65–80% utilisation band, at a consolidation ratio within the realistic 3:1 to 15:1 range.
+          Type 2 would be wrong here for the reasons in Topic 02, particularly the loss of CPU
+          power-state control.</li>
+          <li><b>Physically decommission the surplus hosts.</b> Powering them off is not enough — they
+          must leave the rack, or they will be quietly re-energised.</li>
+          <li><b>Enable DPM</b> so off-peak demand consolidates further and idle hosts enter deep
+          standby, with threshold hysteresis configured to prevent migration oscillation.</li>
+          <li><b>Then reassess the UPS.</b> The bank may still need replacement, but it should be sized
+          against the <em>new, lower</em> load — which may well mean a smaller and cheaper bank than a
+          like-for-like replacement.</li>
+          <li><b>Use hypervisor HA clustering</b> for availability. This matters if the enterprise has
+          any Bangladesh Bank compliance exposure, since BB circulars require strict isolation and high
+          availability for core banking software, and HA clusters deliver that <b>without duplicate
+          hardware sprawl</b>.</li>
+        </ol>
+        <p><b>The framing to close on.</b> The financial case (lower bills, deferred hardware) and the
+        resilience case (longer autonomy, less battery wear) point the same way, but in a Motijheel
+        context with frequent cuts, <b>resilience is the argument that should lead</b>. Consolidation
+        is being proposed as an availability measure that happens to also cut cost.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A government ministry depends on an old 32-bit legacy tax accounting application that cannot
+        run directly on modern 64-bit server hardware. The vendor no longer exists. Explain how
+        virtualisation resolves this sustainably, and what risks remain.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's legacy application scenario from Section 7. It tests <b>Topic 01 (hardware
+        abstraction)</b> applied to a problem that is not about power at first glance — the green
+        benefit is indirect, and the examiner wants you to trace it. The "risks that remain" part
+        invites you to show judgement rather than just recite the benefit.</div>
+        <p><b>The problem.</b> Without virtualisation, the ministry has to keep old physical hardware
+        alive purely because the software will not run on anything else. That means maintaining
+        power-hungry legacy servers running at very low utilisation, sourcing spare parts for hardware
+        long out of production, and accepting escalating failure risk on machines well past their
+        design life.</p>
+        <p><b>How virtualisation resolves it.</b> The hypervisor provides a <b>software abstraction
+        layer between the hardware and the operating system</b> (Topic 01). Virtualisation
+        <b>encapsulates the legacy 32-bit OS inside a Virtual Machine</b>, which presents the guest
+        with the virtual hardware environment it expects. The application continues to believe it is
+        running on its original platform while the VM in fact executes on modern, efficient,
+        high-density hardware.</p>
+        <p><b>Why this is the sustainable answer.</b> Several benefits chain together:</p>
+        <ul>
+          <li><b>Eliminates the legacy physical servers</b> and their idle baseline power — the direct
+          energy saving, amplified by the facility PUE.</li>
+          <li><b>Avoids embodied carbon.</b> The alternative — rewriting or replacing the application —
+          is expensive and slow; the alternative of buying more legacy-compatible hardware is often
+          impossible. Virtualisation avoids new procurement entirely for this workload.</li>
+          <li><b>Consolidates alongside other workloads.</b> The legacy VM occupies a slice of a shared
+          host rather than a whole machine, so its marginal power cost is small.</li>
+          <li><b>Improves resilience.</b> The VM can be snapshotted, backed up as a file, and restored
+          or migrated to different hardware — which is dramatically better disaster recovery than a
+          single irreplaceable physical machine. The lecture contrasts legacy "complex disaster
+          recovery, slow provisioning in weeks" with virtualised "rapid provisioning in minutes and
+          live migration".</li>
+          <li><b>Decouples the software's lifespan from any specific hardware generation</b>, so future
+          hardware refreshes no longer threaten the application.</li>
+        </ul>
+        <p><b>Risks that remain</b> — and this is where the answer earns its top marks, because
+        virtualisation solves the hardware problem and nothing else:</p>
+        <ul>
+          <li><b>Security.</b> An unsupported 32-bit OS receives no patches. Encapsulating it does not
+          make it safe; it makes it portable. The VM must be network-segmented, firewalled, and
+          access-controlled, since it is a permanently unpatched host inside the estate.</li>
+          <li><b>Compliance and data protection.</b> A tax system holds sensitive citizen data on an
+          OS that cannot be patched — a real exposure under any data protection regime.</li>
+          <li><b>Skills and knowledge decay.</b> With the vendor gone, nobody can modify the
+          application. Virtualisation removes the pressure to address that, which is a double-edged
+          benefit: it can entrench the dependency indefinitely.</li>
+          <li><b>Performance and driver limitations.</b> Legacy guests may not support modern
+          paravirtualised drivers, so I/O performance can be poor and the VM may not benefit from the
+          host's efficiency features.</li>
+        </ul>
+        <p><b>Recommendation.</b> Virtualise it — this is clearly the right immediate move, and it is
+        both the sustainable and the pragmatic answer. But treat it explicitly as a
+        <b>containment measure that buys time, not a permanent solution</b>, and pair it with a funded
+        plan to replace or rewrite the application on a defined timeline. Otherwise the ministry has
+        converted an urgent hardware problem into a comfortable, invisible, and permanent security
+        problem.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 12 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>An organisation has spent heavily on a facility retrofit that improved PUE from 1.9 to 1.3,
+        but its servers still run at 11% average utilisation. The board asks whether further
+        sustainability investment is worthwhile. Advise them, comparing the facility layer and the IT
+        layer as investment targets.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This is the Class 11 → Class 12 bridge the faculty built deliberately in the opening of this
+        lecture. It joins <b>PUE (Class 11, Topic 04)</b> to <b>the power curve and consolidation
+        (Topic 03)</b>, and asks you to reason about <em>where the next marginal dollar should go</em>.
+        The examiner wants the multiplier argument.</div>
+        <p><b>Short answer: yes, and the remaining opportunity is larger than the one already
+        captured.</b></p>
+        <p><b>What the retrofit achieved.</b> Moving PUE from 1.9 to 1.3 is a substantial facility
+        improvement — the overhead multiplier fell by roughly a third, and DCiE rose from about 53% to
+        77%. Every watt of IT load now costs 1.3 W of facility power instead of 1.9 W. That work was
+        worth doing and should not be disparaged.</p>
+        <p><b>What it did not address.</b> PUE is a <em>ratio</em>, and it measures only how
+        efficiently power is <em>delivered</em> to the IT equipment. It says nothing about whether the
+        IT equipment is doing anything useful with it. At <b>11% average utilisation</b> the servers
+        are drawing roughly 50–70% of their peak power to perform almost no work (Topic 03). The
+        organisation has become highly efficient at delivering electricity to machines that are
+        mostly idle. The faculty's framing applies exactly: <em>even the greenest facility with a
+        1.15 PUE is inherently wasteful if its servers sit idle at 10% utilisation.</em></p>
+        <p><b>Why the IT layer is now the better investment — the multiplier argument.</b> This is the
+        decisive point. Facility improvements reduce the <em>multiplier</em>; IT improvements reduce
+        the <em>base</em>, and the saving is then multiplied by the PUE on top. Concretely: eliminating
+        1 kW of IT load in this facility removes 1.3 kW of total facility draw. Meanwhile, further PUE
+        improvement faces diminishing returns — going from 1.3 to 1.2 is technically much harder and
+        more expensive than the 1.9 to 1.3 move already made, and it can only ever reclaim the
+        shrinking overhead fraction, never the IT base itself.</p>
+        <p>The consolidation opportunity, by contrast, is barely touched. At 11% utilisation and a
+        realistic consolidation ratio of 10:1 toward a 65–80% target, the physical fleet could plausibly
+        shrink by 50–70% — the range the lecture gives for hardware footprint reduction after
+        virtualisation. The faculty's worked example shows a <b>74% power reduction</b> from static
+        consolidation alone, rising toward <b>85% off-peak with DPM</b>. No facility retrofit available
+        to them can produce a saving of that magnitude.</p>
+        <p><b>The sequencing error to name.</b> The organisation optimised in the wrong order. The
+        correct sequence is <b>reduce the IT load first, then size and optimise the facility around
+        it</b>. Having retrofitted first, they have now sized cooling and power infrastructure for an
+        IT load that consolidation is about to shrink substantially — which means the plant will run
+        at partial load, and partial-load operation is itself less efficient, so some of the PUE gain
+        will erode. This is a version of the over-build trap from Class 11.</p>
+        <p><b>Recommendation to the board.</b> Proceed with a virtualisation and consolidation
+        programme: audit utilisation, deploy Type 1 hypervisors, consolidate toward 65–80% utilisation,
+        physically decommission surplus hosts, and enable DRS and DPM with hysteresis thresholds. Present
+        the case on total cost of ownership — direct electricity, multiplied by PUE, plus deferred
+        hardware replacement, reduced floor space, fewer switch ports and lower maintenance. Expect the
+        payback to be shorter than the facility retrofit's, because consolidation removes capital as
+        well as consuming it. And after consolidation, revisit the facility: the plant may now be
+        oversized, and rebalancing it is the second phase, not a competing project.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 12</h2>
+    <div class="grid">
+      <div class="item"><h4>The core fact</h4><p>An idle server draws <b>50–70% of peak power</b>. So running servers gently saves nothing — you must switch machines OFF.</p></div>
+      <div class="item"><h4>Power at a given load</h4><p>\( P = P_{\text{idle}} + \text{Load}\% \times (P_{\max}-P_{\text{idle}}) \). The bracket is the <b>dynamic power range</b>.</p></div>
+      <div class="item"><h4>Utilisation figures</h4><p>Legacy <b>10–15%</b> → virtualised target <b>65–80%</b>. Hardware footprint falls <b>50–70%</b>. Ratios <b>3:1 to 15:1</b>.</p></div>
+      <div class="item"><h4>Consolidation maths</h4><p>Hosts = VMs ÷ ratio (round UP). Decommissioned = original − hosts.</p></div>
+      <div class="item"><h4>PUE multiplier</h4><p>Facility saving = IT saving × PUE. Every IT watt removed also removes its cooling overhead. IT layer &gt; facility layer.</p></div>
+      <div class="item"><h4>Annual energy</h4><p>\( E = P_{\text{kW}} \times 8{,}760 \) kWh. Cost = E × tariff. CO₂ tonnes = (E × factor) ÷ 1,000.</p></div>
+      <div class="item"><h4>Type 1 (bare-metal)</h4><p>Runs directly on hardware. Overhead <b>~1–3%</b>. High isolation. <b>ESXi, KVM, Hyper-V, Xen</b>. Enterprise.</p></div>
+      <div class="item"><h4>Type 2 (hosted)</h4><p>Runs on a host OS. Overhead <b>~10–20%</b>. Lower isolation. <b>VirtualBox, VMware Workstation</b>. Dev/test only.</p></div>
+      <div class="item"><h4>Why Type 2 wastes energy</h4><p>(1) Duplicated OS overhead (2) Wasted cycles on host kernel calls (3) <b>Cannot control CPU C-states/P-states</b>.</p></div>
+      <div class="item"><h4>The 3-state example</h4><p>10 × 140 W = 1,400 W → 2 × 180 W = 360 W (<b>74% cut</b>) → DPM off-peak 200 W (<b>up to 85%</b>).</p></div>
+      <div class="item"><h4>Live migration</h4><p>Moves memory state + CPU context + network bindings across hosts with <b>zero downtime</b>. vMotion, KVM Live Migration.</p></div>
+      <div class="item"><h4>DRS vs DPM</h4><p><b>DRS = performance</b> — spreads VMs out, kills hot spots, holds SLAs. <b>DPM = power</b> — packs VMs together, sleeps hosts via IPMI/iLO.</p></div>
+      <div class="item"><h4>Migration trade-off</h4><p>Migration costs bandwidth + CPU on BOTH hosts. Too frequent = <b>energy net-loss</b>. Fix: <b>threshold hysteresis</b>.</p></div>
+      <div class="item"><h4>Bangladesh — UPS</h4><p><b>Halving IT power ≈ doubles UPS runtime.</b> Buys time for gensets to stabilise during load-shedding. Less battery wear.</p></div>
+      <div class="item"><h4>Bangladesh — banking</h4><p>BB circulars require isolation + HA for core banking software. Hypervisor HA clusters deliver it without duplicate hardware.</p></div>
+      <div class="item"><h4>Bangladesh — legacy</h4><p>Encapsulate a 32-bit legacy OS in a VM → runs on modern hardware, kills the power-hungry legacy physical box.</p></div>
+      <div class="item"><h4>The Class 11 bridge</h4><p>PUE measures DELIVERY efficiency, not utilisation. Fix the IT load first, then the facility — the saving multiplies, not the reverse.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>

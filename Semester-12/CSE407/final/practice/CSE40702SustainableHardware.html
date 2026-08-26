@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sustainable Hardware — CSE407 Study Guide</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#how">How to use this guide</a></li>
+      <li><a href="#embodied">Embodied vs operational carbon</a></li>
+      <li><a href="#certs">The five certifications</a></li>
+      <li><a href="#lca">Lifecycle Assessment</a></li>
+      <li><a href="#greenwash">Greenwashing &amp; the 7 sins</a></li>
+      <li><a href="#procure">Procurement scorecard &amp; roles</a></li>
+      <li><a href="#num">Practice A — numerical</a></li>
+      <li><a href="#analytical">Practice B — analytical</a></li>
+      <li><a href="#scenario">Practice C — scenarios</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">CSE407 Green Computing &middot; Exam Preparation Guide</p>
+    <h1>Sustainable Hardware — Designing &amp; Buying Green</h1>
+    <div class="meta">
+      <span><b>Class:</b> 8 of 22 — Sustainable Hardware</span>
+      <span><b>Reading:</b> Velete Ch.8 (all)</span>
+      <span><b>Outcomes:</b> CO1, CO2 · EP1, EP2, EP5</span>
+      <span><b>Delivered:</b> 29 Jun 2025</span>
+    </div>
+  </header>
+
+  <section class="topic" id="how">
+    <span class="topic-num">Start here</span>
+    <h2>How to use this guide</h2>
+    <p class="subtitle">Class 8 — Sustainable Hardware. Velete Ch.8 (all). Course outcomes CO1 and CO2.</p>
+
+    <p>Class 7 asked what happens to hardware at the <em>end</em>. Class 8 goes back to the
+    <em>beginning</em>: how you choose, specify and design it. The faculty framed the whole lecture
+    around one claim, and everything else in it is downstream of that claim, so make sure you can
+    state it cold.</p>
+
+    <div class="callout key">
+      <span class="tag">The one-sentence version of Class 8</span>
+      <p><b>70–80% of a device's lifetime carbon is emitted during manufacturing, before it is ever
+      switched on.</b> So the biggest environmental lever an engineer has is procurement and design —
+      what you buy and how long you keep it — not how efficiently the thing runs.</p>
+    </div>
+
+    <p>This guide covers the five certifications, lifecycle assessment, the seven sins of
+    greenwashing, the procurement scorecard, and the four engineering roles. The practice sections
+    are heavy on <b>total cost of ownership arithmetic</b>, because that is where this topic's
+    numerical questions live, and on <b>claim-analysis scenarios</b>, because the greenwashing
+    detector was the most interactive part of the class and is very likely to appear as a written
+    question.</p>
+  </section>
+
+  <section class="topic" id="embodied">
+    <span class="topic-num">Topic 01</span>
+    <h2>Embodied carbon vs operational carbon</h2>
+    <p class="subtitle">Get this distinction right and half of Class 8 follows automatically.</p>
+
+    <p>Think about a laptop's whole life as two separate bills. The first bill is paid before you
+    ever open the box: mining the metals, refining them, fabricating chips, assembling, shipping,
+    and eventually disposing of it. The second bill is paid a little at a time, every day you use it,
+    as electricity. The lecture gives these two bills names.</p>
+
+    <div class="formula">
+      <div class="label">The two definitions — Velete Ch.8</div>
+      <p style="margin:0"><b>Embodied carbon</b> — the CO₂e emitted to manufacture, transport and
+      eventually dispose of a device. It is "locked in" before the device is used at all.<br><br>
+      <b>Operational carbon</b> — the CO₂e emitted <em>while</em> using the device, from electricity
+      consumption.</p>
+    </div>
+
+    <p>Which of the two dominates is not a fixed fact about electronics — it depends entirely on the
+    device, and that dependency is the examinable point.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:'Space Grotesk',system-ui,sans-serif">
+      <thead><tr style="border-bottom:2px solid var(--ink);text-align:left">
+        <th style="padding:8px 6px"></th><th style="padding:8px 6px">Consumer device (phone / laptop)</th><th style="padding:8px 6px">Enterprise server (24/7)</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Manufacturing share</b></td><td style="padding:8px 6px"><b>70–80%</b> of lifetime footprint</td><td style="padding:8px 6px"><b>20–40%</b> — operational catches up</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Most important action</b></td><td style="padding:8px 6px">Extend device lifespan</td><td style="padding:8px 6px">Maximise utilisation (virtualisation)</td></tr>
+      <tr style="border-bottom:1px solid var(--rule)"><td style="padding:8px 6px"><b>Second priority</b></td><td style="padding:8px 6px">Choose repairability (Fairphone scores highest)</td><td style="padding:8px 6px">Choose energy-efficient models (Energy Star, EPEAT)</td></tr>
+      <tr><td style="padding:8px 6px"><b>Third priority</b></td><td style="padding:8px 6px">—</td><td style="padding:8px 6px">Power from renewables (Scope 2 reduction)</td></tr>
+      </tbody>
+    </table>
+
+    <p>The supporting figures the faculty put on screen: manufacturing one laptop takes about
+    <b>1,500 kWh</b> — equivalent to roughly three years of operating it. Buying a new phone every
+    year rather than every four produces about <b>3× more carbon per year of use</b>. And a modern
+    smartphone contains <b>60+ elements</b> from the periodic table.</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the biggest trap in this topic</span>
+      <p>"Sustainable hardware" instinctively means "low power consumption". For a server running
+      around the clock for years, that instinct is roughly right. For a phone or a laptop it is
+      <b>wrong</b>, and the exam will probe exactly that. If a question compares a slightly less
+      efficient device kept twice as long against a more efficient one replaced on schedule, the
+      longer-lived device usually wins, because you are comparing a small operational saving against
+      an entire second manufacturing event.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="certs">
+    <span class="topic-num">Topic 02</span>
+    <h2>The five certifications</h2>
+    <p class="subtitle">The faculty built a five-tab explorer around these. Know what each covers — and, just as important, what each does <em>not</em>.</p>
+
+    <p>Walk into an electronics shop and every box has a green claim on it. Most are marketing. Five
+    represent real third-party verification with technical requirements behind them, and the faculty
+    was explicit that knowing which is which is a core professional competency. Crucially, the five
+    <b>do not overlap much</b> — each covers a different dimension, which is why a complete
+    procurement specification names several of them.</p>
+
+    <h3>Energy Star — US EPA · voluntary</h3>
+    <p><b>What it means:</b> the product falls in the <b>top 25% of energy efficiency</b> for its
+    category. Covers computers, monitors, servers, storage, imaging equipment and data centres.</p>
+    <ul>
+      <li><b>Covers:</b> operational energy efficiency only — electricity used in active and idle states.</li>
+      <li><b>Typical saving:</b> Energy Star computers use <b>30–65% less energy</b> than standard
+      models. For a 200-computer office that is $10,000–$30,000/year in electricity.</li>
+      <li><b>Procurement weight:</b> mandatory for US federal procurement; referenced in the
+      <b>Bangladesh ICT Policy 2018</b> for government purchases.</li>
+      <li><b>Limitation (examinable):</b> covers <em>only</em> operational energy. A product can be
+      Energy Star certified while being built with toxic materials, having no recycling programme,
+      and carrying large manufacturing emissions.</li>
+    </ul>
+
+    <h3>EPEAT — Green Electronics Council · Bronze / Silver / Gold</h3>
+    <p><b>What it means:</b> a comprehensive <b>lifecycle</b> environmental rating, going well beyond
+    Energy Star. Products are scored on required and optional criteria.</p>
+    <ul>
+      <li><b>Covers:</b> materials selection (hazardous substance restrictions), product longevity and
+      upgradability, end-of-life management (take-back programmes), energy conservation, and
+      corporate performance.</li>
+      <li><b>The tiers — learn the exact thresholds:</b> <b>Bronze</b> = meets all required criteria.
+      <b>Silver</b> = Bronze + <b>50%</b> of optional criteria. <b>Gold</b> = Bronze + <b>75%</b> of
+      optional criteria. Gold is the benchmark for best-in-class.</li>
+      <li><b>Procurement weight:</b> required by US federal agencies; referenced in EU Green Public
+      Procurement criteria.</li>
+      <li><b>Bangladesh:</b> not formally required in government procurement, but used as a reference
+      standard by foreign-funded projects (World Bank, ADB) and by Bangladeshi firms serving EU/US
+      markets.</li>
+    </ul>
+
+    <h3>TCO Certified — TCO Development, Sweden</h3>
+    <p><b>What it means:</b> widely considered <b>the most rigorous and comprehensive</b> sustainable
+    electronics certification available. Its distinguishing feature is examinable in one word:
+    <b>social</b>.</p>
+    <ul>
+      <li><b>Environmental scope:</b> hazardous substances, energy efficiency, lifespan design,
+      recycling programmes, packaging, corporate environmental reporting — with <b>annual factory
+      audits</b> by third-party verifiers.</li>
+      <li><b>Social scope (unique to TCO):</b> working conditions in factories — minimum wage, working
+      hours, prohibition of child labour and forced labour, health and safety. Supply-chain
+      traceability required.</li>
+      <li><b>Conflict minerals:</b> requires documented responsible sourcing of the <b>3TG</b> — tin,
+      tantalum, tungsten, gold — per <b>OECD Due Diligence Guidance</b>, going beyond US Dodd-Frank
+      requirements.</li>
+      <li><b>Best for:</b> organisations with ESG reporting obligations or European institutional
+      clients.</li>
+    </ul>
+
+    <h3>80 PLUS — Plug Load Solutions · PSU efficiency</h3>
+    <p><b>What it means:</b> the power supply unit converts AC mains to DC at at least <b>80%
+    efficiency at 20%, 50% and 100% load</b>. Higher tiers demand more. Every watt lost in that
+    conversion becomes waste heat.</p>
+    <div class="formula">
+      <div class="label">80 PLUS tiers — efficiency at 50% load</div>
+      <p style="margin:0">Basic <b>80%</b> · Bronze <b>85%</b> · Silver <b>88%</b> · Gold <b>92%</b> ·
+      Platinum <b>94%</b> · Titanium <b>96%</b></p>
+    </div>
+    <ul>
+      <li><b>The lecture's worked example:</b> a 500 W server with an 80%-efficient PSU wastes 100 W as
+      heat. The same server with a 93% Gold PSU wastes only 38 W — saving 62 W continuously, or about
+      <b>543 kWh/year per server</b>.</li>
+      <li><b>The compounding effect:</b> PSU losses compound with PUE. A watt wasted in the PSU becomes
+      roughly <b>1.5 W wasted in total</b>, because the cooling system must then remove the extra
+      heat. Gold is the minimum recommended for data centres.</li>
+      <li><b>Bangladesh note:</b> many locally assembled PCs use budget PSUs at 70–75% efficiency.
+      Specifying 80 PLUS Gold is a low-cost, high-impact green procurement requirement with fast
+      payback.</li>
+    </ul>
+
+    <h3>RoHS — European Union · legally binding for the EU market</h3>
+    <p><b>What it means:</b> restricts hazardous substances in electrical and electronic equipment
+    sold in the EU. Originally six substances (2003), expanded to <b>ten in RoHS 3 (2019)</b>.</p>
+    <ul>
+      <li><b>The substances:</b> lead (Pb), mercury (Hg), cadmium (Cd), hexavalent chromium (Cr VI),
+      polybrominated biphenyls (PBB), polybrominated diphenyl ethers (PBDE), plus <b>four phthalates
+      added in RoHS 3</b>.</li>
+      <li><b>Maximum concentration values:</b> <b>0.1% by weight</b> for most substances;
+      <b>0.01% for cadmium</b>. These are the numbers to quote.</li>
+      <li><b>Why it went global:</b> compliance is mandatory to sell in the EU, and manufacturers
+      rarely make EU-only product variants — so a European rule reshaped worldwide supply chains.
+      The lecture calls it "the most globally influential materials standard in electronics history".</li>
+      <li><b>Link back to Class 7:</b> RoHS-compliant devices contain far less toxic material, which
+      makes informal recycling less hazardous and formal recycling more economically viable, since
+      less hazardous-waste treatment is required.</li>
+      <li><b>Bangladesh:</b> not domestically mandated, but any Bangladeshi exporter to the EU must
+      supply RoHS-compliant products, and the E-Waste Rules 2021 reference RoHS thresholds as
+      guidance for domestic safety standards.</li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">The faculty's own quick-reference — reproduce this in a procurement question</span>
+      <p><b>Energy efficiency only:</b> Energy Star + 80 PLUS Gold (PSU).
+      <b>Full lifecycle sustainability:</b> EPEAT Gold or TCO Certified.
+      <b>Hazardous substance compliance:</b> RoHS.
+      <b>A complete green procurement spec:</b> require all four — they address different dimensions
+      and do not overlap significantly.</p>
+    </div>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the three most-confused pairs</span>
+      <p><b>Energy Star vs EPEAT:</b> Energy Star is operational energy only; EPEAT is full lifecycle
+      including materials and end-of-life. A device can be Energy Star and still be environmentally
+      poor overall.<br>
+      <b>EPEAT vs TCO Certified:</b> both are lifecycle standards, but only <b>TCO includes social
+      responsibility</b> — labour conditions in the supply chain. That is the discriminator.<br>
+      <b>80 PLUS vs Energy Star:</b> 80 PLUS rates only the <em>power supply unit's conversion
+      efficiency</em>; Energy Star rates the <em>whole product's</em> energy consumption.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="lca">
+    <span class="topic-num">Topic 03</span>
+    <h2>Lifecycle Assessment (LCA)</h2>
+    <p class="subtitle">The method, and the one conclusion the faculty wanted you to draw from it.</p>
+
+    <p>A <b>Lifecycle Assessment</b> quantifies the total environmental impact of a product from raw
+    material extraction through manufacturing, use and disposal — the standard phrase is
+    <b>"cradle to grave"</b>. It is a method, not a certification; EPEAT and TCO both draw on
+    LCA thinking, but LCA itself is just the accounting exercise.</p>
+
+    <p>The reason the faculty spent twelve minutes on it is a single counter-intuitive finding: the
+    phase engineers spend most of their time optimising — operational energy — is often
+    <b>not</b> the largest contributor to total impact. For a smartphone the total lifetime figure
+    given was around <b>70 kg CO₂e</b>, dominated by manufacturing.</p>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the LCA insight that changes priorities</span>
+      <p>For embodied-carbon-dominant devices, <b>buying a slightly less energy-efficient model and
+      keeping it twice as long is usually better for the environment than buying the most
+      energy-efficient model and replacing it on schedule.</b> Longevity beats efficiency. Say this
+      sentence in any question that pits efficiency against lifespan.</p>
+    </div>
+
+    <h3>What the LCA implies for design</h3>
+    <ul>
+      <li>Prioritise <b>repairability</b> — a user-replaceable battery is the number-one longevity feature.</li>
+      <li><b>Modular design</b> — upgrade CPU/RAM without replacing the whole unit.</li>
+      <li><b>Software support commitment</b> — minimum 5 years of OS updates.</li>
+      <li><b>Durable materials</b> — scratch and drop resistance reduces cosmetic-damage-driven replacement.</li>
+      <li><b>Spare parts guaranteed for 7–10 years</b> (the EU Right to Repair requirement).</li>
+    </ul>
+
+    <h3>What it implies for procurement</h3>
+    <ul>
+      <li>Specify a minimum <b>4-year refresh cycle</b>, not 2–3 years.</li>
+      <li>Require a manufacturer sustainability report with <b>per-product LCA data</b>.</li>
+      <li>Evaluate <b>total cost of ownership including energy over 4 years</b>, not sticker price.</li>
+      <li>Prefer <b>EPEAT Gold / TCO Certified</b> as the baseline.</li>
+      <li>Consider <b>certified refurbished</b> for non-critical workloads.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="greenwash">
+    <span class="topic-num">Topic 04</span>
+    <h2>Greenwashing and the seven sins</h2>
+    <p class="subtitle">The faculty's most interactive section. Learn the seven labels — then learn to apply them to a claim you have not seen before.</p>
+
+    <p><b>Greenwashing</b> is the practice of making misleading or exaggerated environmental claims
+    about a product or company. The lecture's point was that it is rarely outright lying; far more
+    often it is a statement that is technically true and deeply misleading. Engineers specifying
+    hardware must be able to identify and reject it.</p>
+
+    <div class="formula">
+      <div class="label">The seven sins of greenwashing (TerraChoice)</div>
+      <p style="margin:0">
+      <b>1 · Hidden trade-off</b> — one green attribute conceals other harms.<br>
+      <b>2 · No proof</b> — the claim is unverifiable.<br>
+      <b>3 · Vagueness</b> — "eco-friendly", with no definition.<br>
+      <b>4 · Irrelevance</b> — true, but meaningless.<br>
+      <b>5 · Lesser of two evils</b> — greener within an inherently harmful category.<br>
+      <b>6 · Fibbing</b> — simply false.<br>
+      <b>7 · False labels</b> — fake certification logos.</p>
+    </div>
+
+    <h3>The five claims the faculty analysed</h3>
+
+    <p>These are worth studying as <em>patterns of reasoning</em>, because the exam will hand you a
+    claim you have not seen and ask you to do the same analysis.</p>
+
+    <p><b>1. "Our laptop uses 40% less energy than the previous model."</b> Verdict:
+    <b>mixed — potentially misleading</b>. It could be genuine, but only if the previous model was
+    the market standard; if the predecessor was unusually power-hungry, the new one might still be
+    below average. The questions to ask: <em>compared to what baseline? Is there a third-party
+    certification (Energy Star) confirming it? What happened to manufacturing emissions?</em></p>
+
+    <p><b>2. "Our servers are built with eco-friendly materials."</b> Verdict:
+    <b>greenwashing — the vagueness sin</b>. "Eco-friendly" is meaningless without specification.
+    RoHS compliant? Recycled content? Sustainably sourced? Recyclable? Any company can print the
+    phrase with zero verification. The rule the faculty gave: <b>if a company cannot tell you exactly
+    what "eco-friendly" means in numbers or certifications, assume it means nothing.</b></p>
+
+    <p><b>3. "This monitor is Energy Star certified and uses 35% less energy — saving you $28/year in
+    electricity."</b> Verdict: <b>genuine</b>. This is the model of what a good claim looks like:
+    a real third-party certification, a specific measurable metric, and a calculated financial
+    benefit the buyer can verify against their own tariff. <b>Specific standard + specific metric +
+    specific benefit in user-relevant terms.</b> Still fair to ask about manufacturing and
+    end-of-life, but the operational claim itself is credible.</p>
+
+    <p><b>4. "Our company is committed to being carbon neutral by 2040."</b> Verdict:
+    <b>insufficient without details</b>. A commitment 15+ years out with no interim milestones and no
+    third-party accountability is cheap to make. The four questions: <em>Does "carbon neutral"
+    include Scope 3? What are the 2025 and 2030 interim targets? Is it verified by the Science Based
+    Targets initiative (SBTi)? Is offsetting doing most of the work instead of actual emission
+    reduction?</em></p>
+
+    <p><b>5. "This printer is CFC-free!"</b> Verdict: <b>greenwashing — the irrelevance sin</b>.
+    CFCs have been banned under the Montreal Protocol since <b>1987</b>. <em>Every</em> printer is
+    CFC-free. The claim creates an impression of virtue while saying nothing about the product.
+    The faculty's phrase: "lesser compliance masquerading as achievement."</p>
+
+    <div class="callout watch">
+      <span class="tag">Watch out — the test to apply to any claim</span>
+      <p>Three questions, in order. <b>(1) Is it specific?</b> Numbers, not adjectives.
+      <b>(2) Is it verifiable?</b> Named third-party standard, not self-declaration.
+      <b>(3) Is it in context?</b> Compared against a meaningful baseline, and does it address the
+      dominant impact — for a consumer device that means manufacturing, not just operation.
+      A claim that passes all three is credible. A claim that fails any one of them needs the
+      specific sin named.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="procure">
+    <span class="topic-num">Topic 05</span>
+    <h2>The green procurement scorecard and the engineer's four roles</h2>
+    <p class="subtitle">The applied end of the lecture — and where the scenario questions will come from.</p>
+
+    <p>The faculty's scorecard rates a product across <b>six sustainability dimensions</b>, each
+    scored 1–3 stars on <em>evidence</em>, not marketing claims. Maximum 18. The bands given were:
+    <b>14–18 excellent · 9–13 acceptable · below 9 avoid</b>.</p>
+
+    <div class="formula">
+      <div class="label">The six scorecard dimensions</div>
+      <p style="margin:0">1 · Energy certification &nbsp;·&nbsp; 2 · Lifecycle certification &nbsp;·&nbsp;
+      3 · Hazardous substance compliance &nbsp;·&nbsp; 4 · Repairability &nbsp;·&nbsp;
+      5 · Recycled content &nbsp;·&nbsp; 6 · Take-back programme<br>
+      <span style="color:var(--muted);font-size:.9rem">1★ = no evidence / poor · 2★ = partial / unverified · 3★ = strong evidence / certified</span></p>
+    </div>
+
+    <h3>The four roles</h3>
+
+    <p>The lecture closed by assigning specific levers to four different jobs. A scenario question
+    may put you in one of these roles, so know which levers belong to which.</p>
+
+    <ul>
+      <li><b>Product engineers (hardware designers)</b> — choose RoHS-compliant materials, design for
+      disassembly, make the battery user-replaceable, minimise the number of distinct material types,
+      commit to spare parts availability, use recycled content where structurally valid. Their
+      decisions at design stage <b>lock in most of the product's lifetime impact</b>.</li>
+      <li><b>Systems / infrastructure engineers</b> — specify Energy Star, EPEAT and 80 PLUS Gold in
+      procurement requirements; maximise virtualisation before adding hardware; choose servers with
+      high utilisation capability; design for the longest possible refresh cycle with upgrade paths;
+      document asset lifecycle for Scope 3 reporting.</li>
+      <li><b>Procurement officers / IT managers</b> — write sustainability requirements into tender
+      documents rather than judging on price alone; evaluate TCO over 4–5 years; maintain asset
+      registers with acquisition dates to trigger certified disposal; prefer certified refurbished for
+      non-critical use.</li>
+      <li><b>Software engineers</b> — efficient code means less hardware, which means fewer devices and
+      less manufacturing carbon. The lecture's example: a software team cutting CPU usage by 30% may
+      defer a hardware upgrade cycle by two years across a fleet. <b>Sustainability is a software
+      quality metric, not just a hardware one.</b></li>
+    </ul>
+
+    <div class="callout key">
+      <span class="tag">Key idea — the procurement multiplier (Velete Ch.8)</span>
+      <p>A single procurement officer signing one hardware tender determines the environmental
+      performance of thousands of devices over 4–5 years. Writing <b>"EPEAT Gold required"</b> into a
+      500-laptop tender has more environmental impact than any individual action any of those 500
+      users will ever take — <em>including recycling them at end of life</em>. Specification is the
+      highest-leverage moment in the whole lifecycle. This is the quotable line of Class 8.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="num">
+    <span class="topic-num">Practice A</span>
+    <h2>Numerical practice — worked line by line</h2>
+    <p class="subtitle">TCO comparisons, PSU efficiency, and energy savings. Attempt each on paper first.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>A 500 W server uses a PSU that is <b>80%</b> efficient. (a) How much power is wasted as
+        heat? (b) Repeat for a <b>93%</b> efficient 80 PLUS Gold PSU. (c) How many kWh per year does
+        upgrading save, running continuously?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{out}} = 500\ \text{W},\quad \eta_1 = 0.80 \)</p>
+              <p class="why">The 500 W is the DC power the server actually needs; efficiency is the fraction of drawn AC power that reaches it. Write efficiency as a decimal so it can divide.</p></li>
+          <li><p class="math-line">\( P_{\text{in}} = \dfrac{P_{\text{out}}}{\eta} \)</p>
+              <p class="why"><b>Definition of efficiency:</b> \(\eta = P_{\text{out}}/P_{\text{in}}\). Rearranging for the input power is the step that lets you find the waste.</p></li>
+          <li><p class="math-line">\( P_{\text{in},1} = \dfrac{500}{0.80} = 625\ \text{W} \)</p>
+              <p class="why">Substitute. The wall must supply 625 W for the server to receive 500 W.</p></li>
+          <li><p class="math-line">\( P_{\text{waste},1} = 625 - 500 = 125\ \text{W} \)</p>
+              <p class="why"><b>Conservation of energy:</b> whatever goes in and does not come out as usable DC leaves as heat.</p></li>
+          <li><p class="math-line">\( P_{\text{in},2} = \dfrac{500}{0.93} = 537.6\ \text{W} \)</p>
+              <p class="why">Same efficiency definition, new efficiency value for the Gold PSU.</p></li>
+          <li><p class="math-line">\( P_{\text{waste},2} = 537.6 - 500 = 37.6\ \text{W} \)</p>
+              <p class="why">Same conservation step. Compare with the lecture's stated "only 38 W" — it matches, confirming the method.</p></li>
+          <li><p class="math-line">\( \Delta P = 125 - 37.6 = 87.4\ \text{W} = 0.0874\ \text{kW} \)</p>
+              <p class="why"><b>Difference of the two waste figures</b> is the continuous saving. Convert W to kW (÷1,000) because annual energy is conventionally in kWh.</p></li>
+          <li><p class="math-line">\( E = P \times t = 0.0874 \times 8{,}760 = 765.6\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time.</b> 8,760 h is one full year (365 × 24) — the figure to use whenever a problem says "continuously" or "24/7".</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>125 W wasted</b> · (b) <b>≈ 37.6 W wasted</b> · (c) <b>≈ 766 kWh/year saved</b>.</p>
+        <p>Note on reading the lecture: the slide computes the saving as 62 W (100 W → 38 W) because it
+        treats the 500 W as the <em>drawn</em> power rather than the delivered power. Both framings
+        appear in textbooks. State your assumption in one line — "taking 500 W as the server's DC
+        load" — and either is defensible. Sanity check: the answer must be a few hundred kWh/year,
+        since ~90 W continuous over a year is roughly 0.09 × 8,760 ≈ 790.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">· easy · warm-up</span></span></div>
+      <div class="qbody">
+        <p>Following the lecture's PUE-compounding rule, a watt wasted in the PSU costs about
+        <b>1.5 W</b> in total facility power. A data centre has <b>200 servers</b>, each wasting an
+        extra <b>62 W</b> because budget PSUs were specified instead of 80 PLUS Gold. At $0.12/kWh,
+        what is the annual cost of that specification decision?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( P_{\text{IT waste}} = 200 \times 62 = 12{,}400\ \text{W} \)</p>
+              <p class="why"><b>Per-unit × count.</b> This is the waste at the IT layer only — before cooling is accounted for.</p></li>
+          <li><p class="math-line">\( P_{\text{facility}} = 12{,}400 \times 1.5 = 18{,}600\ \text{W} \)</p>
+              <p class="why"><b>Apply the compounding multiplier.</b> The extra heat must be removed by the cooling plant, which itself draws power — so the true facility cost is 1.5× the IT-layer figure.</p></li>
+          <li><p class="math-line">\( = 18.6\ \text{kW} \)</p>
+              <p class="why"><b>Convert W to kW</b> (÷1,000) before combining with a per-kWh tariff.</p></li>
+          <li><p class="math-line">\( E = 18.6 \times 8{,}760 = 162{,}936\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Energy = power × time</b>, with 8,760 hours for continuous annual operation.</p></li>
+          <li><p class="math-line">\( C = 162{,}936 \times \$0.12 = \$19{,}552 \)</p>
+              <p class="why"><b>Energy × tariff = cost.</b> Units: kWh × $/kWh = $, so kWh cancels.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>≈ $19,552 per year</b>, every year, from one line in a tender document.</p>
+        <p>This is the numerical form of the <b>procurement multiplier</b> point. Sanity check: had you
+        forgotten the 1.5× PUE factor you would have got ≈ $13,035 — so if your answer is exactly
+        two-thirds of the expected value, that is the step you dropped.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>Product A costs <b>$400</b>, has no certifications, and a <b>3-year</b> lifespan.
+        Product B costs <b>$520</b>, is EPEAT Gold and Energy Star certified with an 80 PLUS Gold PSU,
+        and has a <b>5-year</b> lifespan. Energy Star saves about <b>$30/year</b>. Compare the two
+        over a 5-year horizon and recommend one.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( T = 5\ \text{years} \)</p>
+              <p class="why"><b>Fix a common time horizon first.</b> You cannot compare a 3-year product with a 5-year product until both are expressed over the same period — this is the whole trick of the question.</p></li>
+          <li><p class="math-line">\( n_A = \dfrac{5}{3} \approx 1.67\ \text{purchases} \)</p>
+              <p class="why"><b>Lifespan ÷ into horizon:</b> a 3-year product must be bought 5/3 times to cover 5 years. Keep the fraction rather than rounding up to 2, since the lecture's own worked answer uses the ratio.</p></li>
+          <li><p class="math-line">\( C_A = \$400 \times \dfrac{5}{3} = \$667 \)</p>
+              <p class="why"><b>Unit price × number of purchases</b> gives the 5-year acquisition cost of Product A.</p></li>
+          <li><p class="math-line">\( n_B = \dfrac{5}{5} = 1 \Rightarrow C_B = \$520 \)</p>
+              <p class="why">Product B's lifespan already covers the horizon, so it is bought once — no multiplier.</p></li>
+          <li><p class="math-line">\( S_{\text{energy}} = \$30 \times 5 = \$150 \)</p>
+              <p class="why"><b>Annual saving × horizon.</b> Only Product B earns this, because only Product B carries the Energy Star certification.</p></li>
+          <li><p class="math-line">\( C_B^{\text{net}} = \$520 - \$150 = \$370 \)</p>
+              <p class="why"><b>Subtract operational savings from acquisition cost</b> to get effective total cost of ownership. This is the step that makes it a TCO comparison rather than a price comparison.</p></li>
+          <li><p class="math-line">\( \$667 - \$370 = \$297 \)</p>
+              <p class="why">Difference of the two TCO figures — the actual saving from choosing B.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>Product B.</b> Over 5 years it effectively costs <b>$370</b> against Product A's
+        <b>$667</b> — roughly <b>half</b> — while being significantly greener.</p>
+        <p>The point the faculty wanted: <b>green procurement is usually better value, not worse.</b>
+        The $120 sticker premium is an illusion created by ignoring lifespan and energy. Sanity check:
+        B is cheaper on both counts once normalised, so the conclusion should not be close — and it
+        isn't. Worth adding in an exam: this ignores disposal cost and the embodied carbon of the
+        extra 0.67 units Product A requires, both of which would widen the gap further.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">· medium · core</span></span></div>
+      <div class="qbody">
+        <p>A 200-computer office replaces standard machines with Energy Star models using <b>45% less
+        energy</b>. Each standard machine consumed <b>320 kWh/year</b>. At <b>$0.12/kWh</b>:
+        (a) annual kWh saved; (b) annual money saved; (c) if each new machine cost $40 more, what is
+        the simple payback period?</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( E_{\text{old,unit}} = 320\ \text{kWh/yr},\quad r = 45\% = 0.45 \)</p>
+              <p class="why">Per-machine baseline consumption and the fractional reduction, converted to a decimal so it can multiply.</p></li>
+          <li><p class="math-line">\( \Delta E_{\text{unit}} = 0.45 \times 320 = 144\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Percentage saving × baseline</b> gives the saving per machine. Note it is 45% <em>of the old figure</em>, not of the new one.</p></li>
+          <li><p class="math-line">\( \Delta E_{\text{total}} = 144 \times 200 = 28{,}800\ \text{kWh/yr} \)</p>
+              <p class="why"><b>Scale to the fleet</b> by multiplying by the machine count.</p></li>
+          <li><p class="math-line">\( S = 28{,}800 \times \$0.12 = \$3{,}456/\text{yr} \)</p>
+              <p class="why"><b>Energy × tariff = money.</b> kWh × $/kWh leaves dollars.</p></li>
+          <li><p class="math-line">\( \text{CapEx} = 200 \times \$40 = \$8{,}000 \)</p>
+              <p class="why">The extra upfront cost of the whole fleet — the numerator of a payback calculation.</p></li>
+          <li><p class="math-line">\( \text{Payback} = \dfrac{\text{CapEx}}{\text{Annual saving}} = \dfrac{8{,}000}{3{,}456} \)</p>
+              <p class="why"><b>Definition of simple payback period:</b> upfront cost divided by annual saving. "Simple" means no discounting of future cash flows.</p></li>
+          <li><p class="math-line">\( \approx 2.3\ \text{years} \)</p>
+              <p class="why">Divide. Units: $ ÷ ($/yr) = yr, which confirms the answer is a time.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p>(a) <b>28,800 kWh/year</b> · (b) <b>$3,456/year</b> · (c) <b>≈ 2.3 years</b> payback.</p>
+        <p>Interpretation to add for marks: with a 4–5 year refresh cycle, a 2.3-year payback means the
+        premium is recovered <em>and</em> roughly two further years of pure saving follow — so the
+        Energy Star specification is financially justified on its own, before any environmental
+        argument. Sanity check: the lecture states a 200-computer office saves $10,000–$30,000/year
+        from Energy Star; this scenario's smaller figure reflects a lower assumed baseline
+        consumption, so the order of magnitude is consistent.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">· hard · stretch</span></span></div>
+      <div class="qbody">
+        <p>Laptop <b>X</b> has embodied carbon of <b>300 kg CO₂e</b> and consumes <b>50 kWh/year</b>.
+        Laptop <b>Y</b> is more efficient at <b>30 kWh/year</b> but has the same 300 kg embodied
+        carbon. Grid carbon intensity is <b>0.6 kg CO₂e/kWh</b>. Policy A: buy Y and replace every
+        <b>2 years</b>. Policy B: buy X and keep it <b>4 years</b>. Compare total emissions over
+        <b>8 years</b> and state which policy wins and why.</p>
+      </div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( T = 8\ \text{yr},\quad e_{\text{emb}} = 300\ \text{kg},\quad I = 0.6\ \text{kg/kWh} \)</p>
+              <p class="why">Fix the common horizon and list the shared constants. Both policies must be measured over the same 8 years or the comparison is meaningless.</p></li>
+          <li><p class="math-line">\( n_A = \dfrac{8}{2} = 4,\qquad n_B = \dfrac{8}{4} = 2 \)</p>
+              <p class="why"><b>Horizon ÷ replacement interval</b> gives how many devices each policy consumes. This is where the two policies actually differ.</p></li>
+          <li><p class="math-line">\( E^{\text{emb}}_A = 4 \times 300 = 1{,}200\ \text{kg} \)</p>
+              <p class="why"><b>Device count × embodied carbon per device.</b> Every replacement triggers a fresh manufacturing event, so embodied carbon is paid again each time.</p></li>
+          <li><p class="math-line">\( E^{\text{emb}}_B = 2 \times 300 = 600\ \text{kg} \)</p>
+              <p class="why">Same step for Policy B, which buys half as many machines.</p></li>
+          <li><p class="math-line">\( E^{\text{op}}_A = 30\ \tfrac{\text{kWh}}{\text{yr}} \times 8\ \text{yr} \times 0.6\ \tfrac{\text{kg}}{\text{kWh}} = 144\ \text{kg} \)</p>
+              <p class="why"><b>Annual consumption × years × carbon intensity.</b> Units chain: kWh/yr × yr × kg/kWh = kg. A machine is running throughout the horizon regardless of how often it is swapped, so use the full 8 years.</p></li>
+          <li><p class="math-line">\( E^{\text{op}}_B = 50 \times 8 \times 0.6 = 240\ \text{kg} \)</p>
+              <p class="why">Same calculation for the less efficient Laptop X used under Policy B.</p></li>
+          <li><p class="math-line">\( E_A = 1{,}200 + 144 = 1{,}344\ \text{kg CO}_2\text{e} \)</p>
+              <p class="why"><b>Total = embodied + operational.</b> The two components are independent and simply add.</p></li>
+          <li><p class="math-line">\( E_B = 600 + 240 = 840\ \text{kg CO}_2\text{e} \)</p>
+              <p class="why">Same summation for Policy B.</p></li>
+          <li><p class="math-line">\( E_A - E_B = 504\ \text{kg},\quad \dfrac{504}{1344} = 37.5\% \)</p>
+              <p class="why"><b>Difference, then difference as a share of the larger figure</b>, to express the result as a percentage reduction.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+        <p><b>Policy B wins</b>: 840 kg against 1,344 kg — a <b>37.5% reduction</b>, despite Policy B
+        using the <em>less</em> energy-efficient laptop.</p>
+        <p>Why, stated for the marks: Policy A's efficiency advantage saves 96 kg of operational carbon
+        over the eight years, but its shorter refresh cycle costs an extra 600 kg of embodied carbon.
+        The embodied penalty is more than six times the operational gain. This is the numerical proof
+        of the lecture's headline claim — <b>longevity beats efficiency for embodied-carbon-dominant
+        devices</b> — and it works precisely because manufacturing is 70–80% of a laptop's lifetime
+        footprint. Sanity check: operational carbon is small relative to embodied in both policies
+        (144/1344 ≈ 11%, 240/840 ≈ 29%), which is consistent with the 20–30% use-phase share the
+        lecture gives for consumer devices.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="analytical">
+    <span class="topic-num">Practice B</span>
+    <h2>Analytical questions</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>A vendor states their monitor is Energy Star certified and argues this makes it "the
+        sustainable choice". Critique that argument.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        This joins <b>Topic 02 (what Energy Star does and does not cover)</b> to
+        <b>Topic 01 (embodied vs operational carbon)</b>. The examiner is testing whether you know the
+        <em>limitation</em> of a certification, not just its name. The word "sustainable" doing the
+        work in the vendor's claim is the thing to attack.</div>
+        <p><b>Model answer.</b> The certification itself is genuine — Energy Star is a real US EPA
+        programme and it means the product sits in the <b>top 25% of energy efficiency</b> for its
+        category. So the factual claim is not greenwashing in the fibbing sense.</p>
+        <p>The <em>argument</em>, however, overreaches, because Energy Star covers <b>operational
+        energy efficiency only</b>: electricity used in active and idle states. It says nothing about
+        materials, manufacturing emissions, or end-of-life management. The lecture is explicit that a
+        product can be Energy Star certified while being made with toxic materials, having no
+        recycling programme, and carrying substantial manufacturing emissions.</p>
+        <p>That matters here specifically because of the embodied-carbon split (Topic 01): for a
+        monitor — a consumer-class device — the dominant share of lifetime carbon is manufacturing,
+        not operation. Energy Star addresses the <em>smaller</em> share of the total impact. The
+        vendor is therefore committing something close to the <b>hidden trade-off</b> sin: one
+        genuine green attribute is being used to imply overall environmental performance that has
+        not been demonstrated.</p>
+        <p><b>What would substantiate the claim:</b> an <b>EPEAT Gold</b> or <b>TCO Certified</b>
+        rating, since both cover the full lifecycle including materials and end-of-life, plus
+        <b>RoHS compliance</b> for hazardous substances and evidence of a take-back programme. The
+        lecture's own guidance is that the four certifications address different dimensions and do
+        not overlap significantly, so a complete claim requires more than one.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 7 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Compare EPEAT and TCO Certified. Both are described as lifecycle standards — what
+        distinguishes them, and when would you specify each?</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 02.</b> These two are the hardest pair to separate because both genuinely cover the
+        full lifecycle. The examiner wants one specific discriminator — the <b>social</b> dimension —
+        and then a sensible statement of when each is the right instrument.</div>
+        <p><b>Common ground.</b> Both go well beyond Energy Star. Both cover materials selection,
+        energy, product lifespan, and end-of-life management across the whole product lifecycle.
+        Either is an acceptable baseline for a "full lifecycle sustainability" procurement
+        requirement.</p>
+        <p><b>The distinguishing feature: social responsibility.</b> TCO Certified uniquely includes
+        criteria on <b>working conditions in the manufacturing supply chain</b> — minimum wage,
+        working hours, prohibition of child and forced labour, health and safety — and requires
+        supply-chain traceability. It further requires documented responsible sourcing of the
+        <b>3TG conflict minerals</b> (tin, tantalum, tungsten, gold) under OECD Due Diligence
+        Guidance, going beyond US Dodd-Frank requirements. It also mandates <b>annual third-party
+        factory audits</b>. EPEAT is environmental and corporate-performance focused; it does not
+        carry an equivalent labour-conditions regime.</p>
+        <p><b>Structural difference.</b> EPEAT is <b>tiered</b> — Bronze (all required criteria),
+        Silver (Bronze + 50% of optional), Gold (Bronze + 75% of optional) — so it lets a buyer
+        specify a level of ambition. TCO Certified is pass/fail against a single comprehensive
+        standard.</p>
+        <p><b>When to specify which.</b> Specify <b>EPEAT Gold</b> where the requirement is strong
+        environmental lifecycle performance with a recognised tier to write into a tender — it is
+        required by US federal agencies and referenced in EU Green Public Procurement, so vendor
+        availability is broad. Specify <b>TCO Certified</b> where the organisation carries
+        <b>ESG reporting obligations</b> or serves European institutional clients, or where supply-chain
+        labour conditions are a stated concern — in the Bangladeshi context that applies particularly
+        to firms exporting to EU/US markets and to World Bank or ADB-funded projects.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 8 <span class="diff">· short answer</span></span></div>
+      <div class="qbody">
+        <p>Analyse the claim: <b>"Our new server range is built with eco-friendly materials and is
+        carbon neutral by 2035."</b> Identify the greenwashing sins present and state what evidence
+        you would demand.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 04.</b> This is a composite of the faculty's claim 2 and claim 4, so it tests whether
+        you can apply the seven sins to a claim you have not seen rather than recite the five they
+        analysed. Deal with the two halves separately — they fail for different reasons.</div>
+        <p><b>First half — "eco-friendly materials". This is the vagueness sin.</b> "Eco-friendly" has
+        no defined meaning and no verification behind it. Does it mean RoHS compliant? Recycled
+        content? Sustainably sourced? Recyclable at end of life? Any company can print the phrase at
+        zero cost. The lecture's rule applies directly: <b>if a company cannot state exactly what
+        "eco-friendly" means in numbers or certifications, assume it means nothing.</b> There is also
+        an element of the <b>no proof</b> sin, since no third-party standard is cited.</p>
+        <p><b>Second half — "carbon neutral by 2035". Insufficient without details</b>, and potentially
+        a <b>hidden trade-off</b>. A commitment a decade out, with no interim milestones and no
+        independent accountability, is cheap to make and hard to hold anyone to.</p>
+        <p><b>Evidence I would demand.</b> On materials: a specific <b>RoHS compliance declaration</b>
+        with the 0.1%-by-weight (0.01% cadmium) thresholds met; a stated <b>percentage of recycled
+        content</b>; and an <b>EPEAT Gold or TCO Certified</b> registration, which would substantiate
+        the whole-lifecycle claim rather than a vague adjective. On the neutrality target, the
+        lecture's four questions: does it <b>include Scope 3</b> (manufacturing and supply chain — for
+        hardware this is most of the footprint); what are the <b>2025 and 2030 interim targets</b>;
+        is it verified by the <b>Science Based Targets initiative (SBTi)</b>; and <b>how much of the
+        work is offsetting</b> rather than actual emission reduction?</p>
+        <p><b>What a good version would look like</b>, using the faculty's model claim as the template:
+        specific standard + specific metric + specific benefit. For example — "EPEAT Gold registered,
+        RoHS compliant, 30% post-consumer recycled aluminium chassis, 80 PLUS Titanium PSU, SBTi-verified
+        42% absolute Scope 1–3 reduction by 2030." Every element there is checkable.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="scenario">
+    <span class="topic-num">Practice C</span>
+    <h2>Scenario / long-answer practice</h2>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 9 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>You are writing the IT hardware specification for a new 300-seat EWU computer lab. List and
+        justify the sustainability requirements you would include in the tender document, and explain
+        why the specification stage matters more than any later intervention.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's own specification scenario from Section 6, combined with the
+        <b>procurement multiplier</b> point from Section 7. It draws on <b>Topic 02 (certifications)</b>,
+        <b>Topic 03 (LCA implications for procurement)</b> and <b>Topic 05 (the scorecard)</b>. The
+        second half of the question — why specification matters most — is the examiner asking for the
+        Velete Ch.8 quotation, so do not leave it out.</div>
+        <p><b>Core requirements.</b> The lecture's own model answer gives four, and I would add three
+        more from the scorecard dimensions:</p>
+        <ol>
+          <li><b>Energy Star certified</b> (or demonstrated equivalent, top 25% efficiency for
+          category). Rationale: this is the operational-energy dimension, and across 300 machines it
+          is the difference between roughly $10,000 and $30,000 per year in electricity for an office
+          of this size.</li>
+          <li><b>EPEAT Silver or Gold registered.</b> Rationale: Energy Star alone covers only
+          operational energy; EPEAT adds materials selection, longevity and upgradability,
+          end-of-life take-back and corporate performance — the dimensions that actually govern the
+          70–80% of lifetime carbon that is embodied.</li>
+          <li><b>PSU must be 80 PLUS Gold or higher</b> (92% at 50% load). Rationale: the lecture flags
+          that locally assembled PCs frequently ship 70–75% efficient supplies, and PSU losses compound
+          with PUE at roughly 1.5×. This is a low-cost clause with a fast payback.</li>
+          <li><b>Minimum 5-year warranty with guaranteed spare parts availability.</b> Rationale:
+          longevity is the dominant environmental lever for embodied-carbon-dominant devices, and a
+          spare parts guarantee is what makes a 4–5 year refresh cycle actually achievable rather than
+          aspirational.</li>
+          <li><b>RoHS compliance</b> — hazardous substance thresholds of 0.1% by weight (0.01% cadmium).
+          Rationale: reduces disposal liability and makes end-of-life processing cheaper and safer,
+          which matters given how few DoE-certified recyclers operate in Bangladesh.</li>
+          <li><b>A vendor take-back programme at end of life</b>, contractually committed. Rationale:
+          this pushes the EPR obligation onto the manufacturer where it belongs, and gives the
+          university a documented disposal route for Scope 3 reporting.</li>
+          <li><b>Recycled content ≥10% in the chassis</b>, as a scorecard dimension with evidence
+          required rather than a claim accepted.</li>
+        </ol>
+        <p><b>How I would evaluate bids.</b> Score each on the six scorecard dimensions — energy
+        certification, lifecycle certification, hazardous substance compliance, repairability,
+        recycled content, take-back — at 1–3 stars <b>on evidence, not marketing claims</b>, for a
+        maximum of 18. Reject anything below 9. And evaluate on <b>total cost of ownership over
+        4–5 years including energy</b>, not on sticker price, since as the TCO arithmetic shows a
+        higher-specification machine with a longer life is routinely cheaper in real terms.</p>
+        <p><b>Why the specification stage matters most.</b> This is the procurement multiplier from
+        Velete Ch.8. A single procurement officer signing one tender determines the environmental
+        performance of thousands of devices over four to five years, because the specification
+        multiplies across the entire fleet. Writing "EPEAT Gold required" into a 500-laptop tender
+        has more environmental impact than any individual action any of those 500 users will ever
+        take — <b>including recycling them at end of life</b>. Every other lever in this course acts
+        on a device after its impact is largely locked in; the specification acts before. For a
+        300-seat lab the same logic holds: one paragraph in a tender document outweighs three years
+        of switching monitors off at night.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 10 <span class="diff">· long answer</span></span></div>
+      <div class="qbody">
+        <p>A local PC assembler offers laptops with no certifications at <b>30% below</b> market price
+        for a new university lab. The finance office is enthusiastic. Advise the IT department.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        The faculty's Bangladesh scenario from Section 6. It tests whether you can argue the
+        <b>TCO case (Topic 03, Topic 05)</b> against a sticker-price case, using the
+        <b>certifications (Topic 02)</b> as the evidence framework. Note the phrasing — you are asked
+        to <em>advise</em>, so a flat refusal is weaker than a conditional one.</div>
+        <p><b>Recommendation: do not accept the offer as presented</b> — but the right response is to
+        demand documentation rather than to reject the vendor outright.</p>
+        <p><b>Why the 30% saving is likely illusory.</b> Work through what each missing certification
+        implies:</p>
+        <ul>
+          <li><b>No Energy Star</b> — the machines are not demonstrably in the top 25% of efficiency,
+          so electricity costs over a 4–5 year life will be higher. The lecture puts Energy Star
+          savings at 30–65% of consumption; across a lab-sized fleet that offsets a substantial part
+          of the upfront discount.</li>
+          <li><b>No 80 PLUS rating</b> — and the lecture specifically warns that locally assembled PCs
+          frequently use budget PSUs at 70–75% efficiency, against 92% for Gold. That waste is
+          continuous, and it compounds at roughly 1.5× once cooling is included.</li>
+          <li><b>No RoHS declaration</b> — unrestricted toxic materials create a <b>disposal liability</b>
+          at end of life, which is a real cost in Bangladesh where certified recycling capacity is
+          scarce.</li>
+          <li><b>No warranty or spare parts guarantee</b> — a higher failure and replacement rate. Since
+          70–80% of lifetime carbon is embodied, a shorter effective lifespan is both the largest
+          environmental cost and, per the TCO arithmetic, the largest financial one.</li>
+          <li><b>No EPEAT or TCO Certified</b> — no accountability for the supply chain, and nothing the
+          university can cite in its own sustainability reporting.</li>
+        </ul>
+        <p><b>The financial argument in the finance office's own language.</b> A machine bought at 30%
+        less but lasting 3 years instead of 5 costs more per year of service: on a $400 versus $520
+        comparison, the cheap option works out at roughly $667 over five years against $370 for the
+        certified one once lifespan and energy are included. The discount is not a saving; it is a
+        deferred cost. This is exactly the TCO-beats-sticker-price point from the scorecard section.</p>
+        <p><b>What I would actually do.</b> Rather than rejecting the vendor, issue the sustainability
+        requirements as tender conditions and invite them to meet them: request RoHS compliance
+        documentation, PSU efficiency data, warranty and spare-parts terms, and per-product energy
+        consumption figures. If the assembler can supply that evidence, the low price may be genuine
+        and a local supplier has advantages in support and lead time. If they cannot, the missing
+        documentation <em>is</em> the answer. The principle is the one from the greenwashing section —
+        <b>demand specific, measurable, verifiable evidence, and treat an absence of evidence as an
+        absence of the attribute.</b></p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 11 <span class="diff">· long answer · stretch</span></span></div>
+      <div class="qbody">
+        <p>"Sustainability is a hardware problem, so software engineers have no role in it." Evaluate
+        this statement with reference to Class 8, and explain how the four engineering roles differ
+        in the levers available to them.</p>
+      </div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map"><span class="tag">What this tests &amp; where it comes from</span>
+        <b>Topic 05</b>, the engineer's-role section. The statement is a deliberate provocation — the
+        lecture explicitly contradicts it. The examiner wants you to refute it using the specific
+        mechanism the faculty gave, then demonstrate you know all four roles rather than just the
+        one being challenged.</div>
+        <p><b>The statement is false, and Class 8 refutes it directly.</b> The faculty's position is
+        that <b>sustainability is a software quality metric, not just a hardware one</b>, and the
+        mechanism is concrete: efficient code means less hardware is needed, which means fewer devices
+        are manufactured, which means less manufacturing carbon. The worked example given was that a
+        software team cutting CPU usage by 30% may defer a hardware upgrade cycle by two years across
+        a fleet — avoiding the embodied carbon of an entire replacement round.</p>
+        <p>That mechanism matters precisely because of the embodied-carbon finding from Topic 01. If
+        70–80% of a device's lifetime footprint is locked in at manufacture, then anything that
+        <em>avoids a manufacturing event</em> is worth far more than anything that trims operational
+        draw. Software that lets existing hardware stay adequate for longer does exactly that.
+        Software also drives the reverse effect: when vendors stop shipping OS updates, functional
+        hardware becomes insecure and gets discarded — <b>software obsolescence</b> is a hardware
+        waste driver, which is why the EU now mandates 5–10 year support windows.</p>
+        <p><b>The four roles and their distinct levers.</b> The lecture's framing is that each role
+        controls different levers, not that some roles matter and others don't:</p>
+        <ul>
+          <li><b>Product engineers</b> hold the largest single lever, because material choice, design
+          for disassembly, user-replaceable batteries, minimising distinct material types and spare
+          parts commitments all happen at design stage — and those decisions <b>lock in most of the
+          product's lifetime impact</b> before it exists.</li>
+          <li><b>Systems / infrastructure engineers</b> specify certifications in requirements,
+          maximise virtualisation before adding hardware, choose high-utilisation servers, design for
+          long refresh cycles with upgrade paths, and document asset lifecycles for Scope 3.</li>
+          <li><b>Procurement officers / IT managers</b> hold the <b>procurement multiplier</b> — one
+          tender determines the performance of thousands of devices for years. They evaluate on TCO
+          over 4–5 years rather than price, and maintain asset registers that trigger certified
+          disposal rather than casual binning.</li>
+          <li><b>Software engineers</b> extend the useful life of hardware already in service, which
+          is the cheapest possible way to avoid embodied carbon since no procurement decision is
+          required at all.</li>
+        </ul>
+        <p><b>Conclusion.</b> The statement mistakes <em>where the carbon is emitted</em> for
+        <em>who influences it</em>. The carbon is emitted in hardware manufacturing, but the decisions
+        that determine how much hardware gets manufactured are distributed across all four roles — and
+        the software role is the only one that can act on devices already deployed.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute revision — Class 8</h2>
+    <div class="grid">
+      <div class="item"><h4>The headline claim</h4><p>70–80% of a consumer device's lifetime carbon = manufacturing, before first use. Servers: only 20–40%.</p></div>
+      <div class="item"><h4>Embodied vs operational</h4><p>Embodied = manufacture + transport + disposal, locked in before use. Operational = electricity during use.</p></div>
+      <div class="item"><h4>Energy Star</h4><p>US EPA. Top 25% efficiency in category. Saves 30–65%. Covers OPERATIONAL ENERGY ONLY — that limitation is examinable.</p></div>
+      <div class="item"><h4>EPEAT tiers</h4><p>Bronze = all required. Silver = Bronze + 50% optional. Gold = Bronze + 75% optional. Full lifecycle.</p></div>
+      <div class="item"><h4>TCO Certified</h4><p>Most comprehensive. UNIQUE feature = SOCIAL criteria (labour conditions). 3TG conflict minerals, OECD guidance, annual factory audits.</p></div>
+      <div class="item"><h4>80 PLUS at 50% load</h4><p>Basic 80 · Bronze 85 · Silver 88 · <b>Gold 92</b> · Platinum 94 · Titanium 96. Gold = data centre minimum.</p></div>
+      <div class="item"><h4>PSU compounding</h4><p>1 W wasted in the PSU ≈ 1.5 W total facility cost, because cooling must remove the heat too.</p></div>
+      <div class="item"><h4>RoHS numbers</h4><p>6 substances (2003) → 10 in RoHS 3 (2019). Limits: 0.1% by weight; <b>0.01% for cadmium</b>.</p></div>
+      <div class="item"><h4>RoHS substances</h4><p>Pb, Hg, Cd, Cr VI, PBB, PBDE + 4 phthalates (RoHS 3).</p></div>
+      <div class="item"><h4>The LCA insight</h4><p>Keeping a device 2× longer usually beats buying the most efficient model and replacing on schedule. Longevity &gt; efficiency.</p></div>
+      <div class="item"><h4>7 sins of greenwashing</h4><p>Hidden trade-off · No proof · Vagueness · Irrelevance · Lesser of two evils · Fibbing · False labels.</p></div>
+      <div class="item"><h4>Good claim formula</h4><p>Specific standard + specific metric + specific benefit. E.g. "Energy Star certified, 35% less energy, $28/yr saved."</p></div>
+      <div class="item"><h4>Scorecard</h4><p>6 dimensions × 3★ = 18 max. 14–18 excellent · 9–13 acceptable · &lt;9 avoid. Score on EVIDENCE not claims.</p></div>
+      <div class="item"><h4>Scorecard dimensions</h4><p>Energy cert · Lifecycle cert · Hazardous substances · Repairability · Recycled content · Take-back.</p></div>
+      <div class="item"><h4>Procurement multiplier</h4><p>One tender specifying EPEAT Gold for 500 laptops beats any individual user action — including recycling them.</p></div>
+      <div class="item"><h4>Which cert for what</h4><p>Energy only → Energy Star + 80 PLUS Gold. Full lifecycle → EPEAT Gold / TCO. Substances → RoHS. Complete spec → all four.</p></div>
+      <div class="item"><h4>Simple payback</h4><p>\( \text{Payback} = \dfrac{\text{CapEx}}{\text{Annual saving}} \) — and TCO must normalise to a common horizon before comparing.</p></div>
+      <div class="item"><h4>Software's role</h4><p>30% less CPU can defer a hardware refresh by 2 years across a fleet. Sustainability is a software quality metric.</p></div>
+    </div>
+  </div>
+
+
+  <footer class="foot">
+    Built from the CSE407 Green Computing lecture pages (East West University, Summer 2025).
+    Every figure, rule and definition here is traced to what the faculty actually taught.
+    Check anything surprising against your own notes before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
