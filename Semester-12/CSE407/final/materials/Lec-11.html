@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 13 — Managing and Maintaining Green IT Transformation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#0a3d5c;--c2:#0e6090;--c3:#1b9ac4;--c4:#7dd8f0;--c5:#d4f3fc;
+  --ink:#0d1e26;--ink2:#2d4a5a;--ink3:#5a7a8a;--ink4:#9ab4c0;
+  --paper:#f0f7fa;--card:#ffffff;--card2:#f5fbfd;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --orange:#d4540a;--orange-l:#fdeee4;
+  --border:#cce4ef;--border2:#a8ccdc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,247,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--c1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--c1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--c3)}
+.prog-dot.active{background:var(--c1);box-shadow:0 0 0 2px var(--c5)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d2f4a 60%,#0a1e30 100%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:500px;height:500px;top:-160px;right:-120px;background:rgba(27,154,196,0.12)}
+.hero-c2{width:260px;height:260px;bottom:-90px;left:14%;background:rgba(125,216,240,0.08)}
+.hero-c3{width:140px;height:140px;top:50px;left:55%;background:rgba(27,154,196,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-c{background:rgba(125,216,240,0.2);color:#7dd8f0;border:1px solid rgba(125,216,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--c4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--c4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--c1);border-bottom-color:var(--c2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--c1);color:#fff}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--c1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--c3)}
+.sb-item.active .sb-dot{background:var(--c1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--c1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--c3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-c{background:var(--c5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-o{background:var(--orange-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--c5);color:var(--c1);border:1px solid rgba(27,154,196,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--c3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.section.done .mark-done-btn{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-c{background:var(--c5);border-color:var(--c2);color:var(--c1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-orange{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--c5);border:1px solid rgba(27,154,196,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--c1);line-height:1}
+.stat-u{font-size:13px;color:var(--c2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--c2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--c1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--c5)}
+
+/* TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--c3);color:var(--c1)}
+.fw-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--c1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--c1);min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--c2)}
+.result-box{background:var(--c1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.result-big{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--c4)}
+.result-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.result-rating{font-size:13px;color:rgba(255,255,255,0.7)}
+.result-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.result-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* SCENARIO / MATH CARDS */
+.math-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.mp-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.mp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.mp-card.flipped .mp-front{display:none}
+.mp-card.flipped .mp-back{display:flex}
+.mp-front{padding:16px;background:var(--card);min-height:150px;display:flex;flex-direction:column}
+.mp-back{display:none;padding:16px;background:var(--green-l);flex-direction:column;justify-content:center;min-height:150px}
+.mp-num{width:24px;height:24px;border-radius:50%;background:var(--c1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.mp-q{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.mp-hint{font-size:10px;color:var(--ink4);margin-top:10px}
+.mp-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--green-d);margin-bottom:6px}
+.mp-formula{font-size:12px;color:var(--green-d);font-weight:700;margin-bottom:6px;font-family:monospace}
+.mp-answer{font-size:14px;color:var(--green-d);font-weight:700}
+.mp-explain{font-size:11.5px;color:var(--green-d);opacity:.85;margin-top:6px;line-height:1.5}
+
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--c1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c4);margin-bottom:8px}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--c3)}
+.qp-dot.active{background:var(--c2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--c3);background:var(--c5);color:var(--c1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--c1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--c2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--c1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--c5);color:var(--c1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1)}
+.f-btn.primary:hover{background:var(--c2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 13 — Managing &amp; Maintaining Green IT Transformation</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-c">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 13 of 22</span>
+      <span class="chip chip-gray">Aug 10, 2025 · Sunday · 1h 30min</span>
+    </div>
+    <h1>Green IT Transformation<br><em>Managing, Sustaining &amp; Governance</em></h1>
+    <p class="hero-sub">From strategic roadmaps and change management to lifecycle governance and ROI — how organizations successfully drive and sustain long-term digital green transformation.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.13 &amp; 14 (all)</span>
+      <span class="ref">📗 Lamb Ch.12 &amp; App A</span>
+      <span class="ref">🎯 CO3</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+      <span class="ref">🎙️ Guest Lecture: Digital Transformation</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">70<span style="font-size:16px">%</span></div><div class="h-stat-lbl">Digital transformations fail due to poor change management &amp; culture</div></div>
+      <div class="h-stat"><div class="h-stat-num">4-Step</div><div class="h-stat-lbl">Transformation lifecycle: Plan, Implement, Measure, Sustain</div></div>
+      <div class="h-stat"><div class="h-stat-num">3–5</div><div class="h-stat-lbl">Years — typical timeline for enterprise-wide Green IT maturity</div></div>
+      <div class="h-stat"><div class="h-stat-num">Scope 1–3</div><div class="h-stat-lbl">GHG Protocol boundaries required for regulatory ESG reporting</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Transformation Framework</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Change &amp; Culture</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Metrics &amp; ROI</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Governance &amp; Policy</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Math Practice</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; transition to governance</div>
+        <div class="sec-subtitle">Virtualization recap + bridging technical optimizations with organizational change</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">In Class 12, we covered Virtualization and hypervisors — how consolidation cuts server count, idling power, and hardware footprints. But technology alone won't keep an organization green. Without policy, governance, and active change management, "virtual sprawl" quickly cancels out efficiency gains. Today we focus on managing the long-term enterprise Green IT transformation.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">💻 Virtualization recap</div><p>High consolidation ratios maximize hardware yield, but unmanaged VM sprawl creates phantom power waste.</p></div>
+      <div class="card-b"><div class="card-b-title">🏢 Governance necessity</div><p>Green IT requires policies for procurement, lifecycle management, and continuous KPI tracking.</p></div>
+      <div class="card-b"><div class="card-b-title">📊 Business Alignment</div><p>Sustainability must map directly to cost reduction, risk mitigation, and corporate ESG compliance.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Warm-up Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Why do you think most corporate sustainability initiatives stall after initial "easy wins" (like turning off unused servers or printing less)?</div><div class="discuss-time">2–3 students share perspectives</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: TRANSFORMATION FRAMEWORK -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🚀</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">The Green IT transformation lifecycle</div>
+        <div class="sec-subtitle">A structured 4-phase framework for enterprise-wide implementation</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">A successful transformation is not a single project; it is an iterative lifecycle. The standard enterprise framework spans four distinct phases designed to move an organization from reactive compliance to proactive leadership.</p>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">Phase 1</div><div class="stat-l">Assess &amp; Plan — Baselining current footprint &amp; gap analysis</div></div>
+      <div class="stat"><div class="stat-n">Phase 2</div><div class="stat-l">Architect &amp; Implement — Deploying quick wins &amp; core infrastructure</div></div>
+      <div class="stat"><div class="stat-n">Phase 3</div><div class="stat-l">Measure &amp; Optimize — Continuous KPI tracking &amp; refinement</div></div>
+      <div class="stat"><div class="stat-n">Phase 4</div><div class="stat-l">Institutionalize — Embedding policies into organizational culture</div></div>
+    </div>
+
+    <div class="two-col" style="margin-top:18px">
+      <div class="card-b">
+        <div class="card-b-title">📋 Phase 1 &amp; 2: Baseline to Implementation</div>
+        <ul>
+          <li>Establish Scope 1, 2, and 3 energy baselines</li>
+          <li>Perform Maturity Model assessment (e.g., CMMI-aligned Green IT models)</li>
+          <li>Identify low-hanging fruit (consolidation, PC power management)</li>
+          <li>Execute green procurement requirements for hardware</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔄 Phase 3 &amp; 4: Optimization to Governance</div>
+        <ul>
+          <li>Implement automated DCIM and IoT monitoring dashboards</li>
+          <li>Link Green IT KPIs to executive and department performance reviews</li>
+          <li>Establish formal e-waste and recycling vendor audits</li>
+          <li>Publish annual ESG and sustainability reports</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">⚠️ The "Set and Forget" Risk</div>
+      Without Phase 4 (Institutionalization), efficiency gains erode over time. Staff turn over, legacy hardware creeps back in, and virtualization ratios degrade without active enforcement.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: CHANGE & CULTURE -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">👥</div>
+      <div class="sec-meta">
+        <div class="sec-label">Organizational Behavior · 15 min</div>
+        <div class="sec-title">Change management &amp; cultural alignment</div>
+        <div class="sec-subtitle">Overcoming human resistance, incentives, and Kotter’s 8-Step Model</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Technology accounts for only 20% of transformation failure; human factors account for the other 80%. Aligning organizational culture requires deliberate change management models like Kotter’s 8-Step Framework applied to sustainability.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showKotter('k1')">1. Urgency &amp; Coalition</div>
+      <div class="fw-tab" onclick="showKotter('k2')">2. Vision &amp; Strategy</div>
+      <div class="fw-tab" onclick="showKotter('k3')">3. Empowerment &amp; Wins</div>
+      <div class="fw-tab" onclick="showKotter('k4')">4. Anchor in Culture</div>
+    </div>
+
+    <div class="fw-panel active" id="kotter-k1">
+      <div class="fw-header"><div class="fw-badge" style="background:#0a3d5c">Steps 1 &amp; 2</div><div><div class="fw-name">Create Urgency &amp; Build a Guiding Coalition</div><div class="fw-org">Aligning C-suite and cross-functional leaders</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Urgency Drivers</div><div class="fw-item-text">Highlight rising energy tariffs, regulatory compliance penalties, and corporate reputation risks.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Guiding Coalition</div><div class="fw-item-text">Form a Green Steering Committee combining IT, Facilities, Finance, and HR leadership.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="kotter-k2">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e6090">Steps 3 &amp; 4</div><div><div class="fw-name">Develop Vision &amp; Communicate Buy-In</div><div class="fw-org">Translating goals into clear staff behaviors</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Green Vision</div><div class="fw-item-text">Set tangible targets: "30% energy reduction in 24 months with zero performance compromise."</div></div>
+        <div class="fw-item"><div class="fw-item-title">Communication</div><div class="fw-item-text">Use departmental dashboards, town halls, and internal green champion networks.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="kotter-k3">
+      <div class="fw-header"><div class="fw-badge" style="background:#1b9ac4">Steps 5 &amp; 6</div><div><div class="fw-name">Empower Action &amp; Generate Quick Wins</div><div class="fw-org">Removing friction and demonstrating ROI fast</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Empowerment</div><div class="fw-item-text">Remove policies that force paper printing or require always-on desktop hardware.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Quick Wins</div><div class="fw-item-text">Execute rapid server virtualization or PC sleep policy rollouts to show immediate $ savings.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="kotter-k4">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">Steps 7 &amp; 8</div><div><div class="fw-name">Sustain Acceleration &amp; Anchor in Culture</div><div class="fw-org">Making Green IT second nature across the organization</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Sustain Gains</div><div class="fw-item-text">Reinvest energy cost savings into next-gen sustainable technologies and tools.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Cultural Anchor</div><div class="fw-item-text">Embed green criteria into hiring, employee onboarding, and annual performance reviews.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: METRICS & ROI -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">📈</div>
+      <div class="sec-meta">
+        <div class="sec-label">Financials &amp; Analytics · 15 min</div>
+        <div class="sec-title">Transformation metrics, ROI &amp; TCO</div>
+        <div class="sec-subtitle">Calculating payback periods, total cost of ownership, and carbon offset value</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">CFOs do not approve projects based on "environmental goodwill." Every Green IT initiative must present a rigorous business case comparing upfront Capital Expenditure (CapEx) against long-term Operational Expenditure (OpEx) savings.</p>
+
+    <!-- INTERACTIVE ROI CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">💰 Interactive: Green IT Project Payback &amp; ROI Calculator</div>
+      <div class="calc-subtitle">Adjust CapEx investment, expected annual energy savings, and electricity tariff to compute Simple Payback Period and 5-Year Net ROI.</div>
+      
+      <div class="calc-row">
+        <span class="calc-lbl">Upfront Investment / CapEx ($)</span>
+        <input type="range" id="capexVal" min="10000" max="200000" value="50000" step="5000" oninput="calcRoi()">
+        <span class="calc-val" id="capexText">$50,000</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Annual Energy Saved (kWh)</span>
+        <input type="range" id="kwhSaved" min="20000" max="500000" value="150000" step="10000" oninput="calcRoi()">
+        <span class="calc-val" id="kwhText">150,000 kWh</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Electricity Tariff ($/kWh)</span>
+        <input type="range" id="tariffVal" min="0.08" max="0.30" value="0.15" step="0.01" oninput="calcRoi()">
+        <span class="calc-val" id="tariffText">$0.15 / kWh</span>
+      </div>
+
+      <div class="result-box">
+        <div>
+          <div class="result-label">Simple Payback Period</div>
+          <div class="result-big" id="paybackResult">2.2 Yrs</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="annualSavingsText">Annual Savings: $22,500/yr</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="result-rating" id="roiRating">5-Year Net ROI: +125%</div>
+          <div class="result-bar"><div class="result-fill" id="roiFill" style="width:65%;background:#1a7a50"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:4px"><span>Poor (&gt;4 yrs)</span><span>Excellent (&lt;2 yrs)</span></div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7" id="carbonOffsetResult">Est. Carbon Offset: ~105 Tons CO₂e/yr</div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: GOVERNANCE & POLICY -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🏛️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Policy &amp; Standards · 10 min</div>
+        <div class="sec-title">IT governance, compliance &amp; policies</div>
+        <div class="sec-subtitle">ISO 14001, GHG Protocol, and green procurement policies</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Governance provides the legal and procedural guardrails for transformation. Standard compliance frameworks help organizations avoid greenwashing while meeting regulatory auditing requirements.</p>
+
+    <div class="big-list">
+      <li><div class="bl-icon">📜</div><div><strong>ISO 14001 Standards</strong> — Framework for Environmental Management Systems (EMS) to continuously measure and improve environmental impacts.</div></li>
+      <li><div class="bl-icon">🏭</div><div><strong>GHG Protocol (Scope 1, 2, 3)</strong> — Standard accounting for direct emissions (Scope 1), purchased electricity (Scope 2), and supply chain/vendor footprint (Scope 3).</div></li>
+      <li><div class="bl-icon">🛒</div><div><strong>Sustainable Procurement Policy</strong> — Mandating Energy Star, EPEAT Gold, or TCO Certified ratings for all new hardware acquisitions.</div></li>
+      <li><div class="bl-icon">♻️</div><div><strong>E-Waste Governance (WEEE)</strong> — Certified chain-of-custody recycling to ensure zero hazardous electronic waste ends up in landfills.</div></li>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: MATH PRACTICE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🧮</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practice · 10 min</div>
+        <div class="sec-title">Math practice — small, quick calculations</div>
+        <div class="sec-subtitle">Apply transformation metrics (payback, TCO savings, carbon emissions) to five short problems</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Solve each problem on paper first, then tap a card to reveal the step-by-step solution.</p>
+
+    <div class="math-grid">
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">1</div>
+          <div class="mp-q">An enterprise invests <strong>$60,000</strong> in dynamic power management software. It cuts annual electricity usage by <strong>200,000 kWh</strong>. If electricity costs <strong>$0.15/kWh</strong>, what is the simple payback period?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Savings = kWh × Cost; Payback = CapEx ÷ Savings</div>
+          <div class="mp-answer">200,000 × $0.15 = $30,000/yr<br>$60,000 ÷ $30,000 = 2.0 Years</div>
+          <div class="mp-explain">A 2-year payback is considered excellent for software-driven Green IT projects.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">2</div>
+          <div class="mp-q">A company replaces 100 legacy servers (400W each) with 10 virtualized host servers (600W each), running 24/7 for 1 year (8,760 hrs). How many <strong>kWh</strong> are saved annually?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Power Saved (kW) × 8,760 Hours</div>
+          <div class="mp-answer">Legacy: 100 × 0.4kW = 40 kW<br>New: 10 × 0.6kW = 6 kW<br>Saved: (40 - 6) × 8,760 = 297,840 kWh</div>
+          <div class="mp-explain">Virtualization delivers nearly 300 MWh of annual energy reduction in this scenario.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">3</div>
+          <div class="mp-q">If Bangladesh's electricity grid carbon intensity factor is <strong>0.6 kg CO₂e per kWh</strong>, how many metric tons of CO₂e are offset by saving <strong>150,000 kWh</strong>?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Tons CO₂e = (kWh × Factor) ÷ 1,000</div>
+          <div class="mp-answer">(150,000 × 0.6) ÷ 1,000 = 90 Metric Tons</div>
+          <div class="mp-explain">This direct conversion is crucial for mandatory corporate Scope 2 carbon reporting.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">4</div>
+          <div class="mp-q">A legacy PC fleet draws <strong>50 kW</strong> during non-working hours due to disabled sleep policies. Enforcing night sleep cuts this off-hours draw to <strong>5 kW</strong> across 12 off-peak hours per day. How much energy is saved per day?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Daily kWh Saved = ΔkW × Off-peak Hours</div>
+          <div class="mp-answer">(50 kW - 5 kW) × 12 hrs = 540 kWh / day</div>
+          <div class="mp-explain">Over a 250-day working year, that simple policy tweak saves 135,000 kWh with $0 CapEx!</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">5</div>
+          <div class="mp-q">An enterprise spends <strong>$100,000</strong> on a green data center retrofit. Over 5 years, it saves <strong>$35,000</strong> per year in electricity. What is the 5-Year Net ROI percentage?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">ROI% = [(Total Savings - CapEx) ÷ CapEx] × 100</div>
+          <div class="mp-answer">5-Yr Savings: $35,000 × 5 = $175,000<br>Net Return: $175,000 - $100,000 = $75,000<br>ROI: ($75,000 ÷ $100,000) × 100 = +75%</div>
+          <div class="mp-explain">A +75% net return over 5 years easily secures CFO project authorization.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Context · 10 min</div>
+        <div class="sec-title">Green IT transformation in Bangladesh</div>
+        <div class="sec-subtitle">Grid tariffs, SREDA policies, and banking sector mandates</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Transformation drivers in Bangladesh are heavily influenced by commercial electricity price hikes, national energy shortages, and strict green banking guidelines from Bangladesh Bank.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">⚡ Rising electricity tariffs</div>
+        <p>Commercial power tariffs in Bangladesh have risen steadily. Energy efficiency in server rooms directly impacts bottom-line operating margins for tech firms and commercial banks in Dhaka.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏦 Bangladesh Bank Green Guidelines</div>
+        <p>Central bank regulations require commercial banks to allocate specific funds to green finance, implement in-house green office policies, and report annual Scope 1 &amp; 2 footprints.</p>
+      </div>
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Corporate scenario</div><div class="sc-q">A commercial bank in Dhaka wants to reduce branch IT energy costs by 25%. What is the most effective policy-first initiative?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Centralized automated PC power management combined with thin-client deployment in branches. This cuts per-terminal power draw from 150W to 15W while enforcing off-hours shutdown.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Regulatory scenario</div><div class="sc-q">How does SREDA (Sustainable & Renewable Energy Development Authority) influence corporate Green IT in Bangladesh?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">SREDA provides energy audit standards, guidelines for rooftop solar integration for data centers, and awards certification for energy-efficient commercial buildings.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — Green IT transformation</div>
+        <div class="sec-subtitle">6 questions covering change management, ROI, and governance</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 14 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🚀</div><div class="sum-title">4-Phase Lifecycle</div><div class="sum-text">Plan, Implement, Measure, and Institutionalize to prevent efficiency decay.</div></div>
+      <div class="sum-card"><div class="sum-icon">👥</div><div class="sum-title">Culture is 80%</div><div class="sum-text">Use Kotter's model to align executive sponsorship, middle management incentives, and staff habits.</div></div>
+      <div class="sum-card"><div class="sum-icon">📈</div><div class="sum-title">Build CFO-Ready Cases</div><div class="sum-text">Always present CapEx, OpEx savings, simple payback periods, and 5-year ROI percentages.</div></div>
+      <div class="sum-card"><div class="sum-icon">📜</div><div class="sum-title">Governance Guardrails</div><div class="sum-text">Enforce EPEAT procurement, ISO 14001 EMS, and certified e-waste chain-of-custody policies.</div></div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 14</div>
+      <strong>Green IoT Technologies.</strong> We transition to track 2: using IoT sensors, smart metering, energy harvesting, and edge analytics to optimize physical infrastructure. Read: <em>Lecture Slides on Green IoT</em>.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--c2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapters 13 &amp; 14: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 12 &amp; Appendix A</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Transformation Formula Quick Ref</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>① Annual $ = kWh Saved × Tariff</div>
+      <div>② Payback = CapEx ÷ Annual $</div>
+      <div>③ CO₂ Tons = (kWh × Factor) ÷ 1000</div>
+      <div>④ ROI% = [(Net Return) ÷ CapEx] × 100</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 12: Virtualization')">← Class 12</button>
+    <button class="f-btn primary" onclick="alert('Class 14: Green IoT Technologies')">Class 14: Green IoT →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & introduction',time:'5 min'},
+  {title:'Transformation framework',time:'10 min'},
+  {title:'Change & cultural alignment',time:'15 min'},
+  {title:'Metrics, ROI & TCO',time:'15 min'},
+  {title:'Governance & policy',time:'10 min'},
+  {title:'Math practice',time:'10 min'},
+  {title:'Bangladesh context',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+
+const QUIZ=[
+  {q:'Why do approximately 70% of digital and Green IT transformation initiatives fail to achieve their long-term goals?',ctx:'',opts:['Lack of energy-efficient hardware on the market','Human factors, ineffective change management, and failure to align organizational culture','Inability to calculate exact PUE metrics','Higher costs of renewable solar panels'],ans:1,ex:'Technology accounts for a small fraction of project failure. The vast majority of failures stem from poor change management, lack of executive buy-in, and employee resistance to new workflows.'},
+  {q:'Which GHG Protocol scope covers the indirect carbon emissions resulting from an organization’s purchased electricity?',ctx:'',opts:['Scope 1','Scope 2','Scope 3','Scope 4'],ans:1,ex:'Scope 1 covers direct emissions (e.g., diesel generators). Scope 2 covers indirect emissions from purchased electricity, steam, heating, or cooling. Scope 3 covers supply chain and vendor activities.'},
+  {q:'An enterprise spends $40,000 upfront on energy management software and saves $16,000 per year in electricity bills. What is the simple payback period?',ctx:'Formula: Payback = CapEx ÷ Annual Savings',opts:['1.5 Years','2.0 Years','2.5 Years','3.0 Years'],ans:2,ex:'Payback = $40,000 ÷ $16,000 = 2.5 Years.'},
+  {q:'What is the primary objective of Kotter\'s "Generate Short-Term Wins" step when applied to Green IT?',ctx:'',opts:['Delaying major hardware purchases until next year','Demonstrating rapid financial and energy savings to maintain project momentum and secure ongoing executive buy-in','Replacing all employee desktop computers immediately','Writing a 100-page corporate sustainability policy before taking action'],ans:1,ex:'Quick wins (like fast virtualization or PC sleep policies) build trust, validate the business case, and silence skeptics early in the transformation journey.'},
+  {q:'What role does an EPEAT Gold or Energy Star rating play in Green IT governance?',ctx:'',opts:['It guarantees 100% zero carbon emissions during device manufacturing','It serves as a mandatory sustainable procurement benchmark for acquiring energy-efficient hardware','It replaces the need for ISO 14001 certification','It automatically turns off servers during peak electricity hours'],ans:1,ex:'EPEAT and Energy Star ratings provide verifiable, standardized purchasing benchmarks for procurement teams to ensure vendor hardware meets strict efficiency standards.'},
+  {q:'In Bangladesh, why does automated PC power management yield high financial returns for commercial enterprises?',ctx:'',opts:['Commercial electricity tariffs are high, and off-hours idling by large PC fleets wastes substantial paid energy','Bangladesh Bank penalizes companies that leave PCs on overnight','Desktop PCs generate more heat than server racks in Dhaka','PC sleep modes automatically generate carbon tax credits'],ans:0,ex:'Commercial tariffs in Bangladesh make off-hours idle power waste expensive. Automated sleep policies cut night/weekend energy draw with zero CapEx outlay.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcRoi()}
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--c3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+
+function showKotter(id){
+  const order=['k1','k2','k3','k4'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('kotter-'+id).classList.add('active');
+}
+
+function flipCard(el){el.classList.toggle('flipped')}
+
+function calcRoi(){
+  const capex = parseFloat(document.getElementById('capexVal').value);
+  const kwh = parseFloat(document.getElementById('kwhSaved').value);
+  const tariff = parseFloat(document.getElementById('tariffVal').value);
+
+  document.getElementById('capexText').textContent = '$' + capex.toLocaleString();
+  document.getElementById('kwhText').textContent = kwh.toLocaleString() + ' kWh';
+  document.getElementById('tariffText').textContent = '$' + tariff.toFixed(2) + ' / kWh';
+
+  const annualSavings = kwh * tariff;
+  const payback = capex / annualSavings;
+  const fiveYrSavings = annualSavings * 5;
+  const netReturn = fiveYrSavings - capex;
+  const roiPct = (netReturn / capex) * 100;
+  const carbonOffset = (kwh * 0.6) / 1000; // 0.6 kg/kWh factor
+
+  document.getElementById('paybackResult').textContent = payback.toFixed(1) + ' Yrs';
+  document.getElementById('annualSavingsText').textContent = 'Annual Savings: $' + Math.round(annualSavings).toLocaleString() + '/yr';
+  document.getElementById('roiRating').textContent = '5-Year Net ROI: ' + (roiPct >= 0 ? '+' : '') + Math.round(roiPct) + '%';
+  document.getElementById('carbonOffsetResult').textContent = 'Est. Carbon Offset: ~' + Math.round(carbonOffset) + ' Tons CO₂e/yr';
+
+  let fillPct = Math.min(100, Math.max(10, (annualSavings / capex) * 100 * 2));
+  let fillColor = payback <= 2 ? '#1a7a50' : (payback <= 3.5 ? '#c2640f' : '#c0392b');
+  document.getElementById('roiFill').style.width = fillPct + '%';
+  document.getElementById('roiFill').style.background = fillColor;
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review the transformation framework and ROI formulas — try again!','Good effort — review Kotter\'s change management steps and GHG scopes.','Solid understanding of Green IT management fundamentals!','Great job! Well prepared on governance, ROI, and transformation strategy.','Outstanding! Excellent grasp of organizational Green IT management!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(Math.floor(score/1.5),4)];
+  }
+}
+
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c13_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c13_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

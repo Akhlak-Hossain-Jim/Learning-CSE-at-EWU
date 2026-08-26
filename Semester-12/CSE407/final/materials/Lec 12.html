@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 16 — Green IoT Technologies (Part 1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#0a3d5c;--c2:#0e6090;--c3:#1b9ac4;--c4:#7dd8f0;--c5:#d4f3fc;
+  --ink:#0d1e26;--ink2:#2d4a5a;--ink3:#5a7a8a;--ink4:#9ab4c0;
+  --paper:#f0f7fa;--card:#ffffff;--card2:#f5fbfd;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --orange:#d4540a;--orange-l:#fdeee4;
+  --border:#cce4ef;--border2:#a8ccdc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,247,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--c1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--c1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--c3)}
+.prog-dot.active{background:var(--c1);box-shadow:0 0 0 2px var(--c5)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d2f4a 60%,#0a1e30 100%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:500px;height:500px;top:-160px;right:-120px;background:rgba(27,154,196,0.12)}
+.hero-c2{width:260px;height:260px;bottom:-90px;left:14%;background:rgba(125,216,240,0.08)}
+.hero-c3{width:140px;height:140px;top:50px;left:55%;background:rgba(27,154,196,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-c{background:rgba(125,216,240,0.2);color:#7dd8f0;border:1px solid rgba(125,216,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--c4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--c4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--c1);border-bottom-color:var(--c2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--c1);color:#fff}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--c1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--c3)}
+.sb-item.active .sb-dot{background:var(--c1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--c1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--c3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-c{background:var(--c5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-o{background:var(--orange-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--c5);color:var(--c1);border:1px solid rgba(27,154,196,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--c3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.section.done .mark-done-btn{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-c{background:var(--c5);border-color:var(--c2);color:var(--c1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-orange{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--c5);border:1px solid rgba(27,154,196,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--c1);line-height:1}
+.stat-u{font-size:13px;color:var(--c2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--c2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--c1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--c5)}
+
+.diagram-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.diagram-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--c3);color:var(--c1)}
+.fw-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--c1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--c1);min-width:70px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--c2)}
+.result-box{background:var(--c1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.result-big{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--c4)}
+.result-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.result-rating{font-size:13px;color:rgba(255,255,255,0.7)}
+.result-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.result-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* SCENARIO / PROBLEM CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--c1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c4);margin-bottom:8px}
+
+/* MATH PROBLEM CARDS */
+.math-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.mp-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.mp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.mp-card.flipped .mp-front{display:none}
+.mp-card.flipped .mp-back{display:flex}
+.mp-front{padding:16px;background:var(--card);min-height:150px;display:flex;flex-direction:column}
+.mp-back{display:none;padding:16px;background:var(--green-l);flex-direction:column;justify-content:center;min-height:150px}
+.mp-num{width:24px;height:24px;border-radius:50%;background:var(--c1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.mp-q{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.mp-hint{font-size:10px;color:var(--ink4);margin-top:10px}
+.mp-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--green-d);margin-bottom:6px}
+.mp-formula{font-size:12px;color:var(--green-d);font-weight:700;margin-bottom:6px;font-family:monospace}
+.mp-answer{font-size:14px;color:var(--green-d);font-weight:700}
+.mp-explain{font-size:11.5px;color:var(--green-d);opacity:.85;margin-top:6px;line-height:1.5}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--c3)}
+.qp-dot.active{background:var(--c2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--c3);background:var(--c5);color:var(--c1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--c1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--c2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--c1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--c5);color:var(--c1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1)}
+.f-btn.primary:hover{background:var(--c2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 16 — Green IoT Technologies (Part 1)</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-c">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 16 of 22</span>
+      <span class="chip chip-gray">Aug 24, 2025 · Sunday · 1h 30min</span>
+    </div>
+    <h1>Green IoT Technologies<br><em>Part 1 — Sensing, Connecting, Powering the Edge</em></h1>
+    <p class="hero-sub">Billions of tiny devices, each drawing almost nothing — but at planetary scale, "almost nothing" adds up. Today: the Green IoT paradox, low-power hardware design, and the wireless protocols built for years of battery life.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Lecture Slides — Green IoT</span>
+      <span class="ref">🎯 CO3</span>
+      <span class="ref">🧠 EP1, EP2</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">29B</div><div class="h-stat-lbl">Projected connected IoT devices worldwide by 2030</div></div>
+      <div class="h-stat"><div class="h-stat-num">&lt;1W</div><div class="h-stat-lbl">Typical power draw of a low-power IoT sensor node</div></div>
+      <div class="h-stat"><div class="h-stat-num">10+</div><div class="h-stat-lbl">Years of battery life achievable with proper low-power design</div></div>
+      <div class="h-stat"><div class="h-stat-num">15km+</div><div class="h-stat-lbl">Typical LoRaWAN range in open, rural environments</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>The Green IoT Paradox</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Low-Power Hardware</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>LPWAN Protocols</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Energy Harvesting</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Math Practice</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; homework review</div>
+        <div class="sec-subtitle">Cloud computing recap — where the edge picks up where the cloud leaves off</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Last class we looked at cloud computing — centralizing compute into large, efficient hyperscale facilities. Today we go the opposite direction: to the "edge," where billions of small, distributed, low-power devices sense the physical world and feed data back toward that cloud. Green IoT sits at the intersection of both worlds.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">☁️ Cloud elasticity</div><p>On-demand compute lets workloads scale up and down, avoiding the idle-server waste of fixed on-premise infrastructure.</p></div>
+      <div class="card-b"><div class="card-b-title">🌍 Shared responsibility</div><p>Provider secures and greens the infrastructure; the customer is responsible for how efficiently they use it — right-sizing matters.</p></div>
+      <div class="card-b"><div class="card-b-title">📡 The edge connection</div><p>Not everything can or should go to the cloud — sensors generating small, frequent readings need a different design philosophy entirely.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Think of one IoT device you use or have seen (smart bulb, fitness tracker, weather station, etc.). Roughly how long does its battery last, and does that match what you'd now expect from a "green" design?</div><div class="discuss-time">2–3 students share findings</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: THE GREEN IoT PARADOX -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">⚖️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">The Green IoT paradox — two meanings, one term</div>
+        <div class="sec-subtitle">Greening of IoT vs. Greening by IoT</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">"Green IoT" is used in two related but distinct senses, and mixing them up causes real confusion in research and industry alike. Both matter, and today's material touches both.</p>
+
+    <div class="callout callout-orange">
+      <div class="callout-label">⚖️ The paradox in one line</div>
+      IoT can be an enormous <strong>tool</strong> for sustainability (smart grids, precision agriculture, leak detection) while simultaneously being an enormous <strong>source</strong> of energy and e-waste burden if devices, networks, and data pipelines aren't designed efficiently.
+    </div>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🔧 Greening of IoT</div>
+        <p>Making the IoT devices and networks themselves energy-efficient: low-power hardware, efficient protocols, energy harvesting, and responsible end-of-life recycling for the devices themselves.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🌱 Greening by IoT</div>
+        <p>Using IoT sensing and control to reduce energy use elsewhere: smart thermostats, smart grids, precision irrigation, leak detection, traffic optimization — IoT as a sustainability tool for other systems.</p>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">1.5%</div><div class="stat-l">Estimated share of global electricity consumption attributable to ICT devices and networks including IoT (varies by study)</div></div>
+      <div class="stat"><div class="stat-n">30%+</div><div class="stat-l">Potential energy savings in a building from smart sensing and automated HVAC/lighting control</div></div>
+      <div class="stat"><div class="stat-n">1000s</div><div class="stat-l">Sensor nodes that can be deployed for the embodied-carbon cost of a single server — a real trade-off to weigh</div></div>
+      <div class="stat"><div class="stat-n">2–5 yrs</div><div class="stat-l">Typical replacement cycle for poorly-designed IoT devices — a major e-waste driver at scale</div></div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: LOW-POWER HARDWARE -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔋</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Concept · 15 min</div>
+        <div class="sec-title">Low-power hardware design</div>
+        <div class="sec-subtitle">Duty cycling, sleep states, and the "1% rule" of sensor design</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">A battery-powered sensor that needs to run for years cannot simply stay "on." The entire design philosophy revolves around spending as much time as possible in the deepest sleep state the application allows, waking briefly only to sense, compute, and transmit.</p>
+
+    <div class="callout callout-c">
+      <div class="callout-label">💡 The 1% rule</div>
+      Well-designed IoT sensor nodes are often <strong>active for well under 1% of their lifetime</strong>. A soil-moisture sensor that wakes for 100 milliseconds every 10 minutes is awake roughly 0.017% of the time — nearly all of its energy budget is therefore spent on sleep current, not active current.
+    </div>
+
+    <div class="table-wrap">
+      <table class="styled">
+        <thead><tr><th>Power state</th><th>Typical current draw</th><th>What's running</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Active / transmit</strong></td><td style="color:var(--red)">10–120 mA</td><td>CPU at full clock, radio transmitting — the most power-hungry state, kept as brief as possible</td></tr>
+          <tr><td><strong>Active / compute only</strong></td><td style="color:var(--amber)">1–15 mA</td><td>CPU processing sensor readings, radio off</td></tr>
+          <tr><td><strong>Idle</strong></td><td style="color:var(--amber)">0.5–2 mA</td><td>CPU clocked down, peripherals mostly off, waiting for a timer or interrupt</td></tr>
+          <tr><td><strong>Sleep / standby</strong></td><td style="color:var(--green)">1–50 µA</td><td>Only a real-time clock and wake logic powered; RAM often retained</td></tr>
+          <tr><td><strong>Deep sleep / shutdown</strong></td><td style="color:var(--green)">0.02–1 µA</td><td>Nearly everything off; wake only via external reset or long timer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="prose" style="margin-top:18px">Three design techniques dominate low-power IoT hardware:</p>
+    <div class="two-col">
+      <div class="card-b"><div class="card-b-title">⏱️ Duty cycling</div><p>Sensing and radio hardware are powered on only for short, scheduled bursts, then returned to sleep — the single biggest lever for battery life.</p></div>
+      <div class="card-b"><div class="card-b-title">🎯 Event-driven wake</div><p>Instead of polling on a timer, hardware interrupts (motion, threshold crossing) wake the device only when something actually changes.</p></div>
+      <div class="card-b"><div class="card-b-title">📶 Radio efficiency</div><p>Radio transmission is typically the single most expensive operation per event — minimizing payload size and transmission frequency matters more than CPU efficiency in most designs.</p></div>
+      <div class="card-b"><div class="card-b-title">🧮 Right-sized compute</div><p>Ultra-low-power microcontrollers (not general-purpose CPUs) are chosen specifically for their sleep-current specifications, sometimes trading raw speed for standby efficiency.</p></div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: LPWAN PROTOCOLS -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">📡</div>
+      <div class="sec-meta">
+        <div class="sec-label">Key Technique · 15 min</div>
+        <div class="sec-title">Low-power wide-area network (LPWAN) protocols</div>
+        <div class="sec-subtitle">Choosing the right radio technology for range, power, and data needs</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">No single wireless protocol is best for every IoT application — each trades off range, power, bandwidth, and cost differently. Choosing the wrong one is one of the most common (and expensive) green-IoT design mistakes.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showProto('lora')">LoRaWAN</div>
+      <div class="fw-tab" onclick="showProto('nbiot')">NB-IoT</div>
+      <div class="fw-tab" onclick="showProto('zigbee')">Zigbee</div>
+      <div class="fw-tab" onclick="showProto('ble')">BLE</div>
+    </div>
+
+    <div class="fw-panel active" id="proto-lora">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e6090">LoRaWAN</div><div><div class="fw-name">Long Range, Wide Area Network</div><div class="fw-org">Unlicensed spectrum — operator-independent</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Range</div><div class="fw-item-text">2–5 km urban, 15+ km rural line-of-sight — excellent for sparse, wide-area deployments.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Power</div><div class="fw-item-text">Extremely low — years of battery life on a coin cell for infrequent, small messages.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Data rate</div><div class="fw-item-text">0.3–50 kbps — designed for small, infrequent payloads, not streaming data.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Agricultural sensors, rural utility metering, environmental monitoring across large, unpowered areas.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="proto-nbiot">
+      <div class="fw-header"><div class="fw-badge" style="background:#0a3d5c">NB-IoT</div><div><div class="fw-name">Narrowband IoT</div><div class="fw-org">Licensed cellular spectrum — runs on existing telecom towers</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Range</div><div class="fw-item-text">1–10 km, benefits from existing dense cellular tower coverage — no new gateways needed.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Power</div><div class="fw-item-text">Very low, though somewhat higher than LoRaWAN — still years of battery life achievable.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Data rate</div><div class="fw-item-text">Up to ~250 kbps — more headroom than LoRaWAN, still modest.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Smart metering and asset tracking where telecom coverage already exists — no private gateway infrastructure to maintain.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="proto-zigbee">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">Zigbee</div><div><div class="fw-name">Mesh networking protocol</div><div class="fw-org">Short range, self-healing mesh topology</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Range</div><div class="fw-item-text">10–100 m per hop, but devices relay for each other — a mesh can span a whole building.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Power</div><div class="fw-item-text">Low, though relay nodes (routers) draw more than simple end devices, which stay in deep sleep.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Data rate</div><div class="fw-item-text">Up to 250 kbps — enough for smart-home control messages.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Dense indoor deployments — smart lighting, home automation, building sensor networks.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="proto-ble">
+      <div class="fw-header"><div class="fw-badge" style="background:#c97d12">BLE</div><div><div class="fw-name">Bluetooth Low Energy</div><div class="fw-org">Short range, ubiquitous smartphone compatibility</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Range</div><div class="fw-item-text">10–50 m typical — designed for personal-area, not wide-area, coverage.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Power</div><div class="fw-item-text">Very low for advertisement/beacon use cases; months to years on a coin cell.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Data rate</div><div class="fw-item-text">Up to ~2 Mbps — the fastest of this group, useful for occasional bulk syncs.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Wearables, proximity beacons, and any device that syncs directly with a nearby smartphone.</div></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="styled" style="margin-top:20px">
+        <thead><tr><th>Protocol</th><th>Typical range</th><th>Power profile</th><th>Data rate</th><th>Spectrum</th></tr></thead>
+        <tbody>
+          <tr><td><strong>LoRaWAN</strong></td><td>2–15+ km</td><td style="color:var(--green)">Very low</td><td>0.3–50 kbps</td><td>Unlicensed</td></tr>
+          <tr><td><strong>NB-IoT</strong></td><td>1–10 km</td><td style="color:var(--green)">Very low</td><td>Up to ~250 kbps</td><td>Licensed cellular</td></tr>
+          <tr><td><strong>Zigbee</strong></td><td>10–100 m/hop</td><td style="color:var(--amber)">Low</td><td>Up to 250 kbps</td><td>Unlicensed (mesh)</td></tr>
+          <tr><td><strong>BLE</strong></td><td>10–50 m</td><td style="color:var(--green)">Very low</td><td>Up to ~2 Mbps</td><td>Unlicensed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: ENERGY HARVESTING -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">☀️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied · 10 min</div>
+        <div class="sec-title">Energy harvesting — beyond the battery</div>
+        <div class="sec-subtitle">Solar, vibration, and thermal sources that can eliminate battery replacement entirely</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">The greenest battery is the one you never have to replace or dispose of. When paired with the ultra-low power budgets from the previous section, small amounts of harvested ambient energy can keep a sensor running indefinitely.</p>
+
+    <div class="two-col">
+      <div class="card-b"><div class="card-b-title">☀️ Photovoltaic (solar)</div><p>Small solar cells, even indoors under artificial light, can generate 10–200 mW outdoors — often more than enough to trickle-charge a supercapacitor or small battery for a duty-cycled sensor.</p></div>
+      <div class="card-b"><div class="card-b-title">📳 Piezoelectric (vibration)</div><p>Converts mechanical vibration or strain into electricity — used on industrial machinery, bridges, and railway sensors where vibration is constant and free.</p></div>
+      <div class="card-b"><div class="card-b-title">🌡️ Thermoelectric</div><p>Harvests energy from temperature differentials (e.g., a pipe's surface vs. ambient air) — useful in industrial monitoring near heat sources.</p></div>
+      <div class="card-b"><div class="card-b-title">📶 RF harvesting</div><p>Captures ambient radio-frequency energy from Wi-Fi or cellular signals — powers only extremely low-draw devices, but requires zero dedicated infrastructure.</p></div>
+    </div>
+
+    <!-- IoT POWER BUDGET CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">🔧 Interactive: IoT Power Budget &amp; Battery Life Calculator</div>
+      <div class="calc-subtitle">Adjust the active/sleep profile of a sensor node and see estimated battery life on a typical coin-cell battery.</div>
+      <div class="calc-row">
+        <span class="calc-lbl">Active current (mA)</span>
+        <input type="range" id="activeI" min="5" max="150" value="30" step="1" oninput="calcBattery()">
+        <span class="calc-val" id="activeIVal">30 mA</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Active time per day (seconds)</span>
+        <input type="range" id="activeT" min="1" max="600" value="30" step="1" oninput="calcBattery()">
+        <span class="calc-val" id="activeTVal">30 s</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Sleep current (µA)</span>
+        <input type="range" id="sleepI" min="1" max="200" value="5" step="1" oninput="calcBattery()">
+        <span class="calc-val" id="sleepIVal">5 µA</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Battery capacity (mAh)</span>
+        <input type="range" id="battCap" min="200" max="3000" value="1000" step="50" oninput="calcBattery()">
+        <span class="calc-val" id="battCapVal">1000 mAh</span>
+      </div>
+      <div class="result-box">
+        <div>
+          <div class="result-label">Estimated battery life</div>
+          <div class="result-big" id="battLife">—</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="battBreakText">—</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="result-rating" id="battRating">—</div>
+          <div class="result-bar"><div class="result-fill" id="battFill" style="width:0%;background:#2d9e6b"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:4px"><span>&lt;1 yr</span><span>10+ yrs</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">💡 Why this matters at scale</div>
+      A sensor that needs a battery swap every 18 months versus one that lasts 10 years isn't just a convenience difference — across a 10,000-node deployment, it's the difference between roughly 6,700 truck-rolls and battery replacements per year versus almost none. Design choices at the single-device level compound enormously at fleet scale.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: MATH PRACTICE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🧮</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practice · 10 min</div>
+        <div class="sec-title">Math practice — small, quick calculations</div>
+        <div class="sec-subtitle">Apply today's formulas (duty cycle, battery life, range, harvesting) to five short problems</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Try each problem on paper first — they're all short, one- or two-step calculations. Tap a card to reveal the worked answer.</p>
+
+    <div class="math-grid">
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">1</div>
+          <div class="mp-q">A sensor wakes up and is active for <strong>2 seconds</strong> every <strong>10 minutes</strong>. What is its duty cycle, as a percentage?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Duty cycle = active time ÷ period × 100%</div>
+          <div class="mp-answer">2 s ÷ 600 s × 100% ≈ 0.33%</div>
+          <div class="mp-explain">The sensor spends 99.67% of its life asleep — which is exactly why sleep current, not active current, dominates the total energy budget.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">2</div>
+          <div class="mp-q">A sensor draws a steady <strong>5 µA</strong> in deep sleep (ignore brief wake spikes). Its battery is rated <strong>1000 mAh</strong>. Roughly how many years will it last?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Life (hrs) = capacity (mAh) ÷ current (mA)</div>
+          <div class="mp-answer">1000 ÷ 0.005 = 200,000 hrs ≈ 22.8 years</div>
+          <div class="mp-explain">In practice, self-discharge and wake spikes shorten this — but it shows why a well-designed sleep current can make the battery outlast the product itself.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">3</div>
+          <div class="mp-q">A LoRaWAN gateway has a usable range of <strong>15 km</strong> in every direction. Approximately how large an area (in km²) can one gateway cover?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Area = π × radius²</div>
+          <div class="mp-answer">π × 15² ≈ 706.9 km²</div>
+          <div class="mp-explain">This is why a single LoRaWAN gateway can economically cover a large rural district with a sparse network of sensors.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">4</div>
+          <div class="mp-q">A network has <strong>500 sensors</strong>, each sending a <strong>20-byte</strong> message every <strong>10 minutes</strong>. How much total data does the network send per day?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Msgs/day = (1440 min ÷ 10) × sensors; Data = msgs × bytes</div>
+          <div class="mp-answer">144 × 500 = 72,000 msgs → × 20 B ≈ 1.44 MB/day</div>
+          <div class="mp-explain">Despite 500 devices running continuously, the entire network's daily traffic is smaller than a single typical photo — a hallmark of well-designed IoT traffic.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">5</div>
+          <div class="mp-q">A small solar panel produces an average of <strong>50 mW</strong> over <strong>6 hours</strong> of usable sunlight per day. How much energy (in mWh) does it harvest daily?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Energy = power × time</div>
+          <div class="mp-answer">50 mW × 6 h = 300 mWh/day</div>
+          <div class="mp-explain">Compare this to a coin-cell battery's total lifetime capacity (often just a few hundred mWh) — one good day of harvesting can rival an entire battery's stored energy.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Context · 10 min</div>
+        <div class="sec-title">Green IoT in Bangladesh</div>
+        <div class="sec-subtitle">Smart agriculture, flood sensing, and deploying IoT where grid power isn't guaranteed</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Bangladesh is, in many ways, an ideal proving ground for Green IoT — a large agricultural sector, real flood risk to monitor, and a rural population not always well served by continuous grid power. Low-power design here isn't a nice-to-have; it's often the only thing that makes deployment feasible at all.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🌾 Smart agriculture</div>
+        <p>Soil moisture and irrigation sensors deployed across dispersed farmland benefit directly from LoRaWAN's long range and multi-year battery life — no mains power or frequent site visits needed.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🌊 Flood &amp; water-level sensing</div>
+        <p>Remote river and embankment sensors in flood-prone regions must survive years unattended, often solar-powered, reporting infrequently to conserve energy — exactly the low-duty-cycle design pattern from today's class.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">📶 Cellular coverage advantage</div>
+        <p>Bangladesh's relatively dense mobile network coverage makes NB-IoT attractive for metering and tracking applications — no need to build private gateway infrastructure.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔌 Off-grid power reality</div>
+        <p>Rural and even some urban deployment sites can't rely on continuous mains power — solar or battery-only operation isn't optional, it's the default design constraint from day one.</p>
+      </div>
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Deployment scenario</div><div class="sc-q">A team wants to deploy 200 soil-moisture sensors across a large rice field with no mains power nearby. Which protocol and power strategy fits best?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">LoRaWAN — its long range covers the whole field from one or two gateways, and its very low power profile pairs well with a small solar panel or multi-year battery, avoiding the need for mains power entirely.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Flood monitoring scenario</div><div class="sc-q">A river water-level sensor must run unattended for 5+ years in a remote area. What design choices matter most?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Aggressive duty cycling (report every 15–30 min, not continuously), deep-sleep hardware, a small solar panel with a supercapacitor buffer for cloudy days, and a long-range low-power protocol like LoRaWAN to avoid frequent site visits.</div></div>
+      </div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Class Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">1</div>
+        <div><div class="discuss-text">If your midterm energy-monitoring dashboard used battery-powered wireless sensors instead of wired ones, what would need to change about how often you sample and transmit data?</div><div class="discuss-time">Open discussion — pairs first, then class</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — Green IoT Technologies (Part 1)</div>
+        <div class="sec-subtitle">6 questions covering today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 17 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">⚖️</div><div class="sum-title">Two kinds of green</div><div class="sum-text">Greening of IoT (efficient devices) and greening by IoT (using sensing to save energy elsewhere) are related but distinct goals.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔋</div><div class="sum-title">The 1% rule</div><div class="sum-text">Well-designed sensors are active under 1% of the time. Sleep current, not active current, usually dominates battery life.</div></div>
+      <div class="sum-card"><div class="sum-icon">📡</div><div class="sum-title">No universal protocol</div><div class="sum-text">LoRaWAN, NB-IoT, Zigbee, and BLE each trade off range, power, and data rate differently — match the protocol to the deployment.</div></div>
+      <div class="sum-card"><div class="sum-icon">☀️</div><div class="sum-title">Harvesting beats replacing</div><div class="sum-text">Solar, vibration, thermal, and RF harvesting can eliminate battery swaps entirely when paired with an ultra-low power budget.</div></div>
+      <div class="sum-card"><div class="sum-icon">🧮</div><div class="sum-title">The math is simple</div><div class="sum-text">Duty cycle, battery life, coverage area, and harvested energy are all short, direct calculations once you know the formula.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Bangladesh use cases</div><div class="sum-text">Smart agriculture and flood sensing make low-power, long-range design a necessity here, not a luxury.</div></div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 17</div>
+      <strong>Green IoT Technologies — Part 2.</strong> We continue with IoT data pipelines and edge vs. cloud processing trade-offs, security and privacy considerations for low-power devices, and the e-waste and lifecycle challenges of deploying IoT at massive scale.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Ongoing — Term Paper</div>
+      Keep progressing on your term paper research. If your topic touches sensing, monitoring, or smart infrastructure, today's material on power budgets and protocol choice may be directly relevant to your methodology section.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--c2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Reference</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div><strong style="color:var(--ink)">Lecture Slides</strong><br>Green IoT Technologies</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Protocol Quick Reference</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>📡 LoRaWAN → 2–15+ km, very low power</div>
+      <div>📶 NB-IoT → 1–10 km, licensed cellular</div>
+      <div>🕸️ Zigbee → 10–100 m/hop, mesh</div>
+      <div>🔵 BLE → 10–50 m, fastest data rate</div>
+    </div>
+  </div>
+  <div class="sb-card" style="border:1.5px solid #fdecd8;background:#fff9f5">
+    <div class="sb-title" style="color:var(--orange)">⚠️ Reminder</div>
+    <div style="font-size:12px;color:var(--ink2);line-height:1.6"><strong>Term paper progress</strong> — continue collecting data and refining your methodology this week.</div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 15: Cloud Computing\nOnline documentation of Azure, GCP, AWS, Oracle')">← Class 15</button>
+    <button class="f-btn primary" onclick="alert('Class 17: Green IoT Technologies — Part 2\nData pipelines, security, and lifecycle at scale')">Class 17: Green IoT Part 2 →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & homework',time:'5 min'},
+  {title:'The Green IoT paradox',time:'10 min'},
+  {title:'Low-power hardware',time:'15 min'},
+  {title:'LPWAN protocols',time:'15 min'},
+  {title:'Energy harvesting',time:'10 min'},
+  {title:'Math practice',time:'10 min'},
+  {title:'Bangladesh context',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'What is the key difference between "Greening of IoT" and "Greening by IoT"?',ctx:'',opts:['They mean exactly the same thing and are used interchangeably','Greening of IoT means making IoT devices and networks themselves energy-efficient; Greening by IoT means using IoT sensing to reduce energy use in other systems','Greening of IoT only applies to industrial sensors, while Greening by IoT only applies to consumer devices','Greening by IoT refers only to solar-powered devices'],ans:1,ex:'Greening of IoT is about efficient hardware, protocols, and lifecycle for the devices themselves. Greening by IoT is about using IoT as a tool — smart grids, precision agriculture, leak detection — to reduce energy consumption elsewhere. Both matter, but they are distinct goals that are often conflated.'},
+  {q:'A well-designed battery-powered sensor node is described as following the "1% rule." What does this mean?',ctx:'',opts:['The device must cost less than 1% of the total project budget','The device is active (awake, sensing, transmitting) for well under 1% of its total operating time — the rest is spent in deep sleep','The device must achieve at least 1% energy savings compared to a wired sensor','The device\'s battery must retain at least 1% charge at all times'],ans:1,ex:'Well-designed IoT sensors spend the overwhelming majority of their life in deep sleep, waking only briefly to sense and transmit. This is why sleep current — often just a few microamps — dominates the total energy budget far more than active/transmit current.'},
+  {q:'A rural water-level monitoring project needs to cover a large area with infrequent, small data packets, with no existing gateway infrastructure. Which protocol is the best fit?',ctx:'',opts:['Bluetooth Low Energy (BLE), because it has the highest data rate','Zigbee, because mesh networks always have the longest range','LoRaWAN, because of its multi-kilometer range and very low power draw for small, infrequent payloads','NB-IoT, because it requires no cellular coverage at all'],ans:2,ex:'LoRaWAN is purpose-built for exactly this scenario: wide geographic coverage (kilometers) with very low power consumption for small, infrequent messages, using unlicensed spectrum and operator-independent gateways.'},
+  {q:'Why is radio transmission usually the single most energy-expensive operation in an IoT sensor\'s duty cycle?',ctx:'',opts:['Radios always draw more current than any other component in every possible state','Even though brief, transmitting typically draws the highest instantaneous current of any operation the device performs — minimizing payload size and transmission frequency has an outsized effect on total energy use','Radios cannot be turned off between transmissions','Radio transmission energy cost is independent of message size or frequency'],ans:1,ex:'While a radio\'s "on" time may be brief, its current draw during transmission is often the highest peak in the entire duty cycle — frequently tens to over a hundred mA. This is why reducing payload size and transmission frequency yields outsized energy savings compared to optimizing CPU compute alone.'},
+  {q:'A sensor draws 3 µA continuously in deep sleep. Its battery is rated at 600 mAh. Approximately how many years of battery life does this provide (ignoring active-mode draw and self-discharge)?',ctx:'Life (hours) = battery capacity (mAh) ÷ current (mA). 1 year ≈ 8,760 hours.',opts:['About 2.3 years','About 10 years','About 22.8 years','About 45 years'],ans:2,ex:'600 mAh ÷ 0.003 mA = 200,000 hours. 200,000 ÷ 8,760 ≈ 22.8 years. This illustrates why sleep current in the low single-digit microamp range can make a sensor\'s battery outlast the product itself.'},
+  {q:'Why is off-grid, solar or battery-only power often the default design constraint — not an optional feature — for IoT deployments in rural Bangladesh?',ctx:'',opts:['Solar panels are mandated by national law for all electronics','Many rural and even some urban deployment sites lack reliable continuous mains power, so devices must be designed from the outset to run on harvested or battery power alone','Rural areas in Bangladesh have no need for IoT sensors at all','Grid electricity is more expensive in rural areas than solar panels, making solar always cheaper'],ans:1,ex:'Unlike a data center where designers choose redundancy and efficiency trade-offs, many rural IoT deployment sites in Bangladesh simply don\'t have reliable mains power nearby. Off-grid operation (solar, battery, or harvesting) isn\'t a nice-to-have efficiency choice — it\'s the baseline requirement that makes deployment possible at all.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcBattery()}
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--c3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showProto(id){
+  const order=['lora','nbiot','zigbee','ble'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('proto-'+id).classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+function calcBattery(){
+  const activeI=parseFloat(document.getElementById('activeI').value); // mA
+  const activeT=parseFloat(document.getElementById('activeT').value); // seconds/day
+  const sleepI=parseFloat(document.getElementById('sleepI').value)/1000; // µA -> mA
+  const battCap=parseFloat(document.getElementById('battCap').value); // mAh
+  document.getElementById('activeIVal').textContent=activeI+' mA';
+  document.getElementById('activeTVal').textContent=activeT+' s';
+  document.getElementById('sleepIVal').textContent=(sleepI*1000)+' µA';
+  document.getElementById('battCapVal').textContent=battCap+' mAh';
+
+  const sleepT=86400-activeT; // seconds/day
+  const activeCharge=activeI*(activeT/3600); // mAh/day
+  const sleepCharge=sleepI*(sleepT/3600); // mAh/day
+  const dailyMAh=activeCharge+sleepCharge;
+  const lifeDays=battCap/dailyMAh;
+  const lifeYears=lifeDays/365;
+
+  let lifeText,ratingText,fillPct,fillColor;
+  if(lifeYears>=1){
+    lifeText=lifeYears.toFixed(1)+' yrs';
+  } else {
+    lifeText=Math.round(lifeDays)+' days';
+  }
+  document.getElementById('battLife').textContent=lifeText;
+  document.getElementById('battBreakText').textContent=`Daily draw: ${dailyMAh.toFixed(4)} mAh (active: ${activeCharge.toFixed(4)}, sleep: ${sleepCharge.toFixed(4)})`;
+
+  if(lifeYears>=10){ratingText='Excellent — multi-year deployment without battery service';fillPct=100;fillColor='#1a7a50'}
+  else if(lifeYears>=5){ratingText='Very good — well suited to remote or hard-to-access deployments';fillPct=75;fillColor='#2d9e6b'}
+  else if(lifeYears>=2){ratingText='Good — acceptable for most field deployments';fillPct=50;fillColor='#5aa86a'}
+  else if(lifeYears>=1){ratingText='Fair — consider a lower duty cycle or larger battery';fillPct=30;fillColor='#c2640f'}
+  else{ratingText='Poor — frequent battery replacement required, reconsider design';fillPct=10;fillColor='#c0392b'}
+  document.getElementById('battRating').textContent=ratingText;
+  document.getElementById('battFill').style.width=fillPct+'%';
+  document.getElementById('battFill').style.background=fillColor;
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review the Green IoT paradox and low-power basics — try the sections again.','Good start — focus on duty cycling and protocol trade-offs.','Decent! Review the battery-life and coverage-area formulas.','Solid understanding — check any questions you missed.','Strong performance! Well prepared on Green IoT design.','Perfect — outstanding grasp of Green IoT Part 1!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c16_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c16_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

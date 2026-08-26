@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 12 — Virtualization & Server Consolidation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#0a3d5c;--c2:#0e6090;--c3:#1b9ac4;--c4:#7dd8f0;--c5:#d4f3fc;
+  --ink:#0d1e26;--ink2:#2d4a5a;--ink3:#5a7a8a;--ink4:#9ab4c0;
+  --paper:#f0f7fa;--card:#ffffff;--card2:#f5fbfd;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --orange:#d4540a;--orange-l:#fdeee4;
+  --border:#cce4ef;--border2:#a8ccdc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,247,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--c1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--c1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--c3)}
+.prog-dot.active{background:var(--c1);box-shadow:0 0 0 2px var(--c5)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d2f4a 60%,#0a1e30 100%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:500px;height:500px;top:-160px;right:-120px;background:rgba(27,154,196,0.12)}
+.hero-c2{width:260px;height:260px;bottom:-90px;left:14%;background:rgba(125,216,240,0.08)}
+.hero-c3{width:140px;height:140px;top:50px;left:55%;background:rgba(27,154,196,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-c{background:rgba(125,216,240,0.2);color:#7dd8f0;border:1px solid rgba(125,216,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--c4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--c4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--c1);border-bottom-color:var(--c2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--c1);color:#fff}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--c1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--c3)}
+.sb-item.active .sb-dot{background:var(--c1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--c1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--c3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-c{background:var(--c5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-o{background:var(--orange-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--c5);color:var(--c1);border:1px solid rgba(27,154,196,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--c3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.section.done .mark-done-btn{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-c{background:var(--c5);border-color:var(--c2);color:var(--c1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-orange{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--c5);border:1px solid rgba(27,154,196,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--c1);line-height:1}
+.stat-u{font-size:13px;color:var(--c2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--c2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--c1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--c5)}
+
+/* TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--c3);color:var(--c1)}
+.fw-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--c1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--c1);min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--c2)}
+.result-box{background:var(--c1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.result-big{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--c4)}
+.result-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.result-rating{font-size:13px;color:rgba(255,255,255,0.7)}
+.result-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.result-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--c1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c4);margin-bottom:8px}
+
+/* MATH PROBLEM CARDS */
+.math-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.mp-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.mp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.mp-card.flipped .mp-front{display:none}
+.mp-card.flipped .mp-back{display:flex}
+.mp-front{padding:16px;background:var(--card);min-height:150px;display:flex;flex-direction:column}
+.mp-back{display:none;padding:16px;background:var(--green-l);flex-direction:column;justify-content:center;min-height:150px}
+.mp-num{width:24px;height:24px;border-radius:50%;background:var(--c1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.mp-q{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.mp-hint{font-size:10px;color:var(--ink4);margin-top:10px}
+.mp-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--green-d);margin-bottom:6px}
+.mp-formula{font-size:12px;color:var(--green-d);font-weight:700;margin-bottom:6px;font-family:monospace}
+.mp-answer{font-size:14px;color:var(--green-d);font-weight:700}
+.mp-explain{font-size:11.5px;color:var(--green-d);opacity:.85;margin-top:6px;line-height:1.5}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--c3)}
+.qp-dot.active{background:var(--c2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--c3);background:var(--c5);color:var(--c1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--c1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--c2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--c1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--c5);color:var(--c1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1)}
+.f-btn.primary:hover{background:var(--c2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 12 — Virtualization &amp; Server Consolidation</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-c">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 12 of 22</span>
+      <span class="chip chip-gray">Aug 7, 2025 · Thursday · 1h 30min</span>
+    </div>
+    <h1>Virtualization &amp; Server Consolidation<br><em>Multiplying Watt Efficiency via Abstraction</em></h1>
+    <p class="hero-sub">How hypervisors, server consolidation, and dynamic resource allocation eliminate server sprawl, elevate CPU utilization from sub-15% to 70%+, and slash idle power draw.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.12 (all)</span>
+      <span class="ref">📗 Lamb Ch.6 (all)</span>
+      <span class="ref">🎯 CO3</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+      <span class="ref">💻 Lab: VM Consolidation</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">10–15<span style="font-size:16px">%</span></div><div class="h-stat-lbl">Average CPU utilization in traditional non-virtualized enterprise data centers</div></div>
+      <div class="h-stat"><div class="h-stat-num">10:1</div><div class="h-stat-lbl">Typical consolidation ratio — collapsing 10 physical servers into 1 host</div></div>
+      <div class="h-stat"><div class="h-stat-num">60–70<span style="font-size:16px">%</span></div><div class="h-stat-lbl">Base power drawn by an idle server relative to its peak power consumption</div></div>
+      <div class="h-stat"><div class="h-stat-num">Type 1</div><div class="h-stat-lbl">Bare-metal hypervisors providing the highest efficiency for enterprise workloads</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Virtualization Basics</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Hypervisor Types</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Consolidation &amp; Power</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Dynamic Migration</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Math Practice</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Class 11 recap &amp; transition to software layer</div>
+        <div class="sec-subtitle">From physical infrastructure and Tier designs to software-defined efficiency</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">In Class 11, we explored the physical constraints of data center engineering: site selection, Uptime Institute Tiers (I–IV), N+1/2N redundancy, and PUE calculations. Today, we step into the software layer. Even the greenest Tier IV data center with a 1.15 PUE is inherently wasteful if its underlying servers sit idle at 10% utilization.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">🏢 Physical infrastructure (C11)</div><p>Provides reliable power, cooling, and space. Focuses on minimizing facility overhead power (PUE).</p></div>
+      <div class="card-b"><div class="card-b-title">💻 Logical abstraction (C12)</div><p>Decouples software from physical hardware. Maximizes IT compute yield per watt delivered.</p></div>
+      <div class="card-b"><div class="card-b-title">🎯 Combined impact</div><p>Cooling optimization reduces overhead; server consolidation eliminates unnecessary hardware loads entirely.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Quick Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Why does a physical server drawing 200W idle power consume ~120W even when doing zero active processing? What makes idle server power such a critical problem in green computing?</div><div class="discuss-time">2–3 students share responses</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: VIRTUALIZATION BASICS -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🧩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">Virtualization fundamentals &amp; server sprawl</div>
+        <div class="sec-subtitle">How hardware abstraction tackles server sprawl and low utilization</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Before virtualization, the enterprise standard was "one application per physical server." This isolated workloads safely but led to massive **server sprawl**—racks filled with machines running at 5% to 15% average CPU utilization, consuming massive base electrical power 24/7.</p>
+
+    <div class="callout callout-c">
+      <div class="callout-label">🧭 The virtualization promise</div>
+      Virtualization introduces a software abstraction layer between hardware and operating systems. By running multiple Virtual Machines (VMs) on a single physical host, hardware resources (CPU, RAM, Storage, NICs) are pooled and dynamically shared, transforming idle capacity into active compute.
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">10–15%</div><div class="stat-l">Typical legacy physical server utilization</div></div>
+      <div class="stat"><div class="stat-n">65–80%</div><div class="stat-l">Target utilization for a well-consolidated virtualized host cluster</div></div>
+      <div class="stat"><div class="stat-n">50–70%</div><div class="stat-l">Average reduction in physical server hardware footprint after virtualization</div></div>
+      <div class="stat"><div class="stat-n">3:1 to 15:1</div><div class="stat-l">Typical VM-to-physical host consolidation ratios in enterprise environments</div></div>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+      <div class="card-b">
+        <div class="card-b-title">❌ The bare-metal trap (Legacy)</div>
+        <ul>
+          <li>1 application = 1 physical server</li>
+          <li>Power consumed primarily by idle baseline overhead</li>
+          <li>High capital cost (CapEx) and floor space consumption</li>
+          <li>Complex disaster recovery and slow provisioning (weeks)</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">✅ Virtualized paradigm (Modern)</div>
+        <ul>
+          <li>N applications isolated safely on 1 physical host</li>
+          <li>Power consumption scales proportionally with actual work</li>
+          <li>Drastic reduction in power, cooling, and rack footprint</li>
+          <li>Rapid VM provisioning (minutes) and live migration capabilities</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: HYPERVISOR TYPES -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">⚡</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Concept · 15 min</div>
+        <div class="sec-title">Hypervisors: Type 1 (Bare-Metal) vs Type 2 (Hosted)</div>
+        <div class="sec-subtitle">Architectural differences and energy efficiency profiles</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">The **hypervisor** (or Virtual Machine Monitor - VMM) is the core software engine that manages hardware resources and isolates VMs. The architectural placement of the hypervisor dictates its efficiency and overhead.</p>
+
+    <div class="table-wrap">
+      <table class="styled">
+        <thead><tr><th>Feature</th><th>Type 1 (Bare-Metal)</th><th>Type 2 (Hosted)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Architecture</strong></td><td>Runs directly on hardware bare-metal</td><td>Runs on top of a host Operating System (OS)</td></tr>
+          <tr><td><strong>Performance Overhead</strong></td><td style="color:var(--green)">Near-zero (~1–3%)</td><td style="color:var(--red)">Moderate to High (~10–20%)</td></tr>
+          <tr><td><strong>Energy Efficiency</strong></td><td style="color:var(--green)">Optimal — full control of hardware CPU states</td><td style="color:var(--amber)">Suboptimal — wasted OS overhead layer</td></tr>
+          <tr><td><strong>Security Isolation</strong></td><td style="color:var(--green)">High — thin attack surface</td><td style="color:var(--red)">Lower — vulnerable to host OS exploits</td></tr>
+          <tr><td><strong>Typical Examples</strong></td><td>VMware ESXi, KVM, Microsoft Hyper-V, Xen</td><td>Oracle VirtualBox, VMware Workstation</td></tr>
+          <tr><td><strong>Target Deployment</strong></td><td>Enterprise Data Centers &amp; Cloud Infrastructure</td><td>Developer workstations, testing, client desktops</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-c">
+      <div class="callout-label">💡 Green IT Rule for Virtualization Architecture</div>
+      Always deploy **Type 1 (Bare-Metal)** hypervisors in enterprise environments. Type 2 hypervisors duplicate OS overhead, waste CPU cycles on host system kernel calls, and prevent direct CPU low-power state adjustments (C-states/P-states), creating unnecessary thermal and power overhead.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: CONSOLIDATION & POWER -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🔋</div>
+      <div class="sec-meta">
+        <div class="sec-label">Key Technique · 15 min</div>
+        <div class="sec-title">Server consolidation &amp; the power curve</div>
+        <div class="sec-subtitle">Understanding non-linear power-to-utilization curves</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Server power draw is not linear. An idle physical server consumes roughly <strong>50% to 70%</strong> of its maximum power draw. By consolidating VMs onto fewer physical servers and turning off unused hosts, energy savings drop dramatically.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showRed('uncon')">Unconsolidated State</div>
+      <div class="fw-tab" onclick="showRed('con')">Consolidated State</div>
+      <div class="fw-tab" onclick="showRed('dynamic')">Dynamic DPM State</div>
+    </div>
+
+    <div class="fw-panel active" id="red-uncon">
+      <div class="fw-header"><div class="fw-badge" style="background:#c0392b">10 Hosts @ 10% Load</div><div><div class="fw-name">Unconsolidated Sprawl</div><div class="fw-org">10 physical servers, each running 1 light workload</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Power Usage</div><div class="fw-item-text">10 servers × 140W (idle + light load) = <strong>1,400 Watts</strong>.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Efficiency Rating</div><div class="fw-item-text">Extremely wasteful. 90% of electrical energy powers idle silicon.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="red-con">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e6090">2 Hosts @ 50% Load</div><div><div class="fw-name">Static Consolidation</div><div class="fw-org">Workloads combined onto 2 active hosts; 8 decommissioned</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Power Usage</div><div class="fw-item-text">2 active servers × 180W (50% load) = <strong>360 Watts</strong>.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Energy Reduction</div><div class="fw-item-text"><strong>74% power reduction</strong> compared to unconsolidated baseline.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="red-dynamic">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">Dynamic Power Mgmt (DPM)</div><div><div class="fw-name">Automated Cluster Optimization</div><div class="fw-org">Live migration shifts VMs dynamically based on load</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Power Usage</div><div class="fw-item-text">Off-peak: 1 host @ 70% load = 200W. Unneeded hosts placed into deep ACPI sleep.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Energy Reduction</div><div class="fw-item-text"><strong>Up to 85% off-peak savings</strong> while fully maintaining SLA guarantees.</div></div>
+      </div>
+    </div>
+
+    <!-- CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">⚡ Interactive: Server Consolidation Power Calculator</div>
+      <div class="calc-subtitle">Adjust the consolidation parameters below to calculate direct electrical savings and CO₂ reductions.</div>
+      <div class="calc-row">
+        <span class="calc-lbl">Original Physical Servers</span>
+        <input type="range" id="origServers" min="10" max="200" value="50" step="5" oninput="calcConsolidation()">
+        <span class="calc-val" id="origServersVal">50</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Consolidation Ratio (VMs/Host)</span>
+        <input type="range" id="conRatio" min="2" max="20" value="10" step="1" oninput="calcConsolidation()">
+        <span class="calc-val" id="conRatioVal">10:1</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Idle Power / Host (W)</span>
+        <input type="range" id="idlePower" min="80" max="250" value="130" step="10" oninput="calcConsolidation()">
+        <span class="calc-val" id="idlePowerVal">130 W</span>
+      </div>
+      <div class="result-box">
+        <div>
+          <div class="result-label">New Physical Hosts Needed</div>
+          <div class="result-big" id="newHostsRes">5</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="serverSavingsText">45 physical servers decommissioned</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="result-rating" id="powerSavingsRes">Power Saved: 82%</div>
+          <div class="result-bar"><div class="result-fill" id="powerFill" style="width:82%;background:#1a7a50"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:4px"><span>0% Saved</span><span>90% Saved</span></div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7" id="annualSavingsText">Est. Energy Saved: ~51,246 kWh/yr</div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: DYNAMIC MIGRATION -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">📦</div>
+      <div class="sec-meta">
+        <div class="sec-label">Advanced Applied · 10 min</div>
+        <div class="sec-title">Live Migration &amp; Dynamic Resource Management</div>
+        <div class="sec-subtitle">vMotion, DRS, and automated host power-down (DPM)</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Virtualization is not static. Technologies like **Live Migration** (e.g., VMware vMotion, KVM Live Migration) move running VMs between physical hosts with zero application downtime, enabling dynamic load balancing and power management.</p>
+
+    <div class="big-list">
+      <li><div class="bl-icon">🔄</div><div><strong>Live VM Migration</strong> — Transfers a running VM's memory state, CPU execution context, and network bindings across hosts over dedicated network links without dropping client connections.</div></li>
+      <li><div class="bl-icon">⚖️</div><div><strong>Dynamic Resource Scheduler (DRS)</strong> — Continuously monitors CPU and RAM demand across a host cluster, migrating VMs to eliminate hot spots and maintain application performance SLAs.</div></li>
+      <li><div class="bl-icon">🌙</div><div><strong>Distributed Power Management (DPM)</strong> — When cluster demand drops (e.g., nighttime), DPM consolidates VMs onto a minimal subset of hosts and uses IPMI/iLO to place idle hosts into deep standby (S5/Wake-on-LAN). When demand spikes, hosts wake up automatically.</div></li>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">⚠️ The Live Migration Energy Trade-off</div>
+      Live migration consumes network bandwidth and temporary CPU overhead on both source and destination hosts during state transfer. Migrating VMs *too frequently* can create an overall energy net-loss. DRS/DPM algorithms must enforce threshold hysteresis before triggering migrations.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: MATH PRACTICE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🧮</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practice · 10 min</div>
+        <div class="sec-title">Math practice — virtualization &amp; energy calculations</div>
+        <div class="sec-subtitle">Solve quick numerical problems covering consolidation ratios, power curves, and host reductions</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Work through these five practical calculations on paper first, then tap any card to reveal the step-by-step solution.</p>
+
+    <div class="math-grid">
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">1</div>
+          <div class="mp-q">An enterprise has <strong>80 physical servers</strong> drawing an average of <strong>150W</strong> each. After virtualization, these workloads run on <strong>8 hosts</strong> drawing <strong>250W</strong> each. What is the total power saved in kW?</div>
+          <div class="mp-hint">Tap to check answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">P_orig = 80 × 150W = 12,000W<br>P_new = 8 × 250W = 2,000W</div>
+          <div class="mp-answer">Saved = 10,000 W = 10 kW</div>
+          <div class="mp-explain">This represents an 83.3% direct electrical reduction, before even factoring in associated cooling energy savings.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">2</div>
+          <div class="mp-q">A server has a maximum load power of <strong>300W</strong> and an idle power of <strong>180W</strong> (60% of max). If CPU load rises linearly with power, what is its power draw at <strong>70% CPU load</strong>?</div>
+          <div class="mp-hint">Tap to check answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">P = P_idle + Load% × (P_max − P_idle)</div>
+          <div class="mp-answer">180 + 0.70 × (300 − 180) = 264 W</div>
+          <div class="mp-explain">Dynamic power range is only 120W; 180W is drawn continuously regardless of utilization.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">3</div>
+          <div class="mp-q">A data center consolidates <strong>120 physical workloads</strong> into a cluster with a consolidation ratio of <strong>12:1</strong>. How many physical hosts are needed, and how many servers are decommissioned?</div>
+          <div class="mp-hint">Tap to check answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Hosts = Total VMs ÷ Ratio; Decom = Total − Hosts</div>
+          <div class="mp-answer">Hosts = 120 ÷ 12 = 10 hosts<br>Decommissioned = 110 servers</div>
+          <div class="mp-explain">Consolidating 110 physical units drastically lowers floor space requirements, switch port consumption, and maintenance costs.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">4</div>
+          <div class="mp-q">Decommissioning 20 idle servers saves <strong>3 kW</strong> of IT power continuous load. With a data center <strong>PUE of 1.5</strong>, what is the total facility power reduction (including cooling)?</div>
+          <div class="mp-hint">Tap to check answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Facility Power = IT Power × PUE</div>
+          <div class="mp-answer">3 kW × 1.5 = 4.5 kW</div>
+          <div class="mp-explain">Every watt eliminated at the IT layer saves an additional 0.5W in facility cooling and power distribution losses.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">5</div>
+          <div class="mp-q">A virtualized cluster saves <strong>15 kW</strong> of continuous power. Over a full year (8,760 hours), how many <strong>kWh</strong> of electrical energy are saved?</div>
+          <div class="mp-hint">Tap to check answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Energy (kWh) = Power (kW) × Time (hours)</div>
+          <div class="mp-answer">15 kW × 8,760 h = 131,400 kWh</div>
+          <div class="mp-explain">At $0.10 per kWh, this simple consolidation initiative generates $13,140 in annual direct utility bill savings.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Context · 10 min</div>
+        <div class="sec-title">Virtualization adoptability in Bangladesh</div>
+        <div class="sec-subtitle">Financial sector mandates, legacy applications, and UPS runtime extensions</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">In Bangladesh, virtualization serves a dual purpose: besides cutting long-term operational costs, it directly mitigates local infrastructure challenges such as generator fuel expenses and UPS battery wear.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🔋 Prolonging UPS runtime</div>
+        <p>During grid load-shedding, server load reduction translates into extended UPS battery autonomy. Halving IT power consumption through VM consolidation effectively doubles the backup runtime available on battery banks.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏦 Bank compliance &amp; private cloud</div>
+        <p>Bangladesh Bank regulatory circulars require strict isolation and high availability for core banking software (CBS). Hypervisor HA clusters allow local financial institutions to achieve compliance without duplicate hardware sprawl.</p>
+      </div>
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Dhaka Data Center Scenario</div><div class="sc-q">A local enterprise in Motijheel suffers frequent 30-minute power cuts. Their UPS battery bank is degrading. How does virtualization help immediate emergency survival?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">By consolidating workloads onto 30% of the host fleet, overall rack draw drops significantly. Lower discharge rate extends UPS runtime during load-shedding, allowing diesel generators sufficient time to stabilize without dropping loads.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Legacy Application Scenario</div><div class="sc-q">A government ministry relies on an old 32-bit legacy tax accounting software that cannot run on modern 64-bit server hardware directly. How does virtualization resolve this sustainably?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Virtualization encapsulates the legacy 32-bit OS inside a Virtual Machine. This allows the ancient application to run safely on efficient, modern high-density hardware, eliminating the need to maintain power-hungry legacy physical servers.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — virtualization &amp; green IT</div>
+        <div class="sec-subtitle">6 questions testing concepts from today's lecture</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; Class 13 preview</div>
+        <div class="sec-subtitle">Key takeaways and upcoming topics</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🧩</div><div class="sum-title">Hardware Abstraction</div><div class="sum-text">Virtualization breaks the "1 App = 1 Server" constraint, directly addressing low physical CPU utilization.</div></div>
+      <div class="sum-card"><div class="sum-icon">⚡</div><div class="sum-title">Bare-Metal Efficiency</div><div class="sum-text">Type 1 hypervisors run directly on hardware, avoiding host OS overhead and enabling maximum compute yield per watt.</div></div>
+      <div class="sum-card"><div class="sum-icon">📉</div><div class="sum-title">Idle Power Elimination</div><div class="sum-text">Idle servers draw 50–70% base power. Consolidation collapses workloads so unnecessary hosts can be powered down.</div></div>
+      <div class="sum-card"><div class="sum-icon">📦</div><div class="sum-title">Dynamic Migration</div><div class="sum-text">Technologies like vMotion/DRS/DPM continuously optimize VM placement and automate standby states off-peak.</div></div>
+      <div class="sum-card"><div class="sum-icon">🧮</div><div class="sum-title">Multiplied Savings</div><div class="sum-text">Every IT watt saved via server reduction multiplies overall facility savings when factored through the site PUE.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">UPS Autonomy</div><div class="sum-text">Consolidating loads drastically improves emergency battery backup times during local grid load-shedding events.</div></div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 13</div>
+      <strong>Data Center Storage &amp; Network Energy Efficiency.</strong> We will analyze storage tiering, thin provisioning, deduplication, and Energy Efficient Ethernet (EEE) standards to optimize non-compute data center infrastructure.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your class notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--c2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 12: Virtualization</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 6: Consolidation</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Quick Reference</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>• Idle Power: ~50-70% of Max</div>
+      <div>• Type 1: Bare-Metal (ESXi, KVM)</div>
+      <div>• Type 2: Hosted (VirtualBox)</div>
+      <div>• Consolidation Target: ~70-80% CPU</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 11: Data Center Design & Redesign')">← Class 11</button>
+    <button class="f-btn primary" onclick="alert('Class 13: Storage & Network Energy Efficiency')">Class 13: Storage & Networking →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Class 11 recap & opening',time:'5 min'},
+  {title:'Virtualization basics',time:'10 min'},
+  {title:'Hypervisor types',time:'15 min'},
+  {title:'Consolidation & power',time:'15 min'},
+  {title:'Dynamic migration & DPM',time:'10 min'},
+  {title:'Math practice',time:'10 min'},
+  {title:'Bangladesh context',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+
+const QUIZ=[
+  {q:'Why does running a non-virtualized physical server at 10% CPU utilization result in extremely poor energy efficiency?',ctx:'Recall the server power-to-load curve profile.',opts:['Modern CPU chips consume zero power when idle','An idle physical server still draws 50% to 70% of its maximum power draw just maintaining baseline hardware states','Physical servers draw maximum power regardless of CPU load','Low utilization damages server power supplies'],ans:1,ex:'Servers exhibit significant idle power overhead. A server drawing 200W at 100% load often draws 120W–140W at 0% load. Operating at 10% utilization wastes the vast majority of consumed power on baseline overhead.'},
+  {q:'What is the primary operational advantage of a Type 1 (Bare-Metal) hypervisor over a Type 2 (Hosted) hypervisor in green data center design?',ctx:'',opts:['Type 1 hypervisors are free open-source software','Type 1 hypervisors run directly on hardware without a host OS layer, reducing CPU overhead and maximizing power efficiency','Type 2 hypervisors require specialized liquid cooling systems','Type 1 hypervisors only work with ARM processors'],ans:1,ex:'Type 1 hypervisors bypass host operating system kernel layers. This eliminates host OS CPU overhead, reduces memory footprint, and grants the hypervisor direct control over hardware CPU low-power state management.'},
+  {q:'An enterprise consolidates 60 legacy physical servers (drawing 150W each) onto 6 virtualized host servers (drawing 300W each). What is the total reduction in IT power draw?',ctx:'Calculate baseline total power versus consolidated total power.',opts:['1,800 W','3,600 W','7,200 W','9,000 W'],ans:2,ex:'Original Power = 60 × 150W = 9,000W. New Power = 6 × 300W = 1,800W. Total Power Saved = 9,000W − 1,800W = 7,200 Watts (7.2 kW).'},
+  {q:'What role does Distributed Power Management (DPM) play in a virtualized host cluster?',ctx:'',opts:['It increases voltage supplied to active processors during peak business hours','It automatically live-migrates VMs to consolidate loads off-peak and shuts down/sleeps unneeded physical hosts','It permanently locks all CPU clock speeds at 50% capacity','It manages diesel generator fuel consumption during power outages'],ans:1,ex:'DPM extends dynamic resource scheduling. When aggregate cluster load drops off-peak, DPM moves VMs onto fewer hosts and automatically places unused physical servers into low-power sleep modes to eliminate idle power.'},
+  {q:'Why must dynamic VM live migration algorithms incorporate threshold hysteresis before triggering VM moves between hosts?',ctx:'',opts:['Live migration consumes network bandwidth and CPU cycles; migrating too frequently creates a net energy loss','Hypervisors limit live migrations to once per day maximum','Live migration corrupts virtual hard disks if executed repeatedly','Migrating VMs changes physical IP addresses across hosts'],ans:0,ex:'Transferring a VM\'s memory state over the network taxes CPU and network infrastructure. If threshold parameters flutter, excessive migration overhead negates the target consolidation energy savings.'},
+  {q:'In Bangladesh, how does server consolidation directly benefit data center operations during local utility grid load-shedding?',ctx:'',opts:['It eliminates the need for emergency backup diesel generators completely','By reducing total IT power draw, it extends the operational battery backup runtime of UPS systems','It allows servers to run on solar energy without inverter conversions','It automatically increases grid AC voltage during blackouts'],ans:1,ex:'UPS battery banks discharge based on total electrical load. Lowering the continuous wattage draw via server consolidation significantly extends battery backup duration during load-shedding intervals.'}
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcConsolidation()}
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--c3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showRed(id){
+  const order=['uncon','con','dynamic'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('red-'+id).classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+function calcConsolidation(){
+  const orig = parseInt(document.getElementById('origServers').value);
+  const ratio = parseInt(document.getElementById('conRatio').value);
+  const idleW = parseInt(document.getElementById('idlePower').value);
+
+  document.getElementById('origServersVal').textContent = orig;
+  document.getElementById('conRatioVal').textContent = ratio + ':1';
+  document.getElementById('idlePowerVal').textContent = idleW + ' W';
+
+  const newHosts = Math.ceil(orig / ratio);
+  const decom = orig - newHosts;
+  
+  // Power math assuming orig servers drawn idleW, new hosts draw idleW * 1.6 under load
+  const origPowerkW = (orig * idleW) / 1000;
+  const newPowerkW = (newHosts * idleW * 1.6) / 1000;
+  const savedkW = origPowerkW - newPowerkW;
+  const pctSaved = Math.max(0, Math.round((savedkW / origPowerkW) * 100));
+  const annualkWh = Math.round(savedkW * 8760);
+
+  document.getElementById('newHostsRes').textContent = newHosts;
+  document.getElementById('serverSavingsText').textContent = decom + ' physical servers decommissioned';
+  document.getElementById('powerSavingsRes').textContent = 'Power Saved: ' + pctSaved + '%';
+  document.getElementById('powerFill').style.width = pctSaved + '%';
+  document.getElementById('annualSavingsText').textContent = 'Est. Energy Saved: ~' + annualkWh.toLocaleString() + ' kWh/yr';
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review hypervisor architectures and server power curves.','Good effort — review the difference between Type 1 and Type 2 hypervisors.','Decent result! Check the power curve math problems again.','Solid performance — strong grasp of consolidation concepts.','Great work! Prepared for virtualization optimization design.','Perfect score — outstanding understanding of virtualization & Green IT!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c12_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c12_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 7 — Recycling & E-Waste</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --a1:#5a3200;--a2:#8a5000;--a3:#c47a1e;--a4:#e8b870;--a5:#fdf0d8;
+  --ink:#1e1408;--ink2:#42300e;--ink3:#7a6040;--ink4:#b09870;
+  --paper:#faf5ec;--card:#ffffff;--card2:#fdf9f2;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --blue:#1a5199;--blue-l:#e8f0fb;
+  --purple:#5e3aa8;--purple-l:#ede6fb;
+  --teal:#0e7070;--teal-l:#e0f5f5;
+  --border:#e8d8b0;--border2:#d4b880;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(250,245,236,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--a1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--a1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--a5);border-color:var(--a3);color:var(--a1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--a3)}
+.prog-dot.active{background:var(--a1);box-shadow:0 0 0 2px var(--a5)}
+
+.hero{background:linear-gradient(135deg,var(--a1) 0%,#3a1e00 70%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:480px;height:480px;top:-150px;right:-110px;background:rgba(196,122,30,0.16)}
+.hero-c2{width:240px;height:240px;bottom:-80px;left:16%;background:rgba(232,184,112,0.08)}
+.hero-c3{width:130px;height:130px;top:45px;left:56%;background:rgba(196,122,30,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-a{background:rgba(232,184,112,0.2);color:#e8b870;border:1px solid rgba(232,184,112,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.chip-g{background:rgba(40,184,101,0.2);color:#80dba0;border:1px solid rgba(40,184,101,0.3)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--a4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--a4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--a1);border-bottom-color:var(--a2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--a1);color:#fff}
+
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--a1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px}
+.sb-item.done .sb-dot{background:var(--a3)}
+.sb-item.active .sb-dot{background:var(--a1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--a1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--a2),var(--a3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--a3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--a5);border-color:var(--a3);color:var(--a1)}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-a{background:var(--a5)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-b{background:var(--blue-l)}.si-p{background:var(--purple-l)}.si-t{background:var(--teal-l)}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--a5);color:var(--a1);border:1px solid rgba(196,122,30,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--a3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--a5);border-color:var(--a3);color:var(--a1)}
+.section.done .mark-done-btn{background:var(--a5);border-color:var(--a3);color:var(--a1)}
+
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-a{background:var(--a5);border-color:var(--a2);color:var(--a1)}
+.callout-amber{background:var(--a5);border-color:var(--a3);color:var(--a1)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-blue{background:var(--blue-l);border-color:var(--blue);color:#0c2d6e}
+.callout-teal{background:var(--teal-l);border-color:var(--teal);color:var(--teal)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--a5);border:1px solid rgba(196,122,30,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--a1);line-height:1}
+.stat-u{font-size:13px;color:var(--a2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--a2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--a1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--a5)}
+
+/* LIFECYCLE EXPLORER TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--a3);color:var(--a1)}
+.fw-tab.active{background:var(--a1);color:#fff;border-color:var(--a1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--a1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* MATERIALS EXPLORER — interactive pill click */
+.materials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:16px}
+.mat-pill{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:var(--t)}
+.mat-pill:hover{border-color:var(--a3);background:var(--a5)}
+.mat-pill.active{border-color:var(--a2);background:var(--a5)}
+.mat-icon{font-size:22px;margin-bottom:4px}
+.mat-name{font-size:11px;font-weight:700;color:var(--ink)}
+.mat-type{font-size:10px;color:var(--ink3);margin-top:2px}
+.mat-detail{display:none;margin-top:14px;padding:14px 16px;background:var(--a5);border-radius:var(--r-sm);font-size:13.5px;color:var(--a1);line-height:1.7;border-left:2px solid var(--a2)}
+.mat-detail.show{display:block}
+
+/* E-WASTE CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--a1);min-width:65px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--a2)}
+.result-box{background:var(--a1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;text-align:center}
+.result-n{font-family:'Fraunces',serif;font-size:26px;color:var(--a4)}
+.result-l{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--a1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--a4);margin-bottom:8px}
+
+/* CIRCULAR ECONOMY SVG */
+.circ-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px;text-align:center}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--a1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--a3)}
+.qp-dot.active{background:var(--a2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--a2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--blue-l);border-left:2px solid var(--blue);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#0c2d6e;margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--a3);background:var(--a5);color:var(--a1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--a1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--a2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--a1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--a5);color:var(--a1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn.primary{background:var(--a1);color:#fff;border-color:var(--a1)}
+.f-btn.primary:hover{background:var(--a2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 7 — Recycling & E-Waste Management</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-a">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 7 of 22</span>
+      <span class="chip chip-gray">Jun 25, 2025 · Wednesday · 1h 30min</span>
+      <span class="chip chip-g">🎤 Guest Lecture: ICS &amp; Logistics EWU</span>
+    </div>
+    <h1>Recycling &amp; <em>E-Waste Management</em></h1>
+    <p class="hero-sub">What happens to electronics when we're done with them — the materials inside, the lifecycle, the regulatory frameworks, and what engineers must design for from day one.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.7 (all)</span>
+      <span class="ref">🎤 Guest: ICS &amp; Logistics EWU</span>
+      <span class="ref">🎯 CO2</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">62M</div><div class="h-stat-lbl">Tonnes of e-waste generated globally in 2023 — a new record</div></div>
+      <div class="h-stat"><div class="h-stat-num">17.4%</div><div class="h-stat-lbl">Of e-waste formally recycled — the rest is dumped, burned, or landfilled</div></div>
+      <div class="h-stat"><div class="h-stat-num">$57B</div><div class="h-stat-lbl">Value of raw materials lost inside unrecycled e-waste each year</div></div>
+      <div class="h-stat"><div class="h-stat-num">800+</div><div class="h-stat-lbl">Chemicals in a modern smartphone, many toxic if released</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>E-Waste Scale</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>What's Inside</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Lifecycle &amp; EPR</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Recycling Process</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Circular Economy</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Recap, homework debrief &amp; guest introduction</div>
+        <div class="sec-subtitle">Paperless recap + old device homework + guest speaker welcome</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Last class we tackled paper as a waste stream — and showed that going paperless has a clear financial and environmental ROI. Today we tackle the <em>other</em> end of the IT lifecycle: what happens when hardware dies? The answer — for most of the world, including Bangladesh — is deeply troubling.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">📄 Paperless recap</div><p>True cost of paper is 10–20× perceived. Six-phase roadmap: audit → legal → technology → pilot → rollout → monitor. E-signatures legally valid in Bangladesh under ICT Act 2006.</p></div>
+      <div class="card-b"><div class="card-b-title">♻️ Today's pivot</div><p>From software/process waste to hardware waste. E-waste is the world's fastest-growing waste stream — and engineers who design devices have the most power to change this.</p></div>
+      <div class="card-b"><div class="card-b-title">🎤 Guest lecture</div><p>Today's guest from ICS &amp; Logistics, EWU will bring a supply-chain and logistics perspective to e-waste management in Bangladesh. Please save your questions for the Q&amp;A after Section 5.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (3 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">What old device did you find? What is it, when was it bought, and where is it now? Let's do a quick class tally. How many devices are sitting in drawers in this room alone — and what's their combined raw material value?</div><div class="discuss-time">Quick round-the-room tally — instructor notes on board</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: E-WASTE SCALE -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">⚠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">The e-waste crisis — scale and consequences</div>
+        <div class="sec-subtitle">Why e-waste is the world's fastest-growing waste stream</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Electronic waste — or <strong>e-waste</strong> — encompasses any discarded electrical or electronic device. It is growing at 3–4× the rate of any other waste category, driven by shortening device lifespans, falling hardware prices, and the explosive growth of connected devices. The problem is not just volume — it is what happens to that volume.</p>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">62<span class="stat-u">Mt</span></div><div class="stat-l">E-waste generated in 2023 — equivalent to 62 Eiffel Towers in weight</div></div>
+      <div class="stat"><div class="stat-n">17<span class="stat-u">%</span></div><div class="stat-l">Formally recycled — 83% discarded unsafely or informally processed</div></div>
+      <div class="stat"><div class="stat-n">2.6<span class="stat-u">kg</span></div><div class="stat-l">E-waste generated per person globally each year — rising every year</div></div>
+      <div class="stat"><div class="stat-n">500%</div><div class="stat-l">Projected growth in e-waste from developing nations by 2050 vs. 2010</div></div>
+    </div>
+
+    <div class="callout callout-red">
+      <div class="callout-label">☠️ What happens to the 83% not formally recycled</div>
+      <strong>Open burning:</strong> Wire insulation is burned to expose copper — releasing dioxins, furans, and polyaromatic hydrocarbons directly into air and soil. Prevalent in informal recycling clusters in Agbogbloshie (Ghana), Guiyu (China), and in parts of Bangladesh. <strong>Landfill leaching:</strong> Lead, cadmium, and mercury from batteries and solder leach into groundwater. A single CRT monitor contains up to 4kg of lead. <strong>Informal acid baths:</strong> Circuit boards immersed in acid to dissolve and recover gold — releasing toxic heavy metals directly into waterways.
+    </div>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📈 Why it's growing so fast</div>
+        <ul>
+          <li>Device lifespans shortening: average smartphone replaced every 2.5 years (down from 4+ years in 2010)</li>
+          <li>Falling prices → more devices per household → more eventual waste</li>
+          <li>IoT explosion: 50 billion+ devices by 2030, each with a finite lifespan</li>
+          <li>Planned obsolescence: software updates cease, batteries degrade, repairability is designed out</li>
+          <li>Fast-growing middle class in Asia and Africa buying first electronics</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🌍 Who generates and who suffers</div>
+        <ul>
+          <li>High-income countries generate most e-waste per capita (~22kg/person/year in Norway)</li>
+          <li>Much illegal export of e-waste to lower-income countries under "second-hand goods" labeling</li>
+          <li>Informal recycling workers — often children — suffer direct toxic exposure</li>
+          <li>Bangladesh receives e-waste from India, Gulf states, and through informal trade networks</li>
+          <li>The Basel Convention bans hazardous e-waste export — but enforcement is weak</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: WHAT'S INSIDE -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🔬</div>
+      <div class="sec-meta">
+        <div class="sec-label">Materials Science · 12 min</div>
+        <div class="sec-title">What's inside electronic devices</div>
+        <div class="sec-subtitle">Tap each material to see its value, toxicity, and where it comes from</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">A modern smartphone contains over 60 different elements from the periodic table — including precious metals worth recovering, critical minerals with constrained supply chains, and toxic materials that cause serious harm if released. Understanding what's inside is the foundation of responsible design and recycling.</p>
+
+    <div class="materials-grid" id="materialsGrid">
+      <div class="mat-pill" onclick="showMaterial('gold')"><div class="mat-icon">🥇</div><div class="mat-name">Gold</div><div class="mat-type">Precious · Recoverable</div></div>
+      <div class="mat-pill" onclick="showMaterial('silver')"><div class="mat-icon">🥈</div><div class="mat-name">Silver</div><div class="mat-type">Precious · Recoverable</div></div>
+      <div class="mat-pill" onclick="showMaterial('copper')"><div class="mat-icon">🔶</div><div class="mat-name">Copper</div><div class="mat-type">Base metal · High value</div></div>
+      <div class="mat-pill" onclick="showMaterial('cobalt')"><div class="mat-icon">🔋</div><div class="mat-name">Cobalt</div><div class="mat-type">Critical mineral · Battery</div></div>
+      <div class="mat-pill" onclick="showMaterial('lithium')"><div class="mat-icon">⚡</div><div class="mat-name">Lithium</div><div class="mat-type">Critical mineral · Battery</div></div>
+      <div class="mat-pill" onclick="showMaterial('lead')"><div class="mat-icon">☠️</div><div class="mat-name">Lead</div><div class="mat-type">Toxic · Solder &amp; CRT</div></div>
+      <div class="mat-pill" onclick="showMaterial('mercury')"><div class="mat-icon">🌡️</div><div class="mat-name">Mercury</div><div class="mat-type">Highly toxic · Switches</div></div>
+      <div class="mat-pill" onclick="showMaterial('tantalum')"><div class="mat-icon">📱</div><div class="mat-name">Tantalum</div><div class="mat-type">Conflict mineral · Capacitors</div></div>
+    </div>
+
+    <div class="mat-detail" id="mat-gold">
+      <strong>Gold (Au) — ~0.03g per smartphone, ~$2 per phone.</strong> Used in circuit board connectors and microchip bonding wires for its excellent conductivity and corrosion resistance. One tonne of smartphones contains ~300g of gold — 40–80× richer than gold ore. Urban mining (recovering gold from e-waste) can be 6–13× more economical than primary mining. However, informal acid-bath extraction releases toxic compounds. Formal smelters use controlled processes that recover gold without toxic emissions.
+    </div>
+    <div class="mat-detail" id="mat-silver">
+      <strong>Silver (Ag) — ~0.3g per smartphone, ~$0.20 per phone.</strong> Used in conductive inks on PCBs, contacts, and RFID antennas. Second most electrically conductive element after copper. One tonne of smartphones contains ~3kg of silver. Recovery rate in formal recycling: ~85%. Informal recovery by burning circuit boards loses silver in slag.
+    </div>
+    <div class="mat-detail" id="mat-copper">
+      <strong>Copper (Cu) — ~15g per smartphone, ~$0.15 per phone.</strong> Used extensively in wiring, connectors, PCB traces, and coils. By weight, the most valuable common metal in e-waste. One tonne of smartphones yields ~15kg copper — at ~$9,000/tonne. Globally, e-waste copper represents a ~2 million tonne annual urban mine. Well-established formal recycling processes achieve 95%+ recovery. Wire burning is the informal alternative — releasing toxic dioxins.
+    </div>
+    <div class="mat-detail" id="mat-cobalt">
+      <strong>Cobalt (Co) — ~5–10g per smartphone battery.</strong> Critical for lithium-ion cathodes (LiCoO₂). ~70% of primary cobalt comes from the Democratic Republic of Congo, where artisanal mining is associated with child labour and serious human rights abuses. Battery demand is causing supply pressure. EV + mobile = cobalt recycling imperative. Battery recycling recovery rate for cobalt: currently ~5% globally — a massive value and resource loss.
+    </div>
+    <div class="mat-detail" id="mat-lithium">
+      <strong>Lithium (Li) — ~1–3g per smartphone battery.</strong> Essential for rechargeable batteries in everything from phones to EVs. Primary lithium comes from Chilean/Argentinian salt flats (water-intensive extraction) and Australian hard rock mines. Lithium recycling from batteries is technically possible but economically challenged at current lithium prices. Recycling rate: ~1% globally. As EV adoption drives lithium prices higher, battery recycling economics will improve dramatically.
+    </div>
+    <div class="mat-detail" id="mat-lead">
+      <strong>Lead (Pb) — up to 4kg in a CRT monitor; ~0.01g in modern smartphones (RoHS-restricted).</strong> Formerly used extensively in solder (now largely replaced by tin-silver-copper alloys under RoHS) and CRT glass. Legacy CRT TVs and monitors still entering the waste stream are the primary lead source. Lead causes neurological damage especially in children — informal recycling exposing children to CRT lead is a documented global health crisis. Modern RoHS-compliant devices have greatly reduced lead content.
+    </div>
+    <div class="mat-detail" id="mat-mercury">
+      <strong>Mercury (Hg) — fluorescent backlights in older LCD screens; thermostats; some switches.</strong> Highly toxic to the nervous system, kidneys, and respiratory system. Bioaccumulates in aquatic food chains. LED backlights (now standard) have eliminated mercury from most new displays — a major success story of design-for-environment. However, legacy fluorescent-lit LCDs entering the waste stream still pose a mercury risk. Requires specialist hazardous waste handling.
+    </div>
+    <div class="mat-detail" id="mat-tantalum">
+      <strong>Tantalum (Ta) — capacitors in smartphones and laptops.</strong> Critical for capacitors that provide stable power regulation in devices. ~60% of primary tantalum comes from the DRC and neighboring countries — classified as a "conflict mineral" under the US Dodd-Frank Act Section 1502. Companies must audit their supply chains to ensure tantalum is not financing armed conflict. Recycling tantalum from e-waste reduces dependence on conflict-affected sources — both economically and ethically.
+    </div>
+
+    <div class="callout callout-a" style="margin-top:16px">
+      <div class="callout-label">💡 The urban mine concept</div>
+      "Urban mining" treats e-waste stockpiles as a mineable resource rather than a waste problem. The concentration of gold, silver, copper, and critical minerals in e-waste is orders of magnitude higher than in natural ore deposits — yet remains overwhelmingly unextracted. The UNEP estimates the annual urban mine is worth over $57 billion — currently being burned or buried.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: LIFECYCLE & EPR -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-b">⚖️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Policy & Design · 12 min</div>
+        <div class="sec-title">Product lifecycle &amp; Extended Producer Responsibility</div>
+        <div class="sec-subtitle">Who is responsible for a device from cradle to grave — and what the law says</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose"><strong>Extended Producer Responsibility (EPR)</strong> is the policy principle that manufacturers are responsible for the entire lifecycle of their products — including collection and recycling at end of life. It directly shifts the financial and operational burden of e-waste from governments and consumers to the companies that created the products in the first place.</p>
+
+    <div class="callout callout-blue">
+      <div class="callout-label">📘 From Velete Ch.7 — Why EPR changes engineering</div>
+      When a manufacturer pays for end-of-life recycling costs, they have a financial incentive to design products that are cheaper to recycle — using fewer materials, fewer material types, fewer toxic substances, and designing for disassembly. EPR thus creates a direct feedback loop from end-of-life economics into product design decisions. This is why RoHS (Restriction of Hazardous Substances) and WEEE (Waste EEE Directive) together transformed European electronics design.
+    </div>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showFW('rawmat')">⛏️ Raw Materials</div>
+      <div class="fw-tab" onclick="showFW('mfg')">🏭 Manufacturing</div>
+      <div class="fw-tab" onclick="showFW('use')">📱 Use Phase</div>
+      <div class="fw-tab" onclick="showFW('eol')">♻️ End of Life</div>
+      <div class="fw-tab" onclick="showFW('epr')">⚖️ EPR Frameworks</div>
+    </div>
+
+    <div class="fw-panel active" id="fw-rawmat">
+      <div class="fw-header"><div class="fw-badge">Raw Materials</div><div><div class="fw-name">Extraction, refining &amp; supply chain</div><div class="fw-org">Scope 3 emissions | Conflict minerals | Water use</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Embodied carbon</div><div class="fw-item-text">Manufacturing a smartphone emits ~70kg CO₂e — 70-80% of its lifetime footprint. This happens before the device is even switched on. Engineers who choose materials and manufacturing processes shape this footprint most.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Critical minerals</div><div class="fw-item-text">Cobalt (DRC), lithium (South America), rare earths (China, 60%+ supply) create supply chain concentration risk and geopolitical dependencies. Recycling reduces these dependencies.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Water consumption</div><div class="fw-item-text">Semiconductor fabrication is extremely water-intensive: a single 300mm silicon wafer requires ~2,200 litres of ultra-pure water to manufacture.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering lever</div><div class="fw-item-text">Material substitution, reduced material use per device, responsibly sourced minerals (RMI certification), and design for longevity all reduce this phase's impact.</div></div>
+      </div>
+    </div>
+    <div class="fw-panel" id="fw-mfg">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a5199">Manufacturing</div><div><div class="fw-name">Assembly, testing &amp; packaging</div><div class="fw-org">Scope 1 &amp; 2 emissions | Chemical waste | Packaging waste</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Energy source matters</div><div class="fw-item-text">A factory powered by coal vs. renewables can have 10× different carbon intensity for the same manufacturing process. Apple and Samsung have commitments to 100% renewable manufacturing.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Chemical waste</div><div class="fw-item-text">PCB etching, soldering, and cleaning processes generate hazardous chemical waste streams that require careful management — a direct responsibility of manufacturing engineers.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Packaging design</div><div class="fw-item-text">Apple's elimination of chargers and headphones from iPhone packaging reduced box size 70% — fitting more units per shipping container, cutting transport emissions significantly.</div></div>
+        <div class="fw-item"><div class="fw-item-title">RoHS compliance</div><div class="fw-item-text">EU Restriction of Hazardous Substances Directive prohibits lead, mercury, cadmium, hexavalent chromium, PBB, and PBDE in EEE — directly constraining material choice in manufacturing.</div></div>
+      </div>
+    </div>
+    <div class="fw-panel" id="fw-use">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">Use Phase</div><div><div class="fw-name">Operational energy &amp; lifespan</div><div class="fw-org">Scope 2 emissions | Software obsolescence | Repairability</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Operational energy</div><div class="fw-item-text">For most consumer devices, energy use during the use phase is 20-30% of lifetime emissions (vs. 70-80% for manufacturing). Efficiency improvements here matter less than extending device lifespan.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Software obsolescence</div><div class="fw-item-text">When a manufacturer stops providing OS updates, a device becomes insecure even if hardware is functional. EU's Right to Repair Regulation requires 5–10 year software support windows for many product categories.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Right to Repair</div><div class="fw-item-text">EU regulation (2021+) requires manufacturers to supply spare parts for 7–10 years after sale, and to make repair manuals publicly available. Apple, Samsung, and Google now offer self-repair programs.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Longevity is greenest</div><div class="fw-item-text">Extending a phone's life from 2 to 4 years cuts its per-year manufacturing emissions in half — the single most impactful consumer action on device carbon footprint.</div></div>
+      </div>
+    </div>
+    <div class="fw-panel" id="fw-eol">
+      <div class="fw-header"><div class="fw-badge" style="background:#c0392b">End of Life</div><div><div class="fw-name">Collection, sorting, recovery &amp; disposal</div><div class="fw-org">EPR obligation | Basel Convention | Informal sector</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Collection systems</div><div class="fw-item-text">Manufacturer take-back schemes, retail drop-off points, municipal collection events, and certified recycler networks. Collection rate is the primary bottleneck — getting devices from consumer hands to certified recyclers.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Formal recycling process</div><div class="fw-item-text">Manual disassembly (battery removal, hazardous component separation) → mechanical shredding → material separation (eddy current, magnetic, density) → hydrometallurgical/pyrometallurgical recovery of metals.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Design for disassembly</div><div class="fw-item-text">Snap-fits instead of glue, fewer material types, battery accessibility, modular components — all reduce recycling cost and improve material recovery rates. Frameworks: IEC 62474, iNEMI.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Informal sector reality</div><div class="fw-item-text">In many developing countries including Bangladesh, informal recyclers handle the majority of e-waste using hazardous methods — but also provide livelihoods. Formalizing the informal sector (training, equipment, certification) is more realistic than eliminating it.</div></div>
+      </div>
+    </div>
+    <div class="fw-panel" id="fw-epr">
+      <div class="fw-header"><div class="fw-badge" style="background:#5e3aa8">EPR Frameworks</div><div><div class="fw-name">Extended Producer Responsibility in law</div><div class="fw-org">WEEE (EU) | E-Waste Rules 2021 (BD) | Basel Convention</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">EU WEEE Directive</div><div class="fw-item-text">Manufacturers must finance collection and recycling systems. Collection targets: 65% of average weight placed on market in last 3 years. Recovery targets: 75-85% by device type. Producer responsibility organisations (PROs) pool costs.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh E-Waste Rules 2021</div><div class="fw-item-text">Establishes EPR for EEE manufacturers and importers. Requires registration with DoE (Department of Environment), take-back schemes, and certified recycler partnerships. Enforcement currently limited but framework exists.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Basel Convention</div><div class="fw-item-text">International treaty controlling transboundary movement of hazardous waste including e-waste. "Basel Ban Amendment" (2019) prohibits hazardous e-waste export from developed to developing nations. 187 parties, but enforcement varies widely.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Engineering obligation</div><div class="fw-item-text">Under EPR, engineers who specify toxic materials, design devices that are hard to disassemble, or choose non-recyclable material combinations are creating future financial liabilities for their employer — not just environmental harm.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: RECYCLING PROCESS -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🔧</div>
+      <div class="sec-meta">
+        <div class="sec-label">Technical · 10 min + Guest Q&amp;A</div>
+        <div class="sec-title">How e-waste is actually recycled</div>
+        <div class="sec-subtitle">The technical process from collection to recovered materials — and the guest lecture</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Formal e-waste recycling is a sophisticated multi-stage industrial process — very different from the informal burning and acid-bath methods that dominate in many lower-income regions. Understanding how it works lets engineers design for it.</p>
+
+    <ul class="big-list">
+      <li><div class="bl-icon">1️⃣</div><div><strong>Collection &amp; logistics</strong> — The biggest challenge: getting devices from consumers to certified facilities. Methods: retail take-back (Apple Genius Bar), municipal events, mail-in programs, certified recycler drop-offs. In Bangladesh: informal aggregators, e-waste collection drives by DoE, and WEEE-accredited processors.</div></li>
+      <li><div class="bl-icon">2️⃣</div><div><strong>Data destruction</strong> — Before any physical processing: cryptographic wiping (NIST 800-88 standard) or physical destruction of storage media. Critical for data privacy compliance — GDPR/Bangladesh Data Protection Act. Certificate of destruction required for business assets.</div></li>
+      <li><div class="bl-icon">3️⃣</div><div><strong>Manual pre-processing</strong> — Trained technicians remove: batteries (fire hazard if shredded), capacitors, CRT screens (lead glass), mercury-containing components, and large PCBs for separate processing. Protects downstream equipment and workers.</div></li>
+      <li><div class="bl-icon">4️⃣</div><div><strong>Mechanical shredding &amp; separation</strong> — Remaining material fed into industrial shredders → mixed material stream separated using: eddy-current separators (non-ferrous metals), magnetic separators (ferrous metals), density separation (plastics vs. metals), and optical/IR sorting.</div></li>
+      <li><div class="bl-icon">5️⃣</div><div><strong>Hydrometallurgical recovery</strong> — Circuit board concentrates processed via chemical leaching and solvent extraction to recover gold, silver, palladium, and platinum group metals. Requires chemical expertise and waste treatment infrastructure.</div></li>
+      <li><div class="bl-icon">6️⃣</div><div><strong>Pyrometallurgical smelting</strong> — High-temperature (1,300°C+) smelting of mixed metal fractions to recover copper, precious metals, and other base metals. Energy-intensive but achieves very high recovery rates for multiple metal streams simultaneously.</div></li>
+    </ul>
+
+    <div class="callout callout-green">
+      <div class="callout-label">🎤 Guest Lecture — ICS &amp; Logistics, EWU</div>
+      Our guest speaker brings direct industry experience in logistics and supply chain management for e-waste in Bangladesh. Topics to be covered: local collection network challenges, certified recycler availability, reverse logistics economics, and the informal sector interface. <strong>Please hold questions until after their presentation, then we'll open for Q&amp;A.</strong>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: CIRCULAR ECONOMY -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🔁</div>
+      <div class="sec-meta">
+        <div class="sec-label">Strategy · 10 min</div>
+        <div class="sec-title">The circular economy in IT</div>
+        <div class="sec-subtitle">From linear "take-make-waste" to circular "design-use-recover-redesign"</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">The current IT hardware model is overwhelmingly <strong>linear</strong>: extract raw materials → manufacture → use → discard. A <strong>circular economy</strong> model aims to keep materials in use at their highest value for as long as possible — through reuse, repair, remanufacturing, and only finally recycling when all other options are exhausted.</p>
+
+    <!-- Circular economy SVG diagram -->
+    <div class="circ-wrap">
+      <div class="calc-title" style="margin-bottom:16px">🔄 The Circular Economy for IT Hardware</div>
+      <svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;margin:0 auto">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#8a5000"/></marker>
+          <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#1a7a50"/></marker>
+        </defs>
+        <!-- Outer linear path (bad) -->
+        <text x="280" y="18" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#c0392b" letter-spacing="1">LINEAR MODEL (CURRENT — WASTEFUL)</text>
+        <rect x="10" y="28" width="90" height="36" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="55" y="48" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#6b1010">Extract</text>
+        <line x1="100" y1="46" x2="140" y2="46" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="140" y="28" width="90" height="36" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="185" y="48" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#6b1010">Manufacture</text>
+        <line x1="230" y1="46" x2="270" y2="46" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="270" y="28" width="70" height="36" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="305" y="48" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#6b1010">Use</text>
+        <line x1="340" y1="46" x2="380" y2="46" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="380" y="28" width="80" height="36" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="420" y="48" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#6b1010">Discard</text>
+        <line x1="460" y1="46" x2="540" y2="46" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="510" y="42" font-family="Cabinet Grotesk,sans-serif" font-size="16">🗑️</text>
+
+        <!-- Circular model (good) -->
+        <text x="280" y="105" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="11" font-weight="700" fill="#1a7a50" letter-spacing="1">CIRCULAR MODEL — PREFERRED HIERARCHY</text>
+        <!-- Nodes -->
+        <ellipse cx="280" cy="200" rx="40" ry="28" fill="#e8f5ee" stroke="#1a7a50" stroke-width="2"/>
+        <text x="280" y="196" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="10" font-weight="700" fill="#0e3d2a">IN USE</text>
+        <text x="280" y="210" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="10" fill="#0e3d2a">Device</text>
+
+        <!-- Reuse arc (innermost) -->
+        <path d="M 248 185 Q 200 155 248 125" fill="none" stroke="#1a7a50" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrG)"/>
+        <text x="192" y="158" font-family="Cabinet Grotesk,sans-serif" font-size="10" font-weight="700" fill="#1a7a50">Reuse</text>
+
+        <!-- Repair arc -->
+        <path d="M 248 215 Q 170 250 240 290 Q 310 310 330 260 Q 340 230 312 218" fill="none" stroke="#c2640f" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="230" y="308" font-family="Cabinet Grotesk,sans-serif" font-size="10" font-weight="700" fill="#7a3a00">Repair / Refurbish</text>
+
+        <!-- Remanufacture arc -->
+        <path d="M 320 192 Q 400 155 370 120 Q 340 90 295 108" fill="none" stroke="#1a5199" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="368" y="148" font-family="Cabinet Grotesk,sans-serif" font-size="10" font-weight="700" fill="#1a5199">Remanufacture</text>
+
+        <!-- Recycle (outermost) -->
+        <rect x="10" y="255" width="80" height="34" rx="8" fill="#fdf3e0" stroke="#c97d12" stroke-width="1.5"/>
+        <text x="50" y="276" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="10" font-weight="700" fill="#7a4800">Recycle</text>
+        <line x1="90" y1="272" x2="235" y2="215" stroke="#c97d12" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="50" y="310" text-anchor="middle" font-family="Cabinet Grotesk,sans-serif" font-size="9" fill="#7a4800">(last resort)</text>
+      </svg>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">💡 The preferred hierarchy</div>
+      In circular economy thinking, recycling is the <strong>last resort</strong>, not the goal. The preferred hierarchy (highest to lowest value retention): <strong>Reuse</strong> (give/sell device to another user) → <strong>Repair</strong> (fix and continue using) → <strong>Refurbish</strong> (restore to good condition) → <strong>Remanufacture</strong> (industrial-scale restoration to like-new) → <strong>Recycle</strong> (break down to recover materials). Engineers who enable these earlier stages — through repairability, modularity, and longevity — create far more value than optimizing the recycling process alone.
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Design scenario</div><div class="sc-q">A phone manufacturer glues the battery in place to achieve a thinner form factor. What circular economy impact does this have — and what should the engineer do?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Glued batteries prevent user replacement — the most common repair that extends device life. When the battery degrades (~500 cycles), the entire device is typically discarded instead of a $20 battery swap. This pushes devices from Repair directly to Recycle, losing enormous embodied value. The engineer should advocate for accessible battery design — the EU Right to Repair regulation now requires it for many categories.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Procurement scenario</div><div class="sc-q">EWU IT department needs to replace 100 computers. A vendor offers new machines at $500 each OR certified refurbished machines at $280 each. What should IT recommend, and why?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Recommend certified refurbished — saves $22,000, reduces embodied carbon (manufacturing already done), keeps devices in the Remanufacture loop instead of triggering new manufacturing demand. Ensure: certification standard (e.g., R2/RIOS), data wipe certificate from the refurbisher, warranty coverage, and performance spec compatibility. This is a better financial AND environmental decision.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">E-waste scenario</div><div class="sc-q">An employee finds 30 old smartphones in a storage room — still functional but outdated. They're about to be sent to the e-waste bin. What's the circular economy response?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Evaluate first: are any suitable for reuse (security staff, student loans, IoT sensors)? If not, are they refurbishable for donation (schools, NGOs)? If not, are any repairable with minor work? Only send to certified recycler what cannot be reused or repaired. Also: document the process as part of your organization's Scope 3 e-waste reporting. The circular hierarchy should be applied before the recycling bin.</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Focus · 8 min</div>
+        <div class="sec-title">E-waste in Bangladesh</div>
+        <div class="sec-subtitle">The scale, the informal sector, the rules, and what engineers here can do</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 8 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Bangladesh generates approximately 200,000–400,000 tonnes of e-waste annually — much of it from rapid adoption of mobile phones, consumer electronics, and industrial equipment. The vast majority is managed by the informal sector.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📊 Key local facts</div>
+        <ul>
+          <li>~100,000 informal e-waste workers in Bangladesh — primarily in Dhaka's Nimtoli, Islampur, and Mitford areas</li>
+          <li>Bangladesh is a net importer of second-hand and end-of-life electronics from India, Gulf states, and Southeast Asia</li>
+          <li>Mobile phone penetration now exceeds 90% — creating a massive future e-waste pipeline</li>
+          <li>Only a handful of DoE-certified formal recyclers currently operate in Bangladesh</li>
+          <li>Lead poisoning from informal CRT and battery recycling is documented in Dhaka's recycling clusters</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">⚖️ The regulatory framework</div>
+        <ul>
+          <li><strong>E-Waste Management Rules 2021</strong> — EPR framework: registration, take-back, certified disposal required for manufacturers/importers</li>
+          <li><strong>DoE enforcement</strong> — currently limited resources; most formal activity is registration-only</li>
+          <li><strong>Bangladesh National 3R (Reduce/Reuse/Recycle) Strategy</strong> — prioritizes waste reduction hierarchy</li>
+          <li><strong>Basel Convention party</strong> — Bangladesh is a signatory; import of hazardous e-waste is technically regulated</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-teal">
+      <div class="callout-label">🔧 Engineering opportunity</div>
+      The gap between Bangladesh's formal e-waste framework (E-Waste Rules 2021) and informal sector reality is enormous — and represents a significant engineering and entrepreneurial opportunity. Needed: affordable informal-to-formal sector transition models, low-cost testing/sorting equipment for small recyclers, IoT-enabled e-waste collection tracking systems, and public-private collection schemes. Engineers with knowledge of both the technical and regulatory landscape are ideally positioned to design these solutions.
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Discussion (3 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">If you were designing an e-waste collection system for a university like EWU — how would you design it? What would it look like, where would the collected devices go, and how would you make it self-sustaining financially?</div><div class="discuss-time">Pairs → 2 ideas shared with class</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — recycling &amp; e-waste</div>
+        <div class="sec-subtitle">6 questions covering today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 8 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">⚠️</div><div class="sum-title">62Mt — and growing</div><div class="sum-text">E-waste is the world's fastest-growing waste stream. Only 17% is formally recycled. The rest is burned, landfilled, or informally processed with toxic consequences.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔬</div><div class="sum-title">The urban mine</div><div class="sum-text">E-waste contains gold, silver, copper, cobalt, lithium — worth $57B annually. Also contains lead, mercury, cadmium — toxic if released. Both realities drive formal recycling.</div></div>
+      <div class="sum-card"><div class="sum-icon">⚖️</div><div class="sum-title">EPR changes design</div><div class="sum-text">When manufacturers pay for end-of-life recycling, they have incentive to design for recyclability. RoHS + WEEE + Bangladesh E-Waste Rules 2021 create this accountability.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔁</div><div class="sum-title">Circular hierarchy</div><div class="sum-text">Reuse → Repair → Refurbish → Remanufacture → Recycle. Recycling is last resort. Engineers who enable earlier stages create far more value and less waste.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Bangladesh context</div><div class="sum-text">200,000–400,000t/year, mostly informal sector. E-Waste Rules 2021 exist but enforcement is weak. Large opportunity gap for formal sector engineering solutions.</div></div>
+      <div class="sum-card"><div class="sum-icon">🛠️</div><div class="sum-title">Design from day one</div><div class="sum-text">Material choice, disassembly design, repairability, and longevity are engineering decisions with direct recycling consequences. Design for the end from the beginning.</div></div>
+    </div>
+
+    <div class="callout callout-a" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 8 (Jun 29, Sunday)</div>
+      <strong>Sustainable Hardware.</strong> Moving from end-of-life back to the beginning: how do we design, specify, and procure IT hardware sustainably? Energy Star, TCO certification, lifecycle assessment for hardware, and green procurement frameworks. Read: <em>Velete Ch.8 (all)</em> before class.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 8</div>
+      Look up the Energy Star rating or TCO Certification status of any device you own or use regularly (laptop, monitor, phone). Find one sustainability claim the manufacturer makes about that device — and think critically: is it specific and verifiable, or vague greenwashing? Bring the claim and your assessment to Class 8.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--a2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 7: all</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Circular Hierarchy</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:2">
+      <div>1️⃣ Reuse (highest value)</div>
+      <div>2️⃣ Repair</div>
+      <div>3️⃣ Refurbish</div>
+      <div>4️⃣ Remanufacture</div>
+      <div>5️⃣ Recycle (last resort)</div>
+      <div>❌ Landfill / Burn</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Key Toxic Materials</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>☠️ Lead — CRT glass, solder</div>
+      <div>🌡️ Mercury — backlights, switches</div>
+      <div>⚗️ Cadmium — batteries, coatings</div>
+      <div>🔴 Chromium VI — corrosion protection</div>
+      <div style="margin-top:4px;font-size:10px;color:var(--ink4)">RoHS restricts all of these in new EEE</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 6: Going Paperless\nDate: Jun 22, 2025 (Sunday)')">← Class 6</button>
+    <button class="f-btn primary" onclick="alert('Class 8: Sustainable Hardware\nDate: Jun 29, 2025 (Sunday)\nReading: Velete Ch.8 (all)')">Class 8: Hardware →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Recap & guest intro',time:'5 min'},
+  {title:'The e-waste crisis',time:'10 min'},
+  {title:"What's inside devices",time:'12 min'},
+  {title:'Lifecycle & EPR',time:'12 min'},
+  {title:'Recycling process + Guest',time:'10 min'},
+  {title:'Circular economy',time:'10 min'},
+  {title:'Bangladesh context',time:'8 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'Globally, approximately what percentage of e-waste is formally recycled through certified processes?',ctx:'',opts:['About 50% — most countries have good recycling infrastructure','About 17% — the vast majority is dumped, burned, or informally processed','About 80% — regulations have been very effective','About 5% — recycling infrastructure barely exists anywhere'],ans:1,ex:'According to the Global E-Waste Monitor, only approximately 17.4% of e-waste generated globally is formally collected and recycled. The remaining ~83% is either landfilled, burned, or handled by informal recyclers using hazardous methods (open burning, acid baths). This is despite the fact that e-waste contains $57 billion worth of recoverable materials annually.'},
+  {q:'A 30-year-old CRT television is being disposed of. Which toxic material is it most likely to contain in significant quantities, and what is the health concern?',ctx:'',opts:['Gold — which is valuable and non-toxic','Lead — up to 4kg in the glass screen, causing neurological damage especially in children who encounter informal recycling sites','Mercury — used as a coolant in CRT tubes','Cobalt — from the cathode ray tube cathode'],ans:1,ex:'CRT (Cathode Ray Tube) monitors and televisions contain up to 4kg of lead in their glass screens — lead was used to shield users from X-ray radiation emitted by the electron gun. When CRTs are crushed or incinerated in informal recycling, this lead is released. Lead exposure causes serious irreversible neurological damage, especially in children, affecting IQ, behaviour, and development. This is why specialist CRT handling is required under WEEE and similar regulations.'},
+  {q:'What is "Extended Producer Responsibility" (EPR) and what is its most important effect on product engineering?',ctx:'',opts:['A rule requiring manufacturers to respond to extended warranty claims quickly','A policy that makes manufacturers financially responsible for end-of-life collection and recycling — creating a financial incentive to design products that are cheaper and easier to recycle','A tax on electronics sold above a certain price point','A requirement that engineers take responsibility for product marketing claims'],ans:1,ex:'EPR shifts end-of-life costs from governments and consumers back to the manufacturer. When a company pays the bill for recycling their own products, they have a direct financial incentive to: reduce material complexity (fewer material types = cheaper to sort), eliminate toxic materials (less costly hazardous waste handling), design for disassembly (lower labour cost to process), and extend product life (fewer units entering the waste stream). EPR thus creates a market feedback loop from end-of-life economics into engineering decisions — which is why WEEE + RoHS together transformed European electronics design.'},
+  {q:'In the circular economy hierarchy for IT hardware, which action should an engineer prioritize FIRST when a device reaches end of useful life in an organization?',ctx:'',opts:['Send it to a certified e-waste recycler immediately','Incinerate it securely to prevent data breaches','Evaluate whether the device can be reused, repaired, or refurbished before considering recycling','Landfill it since recycling is too expensive for single devices'],ans:2,ex:'The circular economy hierarchy places recycling as the LAST resort, not the first response. The preferred order is: Reuse (can another user in the organization use it? Can it be donated?) → Repair (can a minor fix extend its life?) → Refurbish (can it be restored to good condition?) → Remanufacture (industrial restoration) → Recycle (break down to materials only when all other options are exhausted). Each earlier stage retains far more value — embodied energy, materials, and functionality — than recycling, which only recovers raw materials.'},
+  {q:'Which of the following statements about the materials inside a modern smartphone is CORRECT?',ctx:'',opts:['Smartphones are mostly plastic and glass — they contain very few metals worth recovering','A single smartphone contains gold, silver, copper, cobalt, lithium, and rare earth elements — making a tonne of smartphones 40–80× richer in gold than gold ore, qualifying as an "urban mine"','Smartphones are designed to contain only non-toxic materials under modern regulations','The most valuable material in a smartphone is its plastic casing'],ans:1,ex:'Modern smartphones contain 60+ elements including gold (~0.03g/phone), silver (~0.3g/phone), copper (~15g/phone), cobalt (battery), lithium (battery), palladium, tantalum, and rare earth elements. A tonne of smartphones yields ~300g of gold — 40–80× richer than the average gold ore concentration. This is the basis of the "urban mine" concept: e-waste stockpiles are more valuable mineral resources than many primary mines, currently being wasted through informal processing or landfilling.'},
+  {q:'Bangladesh\'s E-Waste Management Rules 2021 establish which specific mechanism for making manufacturers responsible for e-waste?',ctx:'',opts:['A direct tax on electronic devices at point of sale, paid to the government for recycling programs','Extended Producer Responsibility (EPR) — requiring manufacturers and importers to register, establish take-back schemes, and ensure certified disposal of their end-of-life products','A ban on all second-hand electronics imports into Bangladesh','A requirement that consumers pay a recycling fee when purchasing new devices'],ans:1,ex:'Bangladesh\'s E-Waste Rules 2021 establish an EPR framework specifically: manufacturers and importers of Electrical and Electronic Equipment (EEE) must register with the Department of Environment (DoE), establish or contribute to take-back collection schemes, and ensure end-of-life devices go to certified recyclers who provide documentation. This mirrors the EU WEEE Directive model. Current enforcement is limited in practice, but the legal framework is now in place — and is expected to tighten as the DoE builds capacity.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+let activeMat=null;
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes()}
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--a3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showFW(id){
+  const order=['rawmat','mfg','use','eol','epr'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('fw-'+id).classList.add('active');
+}
+function showMaterial(id){
+  document.querySelectorAll('.mat-detail').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.mat-pill').forEach(p=>p.classList.remove('active'));
+  if(activeMat===id){activeMat=null;return}
+  activeMat=id;
+  document.getElementById('mat-'+id).classList.add('show');
+  event.currentTarget.classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review e-waste basics and EPR — try the sections again.','Good start — focus on materials and the circular hierarchy.','Decent! Review EPR mechanisms and Bangladesh context.','Solid — check any wrong answers carefully.','Strong performance! Well prepared on e-waste management.','Perfect — outstanding grasp of recycling and circular economy!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c7_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c7_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

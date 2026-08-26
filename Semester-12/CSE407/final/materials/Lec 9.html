@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 11 — Data Center Design &amp; Redesign</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#0a3d5c;--c2:#0e6090;--c3:#1b9ac4;--c4:#7dd8f0;--c5:#d4f3fc;
+  --ink:#0d1e26;--ink2:#2d4a5a;--ink3:#5a7a8a;--ink4:#9ab4c0;
+  --paper:#f0f7fa;--card:#ffffff;--card2:#f5fbfd;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --red:#c0392b;--red-l:#fdecea;
+  --orange:#d4540a;--orange-l:#fdeee4;
+  --border:#cce4ef;--border2:#a8ccdc;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,247,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--c1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--c1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--c3)}
+.prog-dot.active{background:var(--c1);box-shadow:0 0 0 2px var(--c5)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d2f4a 60%,#0a1e30 100%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:500px;height:500px;top:-160px;right:-120px;background:rgba(27,154,196,0.12)}
+.hero-c2{width:260px;height:260px;bottom:-90px;left:14%;background:rgba(125,216,240,0.08)}
+.hero-c3{width:140px;height:140px;top:50px;left:55%;background:rgba(27,154,196,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-c{background:rgba(125,216,240,0.2);color:#7dd8f0;border:1px solid rgba(125,216,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--c4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--c4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+/* OUTLINE */
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--c1);border-bottom-color:var(--c2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--c1);color:#fff}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--c1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--c3)}
+.sb-item.active .sb-dot{background:var(--c1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--c1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--c3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-c{background:var(--c5)}.si-a{background:var(--amber-l)}.si-g{background:var(--green-l)}.si-r{background:var(--red-l)}.si-o{background:var(--orange-l)}.si-p{background:#f0ecfd}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--c5);color:var(--c1);border:1px solid rgba(27,154,196,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--c3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+.section.done .mark-done-btn{background:var(--c5);border-color:var(--c3);color:var(--c1)}
+
+/* CONTENT */
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-c{background:var(--c5);border-color:var(--c2);color:var(--c1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-orange{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--c5);border:1px solid rgba(27,154,196,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--c1);line-height:1}
+.stat-u{font-size:13px;color:var(--c2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--c2);margin-top:5px;line-height:1.4}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--c1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--c5)}
+
+.diagram-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.diagram-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--c3);color:var(--c1)}
+.fw-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--c1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* CALCULATOR */
+.calc-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.calc-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.calc-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-lbl{font-size:12px;color:var(--ink3);min-width:180px;font-weight:500}
+.calc-val{font-size:13px;font-weight:700;color:var(--c1);min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--c2)}
+.result-box{background:var(--c1);color:#fff;border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.result-big{font-family:'Fraunces',serif;font-size:42px;line-height:1;color:var(--c4)}
+.result-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.result-rating{font-size:13px;color:rgba(255,255,255,0.7)}
+.result-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px}
+.result-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* MODEL TABS INSIDE CALC */
+.model-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.model-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.model-tab:hover{border-color:var(--c3);color:var(--c1)}
+.model-tab.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+
+/* SCENARIO / PROBLEM CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--c1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c4);margin-bottom:8px}
+
+/* MATH PROBLEM CARDS (variant of sc-card, teal-on-white front, formula back) */
+.math-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.mp-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.mp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.mp-card.flipped .mp-front{display:none}
+.mp-card.flipped .mp-back{display:flex}
+.mp-front{padding:16px;background:var(--card);min-height:150px;display:flex;flex-direction:column}
+.mp-back{display:none;padding:16px;background:var(--green-l);flex-direction:column;justify-content:center;min-height:150px}
+.mp-num{width:24px;height:24px;border-radius:50%;background:var(--c1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.mp-q{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.mp-hint{font-size:10px;color:var(--ink4);margin-top:10px}
+.mp-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--green-d);margin-bottom:6px}
+.mp-formula{font-size:12px;color:var(--green-d);font-weight:700;margin-bottom:6px;font-family:monospace}
+.mp-answer{font-size:14px;color:var(--green-d);font-weight:700}
+.mp-explain{font-size:11.5px;color:var(--green-d);opacity:.85;margin-top:6px;line-height:1.5}
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--c3)}
+.qp-dot.active{background:var(--c2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--c3);background:var(--c5);color:var(--c1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--c1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--c2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--c1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--c5);color:var(--c1)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn:disabled{opacity:.4;pointer-events:none}
+.f-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1)}
+.f-btn.primary:hover{background:var(--c2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 11 — Data Center Design &amp; Redesign</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-c">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 11 of 22</span>
+      <span class="chip chip-gray">Aug 5, 2025 · Tuesday · 1h 30min</span>
+    </div>
+    <h1>Data Center Design<br><em>Building &amp; Redesigning for Reliability</em></h1>
+    <p class="hero-sub">From site selection to Tier certification — how data centers are engineered for reliability and density, and what triggers a redesign once one is already running.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.12 (all)</span>
+      <span class="ref">📗 Lamb Ch.6 (all)</span>
+      <span class="ref">🎯 CO3</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+      <span class="ref">🚌 Field Trip: Data Center</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">99.995<span style="font-size:16px">%</span></div><div class="h-stat-lbl">Tier IV uptime guarantee — ≈26 min downtime allowed per year</div></div>
+      <div class="h-stat"><div class="h-stat-num">2N</div><div class="h-stat-lbl">Full redundancy model — every component path fully duplicated</div></div>
+      <div class="h-stat"><div class="h-stat-num">15–20</div><div class="h-stat-lbl">Years — typical design life before a major redesign is triggered</div></div>
+      <div class="h-stat"><div class="h-stat-num">4</div><div class="h-stat-lbl">Uptime Institute Tier levels (I–IV) used worldwide to rate reliability</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Design Fundamentals</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Tier Classification</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Redundancy &amp; Capacity</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Redesign Strategies</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Math Practice</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Bangladesh Context</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content-col">
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Quick recap &amp; homework review</div>
+        <div class="sec-subtitle">University sustainability case studies recap + midterm assessment debrief</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Before the midterm break, we looked at university and institutional case studies through the Greening University Toolkit. Today we move into one of the most concrete engineering topics in this course: how data centers are actually designed from the ground up — and what it takes to redesign one once it's already in operation.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">🏫 Greening University Toolkit</div><p>A structured framework for auditing and improving sustainability across campus IT — energy, procurement, e-waste, and culture.</p></div>
+      <div class="card-b"><div class="card-b-title">📋 Case study method</div><p>AS-IS vs TO-BE analysis, stakeholder interviews, and evidence-based recommendations — the same rigor applies to data center audits.</p></div>
+      <div class="card-b"><div class="card-b-title">🎯 Midterm assessment</div><p>Your IoT energy-monitoring dashboards are underway. Today's PUE and capacity concepts feed directly into that deliverable.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">From your midterm energy-monitoring work so far: what's the single biggest inefficiency you've spotted in your lab or infrastructure, and what would fixing it require in terms of physical redesign — not just software?</div><div class="discuss-time">2–3 groups share findings</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 2: DESIGN FUNDAMENTALS -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-c">🏗️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">Designing a data center from scratch</div>
+        <div class="sec-subtitle">Site selection, load estimation, and the design decisions that lock in for decades</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">A data center is one of the few pieces of civil engineering where a bad early decision can't be patched with software later. Site selection, structural loading, and electrical capacity are largely fixed once construction begins — so design starts long before the first server rack arrives.</p>
+
+    <div class="callout callout-c">
+      <div class="callout-label">🧭 The core design question</div>
+      Every design decision traces back to one question: <strong>what level of risk is acceptable, and what will the organization pay to reduce it?</strong> A bank's core transaction system and a university's research file server have very different answers — and that difference drives everything from Tier level to redundancy to site choice.
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">18–24</div><div class="stat-l">Months — typical construction timeline for a purpose-built enterprise data center</div></div>
+      <div class="stat"><div class="stat-n">2–4×</div><div class="stat-l">Land footprint multiplier needed beyond the building itself, for cooling plant, generators, and expansion</div></div>
+      <div class="stat"><div class="stat-n">≥2</div><div class="stat-l">Independent utility power feeds recommended from separate substations</div></div>
+      <div class="stat"><div class="stat-n">≥2</div><div class="stat-l">Diverse fiber paths recommended, physically separated to avoid a single backhoe cutting both</div></div>
+    </div>
+
+    <p class="prose" style="margin-top:18px">Site selection weighs a fixed set of criteria that rarely change, only their relative importance:</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📍 Site selection criteria</div>
+        <ul>
+          <li>Grid power availability &amp; cost per kWh</li>
+          <li>Natural disaster risk (flood, earthquake, cyclone)</li>
+          <li>Climate — cooling potential, humidity</li>
+          <li>Fiber connectivity &amp; network latency to users</li>
+          <li>Water availability for cooling</li>
+          <li>Land cost, zoning, and tax incentives</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">📐 Early design decisions</div>
+        <ul>
+          <li>Target Tier level (reliability vs. cost)</li>
+          <li>Raised floor vs. slab — cabling &amp; airflow strategy</li>
+          <li>Modular vs. monolithic build-out</li>
+          <li>Target rack density (kW/rack) for the building's life</li>
+          <li>Structural load rating for future high-density racks</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">⚠️ The over-build vs. under-build trap</div>
+      Building for peak day-one capacity wastes capital and runs infrastructure at inefficient partial load for years. Building too small forces a disruptive expansion later. <strong>Modular design</strong> — building the shell for full capacity but installing power and cooling in phases as demand grows — is now the industry-standard compromise.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 3: TIER CLASSIFICATION -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🏆</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Concept · 15 min</div>
+        <div class="sec-title">The Uptime Institute Tier classification system</div>
+        <div class="sec-subtitle">The industry-standard vocabulary for describing data center reliability</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">When someone says a data center is "Tier III," they're referencing a specific, certifiable standard from the Uptime Institute. Four tiers describe increasing levels of redundancy and fault tolerance — and each step up costs significantly more to build and operate.</p>
+
+    <div class="table-wrap">
+      <table class="styled">
+        <thead><tr><th>Tier</th><th>Description</th><th>Uptime %</th><th>Max downtime/yr</th><th>Redundancy</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Tier I</strong></td><td>Basic capacity — single path for power &amp; cooling, no redundancy</td><td>99.671%</td><td style="color:var(--red)">28.8 hrs</td><td>N</td></tr>
+          <tr><td><strong>Tier II</strong></td><td>Redundant components, still a single distribution path</td><td>99.741%</td><td style="color:var(--amber)">22.0 hrs</td><td>N+1</td></tr>
+          <tr><td><strong>Tier III</strong></td><td>Concurrently maintainable — any component can be serviced without downtime</td><td>99.982%</td><td style="color:var(--green)">1.6 hrs</td><td>N+1</td></tr>
+          <tr><td><strong>Tier IV</strong></td><td>Fault tolerant — a single failure anywhere causes no impact</td><td>99.995%</td><td style="color:var(--green)">0.4 hrs (26 min)</td><td>2N or 2N+1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-c">
+      <div class="callout-label">💡 The key distinction: redundancy vs. concurrent maintainability</div>
+      Tier II has spare components (N+1), but taking the single distribution path down for maintenance still causes an outage. Tier III's defining feature is that <strong>every</strong> capacity component and distribution path can be shut down for planned maintenance with zero impact on IT operations — a subtle but critical engineering difference.
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+      <div class="card-b"><div class="card-b-title">💰 Cost reality</div><p>Each Tier step roughly adds 20–50% to both capital and operating cost. Tier IV facilities can cost 2× or more per kW of IT capacity versus Tier I — the price of near-zero downtime.</p></div>
+      <div class="card-b"><div class="card-b-title">🏦 Who needs what</div><p>Core banking systems and stock exchanges typically demand Tier III or IV. Most enterprise back-office and university systems are well served by Tier II or III.</p></div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 4: REDUNDANCY & CAPACITY -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🔁</div>
+      <div class="sec-meta">
+        <div class="sec-label">Key Technique · 15 min</div>
+        <div class="sec-title">Redundancy models &amp; capacity planning</div>
+        <div class="sec-subtitle">N, N+1, and 2N — how much spare capacity is enough?</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 15 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Redundancy notation describes how much spare capacity exists beyond what's strictly needed to run the load. <strong>N</strong> is the number of units required to meet demand — everything else is expressed relative to N.</p>
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showRed('n')">N</div>
+      <div class="fw-tab" onclick="showRed('n1')">N+1</div>
+      <div class="fw-tab" onclick="showRed('2n')">2N</div>
+      <div class="fw-tab" onclick="showRed('2n1')">2N+1</div>
+    </div>
+
+    <div class="fw-panel active" id="red-n">
+      <div class="fw-header"><div class="fw-badge" style="background:#5a7a8a">N — No Redundancy</div><div><div class="fw-name">Bare minimum capacity</div><div class="fw-org">Every unit installed is required — no spares</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Reliability</div><div class="fw-item-text">Any single component failure causes an outage. Lowest cost, lowest reliability.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical use</div><div class="fw-item-text">Development/test environments, non-critical internal tools, Tier I facilities.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="red-n1">
+      <div class="fw-header"><div class="fw-badge" style="background:#0e6090">N+1</div><div><div class="fw-name">One spare unit</div><div class="fw-org">One extra unit beyond what's required</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Reliability</div><div class="fw-item-text">Tolerates one component failure or one unit down for maintenance without impact.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical use</div><div class="fw-item-text">Most Tier II/III enterprise data centers — the most common commercial standard.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="red-2n">
+      <div class="fw-header"><div class="fw-badge" style="background:#0a3d5c">2N</div><div><div class="fw-name">Full duplication</div><div class="fw-org">The entire capacity path is built twice, end to end</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Reliability</div><div class="fw-item-text">Two completely independent power/cooling paths — a failure in one path has zero effect on the other.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical use</div><div class="fw-item-text">Tier IV facilities, financial exchanges, national critical infrastructure.</div></div>
+      </div>
+    </div>
+
+    <div class="fw-panel" id="red-2n1">
+      <div class="fw-header"><div class="fw-badge" style="background:#c97d12">2N+1</div><div><div class="fw-name">Full duplication + spare</div><div class="fw-org">Two full paths, each with its own N+1 spare</div></div></div>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Reliability</div><div class="fw-item-text">Highest commercially deployed reliability tier — extremely rare given the cost.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical use</div><div class="fw-item-text">Central bank settlement systems, stock exchange matching engines, hyperscale flagship sites.</div></div>
+      </div>
+    </div>
+
+    <!-- CAPACITY PLANNING CALCULATOR -->
+    <div class="calc-wrap">
+      <div class="calc-title">🔧 Interactive: Capacity Planning Calculator</div>
+      <div class="calc-subtitle">Pick a redundancy model and IT load. See the total infrastructure you'd need to install (assuming 4 parallel modules cover the base N load).</div>
+      <div class="model-tabs" id="modelTabs">
+        <div class="model-tab active" data-mult="1" data-tier="Tier I" data-dt="28.8 hrs/yr" onclick="setModel(this)">N</div>
+        <div class="model-tab" data-mult="1.25" data-tier="Tier III" data-dt="1.6 hrs/yr" onclick="setModel(this)">N+1</div>
+        <div class="model-tab" data-mult="2" data-tier="Tier IV" data-dt="0.4 hrs/yr" onclick="setModel(this)">2N</div>
+        <div class="model-tab" data-mult="2.25" data-tier="Tier IV+" data-dt="~5 min/yr" onclick="setModel(this)">2N+1</div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Required IT load (kW)</span>
+        <input type="range" id="itLoadCap" min="100" max="2000" value="800" step="50" oninput="calcCapacity()">
+        <span class="calc-val" id="itLoadCapVal">800 kW</span>
+      </div>
+      <div class="result-box">
+        <div>
+          <div class="result-label">Total installed capacity</div>
+          <div class="result-big" id="capResult">800 kW</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="capBreakText">Overbuild: 0 kW (0%)</div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="result-rating" id="capTierText">Maps to roughly: Tier I</div>
+          <div class="result-bar"><div class="result-fill" id="capFill" style="width:20%;background:#c2640f"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:4px"><span>N (cheapest)</span><span>2N+1 (most reliable)</span></div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7" id="capDowntimeText">Est. downtime: 28.8 hrs/yr</div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 5: REDESIGN STRATEGIES -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied · 10 min</div>
+        <div class="sec-title">Redesigning an existing data center</div>
+        <div class="sec-subtitle">What triggers a redesign, and greenfield vs. retrofit trade-offs</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Most data centers in operation today weren't built for today's workloads — especially GPU-dense AI clusters. Redesign is rarely a full rebuild; it's usually a series of targeted interventions layered onto an existing facility.</p>
+
+    <div class="big-list">
+      <li><div class="bl-icon">📈</div><div><strong>Density growth</strong> — new equipment (especially AI/HPC) exceeds the original per-rack design limit.</div></li>
+      <li><div class="bl-icon">📉</div><div><strong>PUE degradation</strong> — aging cooling plant becomes less efficient than modern alternatives, raising operating cost.</div></li>
+      <li><div class="bl-icon">🔌</div><div><strong>End of equipment life</strong> — UPS batteries, chillers, and generators typically need replacement every 10–15 years — a natural moment to upgrade rather than replace like-for-like.</div></li>
+      <li><div class="bl-icon">📜</div><div><strong>New compliance requirements</strong> — regulators (e.g. a central bank mandating a Tier III standard for banking data) can force reliability upgrades.</div></li>
+      <li><div class="bl-icon">🌱</div><div><strong>Sustainability targets</strong> — corporate net-zero commitments driving efficiency retrofits and renewable power sourcing.</div></li>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px">
+      <table class="styled">
+        <thead><tr><th></th><th>Greenfield (new build)</th><th>Brownfield (retrofit)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Design freedom</strong></td><td style="color:var(--green)">Full control of layout, density, site</td><td style="color:var(--red)">Constrained by existing structure &amp; layout</td></tr>
+          <tr><td><strong>Downtime risk</strong></td><td style="color:var(--green)">None — built before go-live</td><td style="color:var(--red)">High — must work around live systems</td></tr>
+          <tr><td><strong>Capital cost</strong></td><td style="color:var(--red)">Highest — land, structure, everything new</td><td style="color:var(--green)">Lower — reuses existing shell &amp; some infrastructure</td></tr>
+          <tr><td><strong>Time to deploy</strong></td><td style="color:var(--red)">18–24+ months</td><td style="color:var(--green)">Often 3–9 months for targeted upgrades</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">🧩 Modular &amp; containerized data centers</div>
+      Prefabricated, containerized modules (power, cooling, and IT space built off-site and shipped in) let operators add capacity in discrete chunks rather than committing to a full facility upfront. This shortens deployment time from years to months and is increasingly used for both greenfield expansion and rapid capacity relief at brownfield sites.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 6: MATH PRACTICE -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🧮</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practice · 10 min</div>
+        <div class="sec-title">Math practice — small, quick calculations</div>
+        <div class="sec-subtitle">Apply today's formulas (PUE, DCiE, redundancy, density) to five short problems</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Try to solve each problem on paper first — they're all short, one- or two-step calculations. Tap a card to reveal the worked answer.</p>
+
+    <div class="math-grid">
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">1</div>
+          <div class="mp-q">A facility's IT equipment load is <strong>600 kW</strong>. Total facility power draw (IT + cooling + everything else) is <strong>900 kW</strong>. What is the PUE?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">PUE = Total power ÷ IT power</div>
+          <div class="mp-answer">900 ÷ 600 = 1.5</div>
+          <div class="mp-explain">A PUE of 1.5 means 0.5 kW of overhead for every 1 kW that actually reaches computing — roughly industry average.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">2</div>
+          <div class="mp-q">A cooling system needs exactly <strong>3 chillers (N=3)</strong> to meet full load. Under an <strong>N+1</strong> redundancy model, how many chillers must be installed in total?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">N+1 = required units + 1 spare</div>
+          <div class="mp-answer">3 + 1 = 4 chillers</div>
+          <div class="mp-explain">Any one chiller can fail — or be taken offline for maintenance — while the remaining three still cover the full 3-chiller load.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">3</div>
+          <div class="mp-q">If a facility's PUE is <strong>1.25</strong>, what is its DCiE (Data Center Infrastructure Efficiency), expressed as a percentage?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">DCiE = 1 ÷ PUE × 100%</div>
+          <div class="mp-answer">1 ÷ 1.25 = 0.80 → 80%</div>
+          <div class="mp-explain">DCiE is just the inverse of PUE — it tells you what fraction of total power reaches the IT equipment. 80% is a strong (well above average) result.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">4</div>
+          <div class="mp-q">A server hall is <strong>500 m²</strong>. Each rack (including aisle space) needs <strong>2 m²</strong>, and average density is <strong>6 kW/rack</strong>. How many racks fit, and what's the hall's total IT capacity?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Racks = area ÷ footprint; Capacity = racks × density</div>
+          <div class="mp-answer">500 ÷ 2 = 250 racks<br>250 × 6 kW = 1,500 kW</div>
+          <div class="mp-explain">This simple area-and-density calculation is the starting point for any electrical and cooling capacity plan.</div>
+        </div>
+      </div>
+
+      <div class="mp-card" onclick="flipCard(this)">
+        <div class="mp-front">
+          <div class="mp-num">5</div>
+          <div class="mp-q">Tier III promises <strong>99.982%</strong> uptime. There are 525,600 minutes in a year. How many minutes of downtime does that allow?</div>
+          <div class="mp-hint">Tap to check your answer</div>
+        </div>
+        <div class="mp-back">
+          <div class="mp-back-lbl">Solution</div>
+          <div class="mp-formula">Downtime = (1 − uptime%) × minutes/year</div>
+          <div class="mp-answer">(1 − 0.99982) × 525,600 ≈ 94.6 min</div>
+          <div class="mp-explain">That's under 1 hour and 35 minutes of allowed downtime for the entire year — roughly matching the 1.6 hrs figure from the Tier table.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 7: BANGLADESH CONTEXT -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-o">🇧🇩</div>
+      <div class="sec-meta">
+        <div class="sec-label">Local Context · 10 min</div>
+        <div class="sec-title">Data center design in Bangladesh</div>
+        <div class="sec-subtitle">Flood risk, grid reliability, and the National Data Center</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO3</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Bangladesh's geography and infrastructure landscape make certain design criteria far more decisive here than in many other countries.</p>
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🌊 Flood &amp; elevation risk</div>
+        <p>Much of Bangladesh is low-lying and flood-prone. Site elevation and drainage are often the single deciding constraint on location — critical infrastructure like the National Data Center is deliberately sited on elevated, well-drained land (Kaliakoir Hi-Tech Park, Gazipur).</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🔌 Grid reliability</div>
+        <p>Voltage fluctuation and occasional load shedding make N+1 diesel generator capacity close to mandatory rather than optional, adding capital cost and Scope 1 emissions that greener grids elsewhere avoid.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏦 Regulatory pressure</div>
+        <p>Bangladesh Bank's data protection and IT governance guidance increasingly pushes banks toward Tier III-equivalent facilities for core systems — directly connecting today's material to the sector many of you may eventually work with.</p>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🏗️ Retrofit reality</div>
+        <p>Most existing private data centers in Dhaka were not built to modern Tier standards. Redesign here typically means phased retrofits — containment, UPS upgrades, generator redundancy — rather than full rebuilds.</p>
+      </div>
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Site scenario</div><div class="sc-q">A bank wants to build a new data center near the Buriganga River for cheap land and easy cooling water access. What's your first objection?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Flood and monsoon risk — riverside sites are attractive for water-side cooling but carry high inundation risk. Recommend a site with adequate elevation and drainage first, then solve cooling water access through closed-loop systems or piped supply instead.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Redesign scenario</div><div class="sc-q">An existing Dhaka data center is Tier II. A new central bank guideline requires Tier III for core banking systems. What's the minimum change needed?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Achieving Tier III doesn't just mean adding spares (already N+1) — it requires concurrent maintainability: redundant distribution paths so any single component can be serviced live. This usually means dual power paths to each rack (dual-corded PDUs) and isolatable cooling loops, not just extra units.</div></div>
+      </div>
+    </div>
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Class Discussion (5 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">1</div>
+        <div><div class="discuss-text">On our upcoming field trip, what design evidence would tell you — just by walking the floor — whether a facility is closer to Tier II or Tier III? Think about what you'd physically look for.</div><div class="discuss-time">Open discussion — pairs first, then class</div></div>
+      </div>
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — data center design &amp; redesign</div>
+        <div class="sec-subtitle">6 questions covering today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 12 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🏗️</div><div class="sum-title">Design locks in early</div><div class="sum-text">Site, structure, and electrical capacity are largely fixed once construction starts — get these decisions right the first time.</div></div>
+      <div class="sum-card"><div class="sum-icon">🏆</div><div class="sum-title">Four Tiers</div><div class="sum-text">Tier I (basic) through Tier IV (fault tolerant, 2N). Each step adds ~20–50% cost for meaningfully higher uptime.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔁</div><div class="sum-title">Redundancy notation</div><div class="sum-text">N → N+1 → 2N → 2N+1: each step adds spare capacity and cost, in exchange for tolerating more simultaneous failures.</div></div>
+      <div class="sum-card"><div class="sum-icon">🧮</div><div class="sum-title">The formulas are simple</div><div class="sum-text">PUE, DCiE, and capacity planning are all one- or two-step calculations — the engineering judgment is in choosing the right inputs.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔄</div><div class="sum-title">Redesign is usually phased</div><div class="sum-text">Density growth, aging equipment, and new compliance rules trigger redesign — rarely a full rebuild, usually targeted retrofits.</div></div>
+      <div class="sum-card"><div class="sum-icon">🇧🇩</div><div class="sum-title">Bangladesh's constraints</div><div class="sum-text">Flood risk and grid reliability dominate site and redundancy decisions here more than in most other markets.</div></div>
+    </div>
+
+    <div class="callout callout-c" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 12</div>
+      <strong>Virtualization.</strong> We move from physical infrastructure to how virtualization multiplies the value of every watt built today — server consolidation, hypervisors, and the efficiency gains that make modern data centers viable. Read: <em>Velete Ch.12 (all)</em> and <em>Lamb Ch.6 (all)</em> before class if not already done.
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">🚌 Reminder — Field Trip</div>
+      Our data center field trip is tentatively scheduled around this module. Confirm your attendance and any site-visit paperwork with the instructor — bring notebook and closed-toe shoes.
+    </div>
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+</div><!-- /content-col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--c2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div style="margin-bottom:8px"><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 12: all</div>
+      <div><strong style="color:var(--ink)">Lamb — The Greening of IT</strong><br>Chapter 6: all</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Tier Quick Reference</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>① Tier I → N → 28.8 hrs/yr</div>
+      <div>② Tier II → N+1 → 22.0 hrs/yr</div>
+      <div>③ Tier III → N+1 (concurrent) → 1.6 hrs/yr</div>
+      <div>④ Tier IV → 2N → 0.4 hrs/yr</div>
+    </div>
+  </div>
+  <div class="sb-card" style="border:1.5px solid #fdecd8;background:#fff9f5">
+    <div class="sb-title" style="color:var(--orange)">⚠️ Deadline Reminder</div>
+    <div style="font-size:12px;color:var(--ink2);line-height:1.6"><strong>Term paper progress check-in</strong> — be ready to share your methodology and data plan with the instructor this week.</div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 10: University & Institutional Case Studies\nGreening University Toolkit v.2')">← Class 10</button>
+    <button class="f-btn primary" onclick="alert('Class 12: Virtualization\nReading: Velete Ch.12 | Lamb Ch.6')">Class 12: Virtualization →</button>
+  </div>
+</div>
+
+<script>
+const SECTIONS=[
+  {title:'Quick recap & homework',time:'5 min'},
+  {title:'Design fundamentals',time:'10 min'},
+  {title:'Tier classification',time:'15 min'},
+  {title:'Redundancy & capacity',time:'15 min'},
+  {title:'Redesign strategies',time:'10 min'},
+  {title:'Math practice',time:'10 min'},
+  {title:'Bangladesh context',time:'10 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+const QUIZ=[
+  {q:'What is the key distinguishing feature that separates a Tier III data center from a Tier II data center?',ctx:'',opts:['Tier III has more diesel generators installed','Tier III is concurrently maintainable — every component and distribution path can be serviced without any downtime, not just redundant components','Tier III uses liquid cooling exclusively','Tier III has a lower PUE than Tier II by definition'],ans:1,ex:'Tier II adds redundant components (N+1) but still routes through a single distribution path — maintaining that path causes downtime. Tier III requires concurrent maintainability: every component and path can be taken offline for service with zero impact on IT operations. This is a design property, not just a component count.'},
+  {q:'A facility installs 4 chillers when only 3 (N=3) are strictly required to meet the cooling load. What redundancy model is this?',ctx:'',opts:['N','N+1','2N','2N+1'],ans:1,ex:'N+1 means one spare unit beyond what\'s required to meet the load. Here N=3 (required) and one extra unit is added, giving 4 total — the standard N+1 pattern.'},
+  {q:'A data center has an IT load of 750 kW and total facility power draw of 1,050 kW. What is its PUE?',ctx:'Recall: PUE = Total facility power ÷ IT equipment power.',opts:['0.71','1.05','1.40','1.75'],ans:2,ex:'PUE = 1,050 ÷ 750 = 1.4. A PUE of 1.4 means 0.4 kW of overhead (cooling, power distribution, etc.) for every 1 kW that reaches the actual computing equipment.'},
+  {q:'Why does 2N redundancy cost substantially more than N+1, even though both tolerate some failures?',ctx:'',opts:['2N uses more expensive individual components per unit','2N duplicates the entire capacity and distribution path end-to-end, roughly doubling capital cost, rather than adding just one spare unit','2N requires a larger physical building footprint only, with no cost difference otherwise','There is no meaningful cost difference between N+1 and 2N'],ans:1,ex:'N+1 adds one spare unit to a shared distribution path. 2N builds a second, fully independent path — power, distribution, and often cooling — doubling most of the infrastructure rather than adding a single component. That\'s why 2N approaches roughly double the capital cost of N.'},
+  {q:'Which site-selection factor is often the single deciding constraint for new data center locations in Bangladesh specifically?',ctx:'',opts:['Average land cost per square meter nationwide','Flood risk and site elevation, given the country\'s low-lying, flood-prone geography','Availability of English-speaking technical staff','Time zone alignment with North American markets'],ans:1,ex:'Bangladesh\'s low elevation and monsoon flood risk make site elevation and drainage a dominant, often deciding, factor — outweighing land cost or other criteria that matter more in less flood-prone countries.'},
+  {q:'A data center operator wants to raise rack density from 5 kW/rack to 25 kW/rack to support new GPU servers, without a full facility rebuild. What is the most practical redesign approach?',ctx:'',opts:['Add more standard CRAC units at the room level and hope airflow improves','Retrofit targeted high-density zones with rear-door heat exchangers or direct liquid cooling, rather than rebuilding the entire facility','Reduce the number of racks so total power stays the same as before','Immediately convert the entire data center to full immersion cooling'],ans:1,ex:'A full rebuild is rarely justified for a density increase in specific zones. Retrofitting rear-door heat exchangers or direct liquid cooling to the high-density racks handles 25–100+ kW/rack without disturbing the rest of the facility — a phased, targeted redesign rather than a ground-up rebuild.'},
+];
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+let currentMult=1,currentTier='Tier I',currentDT='28.8 hrs/yr';
+
+function init(){buildSidebar();buildQuiz();buildProgDots();loadNotes();calcCapacity()}
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--c3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+function showRed(id){
+  const order=['n','n1','2n','2n1'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('red-'+id).classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+function setModel(el){
+  document.querySelectorAll('.model-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  currentMult=parseFloat(el.dataset.mult);
+  currentTier=el.dataset.tier;
+  currentDT=el.dataset.dt;
+  calcCapacity();
+}
+
+function calcCapacity(){
+  const it=parseInt(document.getElementById('itLoadCap').value);
+  document.getElementById('itLoadCapVal').textContent=it+' kW';
+  const total=Math.round(it*currentMult);
+  const overbuild=total-it;
+  const overbuildPct=Math.round((overbuild/it)*100);
+  document.getElementById('capResult').textContent=total+' kW';
+  document.getElementById('capBreakText').textContent=`Overbuild: ${overbuild} kW (${overbuildPct}%)`;
+  document.getElementById('capTierText').textContent='Maps to roughly: '+currentTier;
+  document.getElementById('capDowntimeText').innerHTML='Est. downtime: '+currentDT;
+  const pctMap={1:15,1.25:35,2:70,2.25:90};
+  const colorMap={1:'#c0392b',1.25:'#c2640f',2:'#2d9e6b',2.25:'#1a7a50'};
+  document.getElementById('capFill').style.width=(pctMap[currentMult]||20)+'%';
+  document.getElementById('capFill').style.background=colorMap[currentMult]||'#c2640f';
+}
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review the Tier table and redundancy notation — try the sections again.','Good start — focus on N vs N+1 vs 2N and the PUE formula.','Decent! Review the Tier III concurrent-maintainability distinction.','Solid understanding — check any questions you missed.','Strong performance! Well prepared on data center design.','Perfect — outstanding grasp of design & redundancy concepts!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c11_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c11_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>

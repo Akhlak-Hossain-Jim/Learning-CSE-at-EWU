@@ -1,0 +1,1144 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE407 · Class 8 — Sustainable Hardware</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --s1:#1a3a5c;--s2:#245c90;--s3:#3a8fd4;--s4:#90c8f0;--s5:#dceefa;
+  --ink:#0d1822;--ink2:#243444;--ink3:#4a6478;--ink4:#8aa4b8;
+  --paper:#f0f5fa;--card:#ffffff;--card2:#f4f8fc;
+  --green:#1a7a50;--green-l:#e8f5ee;--green-d:#0e3d2a;
+  --amber:#c97d12;--amber-l:#fdf3e0;--amber-d:#7a4800;
+  --red:#c0392b;--red-l:#fdecea;
+  --purple:#5e3aa8;--purple-l:#ede6fb;
+  --teal:#0e7070;--teal-l:#e0f5f5;
+  --border:#c8dcea;--border2:#a0c0d8;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --t:all 0.2s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7}
+
+
+#topbar{position:sticky;top:0;z-index:100;background:rgba(240,245,250,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-family:'Fraunces',serif;font-size:13px;color:var(--s1);font-weight:600;letter-spacing:0.02em}
+.tb-sep{width:1px;height:18px;background:var(--border2)}
+.tb-title{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+#timer{font-weight:700;color:var(--s1);font-variant-numeric:tabular-nums}
+.timer-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.timer-btn:hover{background:var(--s5);border-color:var(--s3);color:var(--s1)}
+.prog-mini{display:flex;align-items:center;gap:4px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:var(--t);cursor:pointer}
+.prog-dot.done{background:var(--s3)}
+.prog-dot.active{background:var(--s1);box-shadow:0 0 0 2px var(--s5)}
+
+
+.hero{background:linear-gradient(135deg,var(--s1) 0%,#0e2238 70%);padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-circle{position:absolute;border-radius:50%}
+.hero-c1{width:480px;height:480px;top:-150px;right:-110px;background:rgba(58,143,212,0.14)}
+.hero-c2{width:240px;height:240px;bottom:-80px;left:16%;background:rgba(144,200,240,0.08)}
+.hero-c3{width:130px;height:130px;top:45px;left:56%;background:rgba(58,143,212,0.10)}
+.hero-inner{position:relative;max-width:900px;margin:0 auto}
+.hero-chips{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.chip-s{background:rgba(144,200,240,0.2);color:#90c8f0;border:1px solid rgba(144,200,240,0.3)}
+.chip-amber{background:rgba(201,125,18,0.2);color:#f7c97a;border:1px solid rgba(201,125,18,0.3)}
+.chip-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);line-height:1.1;color:#fff;margin-bottom:14px;font-weight:600}
+.hero h1 em{font-style:italic;color:var(--s4)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.7;margin-bottom:28px}
+.hero-refs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.ref{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);padding:3px 10px;border-radius:6px;font-size:11px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:780px}
+.h-stat{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.h-stat-num{font-family:'Fraunces',serif;font-size:30px;color:var(--s4);line-height:1}
+.h-stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4}
+
+
+.outline-bar{background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.outline-bar::-webkit-scrollbar{display:none}
+.outline-inner{display:flex;padding:0 32px;min-width:max-content}
+.ol-item{padding:13px 16px;font-size:12px;font-weight:700;color:var(--ink4);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:var(--t);letter-spacing:0.02em;text-transform:uppercase}
+.ol-item:hover{color:var(--ink2)}
+.ol-item.active{color:var(--s1);border-bottom-color:var(--s2)}
+.ol-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--border);font-size:9px;margin-right:5px;color:var(--ink3);transition:var(--t)}
+.ol-item.active .ol-num{background:var(--s1);color:#fff}
+
+
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:1100px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+
+.sidebar{position:sticky;top:64px}
+.sb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:12px}
+.sb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:var(--t)}
+.sb-item:last-child{border-bottom:none}
+.sb-item:hover .sb-item-title{color:var(--s1)}
+.sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:6px;transition:var(--t)}
+.sb-item.done .sb-dot{background:var(--s3)}
+.sb-item.active .sb-dot{background:var(--s1)}
+.sb-item-title{font-size:12px;color:var(--ink3);line-height:1.4;font-weight:500}
+.sb-item.active .sb-item-title{color:var(--s1);font-weight:700}
+.sb-time{font-size:10px;color:var(--ink4);margin-top:2px}
+.sb-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:12px}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--s2),var(--s3));border-radius:2px;transition:width 0.4s ease}
+.sb-prog-label{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink4)}
+.note-area{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;font-size:12px;color:var(--ink);background:var(--card2);resize:vertical;font-family:inherit;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--s3)}
+.save-note{margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t);width:100%}
+.save-note:hover{background:var(--s5);border-color:var(--s3);color:var(--s1)}
+
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;scroll-margin-top:72px;animation:fadeUp 0.35s ease both}
+.section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}.section:nth-child(6){animation-delay:.25s}.section:nth-child(7){animation-delay:.3s}.section:nth-child(8){animation-delay:.35s}.section:nth-child(9){animation-delay:.4s}
+.section:hover{box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:12px;transition:var(--t);user-select:none}
+.sec-head:hover{background:var(--card2)}
+.sh-left{display:flex;align-items:center;gap:14px}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-s{background:var(--s5)}.si-g{background:var(--green-l)}.si-a{background:var(--amber-l)}.si-r{background:var(--red-l)}.si-p{background:var(--purple-l)}.si-t{background:var(--teal-l)}
+.sec-meta{flex:1}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:2px}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.sec-subtitle{font-size:12px;color:var(--ink3);margin-top:2px}
+.sec-chips{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.sc{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.sc-time{background:var(--card2);color:var(--ink3);border:1px solid var(--border)}
+.sc-co{background:var(--s5);color:var(--s1);border:1px solid rgba(58,143,212,0.3)}
+.caret{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3);transition:transform 0.25s;flex-shrink:0}
+.section.open .caret{transform:rotate(180deg)}
+.section.done .sec-head{border-left:3px solid var(--s3)}
+.sec-body{display:none;padding:0 24px 28px;border-top:1px solid var(--border)}
+.section.open .sec-body{display:block}
+.mark-done-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.mark-done-btn:hover{background:var(--s5);border-color:var(--s3);color:var(--s1)}
+.section.done .mark-done-btn{background:var(--s5);border-color:var(--s3);color:var(--s1)}
+
+
+.prose{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-top:16px}
+.prose strong{color:var(--ink);font-weight:700}
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin-top:16px;font-size:14px;line-height:1.7;border-left:3px solid}
+.callout-s{background:var(--s5);border-color:var(--s2);color:var(--s1)}
+.callout-amber{background:var(--amber-l);border-color:var(--amber);color:var(--amber-d)}
+.callout-green{background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.callout-red{background:var(--red-l);border-color:var(--red);color:#6b1010}
+.callout-purple{background:var(--purple-l);border-color:var(--purple);color:#2a1450}
+.callout-teal{background:var(--teal-l);border-color:var(--teal);color:var(--teal)}
+.callout strong{font-weight:700}
+.callout-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;opacity:0.7}
+
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.stat{background:var(--s5);border:1px solid rgba(58,143,212,0.25);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;color:var(--s1);line-height:1}
+.stat-u{font-size:13px;color:var(--s2);margin-left:2px}
+.stat-l{font-size:11px;color:var(--s2);margin-top:5px;line-height:1.4}
+
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:700px){.three-col,.two-col{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.three-col,.two-col{grid-template-columns:1fr}}
+.card-b{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-b-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-b p,.card-b ul{font-size:13px;color:var(--ink3);line-height:1.65;margin:0}
+.card-b ul{padding-left:16px;margin-top:4px}
+
+
+.big-list{list-style:none;margin-top:14px}
+.big-list li{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;color:var(--ink2);line-height:1.6}
+.big-list li:last-child{border-bottom:none}
+.bl-icon{width:28px;height:28px;border-radius:7px;background:var(--s5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.big-list li strong{color:var(--ink);font-weight:700}
+
+
+.table-wrap{overflow-x:auto;margin-top:16px}
+table.styled{width:100%;border-collapse:collapse;font-size:13px}
+table.styled th{background:var(--s1);color:#fff;font-weight:700;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:0.03em}
+table.styled td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2);line-height:1.5;vertical-align:top}
+table.styled tr:last-child td{border-bottom:none}
+table.styled tr:nth-child(even) td{background:var(--card2)}
+table.styled tr:hover td{background:var(--s5)}
+
+
+/* CERT EXPLORER TABS */
+.fw-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.fw-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.fw-tab:hover{border-color:var(--s3);color:var(--s1)}
+.fw-tab.active{background:var(--s1);color:#fff;border-color:var(--s1)}
+.fw-panel{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.fw-panel.active{display:block}
+.fw-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fw-badge{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--s1);color:#fff;flex-shrink:0;white-space:nowrap}
+.fw-name{font-size:16px;font-weight:700;color:var(--ink)}
+.fw-org{font-size:12px;color:var(--ink3);margin-top:2px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:540px){.fw-grid{grid-template-columns:1fr}}
+.fw-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fw-item-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink4);margin-bottom:4px}
+.fw-item-text{font-size:13px;color:var(--ink2);line-height:1.55}
+
+
+/* LCA INTERACTIVE */
+.lca-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.lca-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.lca-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.lca-device-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.lca-dt{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink3);transition:var(--t)}
+.lca-dt:hover{border-color:var(--s3)}
+.lca-dt.active{background:var(--s1);color:#fff;border-color:var(--s1)}
+.lca-bars{display:flex;flex-direction:column;gap:10px}
+.lca-bar-row{display:flex;align-items:center;gap:12px}
+.lca-bar-label{min-width:120px;font-size:12px;color:var(--ink3);font-weight:500}
+.lca-bar-track{flex:1;height:26px;background:var(--border);border-radius:6px;overflow:hidden;position:relative}
+.lca-bar-fill{height:100%;border-radius:6px;transition:width 0.5s ease,background 0.3s;display:flex;align-items:center;padding-left:8px}
+.lca-bar-pct{font-size:11px;font-weight:700;color:#fff}
+.lca-bar-val{min-width:80px;font-size:12px;font-weight:700;color:var(--ink2)}
+.lca-total{background:var(--s1);color:#fff;border-radius:8px;padding:10px 16px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
+.lca-total-n{font-family:'Fraunces',serif;font-size:28px;color:var(--s4)}
+
+
+/* GREENWASHING DETECTOR */
+.gw-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.gw-claim{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:var(--t)}
+.gw-claim:hover{border-color:var(--s3)}
+.gw-claim-text{font-size:14px;color:var(--ink);font-style:italic;margin-bottom:8px}
+.gw-claim-tag{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer}
+.gw-reveal{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.65}
+.gw-reveal.show{display:block}
+.gw-real{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.gw-wash{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.gw-mixed{background:var(--amber-l);color:var(--amber-d);border-left:3px solid var(--amber)}
+
+
+/* PROCUREMENT SCORECARD */
+.scorecard-wrap{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:18px}
+.scorecard-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.scorecard-subtitle{font-size:12px;color:var(--ink3);margin-bottom:16px}
+.sc-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.sc-item:last-child{border-bottom:none}
+.sc-item-label{flex:1;font-size:13px;color:var(--ink2)}
+.sc-weight{font-size:11px;color:var(--ink3);min-width:50px;text-align:right;margin-right:8px}
+.sc-stars{display:flex;gap:3px}
+.sc-star{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.sc-star.lit{background:var(--s1);border-color:var(--s1);color:#fff}
+.sc-star:hover{border-color:var(--s3)}
+.scorecard-result{background:var(--s1);color:#fff;border-radius:10px;padding:14px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+.sc-result-n{font-family:'Fraunces',serif;font-size:36px;color:var(--s4)}
+.sc-result-label{font-size:13px;color:rgba(255,255,255,0.7)}
+
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.sc-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--t)}
+.sc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.sc-card.flipped .sc-front{display:none}
+.sc-card.flipped .sc-back{display:flex}
+.sc-front{padding:16px;background:var(--card);min-height:130px}
+.sc-back{display:none;padding:16px;background:var(--s1);flex-direction:column;justify-content:center;min-height:130px}
+.sc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:8px}
+.sc-q{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+.sc-a{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6}
+.sc-hint{font-size:10px;color:var(--ink4);margin-top:8px}
+.sc-back-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--s4);margin-bottom:8px}
+
+
+/* DISCUSS */
+.discuss-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.discuss-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:4px;margin-top:16px}
+.discuss-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.discuss-num{width:26px;height:26px;border-radius:50%;background:var(--s1);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.discuss-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.discuss-time{font-size:11px;color:var(--ink4);margin-top:3px}
+
+
+/* QUIZ */
+.quiz-wrap{margin-top:8px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.qp-dot{flex:1;height:3px;border-radius:2px;background:var(--border)}
+.qp-dot.done{background:var(--s3)}
+.qp-dot.active{background:var(--s2)}
+.q-block{display:none}.q-block.active{display:block}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--s2);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:16px}
+.q-context{background:var(--amber-l);border-left:2px solid var(--amber);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:var(--amber-d);margin-bottom:14px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--ink2);cursor:pointer;transition:var(--t);background:var(--card);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover:not(.locked){border-color:var(--s3);background:var(--s5);color:var(--s1)}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--ink3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{pointer-events:none}
+.opt.locked:not(.correct):not(.wrong){opacity:0.4}
+.q-explain{margin-top:12px;padding:14px 16px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.7;display:none}
+.q-explain.show{display:block}
+.q-explain.good{background:var(--green-l);color:var(--green-d);border-left:3px solid var(--green)}
+.q-explain.bad{background:var(--red-l);color:#6b1010;border-left:3px solid var(--red)}
+.q-next{margin-top:14px;padding:10px 20px;border-radius:20px;background:var(--s1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:var(--t);display:none}
+.q-next:hover{background:var(--s2)}
+.quiz-result{display:none;text-align:center;padding:24px 0 8px}
+.qr-score{font-family:'Fraunces',serif;font-size:56px;color:var(--s1);line-height:1}
+.qr-label{font-size:14px;color:var(--ink3);margin-top:6px}
+.qr-msg{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.6;font-style:italic}
+.qr-retry{margin-top:16px;padding:10px 24px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2);transition:var(--t)}
+.qr-retry:hover{background:var(--s5);color:var(--s1)}
+
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:18px}
+.sum-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sum-icon{font-size:22px;margin-bottom:8px}
+.sum-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sum-text{font-size:12px;color:var(--ink3);line-height:1.6}
+
+
+.foot{max-width:1100px;margin:0 auto;padding:0 24px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-info{font-size:12px;color:var(--ink4)}
+.foot-btns{display:flex;gap:10px}
+.f-btn{padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);transition:var(--t)}
+.f-btn:hover{background:var(--paper)}
+.f-btn.primary{background:var(--s1);color:#fff;border-color:var(--s1)}
+.f-btn.primary:hover{background:var(--s2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+
+<div id="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">CSE407</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Class 8 — Sustainable Hardware</span>
+  </div>
+  <div class="tb-right">
+    <div class="timer-wrap">⏱ <span id="timer">00:00</span><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+    <div class="prog-mini" id="progMini"></div>
+  </div>
+</div>
+
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"><div class="hero-circle hero-c1"></div><div class="hero-circle hero-c2"></div><div class="hero-circle hero-c3"></div></div>
+  <div class="hero-inner">
+    <div class="hero-chips">
+      <span class="chip chip-s">CSE407 Green Computing</span>
+      <span class="chip chip-amber">Class 8 of 22</span>
+      <span class="chip chip-gray">Jun 29, 2025 · Sunday · 1h 30min</span>
+    </div>
+    <h1>Sustainable Hardware —<br><em>Designing &amp; Buying Green from Day One</em></h1>
+    <p class="hero-sub">Certifications, lifecycle assessments, green procurement frameworks, and how to spot greenwashing — everything engineers need to make responsible hardware decisions.</p>
+    <div class="hero-refs">
+      <span class="ref">📘 Velete Ch.8 (all)</span>
+      <span class="ref">🎯 CO1, CO2</span>
+      <span class="ref">🧠 EP1, EP2, EP5</span>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">70–80%</div><div class="h-stat-lbl">Of a device's lifetime carbon footprint from manufacturing — before first use</div></div>
+      <div class="h-stat"><div class="h-stat-num">Energy Star</div><div class="h-stat-lbl">Top 25% of energy efficiency in each product category</div></div>
+      <div class="h-stat"><div class="h-stat-num">TCO</div><div class="h-stat-lbl">Certified — the most comprehensive sustainable electronics standard</div></div>
+      <div class="h-stat"><div class="h-stat-num">$725</div><div class="h-stat-lbl">Annual per-worker cost of inefficient hardware (Gartner) — green pays</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- OUTLINE -->
+<div class="outline-bar">
+  <div class="outline-inner" id="outlineNav">
+    <div class="ol-item active" onclick="goTo(0)"><span class="ol-num">1</span>Recap</div>
+    <div class="ol-item" onclick="goTo(1)"><span class="ol-num">2</span>Why Hardware Matters</div>
+    <div class="ol-item" onclick="goTo(2)"><span class="ol-num">3</span>Certifications Explorer</div>
+    <div class="ol-item" onclick="goTo(3)"><span class="ol-num">4</span>Lifecycle Assessment</div>
+    <div class="ol-item" onclick="goTo(4)"><span class="ol-num">5</span>Greenwashing Detector</div>
+    <div class="ol-item" onclick="goTo(5)"><span class="ol-num">6</span>Procurement Scorecard</div>
+    <div class="ol-item" onclick="goTo(6)"><span class="ol-num">7</span>Engineer's Role</div>
+    <div class="ol-item" onclick="goTo(7)"><span class="ol-num">8</span>Class Quiz</div>
+    <div class="ol-item" onclick="goTo(8)"><span class="ol-num">9</span>Summary</div>
+  </div>
+</div>
+
+
+<div class="layout">
+<div class="content-col">
+
+
+<!-- SEC 1: RECAP -->
+<div class="section open" id="sec0">
+  <div class="sec-head" onclick="toggleSec(0)">
+    <div class="sh-left">
+      <div class="sec-icon si-s">🔄</div>
+      <div class="sec-meta">
+        <div class="sec-label">Opening · 5 min</div>
+        <div class="sec-title">Recap &amp; homework debrief</div>
+        <div class="sec-subtitle">E-waste recap + greenwashing homework review</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Last class we covered what happens to electronics at the <em>end</em> of their life — e-waste, toxic materials, EPR, and the circular economy. Today we go back to the <em>beginning</em>: how to choose, specify, and design hardware sustainably from the very first procurement decision.</p>
+    <div class="three-col">
+      <div class="card-b"><div class="card-b-title">♻️ E-waste recap</div><p>62Mt/year globally, 17% formally recycled. Urban mine worth $57B/year. Circular hierarchy: Reuse → Repair → Refurbish → Remanufacture → Recycle. Bangladesh E-Waste Rules 2021 establish EPR framework.</p></div>
+      <div class="card-b"><div class="card-b-title">🔧 Today's angle</div><p>Sustainable hardware is not just about recycling at the end — 70–80% of a device's total carbon footprint happens during manufacturing, before it's ever switched on. The biggest lever is procurement and design, not disposal.</p></div>
+      <div class="card-b"><div class="card-b-title">🎯 Class goal</div><p>By the end: able to evaluate any hardware product's sustainability credentials, spot greenwashing, apply a procurement scorecard, and specify sustainability requirements for hardware purchases.</p></div>
+    </div>
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Homework Debrief (4 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">What device did you research? What sustainability claim did the manufacturer make? Was it specific and verifiable — or vague greenwashing? Share your assessment with the class.</div><div class="discuss-time">3–4 students share, class reacts — we'll revisit in Section 5</div></div>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(0)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 2: WHY HARDWARE MATTERS -->
+<div class="section" id="sec1">
+  <div class="sec-head" onclick="toggleSec(1)">
+    <div class="sh-left">
+      <div class="sec-icon si-r">⚡</div>
+      <div class="sec-meta">
+        <div class="sec-label">Foundation · 10 min</div>
+        <div class="sec-title">Why hardware choices are the biggest lever</div>
+        <div class="sec-subtitle">Embodied carbon, supply chains, and why "most efficient" ≠ "most sustainable"</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">When most people think "sustainable hardware," they think energy efficiency during use. But for most consumer and enterprise devices, the single largest environmental impact happens long before the device is plugged in — during <strong>manufacturing</strong>.</p>
+
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">70<span class="stat-u">%</span></div><div class="stat-l">Smartphone lifetime carbon from manufacturing (before first use)</div></div>
+      <div class="stat"><div class="stat-n">1,500<span class="stat-u">kWh</span></div><div class="stat-l">Energy to manufacture one laptop — equivalent to 3 years of operating it</div></div>
+      <div class="stat"><div class="stat-n">2×</div><div class="stat-l">Carbon saved by extending a phone from 2 to 4 years vs. replacing with newest model</div></div>
+      <div class="stat"><div class="stat-n">60+</div><div class="stat-l">Elements from the periodic table in a single modern smartphone</div></div>
+    </div>
+
+
+    <div class="callout callout-s">
+      <div class="callout-label">📘 From Velete Ch.8 — Embodied carbon vs. operational carbon</div>
+      <strong>Embodied carbon</strong> is the CO₂e emitted to manufacture, transport, and eventually dispose of a device — it's "locked in" before the device is ever used. <strong>Operational carbon</strong> is emitted while using the device (electricity consumption). For smartphones and laptops, embodied carbon dominates. For servers running 24/7 for years, operational carbon can catch up. This split determines which sustainability strategy matters most for each device type.
+    </div>
+
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">📱 Consumer devices (phone/laptop)</div>
+        <ul>
+          <li>Manufacturing = 70–80% of lifetime footprint</li>
+          <li>Most important action: <strong>extend device lifespan</strong></li>
+          <li>Buying a new phone every year vs. every 4 years: 3× more carbon per year of use</li>
+          <li>Second most important: <strong>choose repairability</strong> (Fairphone scores highest)</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🖥️ Enterprise servers (24/7 operation)</div>
+        <ul>
+          <li>Manufacturing = 20–40% of lifetime footprint (operational catches up)</li>
+          <li>Most important action: <strong>maximize utilization</strong> (virtualization)</li>
+          <li>Second: <strong>choose energy-efficient models</strong> (Energy Star, EPEAT)</li>
+          <li>Third: <strong>power from renewables</strong> (Scope 2 reduction)</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(1)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 3: CERTIFICATIONS EXPLORER -->
+<div class="section" id="sec2">
+  <div class="sec-head" onclick="toggleSec(2)">
+    <div class="sh-left">
+      <div class="sec-icon si-s">🏅</div>
+      <div class="sec-meta">
+        <div class="sec-label">Core Content · 18 min</div>
+        <div class="sec-title">Sustainable hardware certifications</div>
+        <div class="sec-subtitle">The labels that actually mean something — and what each one requires</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 18 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Walk into any electronics store and you'll see dozens of green claims. Most are marketing. A handful represent rigorous third-party verification with real technical requirements. Knowing which is which is a core competency for sustainable procurement.</p>
+
+
+    <div class="fw-tabs">
+      <div class="fw-tab active" onclick="showFW('energystar')">⭐ Energy Star</div>
+      <div class="fw-tab" onclick="showFW('epeat')">🌿 EPEAT</div>
+      <div class="fw-tab" onclick="showFW('tco')">🔬 TCO Certified</div>
+      <div class="fw-tab" onclick="showFW('80plus')">⚡ 80 PLUS</div>
+      <div class="fw-tab" onclick="showFW('rohs')">⚗️ RoHS</div>
+    </div>
+
+
+    <div class="fw-panel active" id="fw-energystar">
+      <div class="fw-header"><div class="fw-badge">Energy Star</div><div><div class="fw-name">Energy Efficiency Labeling Program</div><div class="fw-org">US EPA · Voluntary · Widely recognised globally</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Products must fall in the top 25% of energy efficiency for their category to earn the Energy Star label. Covers computers, monitors, servers, storage, imaging equipment, and data centers. The label means the product uses significantly less electricity than standard models — saving money and reducing Scope 2 emissions over its operational life.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">What it covers</div><div class="fw-item-text">Operational energy efficiency only — how much electricity the product uses during active and idle states. Does NOT cover materials, manufacturing, or end-of-life practices.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Typical saving</div><div class="fw-item-text">Energy Star computers use 30–65% less energy than standard models. For a 200-computer office, this can mean saving $10,000–$30,000/year in electricity.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Procurement relevance</div><div class="fw-item-text">Mandatory for US federal government procurement. Referenced in Bangladesh ICT Policy 2018 for government purchases. Increasingly required by large enterprise buyers globally.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Limitation</div><div class="fw-item-text">Covers only operational energy — a product can be Energy Star certified while being made with toxic materials, having no recycling program, and generating significant manufacturing emissions.</div></div>
+      </div>
+    </div>
+
+
+    <div class="fw-panel" id="fw-epeat">
+      <div class="fw-header"><div class="fw-badge" style="background:#1a7a50">EPEAT</div><div><div class="fw-name">Electronic Product Environmental Assessment Tool</div><div class="fw-org">Green Electronics Council · Voluntary · Gold/Silver/Bronze tiers</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">EPEAT is a comprehensive lifecycle environmental rating system for electronics — going far beyond Energy Star by covering materials, manufacturing, design for end-of-life, and corporate sustainability practices. Products are scored on required and optional criteria to achieve Bronze, Silver, or Gold ratings.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">What it covers</div><div class="fw-item-text">Materials selection (hazardous substance restrictions), product longevity and upgradability, end-of-life management (take-back programs), energy conservation, and corporate performance.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Tiers</div><div class="fw-item-text">Bronze: meets all required criteria. Silver: Bronze + 50% optional criteria. Gold: Bronze + 75% optional criteria. Gold is the benchmark for best-in-class sustainable hardware.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Procurement relevance</div><div class="fw-item-text">Required by US federal agencies for IT purchases. Referenced in EU GPP (Green Public Procurement) criteria. Increasingly written into enterprise sustainability procurement policies worldwide.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh applicability</div><div class="fw-item-text">Not yet formally required in Bangladesh government procurement, but used as a reference standard by foreign-funded projects (World Bank, ADB) and by Bangladeshi companies serving EU/US markets.</div></div>
+      </div>
+    </div>
+
+
+    <div class="fw-panel" id="fw-tco">
+      <div class="fw-header"><div class="fw-badge" style="background:#5e3aa8">TCO Certified</div><div><div class="fw-name">Total Cost of Ownership Certified</div><div class="fw-org">TCO Development (Sweden) · Most comprehensive standard available</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">TCO Certified is widely considered the most rigorous and comprehensive sustainable electronics certification globally. It covers the full product lifecycle and — uniquely — includes <strong>social responsibility criteria</strong> covering labor conditions in manufacturing supply chains, going beyond purely environmental requirements.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Environmental scope</div><div class="fw-item-text">Hazardous substances, energy efficiency, product lifespan design, recycling programs, packaging, and corporate environmental reporting. Annual factory audits by third-party verifiers.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Social scope (unique)</div><div class="fw-item-text">Covers working conditions in factories: minimum wage, working hours, child labor prohibition, forced labor prohibition, health and safety. Supply chain traceability required.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Conflict minerals</div><div class="fw-item-text">Requires documented responsible sourcing of conflict minerals (tin, tantalum, tungsten, gold — 3TG) per OECD Due Diligence Guidance — going beyond US Dodd-Frank Act requirements.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Best for</div><div class="fw-item-text">Organizations wanting the highest assurance level across all sustainability dimensions — particularly relevant for organizations with ESG reporting obligations or those serving European institutional clients.</div></div>
+      </div>
+    </div>
+
+
+    <div class="fw-panel" id="fw-80plus">
+      <div class="fw-header"><div class="fw-badge" style="background:#c97d12">80 PLUS</div><div><div class="fw-name">Power Supply Unit (PSU) Efficiency Certification</div><div class="fw-org">Plug Load Solutions · Focused on PSU energy efficiency</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">80 PLUS certifies that a power supply unit (PSU) converts AC mains power to DC with at least 80% efficiency at 20%, 50%, and 100% load. Higher tiers (Bronze, Silver, Gold, Platinum, Titanium) require progressively higher efficiency — up to 96% for Titanium. This matters because every watt lost in conversion becomes waste heat.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Why PSU efficiency matters</div><div class="fw-item-text">A 500W server with an 80% efficient PSU wastes 100W as heat. The same server with a 93% Gold PSU wastes only 38W — saving 62W continuously, or ~543 kWh/year per server.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Tiers (efficiency at 50% load)</div><div class="fw-item-text">Basic: 80%. Bronze: 85%. Silver: 88%. Gold: 92%. Platinum: 94%. Titanium: 96%. Each tier jump is significant at data-center scale.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Data center relevance</div><div class="fw-item-text">PSU losses compound with PUE: a watt wasted in the PSU becomes ~1.5W wasted in total (the cooling system then has to remove the extra heat too). Gold PSUs are the minimum recommended for data centers.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh tip</div><div class="fw-item-text">Many locally assembled PCs use budget PSUs with 70–75% efficiency. Specifying 80 PLUS Gold for all builds is a low-cost, high-impact green procurement requirement with fast payback in electricity savings.</div></div>
+      </div>
+    </div>
+
+
+    <div class="fw-panel" id="fw-rohs">
+      <div class="fw-header"><div class="fw-badge" style="background:#c0392b">RoHS</div><div><div class="fw-name">Restriction of Hazardous Substances Directive</div><div class="fw-org">European Union · Legally binding for EU market · Adopted widely worldwide</div></div></div>
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px">RoHS restricts ten hazardous substances in electrical and electronic equipment (EEE) sold in the EU. Originally six substances (2003), expanded to ten in RoHS 3 (2019). Compliance is mandatory for any product sold in the EU — making it the most globally influential materials standard in electronics history.</p>
+      <div class="fw-grid">
+        <div class="fw-item"><div class="fw-item-title">Restricted substances</div><div class="fw-item-text">Lead (Pb), Mercury (Hg), Cadmium (Cd), Hexavalent Chromium (Cr VI), Polybrominated Biphenyls (PBB), Polybrominated Diphenyl Ethers (PBDE), plus four phthalates added in RoHS 3.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Maximum concentration values</div><div class="fw-item-text">0.1% by weight for most substances; 0.01% for cadmium. Products exceeding these limits cannot be sold in the EU — forcing global supply chains to comply since manufacturers rarely make EU-only product variants.</div></div>
+        <div class="fw-item"><div class="fw-item-title">Why it matters for recycling</div><div class="fw-item-text">RoHS-compliant devices contain far less toxic material — making informal recycling less hazardous and formal recycling more economically viable (less hazardous waste treatment required).</div></div>
+        <div class="fw-item"><div class="fw-item-title">Bangladesh</div><div class="fw-item-text">Not domestically mandated, but any Bangladeshi exporter to the EU must supply RoHS-compliant products. Bangladesh E-Waste Rules 2021 reference RoHS thresholds as guidance for domestic product safety standards.</div></div>
+      </div>
+    </div>
+
+
+    <div class="callout callout-amber" style="margin-top:16px">
+      <div class="callout-label">💡 Quick reference — which certification to specify when?</div>
+      <strong>For energy efficiency only:</strong> Energy Star + 80 PLUS Gold (PSU). <strong>For full lifecycle sustainability:</strong> EPEAT Gold or TCO Certified. <strong>For hazardous substance compliance:</strong> RoHS (mandatory for EU; best practice everywhere). <strong>For a complete green procurement spec:</strong> require all four — they address different dimensions and don't overlap significantly.
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(2)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 4: LIFECYCLE ASSESSMENT -->
+<div class="section" id="sec3">
+  <div class="sec-head" onclick="toggleSec(3)">
+    <div class="sh-left">
+      <div class="sec-icon si-s">📊</div>
+      <div class="sec-meta">
+        <div class="sec-label">Method · 12 min</div>
+        <div class="sec-title">Lifecycle Assessment for hardware</div>
+        <div class="sec-subtitle">Interactive: compare the carbon footprint of different devices across their full life</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">A <strong>Lifecycle Assessment (LCA)</strong> quantifies the total environmental impact of a product from raw material extraction through manufacturing, use, and disposal — "cradle to grave." For hardware, LCA reveals a surprising result: the phase engineers spend most time optimizing (operational energy) is often NOT the largest contributor to total impact.</p>
+
+
+    <div class="lca-wrap">
+      <div class="lca-title">🔬 Interactive: Device Carbon Footprint by Lifecycle Phase</div>
+      <div class="lca-subtitle">Select a device type to see how its ~total lifetime CO₂e is distributed across lifecycle phases.</div>
+      <div class="lca-device-tabs">
+        <div class="lca-dt active" onclick="showLCA('phone')">📱 Smartphone</div>
+        <div class="lca-dt" onclick="showLCA('laptop')">💻 Laptop</div>
+        <div class="lca-dt" onclick="showLCA('server')">🖥️ Server (3yr)</div>
+        <div class="lca-dt" onclick="showLCA('monitor')">🖥 Monitor</div>
+      </div>
+      <div class="lca-bars" id="lcaBars"></div>
+      <div class="lca-total">
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total lifetime CO₂e</div>
+          <div class="lca-total-n" id="lcaTotal">~70 kg</div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;max-width:260px" id="lcaInsight">For a smartphone, manufacturing is the dominant impact. The single most effective action is extending device lifespan — every extra year of use spreads the manufacturing carbon over more time.</div>
+      </div>
+    </div>
+
+
+    <div class="callout callout-green" style="margin-top:16px">
+      <div class="callout-label">💡 The LCA insight that changes priorities</div>
+      For consumer devices (phones, laptops), the LCA reveals that buying a slightly less energy-efficient model but keeping it twice as long is usually <strong>better</strong> for the environment than buying the most energy-efficient model and replacing it on schedule. Longevity beats efficiency for embodied-carbon-dominant devices.
+    </div>
+
+
+    <div class="two-col">
+      <div class="card-b">
+        <div class="card-b-title">🛠️ Design implications</div>
+        <ul>
+          <li>Prioritize repairability — user-replaceable battery is the #1 longevity feature</li>
+          <li>Modular design — upgrade CPU/RAM without replacing whole unit</li>
+          <li>Software support commitment — minimum 5 years of OS updates</li>
+          <li>Durable materials — scratch/drop resistance reduces cosmetic-damage-driven replacement</li>
+          <li>Spare parts availability guaranteed for 7–10 years (EU Right to Repair requirement)</li>
+        </ul>
+      </div>
+      <div class="card-b">
+        <div class="card-b-title">🛒 Procurement implications</div>
+        <ul>
+          <li>Specify minimum 4-year refresh cycle (not 2–3 year)</li>
+          <li>Require manufacturer sustainability report with per-product LCA data</li>
+          <li>Evaluate total cost of ownership (TCO) including energy over 4 years</li>
+          <li>Prefer EPEAT Gold / TCO Certified as baseline</li>
+          <li>Consider certified refurbished over new for non-critical workloads</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(3)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 5: GREENWASHING DETECTOR -->
+<div class="section" id="sec4">
+  <div class="sec-head" onclick="toggleSec(4)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">🔍</div>
+      <div class="sec-meta">
+        <div class="sec-label">Critical Thinking · 12 min</div>
+        <div class="sec-title">Greenwashing detector</div>
+        <div class="sec-subtitle">Tap each claim to analyze whether it's genuine sustainability or marketing spin</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 12 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose"><strong>Greenwashing</strong> is the practice of making misleading or exaggerated environmental claims about a product or company. In the hardware industry, it ranges from outright false claims to technically true but deeply misleading statements. Engineers specifying hardware must be able to identify and reject greenwashed claims.</p>
+
+
+    <div class="callout callout-amber">
+      <div class="callout-label">🚩 The 7 sins of greenwashing (TerraChoice)</div>
+      Hidden trade-off (one green attribute hides other harms) · No proof (unverifiable claim) · Vagueness ("eco-friendly") · Irrelevance (true but meaningless) · Lesser of two evils · Fibbing (false claim) · False labels (fake certification logos). Tap each claim below to see which sin applies.
+    </div>
+
+
+    <div class="gw-wrap">
+      <div class="calc-title" style="margin-bottom:12px">🧪 Claim Analysis — tap each claim to reveal the verdict</div>
+
+
+      <div class="gw-claim" onclick="toggleGW(this)">
+        <div class="gw-claim-text">"Our laptop uses 40% less energy than the previous model."</div>
+        <div class="gw-claim-tag" style="background:var(--s5);color:var(--s1)">⬇ Tap to analyze</div>
+        <div class="gw-reveal gw-mixed">⚠️ <strong>Mixed — potentially misleading.</strong> This <em>could</em> be genuine if it means 40% less energy during use AND if the previous model was the market standard. But if the previous model was unusually energy-hungry, the new one might still be below average. Ask: compared to <em>what baseline?</em> Is there a third-party certification (Energy Star) confirming the claim? What happened to manufacturing emissions? A good sustainability claim is specific, verifiable, and puts savings in context.</div>
+      </div>
+
+
+      <div class="gw-claim" onclick="toggleGW(this)">
+        <div class="gw-claim-text">"Our servers are built with eco-friendly materials."</div>
+        <div class="gw-claim-tag" style="background:var(--s5);color:var(--s1)">⬇ Tap to analyze</div>
+        <div class="gw-reveal gw-wash">❌ <strong>Greenwashing — vagueness sin.</strong> "Eco-friendly" is meaningless without specification. What does it mean? RoHS compliant? Recycled content? Sustainably sourced? Recyclable at end of life? Any company can print "eco-friendly" with zero verification. Demand specific, measurable, third-party-verified claims. If a company can't tell you exactly what "eco-friendly" means in numbers or certifications, assume it means nothing.</div>
+      </div>
+
+
+      <div class="gw-claim" onclick="toggleGW(this)">
+        <div class="gw-claim-text">"This monitor is Energy Star certified and uses 35% less energy — saving you $28/year in electricity."</div>
+        <div class="gw-claim-tag" style="background:var(--s5);color:var(--s1)">⬇ Tap to analyze</div>
+        <div class="gw-reveal gw-real">✅ <strong>Genuine — specific, verifiable, quantified.</strong> Energy Star is a real third-party certification. "35% less" is a specific measurable claim. "$28/year" is a calculated financial benefit the buyer can verify against their electricity rate. This is what good sustainability communication looks like: specific standard + specific metric + specific benefit in user-relevant terms. Still worth asking: what about manufacturing emissions and end-of-life? But the operational claim itself is credible.</div>
+      </div>
+
+
+      <div class="gw-claim" onclick="toggleGW(this)">
+        <div class="gw-claim-text">"Our company is committed to being carbon neutral by 2040."</div>
+        <div class="gw-claim-tag" style="background:var(--s5);color:var(--s1)">⬇ Tap to analyze</div>
+        <div class="gw-reveal gw-mixed">⚠️ <strong>Insufficient without details.</strong> A commitment 15+ years away with no interim milestones, no Scope 3 inclusion, and no third-party accountability is easy to make and hard to hold companies to. Key questions: Does "carbon neutral" include Scope 3 (manufacturing, supply chain, product use)? What are the 2025 and 2030 interim targets? Is this verified by Science Based Targets initiative (SBTi)? Is offsetting (planting trees) doing most of the work instead of actual emission reduction? A credible net-zero commitment answers all of these.</div>
+      </div>
+
+
+      <div class="gw-claim" onclick="toggleGW(this)">
+        <div class="gw-claim-text">"This printer is CFC-free!" (Chlorofluorocarbons have been banned globally since 1987.)</div>
+        <div class="gw-claim-tag" style="background:var(--s5);color:var(--s1)">⬇ Tap to analyze</div>
+        <div class="gw-reveal gw-wash">❌ <strong>Greenwashing — irrelevance sin.</strong> This is technically true but completely meaningless. CFCs have been banned by the Montreal Protocol since 1987 — <em>every</em> printer is CFC-free. This claim creates a false impression of green virtue while saying nothing meaningful about the product's actual environmental performance. Classic "lesser compliance masquerading as achievement."</div>
+      </div>
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(4)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 6: PROCUREMENT SCORECARD -->
+<div class="section" id="sec5">
+  <div class="sec-head" onclick="toggleSec(5)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">📋</div>
+      <div class="sec-meta">
+        <div class="sec-label">Applied Tool · 10 min</div>
+        <div class="sec-title">Green hardware procurement scorecard</div>
+        <div class="sec-subtitle">Rate any hardware product across 6 sustainability dimensions — interactive</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span><span class="sc sc-co">CO2</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">When your organization needs to choose between competing hardware products, use this scorecard to evaluate sustainability systematically. Rate each dimension 1–3 stars based on evidence — not marketing claims.</p>
+
+
+    <div class="scorecard-wrap">
+      <div class="scorecard-title">🛒 Hardware Sustainability Scorecard — rate 1–3 stars per dimension</div>
+      <div class="scorecard-subtitle">1★ = No evidence / poor · 2★ = Partial / unverified · 3★ = Strong evidence / certified</div>
+      <div id="scorecardItems"></div>
+      <div class="scorecard-result">
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:2px">Total score</div>
+          <div class="sc-result-n" id="scTotal">0 / 18</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sc-result-label" id="scLabel">Rate all dimensions to see verdict</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px" id="scGuide">14–18: Excellent · 9–13: Acceptable · &lt;9: Avoid</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="scenario-grid">
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Procurement scenario</div><div class="sc-q">Product A costs $400 (no certifications, 3-year lifespan). Product B costs $520 (EPEAT Gold, Energy Star, 5-year lifespan, 80 PLUS Gold PSU). Which is the better procurement?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Product B. Total cost of ownership: Product A at $400 × 5/3 years = $667 equivalent over 5 years. Product B = $520 over 5 years. Plus: Energy Star saves ~$30/year × 5 = $150. Product B effectively costs $370 over 5 years vs. $667 for Product A — nearly half, while being significantly greener. Green procurement is usually better value, not worse.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Specification scenario</div><div class="sc-q">You're writing the IT hardware specification for a new 300-person EWU computer lab. List 4 specific sustainability requirements you would include in the tender document.</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">1. Energy Star certified (or equivalent, top 25% efficiency). 2. EPEAT Silver or Gold registered. 3. PSU must be 80 PLUS Gold or higher. 4. Minimum 5-year warranty with spare parts availability guaranteed. Bonus: RoHS compliant, take-back program at end of life, recycled content ≥10% in chassis.</div></div>
+      </div>
+      <div class="sc-card" onclick="flipCard(this)">
+        <div class="sc-front"><div class="sc-cat">Bangladesh scenario</div><div class="sc-q">A local PC assembler offers laptops without any certifications at 30% below market price. Should EWU's IT department buy them for the new lab?</div><div class="sc-hint">Tap to see answer</div></div>
+        <div class="sc-back"><div class="sc-back-lbl">Answer</div><div class="sc-a">Likely no. Without Energy Star or equivalent: higher electricity bill over 5 years offsets much of the price saving. Without RoHS: toxic materials create disposal liability. Without warranty: higher replacement rate. Without EPEAT/TCO: no accountability for supply chain. The 30% upfront saving is typically eaten by operational costs, shorter lifespan, and disposal costs. Request sustainability documentation before accepting the lower price as a genuine saving.</div></div>
+      </div>
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(5)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 7: ENGINEER'S ROLE -->
+<div class="section" id="sec6">
+  <div class="sec-head" onclick="toggleSec(6)">
+    <div class="sh-left">
+      <div class="sec-icon si-p">🛠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Practical · 8 min</div>
+        <div class="sec-title">The engineer's role in sustainable hardware</div>
+        <div class="sec-subtitle">Design, specify, procure, and advocate — four levers every engineer controls</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 8 min</span><span class="sc sc-co">CO1</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <p class="prose">Whether you're a product engineer designing hardware, a systems engineer specifying infrastructure, a procurement officer buying equipment, or a software engineer running on hardware — each role has specific sustainable hardware levers.</p>
+
+
+    <ul class="big-list">
+      <li><div class="bl-icon">🔧</div><div><strong>Product engineers (hardware designers)</strong> — Choose RoHS-compliant materials. Design for disassembly. Make the battery user-replaceable. Minimize the number of distinct material types. Commit to spare parts availability. Use recycled content where structurally valid. Your material and structural decisions at design stage lock in most of the product's lifetime environmental impact.</div></li>
+      <li><div class="bl-icon">🖥️</div><div><strong>Systems/infrastructure engineers</strong> — Specify Energy Star, EPEAT, 80 PLUS Gold in procurement requirements. Maximize virtualization before adding hardware. Choose servers with high utilization capability. Design for longest possible hardware refresh cycle with upgrade paths. Document asset lifecycle for Scope 3 reporting.</div></li>
+      <li><div class="bl-icon">💰</div><div><strong>Procurement officers / IT managers</strong> — Write sustainability requirements into tender documents (not just price). Evaluate total cost of ownership (TCO) over 4–5 years, not just purchase price. Maintain asset registers with acquisition dates to trigger certified disposal — not casual binning. Prefer certified refurbished for non-critical use cases.</div></li>
+      <li><div class="bl-icon">💻</div><div><strong>Software engineers</strong> — Efficient code = less hardware needed = fewer devices = less manufacturing carbon. A software team that cuts CPU usage by 30% may defer a hardware upgrade cycle by 2 years — avoiding millions in embodied carbon across a large fleet. Sustainability is a software quality metric, not just hardware.</div></li>
+    </ul>
+
+
+    <div class="callout callout-s">
+      <div class="callout-label">📘 From Velete Ch.8 — The procurement multiplier</div>
+      A single procurement officer at a large organization signing one hardware tender can determine the environmental performance of thousands of devices over 4–5 years. Their specification choices multiply across the entire fleet. Writing "EPEAT Gold required" into a 500-laptop tender has more environmental impact than any individual action any of those 500 laptop users will ever take — including recycling them at end of life.
+    </div>
+
+
+    <div class="discuss-list">
+      <div class="discuss-label">🗣 Discussion (3 min)</div>
+      <div class="discuss-item">
+        <div class="discuss-num">?</div>
+        <div><div class="discuss-text">Look at the device you're using in class right now. Does it have Energy Star? EPEAT? TCO Certified? Can you find a per-product LCA on the manufacturer's website? How does the homework claim you found hold up against today's framework?</div><div class="discuss-time">Individual reflection → brief class share</div></div>
+      </div>
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(6)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 8: QUIZ -->
+<div class="section" id="sec7">
+  <div class="sec-head" onclick="toggleSec(7)">
+    <div class="sh-left">
+      <div class="sec-icon si-a">✏️</div>
+      <div class="sec-meta">
+        <div class="sec-label">Assessment · 10 min</div>
+        <div class="sec-title">Class quiz — sustainable hardware</div>
+        <div class="sec-subtitle">6 questions covering today's content</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 10 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-wrap">
+      <div class="quiz-progress" id="qprogress"></div>
+      <div id="qContainer"></div>
+      <div class="quiz-result" id="qResult">
+        <div class="qr-score" id="qScore"></div>
+        <div class="qr-label">out of 6</div>
+        <div class="qr-msg" id="qMsg"></div>
+        <button class="qr-retry" onclick="resetQuiz()">↺ Try again</button>
+      </div>
+    </div>
+    <button class="mark-done-btn" onclick="markDone(7)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+<!-- SEC 9: SUMMARY -->
+<div class="section" id="sec8">
+  <div class="sec-head" onclick="toggleSec(8)">
+    <div class="sh-left">
+      <div class="sec-icon si-g">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">Wrap-up · 5 min</div>
+        <div class="sec-title">Summary &amp; next steps</div>
+        <div class="sec-subtitle">Key takeaways and Class 9 preview</div>
+      </div>
+    </div>
+    <div class="sec-chips"><span class="sc sc-time">⏱ 5 min</span></div>
+    <div class="caret">▼</div>
+  </div>
+  <div class="sec-body">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-icon">🏭</div><div class="sum-title">Manufacturing dominates</div><div class="sum-text">70–80% of a smartphone's lifetime carbon happens before first use. Longevity and repairability matter more than operational efficiency for embodied-carbon-dominant devices.</div></div>
+      <div class="sum-card"><div class="sum-icon">🏅</div><div class="sum-title">5 key certifications</div><div class="sum-text">Energy Star (energy efficiency) · EPEAT Gold (full lifecycle) · TCO Certified (most comprehensive + social) · 80 PLUS Gold (PSU) · RoHS (hazardous substances). Each covers different dimensions.</div></div>
+      <div class="sum-card"><div class="sum-icon">📊</div><div class="sum-title">LCA reveals surprises</div><div class="sum-text">Lifecycle Assessment shows that keeping a device 2× longer often does more for the environment than replacing it with a more energy-efficient model.</div></div>
+      <div class="sum-card"><div class="sum-icon">🔍</div><div class="sum-title">Spot greenwashing</div><div class="sum-text">7 sins: hidden trade-off, no proof, vagueness, irrelevance, lesser of two evils, fibbing, false labels. Demand specific, measurable, third-party-verified claims.</div></div>
+      <div class="sum-card"><div class="sum-icon">📋</div><div class="sum-title">Procurement scorecard</div><div class="sum-text">Rate on: energy cert, lifecycle cert, hazardous sub compliance, repairability, recycled content, and take-back. TCO beats sticker price as decision criterion.</div></div>
+      <div class="sum-card"><div class="sum-icon">✍️</div><div class="sum-title">Write it into tenders</div><div class="sum-text">A procurement officer specifying EPEAT Gold for 500 laptops has more environmental impact than any individual user action. Specification is the highest-leverage moment.</div></div>
+    </div>
+
+
+    <div class="callout callout-s" style="margin-top:20px">
+      <div class="callout-label">📚 Next Class — Class 9 (Jul 2, Wednesday)</div>
+      <strong>Technology Company Case Studies.</strong> We shift to real-world examples: how do Apple, Google, Microsoft, and major tech companies actually approach sustainability? What can we learn — and critique — from their approaches? Guest lecture from industry CXO. Read: <em>Velete Ch.9 (all)</em> and <em>Lamb Ch.11 (all)</em> before class.
+    </div>
+
+
+    <div class="callout callout-amber" style="margin-top:12px">
+      <div class="callout-label">📝 Before Class 9</div>
+      Pick one major tech company (Apple, Google, Samsung, Microsoft, or a local telco/IT company) and find their latest sustainability or ESG report. Note: (1) their most impressive specific claim with evidence, and (2) one area where their reporting seems vague or incomplete. We'll compare company approaches in Class 9.
+    </div>
+
+
+    <button class="mark-done-btn" onclick="markDone(8)">✓ Mark section done</button>
+  </div>
+</div>
+
+
+</div><!-- /content-col -->
+
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">Class Outline</div>
+    <div id="sbList"></div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sbFill" style="width:0%"></div></div>
+    <div class="sb-prog-label"><span id="sbDoneCount">0 / 9 done</span><span id="sbTimeLeft">~90 min</span></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">My Notes</div>
+    <textarea class="note-area" id="noteArea" placeholder="Type your notes here..."></textarea>
+    <button class="save-note" onclick="saveNote()">💾 Save notes</button>
+    <div id="noteSaved" style="font-size:11px;color:var(--s2);margin-top:6px;display:none">✓ Saved!</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Book References</div>
+    <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+      <div><strong style="color:var(--ink)">Velete — Green IT</strong><br>Chapter 8: all</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Certifications Quick Ref</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:2">
+      <div>⭐ Energy Star — operational efficiency</div>
+      <div>🌿 EPEAT Gold — full lifecycle</div>
+      <div>🔬 TCO Certified — most complete</div>
+      <div>⚡ 80 PLUS Gold — PSU efficiency</div>
+      <div>⚗️ RoHS — hazardous substances</div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Greenwashing Sins</div>
+    <div style="font-size:11px;color:var(--ink3);line-height:1.9">
+      <div>1. Hidden trade-off</div>
+      <div>2. No proof</div>
+      <div>3. Vagueness</div>
+      <div>4. Irrelevance</div>
+      <div>5. Lesser of two evils</div>
+      <div>6. Fibbing</div>
+      <div>7. False labels</div>
+    </div>
+  </div>
+</div>
+
+
+</div><!-- /layout -->
+
+
+<div class="foot">
+  <div class="foot-info">CSE407 Green Computing · East West University · Summer 2025</div>
+  <div class="foot-btns">
+    <button class="f-btn" onclick="alert('Class 7: Recycling & E-Waste\nDate: Jun 25, 2025 (Wednesday)')">← Class 7</button>
+    <button class="f-btn primary" onclick="alert('Class 9: Technology Company Case Studies\nDate: Jul 2, 2025 (Wednesday)\nReading: Velete Ch.9 | Lamb Ch.11')">Class 9: Case Studies →</button>
+  </div>
+</div>
+
+
+<script>
+const SECTIONS=[
+  {title:'Recap & homework review',time:'5 min'},
+  {title:'Why hardware choices matter',time:'10 min'},
+  {title:'Certifications explorer',time:'18 min'},
+  {title:'Lifecycle Assessment (LCA)',time:'12 min'},
+  {title:'Greenwashing detector',time:'12 min'},
+  {title:'Procurement scorecard',time:'10 min'},
+  {title:"Engineer's role",time:'8 min'},
+  {title:'Class quiz',time:'10 min'},
+  {title:'Summary & next steps',time:'5 min'},
+];
+
+
+const QUIZ=[
+  {q:'A smartphone manufacturer claims their new model has "70% lower carbon footprint." However, 75% of that reduction comes from a one-time offset program (planting trees), not from emission reductions. Which greenwashing sin does this represent?',ctx:'',opts:['False labels — they have no real certification','Vagueness — the 70% figure is not specific enough','Hidden trade-off — they achieved the number but through offsetting rather than genuine operational reduction — masking that the actual product emissions barely changed','No proof — unverifiable claim'],ans:2,ex:'This is the "hidden trade-off" sin: the headline number (70% lower footprint) is technically achievable through offsetting, but hides the fact that the product itself is not significantly greener. Real carbon reduction means actual emissions prevented — not offset via tree planting which has its own verification problems. Credible claims specify what percentage is actual reduction vs. offset, use Science Based Targets (SBTi) methodology, and include Scope 3 in the accounting.'},
+  {q:'For a smartphone used for 3 years, approximately what percentage of its total lifetime carbon footprint comes from manufacturing (before the user ever turns it on)?',ctx:'',opts:['About 10–20% — operational energy dominates over 3 years','About 30–40% — roughly equal split between manufacturing and use','About 70–80% — manufacturing is the dominant phase for short-lifespan consumer devices','100% — phones use no electricity during operation'],ans:2,ex:'For smartphones, manufacturing (including raw material extraction, component fabrication, and assembly) accounts for approximately 70–80% of the total lifetime CO₂e footprint. This is because phones have relatively low operational power (charging uses ~3–5W) but are replaced frequently (average 2.5 years) and require energy- and material-intensive manufacturing. This is why extending device lifespan is the single most impactful individual sustainability action for smartphones — it spreads the fixed manufacturing carbon over more years of use.'},
+  {q:'Which certification evaluates the most comprehensive set of sustainability criteria — including social responsibility (labor conditions in factories) alongside environmental performance?',ctx:'',opts:['Energy Star — because it covers energy efficiency most rigorously','RoHS — because it restricts the most dangerous substances','EPEAT Gold — because it has the most product categories','TCO Certified — uniquely covers energy, materials, social labor conditions, and supply chain traceability in a single standard'],ans:3,ex:'TCO Certified is the most comprehensive sustainable electronics certification, uniquely incorporating social responsibility criteria — factory working conditions, wages, child labor prohibition, and supply chain traceability for conflict minerals — alongside environmental requirements (energy efficiency, hazardous substances, end-of-life). Energy Star covers only operational energy. RoHS covers only hazardous substance restrictions. EPEAT covers lifecycle environmental criteria but does not include labor/social criteria in its core requirements.'},
+  {q:'A PSU rated 80 PLUS Gold achieves 92% efficiency at 50% load. A basic PSU achieves 78% efficiency. For a 400W server running at 50% load (200W IT load), how much more power does the basic PSU waste compared to the Gold unit?',ctx:'Calculate: Power drawn from wall = IT load ÷ PSU efficiency. Wasted power = Power from wall − IT load.',opts:['About 5W extra','About 30W extra — Gold PSU draws ~217W, basic PSU draws ~256W from the wall, a 39W difference','The difference is negligible — PSU efficiency barely matters at this scale','Basic PSU wastes less because it runs cooler'],ans:1,ex:'Gold PSU: 200W ÷ 0.92 = 217W from wall. Basic PSU: 200W ÷ 0.78 = 256W from wall. Difference = 39W wasted continuously. At 8,760 hours/year, that\'s 342 kWh/year per server. For a 100-server data center: 34,200 kWh/year saved — at $0.10/kWh that\'s $3,420/year in electricity savings, plus reduced heat load on cooling. Specifying 80 PLUS Gold is a small upfront cost with a fast payback.'},
+  {q:'An organization is choosing between Product A (no certifications, $350, 3-year expected lifespan) and Product B (EPEAT Gold, Energy Star, $480, 5-year expected lifespan, Energy Star saves $25/year). Which is the better total cost of ownership (TCO) choice?',ctx:'Normalize to 5-year TCO: Product A cost over 5 years = (5/3) × $350 (buy 1.67 units). Product B cost over 5 years = $480 − (5 × $25 energy saving).',opts:['Product A — it is $130 cheaper upfront','Product B — 5-year normalized TCO is significantly lower, plus sustainability benefits','They are equivalent over 5 years','Product A — certifications add no financial value'],ans:1,ex:'Product A 5-year TCO: $350 × (5/3) = $583 (must buy 1.67 units to cover 5 years). Product B 5-year TCO: $480 − $125 energy savings = $355. Product B costs $355 vs $583 for Product A over the same 5-year period — a saving of $228 per unit, while being certified sustainable. This demonstrates the fundamental principle: TCO analysis almost always makes green hardware the financially rational choice, even when it costs more upfront.'},
+  {q:'A laptop manufacturer prints "Made with 20% recycled aluminum" on the box. How should a sustainability-minded engineer evaluate this claim?',ctx:'',opts:['Accept it as a strong green credential — 20% recycled content is excellent','Reject it entirely — any recycled content claim is greenwashing','Evaluate carefully: verify the percentage applies to the whole product (not just one component), check if it\'s third-party verified, and consider it as one positive factor among many rather than the whole picture','Only accept the claim if the percentage is 100% recycled'],ans:2,ex:'20% recycled content in the aluminum chassis is a real improvement over 0% — aluminum recycling uses ~95% less energy than primary production. However, proper evaluation means: (1) Does "20% recycled" apply to the chassis, the whole device, or just one small part? Selective framing can make a small gain look bigger. (2) Is this independently verified or self-reported? Third-party verification (e.g., through EPEAT) is more credible. (3) What about the other 80%? And the battery, screen, PCB? A good claim answers all these. Treat it as a positive data point, not a pass/fail sustainability verdict.'},
+];
+
+
+const SCORECARD_ITEMS=[
+  {label:'Energy efficiency certification (Energy Star / equivalent)',weight:'2×'},
+  {label:'Full lifecycle certification (EPEAT Gold / TCO Certified)',weight:'2×'},
+  {label:'Hazardous substance compliance (RoHS)',weight:'1×'},
+  {label:'Repairability & longevity design (user-replaceable battery, spare parts)',weight:'2×'},
+  {label:'Recycled material content (documented %)',weight:'1×'},
+  {label:'End-of-life take-back program (manufacturer)',weight:'1×'},
+];
+
+
+const LCA_DATA={
+  phone:{label:'Smartphone (2yr life, ~70 kg CO₂e total)',total:'~70 kg CO₂e',insight:'Manufacturing dominates at 75%. Extending life to 4 years halves per-year carbon. Repairability is the key design lever.',phases:[{label:'Manufacturing',pct:75,color:'#c0392b',val:'52 kg'},{label:'Use phase (charging)',pct:17,color:'#3a8fd4',val:'12 kg'},{label:'Transport & packaging',pct:5,color:'#c97d12',val:'3.5 kg'},{label:'End of life',pct:3,color:'#1a7a50',val:'2 kg'}]},
+  laptop:{label:'Laptop (4yr life, ~300 kg CO₂e total)',total:'~300 kg CO₂e',insight:'Manufacturing is still 70% for laptops. Operational energy is more significant than for phones due to higher power draw. Both longevity AND energy efficiency matter.',phases:[{label:'Manufacturing',pct:70,color:'#c0392b',val:'210 kg'},{label:'Use phase (AC power)',pct:22,color:'#3a8fd4',val:'66 kg'},{label:'Transport & packaging',pct:5,color:'#c97d12',val:'15 kg'},{label:'End of life',pct:3,color:'#1a7a50',val:'9 kg'}]},
+  server:{label:'Server (3yr constant use, ~3,000 kg CO₂e total)',total:'~3,000 kg CO₂e',insight:'For servers running 24/7, operational energy catches up significantly. Both manufacturing footprint (high-end CPUs) and operational efficiency matter equally.',phases:[{label:'Manufacturing',pct:35,color:'#c0392b',val:'1,050 kg'},{label:'Use phase (24/7 operation)',pct:58,color:'#3a8fd4',val:'1,740 kg'},{label:'Transport & packaging',pct:4,color:'#c97d12',val:'120 kg'},{label:'End of life',pct:3,color:'#1a7a50',val:'90 kg'}]},
+  monitor:{label:'Monitor (5yr life, ~400 kg CO₂e total)',total:'~400 kg CO₂e',insight:'Monitor manufacturing (panel, backlight, chassis) is significant. LED vs. CCFL backlighting made a major difference. OLED next generation will shift the balance further.',phases:[{label:'Manufacturing',pct:60,color:'#c0392b',val:'240 kg'},{label:'Use phase',pct:33,color:'#3a8fd4',val:'132 kg'},{label:'Transport & packaging',pct:5,color:'#c97d12',val:'20 kg'},{label:'End of life',pct:2,color:'#1a7a50',val:'8 kg'}]},
+};
+
+
+const done=new Array(9).fill(false);
+let timerInterval=null,timerSecs=0,timerRunning=false,score=0;
+const scStars=new Array(6).fill(0);
+
+
+function init(){buildSidebar();buildQuiz();buildProgDots();buildScorecard();loadNotes();showLCA('phone')}
+
+
+function buildSidebar(){document.getElementById('sbList').innerHTML=SECTIONS.map((s,i)=>`<div class="sb-item" id="sb${i}" onclick="goTo(${i})"><div class="sb-dot"></div><div><div class="sb-item-title">${s.title}</div><div class="sb-time">${s.time}</div></div></div>`).join('')}
+function buildProgDots(){document.getElementById('progMini').innerHTML=SECTIONS.map((_,i)=>`<div class="prog-dot" id="pd${i}" onclick="goTo(${i})"></div>`).join('')}
+
+
+function buildQuiz(){
+  document.getElementById('qprogress').innerHTML=QUIZ.map((_,i)=>`<div class="qp-dot" id="qpd${i}"></div>`).join('');
+  document.getElementById('qpd0').classList.add('active');
+  document.getElementById('qContainer').innerHTML=QUIZ.map((q,qi)=>`
+    <div class="q-block ${qi===0?'active':''}" id="qb${qi}">
+      <div class="q-num">Question ${qi+1} of ${QUIZ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.ctx?`<div class="q-context">${q.ctx}</div>`:''}
+      <div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<div class="opt" onclick="answerQ(${qi},${oi})"><span class="opt-letter">${'ABCD'[oi]}</span>${o}</div>`).join('')}</div>
+      <div class="q-explain" id="exp${qi}"></div>
+      <button class="q-next" id="qnext${qi}" onclick="nextQ(${qi})">${qi<QUIZ.length-1?'Next question →':'See results'}</button>
+    </div>`).join('');
+}
+
+
+function buildScorecard(){
+  document.getElementById('scorecardItems').innerHTML=SCORECARD_ITEMS.map((item,i)=>`
+    <div class="sc-item">
+      <div class="sc-item-label">${item.label}</div>
+      <div class="sc-weight">${item.weight}</div>
+      <div class="sc-stars" id="stars${i}">
+        <div class="sc-star" onclick="rateStar(${i},1)">1</div>
+        <div class="sc-star" onclick="rateStar(${i},2)">2</div>
+        <div class="sc-star" onclick="rateStar(${i},3)">3</div>
+      </div>
+    </div>`).join('');
+}
+
+
+function rateStar(itemIdx,val){
+  scStars[itemIdx]=val;
+  const stars=document.getElementById('stars'+itemIdx).querySelectorAll('.sc-star');
+  stars.forEach((s,i)=>s.classList.toggle('lit',i<val));
+  updateScorecard();
+}
+
+
+function updateScorecard(){
+  const total=scStars.reduce((a,b)=>a+b,0);
+  const max=18;
+  document.getElementById('scTotal').textContent=total+' / '+max;
+  let label='Rate all dimensions to see verdict';
+  if(scStars.every(s=>s>0)){
+    if(total>=14)label='✅ Excellent — strong green credentials';
+    else if(total>=9)label='⚠️ Acceptable — some gaps to address';
+    else label='❌ Avoid — significant sustainability concerns';
+  }
+  document.getElementById('scLabel').textContent=label;
+}
+
+
+function showLCA(device){
+  document.querySelectorAll('.lca-dt').forEach((t,i)=>t.classList.toggle('active',['phone','laptop','server','monitor'][i]===device));
+  const data=LCA_DATA[device];
+  document.getElementById('lcaTotal').textContent=data.total;
+  document.getElementById('lcaInsight').textContent=data.insight;
+  document.getElementById('lcaBars').innerHTML=data.phases.map(p=>`
+    <div class="lca-bar-row">
+      <div class="lca-bar-label">${p.label}</div>
+      <div class="lca-bar-track">
+        <div class="lca-bar-fill" style="width:${p.pct}%;background:${p.color}">
+          <span class="lca-bar-pct">${p.pct}%</span>
+        </div>
+      </div>
+      <div class="lca-bar-val">${p.val}</div>
+    </div>`).join('');
+}
+
+
+function toggleGW(el){
+  const reveal=el.querySelector('.gw-reveal');
+  const wasOpen=reveal.classList.contains('show');
+  document.querySelectorAll('.gw-reveal').forEach(r=>r.classList.remove('show'));
+  if(!wasOpen)reveal.classList.add('show');
+}
+
+
+function showFW(id){
+  const order=['energystar','epeat','tco','80plus','rohs'];
+  document.querySelectorAll('.fw-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===id));
+  document.querySelectorAll('.fw-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('fw-'+id).classList.add('active');
+}
+function flipCard(el){el.classList.toggle('flipped')}
+
+
+function toggleSec(i){document.getElementById('sec'+i).classList.toggle('open');updateNav()}
+function goTo(i){const s=document.getElementById('sec'+i);if(!s.classList.contains('open'))s.classList.add('open');s.scrollIntoView({behavior:'smooth',block:'start'});updateNav();document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i))}
+function updateNav(){document.querySelectorAll('.section').forEach((s,i)=>{const sb=document.getElementById('sb'+i);if(sb)sb.classList.toggle('active',s.classList.contains('open'))})}
+
+
+function markDone(i){
+  done[i]=!done[i];
+  const sec=document.getElementById('sec'+i);
+  sec.classList.toggle('done',done[i]);
+  sec.querySelector('.mark-done-btn').textContent=done[i]?'✓ Done!':'✓ Mark section done';
+  const sb=document.getElementById('sb'+i);
+  if(sb){sb.classList.toggle('done',done[i]);sb.querySelector('.sb-dot').style.background=done[i]?'var(--s3)':''}
+  const pd=document.getElementById('pd'+i);
+  if(pd)pd.classList.toggle('done',done[i]);
+  const count=done.filter(Boolean).length;
+  document.getElementById('sbFill').style.width=(count/9*100)+'%';
+  document.getElementById('sbDoneCount').textContent=count+' / 9 done';
+}
+
+
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerBtn').textContent='Resume'}
+  else{timerRunning=true;document.getElementById('timerBtn').textContent='Pause';timerInterval=setInterval(()=>{timerSecs++;const m=String(Math.floor(timerSecs/60)).padStart(2,'0'),s=String(timerSecs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(timerSecs>=90*60)document.getElementById('timer').style.color='var(--red)';else if(timerSecs>=75*60)document.getElementById('timer').style.color='var(--amber)'},1000)}
+}
+
+
+function answerQ(qi,oi){
+  const q=QUIZ[qi];
+  const opts=document.getElementById('opts'+qi).querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('locked'));
+  opts[oi].classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)opts[q.ans].classList.add('correct');
+  if(oi===q.ans)score++;
+  const exp=document.getElementById('exp'+qi);
+  exp.textContent=(oi===q.ans?'✓ Correct! ':'✗ Not quite. ')+q.ex;
+  exp.className='q-explain show '+(oi===q.ans?'good':'bad');
+  document.getElementById('qnext'+qi).style.display='inline-block';
+}
+function nextQ(qi){
+  document.getElementById('qb'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.remove('active');
+  document.getElementById('qpd'+qi).classList.add('done');
+  if(qi<QUIZ.length-1){document.getElementById('qb'+(qi+1)).classList.add('active');document.getElementById('qpd'+(qi+1)).classList.add('active')}
+  else{
+    document.getElementById('qResult').style.display='block';
+    const msgs=['Review certifications and LCA basics — try again.','Good start — focus on greenwashing and TCO analysis.','Decent! Review the certification comparisons carefully.','Solid — check any wrong answers carefully.','Strong performance! Well prepared on sustainable hardware.','Perfect — outstanding grasp of sustainable hardware procurement!'];
+    document.getElementById('qScore').textContent=score;
+    document.getElementById('qMsg').textContent=msgs[Math.min(score,5)];
+  }
+}
+function resetQuiz(){score=0;document.getElementById('qResult').style.display='none';buildQuiz()}
+function saveNote(){try{localStorage.setItem('cse407_c8_notes',document.getElementById('noteArea').value)}catch(e){}const el=document.getElementById('noteSaved');el.style.display='block';setTimeout(()=>el.style.display='none',2000)}
+function loadNotes(){try{const n=localStorage.getItem('cse407_c8_notes');if(n)document.getElementById('noteArea').value=n}catch(e){}}
+
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){const i=parseInt(e.target.id.replace('sec',''));document.querySelectorAll('.ol-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));document.querySelectorAll('.prog-dot').forEach((el,idx)=>el.classList.toggle('active',idx===i))}}),{threshold:0.3});
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+init();
+</script>
+</body>
+</html>
