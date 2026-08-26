@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE495 Mock Papers &amp; Revision</title>
+
+<!-- Fonts: loaded from CDN with strong system fallbacks (works offline, just
+     falls back to system fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- MathJax for equations. Requires internet on first open; degrades to raw
+     TeX source if offline. Write math as \( ... \) inline and \[ ... \] display. -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --paper:      #FAF9F6;
+    --ink:        #1E2A32;
+    --muted:      #5A6B72;
+    --faint:      #8A979D;
+    --rule:       #E4E1D8;
+    --accent:     #2F6F6B;   /* deep teal — links, structure, formulas */
+    --accent-soft:#E8F0EF;
+    --attempt:    #B4690E;   /* ochre — "try it yourself" */
+    --attempt-soft:#FBF1E1;
+    --solve:      #2E6B3E;   /* green — solutions */
+    --solve-soft: #E9F1EA;
+    --box:        #F2F1EB;
+    --shadow:     0 1px 2px rgba(30,42,50,.06), 0 6px 20px rgba(30,42,50,.05);
+    --measure:    68ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 48px; align-items: start; }
+  main { max-width: var(--measure); }
+
+  /* ---- Header / masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 40px 0 22px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 10px;
+  }
+  header.masthead h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700; font-size: 2.35rem; line-height: 1.1;
+    margin: 0 0 14px; letter-spacing: -.01em;
+  }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .82rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Sidebar / TOC ---- */
+  aside.toc {
+    position: sticky; top: 24px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .86rem;
+  }
+  aside.toc .toc-title {
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 12px;
+  }
+  aside.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  aside.toc li { counter-increment: toc; margin: 0 0 3px; }
+  aside.toc a {
+    display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+    border-left: 2px solid transparent;
+  }
+  aside.toc a::before { content: counter(toc, decimal-leading-zero);
+    color: var(--faint); font-variant-numeric: tabular-nums; }
+  aside.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  aside.toc a.active { color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-soft); }
+  .toolbar { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .8rem;
+    cursor: pointer; border: 1px solid var(--rule); background: #fff;
+    color: var(--ink); padding: 8px 12px; border-radius: 8px; text-align: left;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Topic sections ---- */
+  section.topic { padding: 34px 0; border-top: 1px solid var(--rule); }
+  section.topic:first-of-type { border-top: none; }
+  .topic-num {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  section.topic > h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+    font-size: 1.7rem; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 18px; }
+  h3 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 1.3em; }
+  li { margin: 4px 0; }
+
+  /* ---- Callout boxes ---- */
+  .callout { border-radius: 12px; padding: 16px 20px; margin: 20px 0;
+    font-size: .96rem; }
+  .callout .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .key   { background: var(--accent-soft); border: 1px solid #CFE2E0; }
+  .key   .tag { color: var(--accent); }
+  .watch { background: var(--attempt-soft); border: 1px solid #EFD9B6; }
+  .watch .tag { color: var(--attempt); }
+
+  /* ---- Formula box ---- */
+  .formula {
+    background: var(--box); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px 22px; margin: 20px 0; overflow-x: auto;
+  }
+  .formula .label {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .72rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+    margin-bottom: 4px; }
+
+  /* ---- Video ---- */
+  .video { margin: 22px 0; }
+  .video .frame { position: relative; aspect-ratio: 16/9; border-radius: 12px;
+    overflow: hidden; box-shadow: var(--shadow); background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video .cap { font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .video .cap a { font-weight: 600; }
+
+  /* ---- Practice questions ---- */
+  .qcard {
+    border: 1px solid var(--rule); border-radius: 14px; margin: 22px 0;
+    overflow: hidden; box-shadow: var(--shadow); background: #fff;
+  }
+  .qhead { padding: 18px 22px 6px; }
+  .qhead .qlabel {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--attempt); display: flex; gap: 10px; align-items: center; }
+  .qhead .qlabel .diff {
+    color: var(--faint); font-weight: 500; letter-spacing: .04em; }
+  .qbody { padding: 4px 22px 18px; }
+  details.solution { border-top: 1px dashed var(--rule); background: var(--solve-soft); }
+  details.solution > summary {
+    cursor: pointer; padding: 14px 22px; list-style: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .84rem; color: var(--solve); display: flex; gap: 8px; align-items: center;
+  }
+  details.solution > summary::-webkit-details-marker { display: none; }
+  details.solution > summary::before { content: '▸'; transition: transform .15s; }
+  details.solution[open] > summary::before { transform: rotate(90deg); }
+  .soln-body { padding: 4px 22px 20px; }
+
+  /* ---- Line-by-line worked steps ---- */
+  .steps { list-style: none; margin: 14px 0; padding: 0; counter-reset: step; }
+  .steps > li {
+    counter-increment: step; display: grid;
+    grid-template-columns: 30px minmax(0,1fr); gap: 4px 14px;
+    padding: 12px 0; border-top: 1px solid #DCE7DC;
+  }
+  .steps > li:first-child { border-top: none; }
+  .steps > li::before {
+    content: counter(step); grid-row: 1 / span 2;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    color: var(--solve); background: #fff; border: 1px solid #CBE0CB;
+    border-radius: 6px; width: 28px; height: 28px; display: grid;
+    place-items: center; font-weight: 500;
+  }
+  .steps .math-line { margin: 0; }
+  .steps .why {
+    font-size: .86rem; color: var(--muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  .steps .why b { color: var(--solve); font-weight: 600; }
+
+  /* ---- Theory link (question <-> topic) ---- */
+  .link-map {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 18px; margin: 14px 0; border-radius: 0 10px 10px 0;
+    font-size: .92rem;
+  }
+  .link-map .tag {
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* ---- Cheat sheet ---- */
+  .cheat { background: var(--ink); color: #EDEAE1; border-radius: 16px;
+    padding: 28px 30px; margin: 40px 0; }
+  .cheat h2 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: #fff; margin: 0 0 16px; font-size: 1.4rem; }
+  .cheat .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; }
+  .cheat .item { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px; }
+  .cheat .item h4 { font-family: 'Space Grotesk', system-ui, sans-serif;
+    margin: 0 0 6px; font-size: .82rem; letter-spacing: .04em; color: #9FD3CE; }
+  .cheat .item p { margin: 0; font-size: .9rem; color: #DED9CD; }
+  .cheat mjx-container { color: #EDEAE1 !important; }
+
+  footer.foot { border-top: 1px solid var(--rule); margin-top: 30px;
+    padding: 24px 0 60px; color: var(--faint);
+    font-family: 'Space Grotesk', system-ui, sans-serif; font-size: .78rem; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    aside.toc { position: static; margin-bottom: 20px;
+      border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+    .toolbar { flex-direction: row; flex-wrap: wrap; }
+    body { font-size: 17px; }
+    header.masthead h1 { font-size: 1.9rem; }
+  }
+
+  /* ---- Print: expand everything, drop the chrome ---- */
+  @media print {
+    aside.toc, .toolbar, .video .frame { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    body { font-size: 11pt; background: #fff; }
+    .qcard, .callout, .formula, .cheat { break-inside: avoid; box-shadow: none; }
+    details.solution { background: #fff; }
+    details.solution[open] > summary { color: #000; }
+    section.topic { break-inside: auto; }
+    a { color: var(--ink); text-decoration: underline; }
+    .cheat { background: #fff; color: #000; border: 2px solid #000; }
+    .cheat h2, .cheat .item h4 { color: #000; }
+    .cheat .item { border-color: #999; }
+    .cheat .item p { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#m0">Exam-day playbook</a></li>
+      <li><a href="#m1">Mock 1 &mdash; TiffinTrail, Q1&ndash;Q3</a></li>
+      <li><a href="#m1b">Mock 1 &mdash; Q4&ndash;Q6</a></li>
+      <li><a href="#m2">Mock 2 &mdash; LedgerLite, Q1&ndash;Q2</a></li>
+      <li><a href="#m2b">Mock 2 &mdash; Q3&ndash;Q6</a></li>
+      <li><a href="#m3">Mock 3 &mdash; RepairKori, Q1</a></li>
+      <li><a href="#m3b">Mock 3 &mdash; Q2&ndash;Q6</a></li>
+      <li><a href="#m4">Numerical drills: earned value</a></li>
+      <li><a href="#m5">Numerical drills: EMV &amp; cost</a></li>
+      <li><a href="#m6">Rapid-fire definition bank</a></li>
+      <li><a href="#m7">Twenty ways to lose marks</a></li>
+      <li><a href="#m8">The three-day revision plan</a></li>
+    </ol>
+    <div class="toolbar">
+      <button onclick="toggleAll(true)">Reveal all solutions</button>
+      <button onclick="toggleAll(false)">Hide all solutions</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </aside>
+
+  <main>
+  <header class="masthead">
+    <p class="eyebrow">Exam Preparation Guide &middot; Book 2 of 2</p>
+    <h1>CSE495 &mdash; Mock Papers &amp; Last-Minute Revision</h1>
+    <div class="meta">
+      <span><b>Course:</b> CSE495 IT Project Management and Entrepreneurship</span>
+      <span><b>Faculty:</b> Proma Chowdhury, East West University</span>
+      <span><b>Format:</b> 3 full mocks &middot; 30 marks &middot; 90 min each</span>
+      <span><b>Plan:</b> 3-day compressed schedule</span>
+    </div>
+  </header>
+
+  <section class="topic" id="m0">
+    <span class="topic-num">Before you start</span>
+    <h2>Exam-day playbook</h2>
+    <p class="subtitle">How to use this book with two or three days left.</p>
+
+    <p>Book 1 taught the topics. This book is for practice under conditions, and the single most valuable thing you can do between now and the exam is sit at least one of these mocks with a timer running and your notes closed. Reading a model answer feels like learning and mostly is not. Producing an answer, failing, and then reading the model is where the improvement happens.</p>
+
+    <div class="callout key">
+      <span class="tag">How to sit a mock properly</span>
+      <p>Ninety minutes, phone in another room, notes closed, one sheet of paper. Read the case for ten minutes with a pen in hand, annotating as Topic 11 of Book 1 describes. Then write all six answers before you open a single solution. When you do open them, mark yourself honestly against the four moves: did you <b>name</b> a lecture concept, <b>anchor</b> it in a case fact, explain the <b>mechanism</b>, and state a <b>consequence</b>?</p>
+    </div>
+
+    <h3>The timing budget</h3>
+    <p>Thirty marks in ninety minutes. Use this split and check the clock at each boundary:</p>
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;">
+        <th style="padding:8px 6px;">Clock</th><th style="padding:8px 6px;">Task</th><th style="padding:8px 6px;">Output</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">0&ndash;10 min</td><td style="padding:8px 6px;">Read and annotate the case</td><td style="padding:8px 6px;">Margin labels: traits, before/after, churn, metrics pile, crisis, options</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">10&ndash;15 min</td><td style="padding:8px 6px;">Skim all questions, jot one keyword each</td><td style="padding:8px 6px;">Six keywords, so nothing surprises you at minute 70</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">15&ndash;80 min</td><td style="padding:8px 6px;">Answer, roughly 11 min each</td><td style="padding:8px 6px;">Do the numerical question first if there is one</td></tr>
+      <tr><td style="padding:8px 6px;">80&ndash;90 min</td><td style="padding:8px 6px;">Fill gaps, add a missing consequence sentence</td><td style="padding:8px 6px;">Every question has at least a labelled skeleton</td></tr>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">Do the calculation question first</span>
+      <p>If the paper contains an earned value or EMV question, answer it before the analytical ones. Numerical marks are binary and fast: you either get them in eight minutes or you do not. Analytical answers expand or contract to fill whatever time is left, so protect the certain marks first.</p>
+    </div>
+
+    <h3>What to do with each mock</h3>
+    <ul>
+      <li><b>Mock 1 (TiffinTrail)</b> is closest to the Fall 2025 pattern: a service business scaling badly, with all five classic question slots plus one earned value question. Sit this one under exam conditions.</li>
+      <li><b>Mock 2 (LedgerLite)</b> is a software product case, weighted toward lean architecture, KPI unit economics and EMV. Use it to cover the topics Fall 2025 skipped.</li>
+      <li><b>Mock 3 (RepairKori)</b> is a mixed paper: a shorter case with two standalone calculation questions bolted on, which is the format to expect if your faculty decides to examine cost analysis separately.</li>
+    </ul>
+  </section>
+
+  <section class="topic" id="m1">
+    <span class="topic-num">Mock Paper 01</span>
+    <h2>TiffinTrail &mdash; a home-meal subscription service</h2>
+    <p class="subtitle">30 marks &middot; 90 minutes &middot; six questions of five marks. Closest to the Fall 2025 pattern in structure, with one extra question so the calculation topics get covered too.</p>
+
+    <div class="formula">
+      <div class="label">Case study</div>
+      <p><b>Founder and background.</b> Nusrat Jahan, 29, Dhaka. Six years as a supply chain analyst at an FMCG distributor before founding TiffinTrail in 2022, after two years of eating what she described as "identical, reheated, joyless" office lunches. Capitalised with personal savings plus a BDT 3,000,000 angel investment in exchange for 25% equity.</p>
+      <p><b>Leadership profile (Big Five assessment).</b> Openness 71 &middot; Conscientiousness 90 &middot; Extraversion 58 &middot; Agreeableness 62 &middot; Neuroticism 79.</p>
+      <p><b>Business today (Year 3).</b> Two segments. <i>B2C:</i> 610 household subscribers, on a Solo plan at BDT 4,500 per month (410 subscribers) or a Duo plan at BDT 7,900 (200 subscribers). <i>B2B:</i> six corporate lunch contracts covering 340 employees, billed at BDT 180 per meal across roughly 20 working days. Monthly revenue BDT 4,649,000, monthly operating cost BDT 4,180,000, net profit BDT 469,000.</p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;">
+        <th style="padding:8px 6px;">Dimension</th><th style="padding:8px 6px;">Year 1 (120 subscribers)</th><th style="padding:8px 6px;">Year 3 (610 subscribers + 6 contracts)</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Kitchen model</b></td><td style="padding:8px 6px;">14 partner home chefs cooking in their own kitchens</td><td style="padding:8px 6px;">One central kitchen with 22 salaried staff</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Menu</b></td><td style="padding:8px 6px;">Personalised weekly menu per household, chosen by phone</td><td style="padding:8px 6px;">Fixed 14-day rotating menu, identical for all</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Changes &amp; contact</b></td><td style="padding:8px 6px;">WhatsApp; founder personally called every new subscriber</td><td style="padding:8px 6px;">App only; no phone line; changes must be made 24 hours ahead</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>On-time delivery</b></td><td style="padding:8px 6px;">96%</td><td style="padding:8px 6px;">78%</td></tr>
+      <tr><td style="padding:8px 6px;"><b>Customer sentiment</b></td><td style="padding:8px 6px;">"It feels like someone's mother is cooking for me."</td><td style="padding:8px 6px;">"I can tell you what Thursday's box contains without opening it."</td></tr>
+    </table>
+
+    <p><b>Churn data.</b> 380 subscribers cancelled in the last twelve months. Exit survey responses: 41% "food quality inconsistent"; 24% "delivery window unreliable"; 21% "menu repetitive"; 14% "found a cheaper local option".</p>
+
+    <p><b>Support ticket drivers, last quarter.</b> (1) "Change or pause my delivery slot", 210 tickets. (2) App crashes at the payment step, 95 tickets. (3) "Item missing from the box", 74 tickets. Note: 71% of all orders and changes are submitted between 9 PM and 11 PM for the following day.</p>
+
+    <p><b>Data collected by the operations team last quarter.</b></p>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.84rem;background:var(--box);padding:14px 18px;border-radius:10px;">
+    App downloads: 26,000 &nbsp;&middot;&nbsp; Registered accounts: 9,400 &nbsp;&middot;&nbsp; Active subscribers: 610<br>
+    Monthly subscriber churn: 6.1% &nbsp;&middot;&nbsp; On-time delivery rate: 78% &nbsp;&middot;&nbsp; Gross margin per subscriber-month: BDT 770<br>
+    Customer acquisition cost: BDT 3,900 &nbsp;&middot;&nbsp; Facebook page followers: 88,000 &nbsp;&middot;&nbsp; Distinct recipes in rotation: 42<br>
+    Corporate contract renewal rate: 67% &nbsp;&middot;&nbsp; Kitchen food waste: 11% of raw input &nbsp;&middot;&nbsp; Meals dispatched: 61,400</p>
+
+    <p><b>Current crisis.</b> The head chef has given notice, citing exhaustion from producing six different bespoke corporate menus alongside the standard rotation. Each corporate client negotiated its own menu at signing, and the B2B division consumes a disproportionate share of kitchen labour. The angel investor has asked for a committed growth path within five months.</p>
+
+    <p><b>Strategic options on the table.</b></p>
+    <ol>
+      <li><b>Government school-meal tender.</b> 40,000 meals per day at BDT 95 per meal for 24 months. Requires nine regional kitchens, nutrition compliance certification, and daily reporting to a ministry.</li>
+      <li><b>Cloud-kitchen franchise.</b> Twelve franchisees at BDT 800,000 each plus a 6% royalty. TiffinTrail supplies brand, recipes and the app; food preparation and quality control pass to the franchisees.</li>
+      <li><b>Venture funding.</b> A term sheet offering BDT 20,000,000 for 30% equity, to build a demand-forecasting and route-optimisation platform over 15 months.</li>
+    </ol>
+
+    <p><b>Platform project status (relevant to Question 6).</b> TiffinTrail began the route-optimisation platform ahead of the term sheet, self-funded, with an approved budget at completion of BDT 4,000,000. At the month-nine review, 50% of the work was scheduled to be complete, 40% is actually complete, and BDT 2,200,000 has been spent.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Identify the core business model failure that explains the falling retention and the deterioration in service quality.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>diagnosis slot</b>, drawing on the prototype-versus-product distinction and the MVP misconception (Prototypes &amp; MVP lecture, Sections 1 and 6) together with the value-delivery reasoning behind Q1 of the Fall 2025 paper. The examiner wants a named failure plus the mechanism, and the before-and-after table is where they planted the evidence.
+        </div>
+        <p><b>The core failure: value proposition delivery collapsed under industrialisation.</b> TiffinTrail scaled its meal <i>volume</i> while deleting the two attributes customers were actually paying a premium for, personalisation and reliability. At 120 subscribers the product was 14 home chefs cooking a menu chosen by that household, with the founder personally calling every new subscriber and a 96% on-time record. At 610 subscribers plus corporate contracts it is a single central kitchen producing one fixed 14-day rotation for everyone, app-only, with on-time delivery down to 78%. The company kept the noun, a tiffin subscription, and discarded the adjectives that justified its price.</p>
+        <p><b>The mechanism, read off the churn data.</b> Every top exit reason maps onto a specific operational change. 41% cite inconsistent quality, which is what happens when 14 chefs cooking small batches are replaced by one kitchen producing at scale without the process maturity to hold quality there. 24% cite unreliable delivery windows, matching the 96% to 78% fall. 21% cite menu repetition, which is the direct consequence of replacing per-household personalisation with a 42-recipe fixed rotation, and the customer quotation makes it explicit: "I can tell you what Thursday's box contains without opening it."</p>
+        <p><b>The commoditisation consequence.</b> Once the food is standardised and delivery is unreliable, TiffinTrail is no longer differentiated from any local caterer, so it competes on price in a market where it is not the cheapest. The 14% who left for a cheaper local option are the visible edge of that, and the thin margin, BDT 469,000 net on BDT 4,649,000 of revenue, roughly 10%, means it has very little room to defend itself on price.</p>
+        <p><b>The compounding factor.</b> The support data shows the largest ticket driver is "change or pause my delivery slot", 210 tickets, against a policy requiring 24 hours' notice and no phone line. The flexibility that existed by default when orders came over WhatsApp was engineered out, so the operational change created both the churn reason and the support load that now obscures it.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>From the data collected by the operations team, identify four KPIs. Justify why each qualifies as a KPI, and explain why you excluded the others.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>KPI selection slot</b>, built on the KPI-versus-metric table and the coffee shop case (KPI lecture, Sections 2 and 6). Three components are marked: selection, justification tied to a strategic question, and reasoned exclusion. Skipping the exclusions typically costs a third of the marks.
+        </div>
+        <p><b>Selected KPIs</b></p>
+        <p><b>1. Monthly subscriber churn (6.1%).</b> The retention KPI, and for a subscription business the number that determines whether it has a business at all. At 6.1% a month the entire base turns over in roughly sixteen months, so every marketing taka is buying a replacement rather than growth. It measures a strategic outcome, is fully quantifiable, and is actionable through the specific fixes the exit survey points to.</p>
+        <p><b>2. On-time delivery rate (78%).</b> The operational KPI, equivalent to the average wait time the lecture selects in the coffee shop case as a measure of service efficiency. For a meal delivered at a fixed mealtime, punctuality is not a convenience but part of the product itself: a lunch that arrives at 3 PM has failed entirely. It is also causally upstream of churn, since 24% of leavers name it.</p>
+        <p><b>3. Gross margin per subscriber-month (BDT 770) read against customer acquisition cost (BDT 3,900).</b> The unit economics KPI. At BDT 770 of margin per month it takes just over five months to recover the BDT 3,900 acquisition cost, while the average subscriber lasts roughly sixteen months at current churn. The business is therefore viable but with a thin cushion, and if churn worsens to about 20% a month the model inverts. This is the number that decides whether spending more on growth helps or accelerates the loss.</p>
+        <p><b>4. Corporate contract renewal rate (67%).</b> The segment-health KPI. B2B is the segment consuming disproportionate kitchen labour and driving the head chef to resign, so knowing whether that cost buys durable revenue is a strategic question, not an operational one. A third of contracts failing to renew means the most expensive segment is also the least sticky, which is decisive information for the growth decision the investor is demanding.</p>
+        <p><b>Excluded, with reasons</b></p>
+        <ul>
+          <li><b>App downloads (26,000) and registered accounts (9,400):</b> volume without quality. Both count people who have never subscribed, and with 610 active subscribers the gap shows how little they predict. They can rise indefinitely while revenue is flat, which is the masking effect the Fall 2025 answer warns about with raw signups.</li>
+          <li><b>Facebook page followers (88,000):</b> no proven link to a business outcome. A top-of-funnel marketing figure with no demonstrated conversion to subscriptions or cash flow, the same reason the lecture rejects Instagram followers in the coffee shop case.</li>
+          <li><b>Distinct recipes in rotation (42):</b> an input, not an outcome. It describes what the kitchen produces rather than whether customers value it, and the case shows it is currently too low, so as a KPI it would perversely reward adding recipes without asking whether anyone wants them.</li>
+          <li><b>Meals dispatched (61,400):</b> a volume metric. It rises with subscriber count and tells you nothing about quality, punctuality or profitability, and it would look healthy in exactly the quarter the business is deteriorating.</li>
+          <li><b>Kitchen food waste (11% of raw input):</b> a genuine efficiency metric and a defensible fifth choice, since waste directly erodes the thin margin. Excluded here because it is an internal operational measure rather than an outcome measure, and because the four above already cover retention, service, economics and segment health without redundancy.</li>
+          <li><b>Active subscribers (610):</b> useful context and a component of other measures, but as a raw count it is a snapshot rather than an indicator of direction. Churn tells you where it is heading, which is what a KPI is for.</li>
+        </ul>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Analyse TiffinTrail's scaling decision in MVP terms, and reconstruct a value proposition that can grow without repeating the mistake.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>MVP slot</b>, drawing on the MVP definition, the Build-Measure-Learn loop and the feature-reduction misconception (Prototypes &amp; MVP, Sections 5 to 7). This mirrors Q3 of the Fall 2025 paper. Roughly half the marks sit in the reconstruction, so budget your time to reach it.
+        </div>
+        <p><b>What was actually validated at 120 subscribers.</b> The early business proved something quite specific, and naming it precisely is what makes the rest of the answer work. It was not that people will buy delivered lunch, which was never in doubt. It was that households will pay a premium for food that feels individually cooked for them, arriving reliably, from a business that knows who they are. The 96% on-time rate and the customer line "it feels like someone's mother is cooking for me" are the evidence, and 14 home chefs plus a founder phone call were the mechanism producing it.</p>
+        <p><b>The misinterpretation.</b> Scaling was treated as a capacity problem rather than a value-delivery problem. A central kitchen genuinely solves capacity: more meals, lower unit cost, easier logistics. But it silently removed personalisation, and going app-only with a 24-hour change window removed responsiveness, so the two validated attributes were traded away for throughput without anyone deciding to trade them. This is the lecture's core MVP misconception in its operational form: the company confused producing <i>more</i> with delivering more value. The Build-Measure-Learn loop was effectively broken as well, since the scale-up was built and shipped without measuring whether the qualities customers were paying for survived it. The 41% quality complaints and the fall to 78% on-time are the measurement arriving eighteen months late.</p>
+        <p><b>Reconstructed value proposition.</b> Rebuild around <i>personalisation and reliability delivered at scale</i>, rather than around kitchen throughput:</p>
+        <ul>
+          <li><b>A modular menu instead of a fixed rotation.</b> Keep the central kitchen for base preparation, which is where the cost advantage genuinely lives, but let each subscriber set a small profile: spice level, two excluded items, one preferred protein per week. Personalisation is restored at the assembly stage, where it costs little, rather than at the cooking stage, where it costs a great deal.</li>
+          <li><b>A satellite-chef tier for the premium segment.</b> Re-engage a small panel of home chefs for a higher-priced plan, which preserves the original proposition for the customers who valued it most and gives the brand a quality anchor the central kitchen can be measured against.</li>
+          <li><b>Same-day changes up to a published cut-off.</b> The 210 slot-change tickets and the 9 to 11 PM ordering peak are telling the company exactly what the product needs. Move the cut-off to that window and turn the biggest support cost into a feature.</li>
+          <li><b>A published on-time guarantee with automatic credit.</b> Converts reliability from an internal metric into a customer-visible promise, and forces the operational fix by making failure cost money immediately.</li>
+          <li><b>Standardised corporate menu tiers.</b> Replace six bespoke negotiated menus with three fixed corporate tiers. This removes the labour bloat that is driving the head chef out while keeping the B2B revenue, and it is the change that makes everything above affordable.</li>
+        </ul>
+        <p><b>Why this scales where the central kitchen alone did not.</b> Each element restores a validated attribute at a cost that grows far more slowly than subscriber count: profile-based assembly is a data problem rather than a labour problem, the chef panel serves only the premium tier, and the corporate standardisation actually releases kitchen capacity. The company keeps the efficiency it gained and buys back the differentiation it lost, which is the difference between scaling value and scaling volume.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m1b" style="border-top:none;padding-top:0;">
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Using the Big Five assessment, explain how Nusrat Jahan's personality traits have contributed to both the early success and the current difficulties of TiffinTrail.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>founder trait slot</b>, drawing on the Big Five section of the Entrepreneurship lecture (Section 4). Use the three-link chain each time: trait and score, the behaviour it produces, the named outcome in the case. Give one upside and one downside per pairing, as the Fall 2025 model answer does.
+        </div>
+        <p><b>Very high conscientiousness (90) with high neuroticism (79): meticulous execution that has hardened into control.</b> The lecture treats conscientiousness as a two-sided trait, an early-stage asset that becomes a late-stage brake, and both sides are visible here. The upside is real: discipline and attention to detail are what produced a 96% on-time record with 14 independent home chefs, which is operationally difficult, and they are why an angel was willing to put BDT 3,000,000 into a first-time founder, since the lecture notes high discipline builds investor trust. The downside is that the same instinct, under scaling pressure, favours the option that is easiest to control. A single central kitchen with one fixed menu is the maximally controllable configuration and the least personalised one, so the trait that protected quality early is what destroyed the differentiation later. Neuroticism at 79 amplifies this, since the lecture identifies it as the most reliable negative predictor across all phases, producing excessive risk aversion: standardising is the low-variance choice, and variance is what a highly neurotic founder minimises.</p>
+        <p><b>Neuroticism (79) again, on the strategic decision.</b> The behaviour the lecture predicts is indecisiveness under high-stakes pressure, and the case shows it directly. Three growth options are on the table and the investor has had to impose a five-month deadline to force a choice, which is the same pattern as the co-founder's 4.5-month ultimatum in the Fall 2025 case. The consequence is that the head chef is resigning now, while the structural decision that would relieve him is still pending.</p>
+        <p><b>Moderate agreeableness (62) with low-moderate extraversion (58): why the B2B bloat is not the usual story.</b> This is worth a line because it distinguishes a real analysis from a memorised one. In the Fall 2025 case, very high agreeableness (92) explained an inability to refuse customised requests. Here agreeableness is only moderate, so the six bespoke corporate menus are better explained by conscientiousness and revenue anxiety, a determination to deliver exactly what was promised at signing rather than a reluctance to say no. The lecture also finds extraversion has no significant predictive power, so 58 explains nothing about performance, though it is consistent with a founder who removed the phone line and moved everything to an app.</p>
+        <p><b>Openness (71): moderate, and neither the problem nor the solution.</b> The lecture describes openness as an initial catalyst that attracts early funding but shows zero correlation with scaling or exit success. At 71 it plausibly contributed to the original home-chef model, which was an unconventional idea, but it is not what the current situation turns on.</p>
+        <div class="callout key"><span class="tag">Answer in one line</span><p>The trait that built the early product and the trait that is now dismantling it are the same one: conscientiousness of 90, which delivered 96% reliability with 14 chefs and then chose the most controllable rather than the most valuable configuration at scale, with neuroticism of 79 turning that preference into paralysis over what to do next.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Recommend a structural or governance change for TiffinTrail, and explain what specific problems in the case it would address. Briefly state which of the three strategic options you would pair it with, and why.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>structural slot</b>, following the reasoning of Q5 in the Fall 2025 paper and combining it with the organic-versus-strategic growth argument (Business Growth lecture, Section 2). A recommendation should remove the founder from the bottleneck, install a decision-forcing mechanism, and let the founder keep doing what she is good at.
+        </div>
+        <p><b>Recommendation 1: appoint a Head of Culinary Operations with genuine authority over the menu and the kitchen.</b> This is the operational bottleneck the case has demonstrated. The head chef is resigning because six bespoke corporate menus sit on top of the standard rotation, and no one but the founder can refuse a client's menu request. A named executive owning menu architecture, with authority to standardise the corporate offering into three fixed tiers, removes the labour bloat at source and removes the founder from every kitchen decision. It also directly addresses the 41% quality complaint, since consistency at scale is a process discipline that needs a full-time owner rather than a founder's spare attention.</p>
+        <p><b>Recommendation 2: establish a formal Investment and Strategy Committee with the angel investor.</b> The case shows a founder with neuroticism at 79 unable to commit to one of three growth paths, to the point where the investor has issued a five-month deadline. A standing committee converts that from a personal decision, which this founder finds hardest, into a scheduled institutional one with defined criteria and a date. That is a decision-forcing mechanism rather than a criticism of the founder, and it is the same instrument the Fall 2025 answer recommends for the same reason.</p>
+        <p><b>What this frees the founder to do.</b> Her supply chain background and her conscientiousness are genuine assets, and the redesign should point them at logistics and reliability, where 78% on-time is the most fixable of the three churn drivers, rather than at menu negotiation and strategic agonising, where the same traits are doing damage. The principle is to redesign the role around the person's strengths, not to ask the person to become someone else.</p>
+        <p><b>Which strategic option to pair with it: the cloud-kitchen franchise, with a caveat, or venture funding if reliability is fixed first.</b> Take the options in turn. The government school-meal tender should be rejected: 40,000 meals a day against a current base of roughly 61,400 meals a <i>quarter</i> is an order-of-magnitude leap requiring nine regional kitchens, and the company cannot hold quality in one kitchen today. The lecture's warning that risk rises with operational and market unfamiliarity applies at maximum force, and a ministry contract with daily compliance reporting is unforgiving of the exact failure mode TiffinTrail already has.</p>
+        <p>The franchise option is tempting on cash, BDT 9,600,000 in fees, which is organic-style funding requiring no equity, but it hands quality control to twelve third parties at the precise moment quality is the company's biggest problem. It is only defensible <i>after</i> the culinary standardisation above is complete, because a franchise can only replicate a process that already exists and works.</p>
+        <p>Venture funding is the option most aligned with the diagnosis, since demand forecasting and route optimisation attack the 78% on-time rate and the 11% food waste directly, but Question 6 shows that platform is already running at a CPI of about 0.73 with a forecast overrun of roughly BDT 1,500,000. Taking BDT 20,000,000 for 30% to accelerate a project that is failing on execution would be funding the problem rather than solving it. <b>The sequenced answer is therefore: standardise the corporate menu and appoint the culinary head first, fix platform execution second, and only then choose between the franchise and the term sheet</b>, which is the lecture's argument that organic capability should precede strategic growth commitments.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">&middot; 5 marks &middot; numerical</span></span></div>
+      <div class="qbody"><p>For the route-optimisation platform (BAC = BDT 4,000,000; 50% planned complete; 40% actually complete; BDT 2,200,000 spent), calculate PV, EV, CV, SV, CPI, SPI, EAC, ETC and VAC. State what the results mean for the investor conversation.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( PV = BAC \times \%\text{planned} = 4{,}000{,}000 \times 0.50 = 2{,}000{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Definition of planned value:</b> the budgeted cost of work scheduled by this point.</p></li>
+          <li><p class="math-line">\( EV = BAC \times \%\text{actual} = 4{,}000{,}000 \times 0.40 = 1{,}600{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Definition of earned value:</b> completed work valued at the <i>budgeted</i> rate, not at what it actually cost.</p></li>
+          <li><p class="math-line">\( CV = EV - AC = 1{,}600{,}000 - 2{,}200{,}000 = -600{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Cost variance.</b> Negative, so over budget: BDT 1.6m of value was bought for BDT 2.2m of spending.</p></li>
+          <li><p class="math-line">\( SV = EV - PV = 1{,}600{,}000 - 2{,}000{,}000 = -400{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Schedule variance.</b> Negative, so behind schedule by BDT 400,000 worth of work.</p></li>
+          <li><p class="math-line">\( CPI = \dfrac{EV}{AC} = \dfrac{1{,}600{,}000}{2{,}200{,}000} = \dfrac{8}{11} \approx 0.727 \)</p>
+              <p class="why"><b>Cost performance index.</b> Divide numerator and denominator by 200,000 to get 8/11; keeping the fraction avoids rounding error in the EAC step.</p></li>
+          <li><p class="math-line">\( SPI = \dfrac{EV}{PV} = \dfrac{1{,}600{,}000}{2{,}000{,}000} = 0.80 \)</p>
+              <p class="why"><b>Schedule performance index.</b> Progressing at 80% of the planned rate, agreeing in sign with the negative SV.</p></li>
+          <li><p class="math-line">\( EAC = \dfrac{BAC}{CPI} = 4{,}000{,}000 \times \dfrac{11}{8} \)</p>
+              <p class="why"><b>Estimate at completion.</b> Dividing by 8/11 is multiplying by 11/8, which keeps the arithmetic exact. This assumes current cost efficiency continues.</p></li>
+          <li><p class="math-line">\( EAC = 5{,}500{,}000 \text{ BDT} \)</p>
+              <p class="why">\(4{,}000{,}000 \div 8 = 500{,}000\), then \(\times 11 = 5{,}500{,}000\). Above BAC, as required when CPI is below 1.</p></li>
+          <li><p class="math-line">\( ETC = EAC - AC = 5{,}500{,}000 - 2{,}200{,}000 = 3{,}300{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Estimate to complete:</b> what remains to be spent from today.</p></li>
+          <li><p class="math-line">\( VAC = BAC - EAC = 4{,}000{,}000 - 5{,}500{,}000 = -1{,}500{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Variance at completion.</b> Negative, so a forecast overrun of BDT 1.5 million, which is 37.5% above the approved budget.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+          <p>PV 2,000,000 &middot; EV 1,600,000 &middot; CV &minus;600,000 &middot; SV &minus;400,000 &middot; CPI &asymp; 0.73 &middot; SPI 0.80 &middot; EAC 5,500,000 &middot; ETC 3,300,000 &middot; VAC &minus;1,500,000 (all BDT).</p>
+          <p><b>Sanity check:</b> both variances negative, both indices below 1, EAC above BAC, VAC negative. All four agree, which is the internal consistency test.</p>
+        </div>
+        <p><b>What this means for the investor conversation.</b> Three things need saying, and saying them first is better than being asked.</p>
+        <p>First, the platform is failing on execution, not on ambition: a CPI of 0.73 means only 73 paisa of budgeted value is being earned per taka spent, and an SPI of 0.80 means it is also running four-fifths of planned pace. The two together indicate a systematic estimation or capability problem rather than a one-off setback.</p>
+        <p>Second, the exposure is larger than it looks. BDT 2.2 million is already spent for 40% of the work, and the forecast says another BDT 3.3 million is required, which is more than the entire original budget minus what has been spent. The overrun is not behind the company, it is ahead of it.</p>
+        <p>Third, and most important for the negotiation, this changes what the BDT 20,000,000 term sheet is actually buying. If the platform completes at BDT 5.5 million rather than BDT 4 million on current performance, then part of the raise is silently funding an overrun rather than the 15-month build being pitched. The honest position is to present the EAC and VAC to the investor before signing, revise the platform baseline through formal change control, and either fix the delivery capability or reduce the platform's scope first. Raising equity to cover an unacknowledged 37.5% overrun is how a growth round turns into a bridge round twelve months later.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m2">
+    <span class="topic-num">Mock Paper 02</span>
+    <h2>LedgerLite &mdash; accounting software for small businesses</h2>
+    <p class="subtitle">30 marks &middot; 90 minutes. Weighted toward lean architecture, unit economics and EMV, the topics Fall 2025 left alone.</p>
+
+    <div class="formula">
+      <div class="label">Case study</div>
+      <p><b>Founder and background.</b> Tanvir Alam, 35, Dhaka. Ten years as an IT project lead at a private bank before founding LedgerLite in 2023. Known in the local startup community as a compelling speaker who has appeared on three podcasts and two conference stages in the last year. Capitalised with BDT 12,000,000 of seed funding for 22% equity.</p>
+      <p><b>Leadership profile (Big Five assessment).</b> Openness 93 &middot; Conscientiousness 54 &middot; Extraversion 86 &middot; Agreeableness 70 &middot; Neuroticism 45.</p>
+      <p><b>Product and pricing.</b> A cloud accounting product for Bangladeshi SMEs, sold freemium. Free tier: 11,000 accounts. Pro at BDT 1,200 per month: 900 accounts. Business at BDT 3,500 per month: 500 accounts. Monthly recurring revenue BDT 2,830,000. Monthly operating cost BDT 3,350,000, so the company loses roughly BDT 520,000 a month and has about 14 months of runway.</p>
+    </div>
+
+    <p><b>Engineering and product situation.</b> LedgerLite has shipped 47 distinct features in 18 months, which the founder cites in every pitch. Product analytics tell a different story: six features account for 89% of all usage, and 19 features are used by fewer than 2% of paying accounts. There is no automated test suite. Deployments are manual and take about six hours. The team handles roughly three production incidents a month, averaging 4.2 hours to resolve. Two senior engineers resigned last quarter; the exit note from one read, "we ship features nobody uses, and then we firefight them."</p>
+
+    <p><b>Support ticket drivers, last quarter.</b> (1) "How do I produce a VAT report", 340 tickets. (2) "The app is slow at month end", 190 tickets. (3) "I was charged twice", 61 tickets.</p>
+
+    <p><b>Data collected last quarter.</b></p>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.84rem;background:var(--box);padding:14px 18px;border-radius:10px;">
+    Free tier accounts: 11,000 &nbsp;&middot;&nbsp; Paying accounts: 1,400 &nbsp;&middot;&nbsp; Free-to-paid conversion: 11.3%<br>
+    Monthly revenue churn: 5.8% &nbsp;&middot;&nbsp; ARPU: BDT 2,021 &nbsp;&middot;&nbsp; Customer acquisition cost: BDT 9,400<br>
+    Features shipped: 47 &nbsp;&middot;&nbsp; Lines of code: 310,000 &nbsp;&middot;&nbsp; Story points delivered per sprint: 68<br>
+    Production incidents per month: 3 &nbsp;&middot;&nbsp; Mean time to resolve: 4.2 hours &nbsp;&middot;&nbsp; Deployment duration: 6 hours<br>
+    Podcast downloads featuring the founder: 41,000 &nbsp;&middot;&nbsp; Support tickets: 591</p>
+
+    <p><b>Regulatory development.</b> The tax authority has announced that all VAT-registered businesses must issue electronic invoices through an approved system within 12 months. The final technical specification has not yet been published. LedgerLite could build an approved e-invoicing module, which would make it near-mandatory for its target customers.</p>
+
+    <p><b>Risk register for the e-invoicing project.</b></p>
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;">
+        <th style="padding:8px 6px;">Risk event</th><th style="padding:8px 6px;">Type</th><th style="padding:8px 6px;">Probability</th><th style="padding:8px 6px;">Impact (BDT)</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Regulator delays publishing the final specification</td><td style="padding:8px 6px;">Threat</td><td style="padding:8px 6px;">0.45</td><td style="padding:8px 6px;">1,200,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">A competitor ships an approved integration first</td><td style="padding:8px 6px;">Threat</td><td style="padding:8px 6px;">0.30</td><td style="padding:8px 6px;">2,500,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Mandate drives mass SME signups to LedgerLite</td><td style="padding:8px 6px;">Opportunity</td><td style="padding:8px 6px;">0.55</td><td style="padding:8px 6px;">4,000,000</td></tr>
+      <tr><td style="padding:8px 6px;">Security audit failure on invoice data handling</td><td style="padding:8px 6px;">Threat</td><td style="padding:8px 6px;">0.20</td><td style="padding:8px 6px;">900,000</td></tr>
+    </table>
+
+    <p><b>Strategic options.</b> (1) Build the e-invoicing compliance module. (2) Abandon the SME freemium model and pivot to enterprise, targeting 30 mid-market clients at BDT 90,000 per month with custom onboarding. (3) Accept a standing acquisition offer of BDT 90,000,000 from a larger regional competitor. The lead investor has asked for a decision within four months.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Identify the core failure in LedgerLite's product development approach and explain how it connects to the company's financial position.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>diagnosis slot</b>, but pointed at a software product rather than a service. It draws on the lean principle of eliminating waste and the Agile-versus-Lean comparison (Lean Architecture, Sections 2 and 4) together with the MVP misconception about features versus value (Prototypes &amp; MVP, Section 6).
+        </div>
+        <p><b>The core failure: output has been mistaken for outcome, so most engineering capacity has gone into waste.</b> The company measures itself by features shipped, 47 in 18 months, and the founder cites the figure in every pitch. The analytics say six features carry 89% of usage and 19 are touched by fewer than 2% of paying accounts. By the lecture's first lean principle, anything that does not deliver measurable value to the end user is waste, so roughly 40% of the feature set is waste that was expensive to build and is now permanently expensive to maintain.</p>
+        <p><b>The mechanism, and why the cost keeps recurring.</b> This is the traditional agile pattern the lecture describes in the food delivery case: batched feature delivery including low-value components, with high velocity and erratic value. The comparison table predicts exactly what follows, elevated bugs and technical debt from rapid uncoupled additions, and the case shows it, three production incidents a month at 4.2 hours each, six-hour manual deployments, and no automated test suite. Two lean principles are being violated simultaneously. <b>Build quality in</b> is absent, so defects are found in production instead of in the pipeline. <b>Defer commitment</b> was ignored, so features were built speculatively rather than after evidence of demand. The senior engineer's exit line, "we ship features nobody uses, and then we firefight them", is the two failures described in one sentence, and the resulting attrition is a third cost.</p>
+        <p><b>The connection to the finances.</b> The company loses BDT 520,000 a month against BDT 2,830,000 of revenue, with roughly 14 months of runway. That gap is not a revenue problem in the first instance, it is a cost-of-waste problem: engineering capacity has been spent building 19 near-unused features and is now spent maintaining and firefighting them, while the six features that carry the product get proportionally little attention. Meanwhile the largest support driver, 340 tickets asking how to produce a VAT report, points at a core workflow that is either missing or unusable, which is the highest-value work available and is not being done.</p>
+        <p><b>The competitive consequence.</b> Because effort is spread thinly across 47 features rather than concentrated on the six that matter plus the compliance workflow customers are asking for, LedgerLite is well positioned for nothing in particular at precisely the moment a regulatory mandate is about to make one specific capability near-compulsory.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Identify four KPIs from the data collected, justify each, and explain your exclusions. Comment on whether the unit economics support continued spending on customer acquisition.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>KPI slot</b> (KPI lecture, Sections 2 and 6), with an added quantitative clause. The examiner has planted several engineering-flavoured distractors that look technical and therefore serious, which is what makes them effective traps.
+        </div>
+        <p><b>Selected KPIs</b></p>
+        <p><b>1. Monthly revenue churn (5.8%).</b> For a subscription product this is the survival number: at 5.8% a month the company loses roughly half its revenue base each year and must replace it before growing at all. It is a strategic outcome, quantifiable, and actionable through the product and support fixes the ticket data points to.</p>
+        <p><b>2. Free-to-paid conversion (11.3%).</b> The KPI that determines whether the freemium model works. 11,000 free accounts are a cost, not an asset, unless they convert, so this single ratio decides whether the free tier is a growth engine or a subsidy. It is also directly actionable through onboarding, paywall placement and which features sit behind it.</p>
+        <p><b>3. ARPU (BDT 2,021) read against CAC (BDT 9,400).</b> The unit economics pair, and the number that governs the spending decision below. Neither figure means much alone; together they say how long a customer must stay before they are profitable.</p>
+        <p><b>4. Mean time to resolve production incidents (4.2 hours).</b> A service-reliability KPI with a direct line to churn and to engineering capacity. For accounting software, an outage at month end is not an inconvenience but a blocked statutory deadline, and the 190 tickets about month-end slowness show customers already feel it. Unlike raw incident count, resolution time measures how well the organisation responds, which is what it can act on.</p>
+        <p><b>Excluded, with reasons</b></p>
+        <ul>
+          <li><b>Features shipped (47) and story points per sprint (68):</b> the central trap. Both measure output rather than outcome, and both rose steadily through the period in which the company lost money and shed engineers. They are the definition of a metric in the lecture's table, tracking process execution rather than strategic impact, and treating them as KPIs is what produced the failure in Question 1.</li>
+          <li><b>Lines of code (310,000):</b> an input consumed, and a perverse one. More code is a liability to maintain, so a KPI that rises with it rewards exactly the wrong behaviour.</li>
+          <li><b>Podcast downloads (41,000):</b> no proven link to a business outcome. It is the founder's personal reach, top of funnel at best, with no demonstrated conversion to paid accounts.</li>
+          <li><b>Free tier accounts (11,000) and paying accounts (1,400):</b> raw counts that are inputs to the conversion and churn KPIs already selected. Reported alone they can rise while revenue quality falls.</li>
+          <li><b>Support tickets (591) and deployment duration (6 hours):</b> both are meaningful operational metrics and deployment duration in particular is a good internal engineering target, but they measure process status rather than business outcome. Ticket count is also unnormalised: 591 tickets against 1,400 paying accounts is interpretable only as a ratio.</li>
+        </ul>
+        <p><b>Do the unit economics support more acquisition spending? Not yet.</b> A note on sourcing before the arithmetic: the KPI lecture contains no formulas and does not teach payback period, lifetime value or the LTV to CAC ratio, so what follows is supplementary standard practice rather than examinable lecture content. Use it to strengthen a KPI answer, not as something to attribute to the faculty. Payback period is \(9{,}400 \div 2{,}021 \approx 4.7\) months, so a customer must stay roughly five months just to repay the cost of acquiring them. Expected customer lifetime at 5.8% monthly churn is about \(1/0.058 \approx 17\) months, giving a lifetime value of roughly \(2{,}021 \times 17 \approx \text{BDT } 34{,}800\) and an LTV to CAC ratio of about 3.7 to 1, which on its face is healthy.</p>
+        <p>The problem is timing rather than ratio. The company is losing BDT 520,000 a month with about 14 months of runway, and every new customer costs BDT 9,400 immediately while returning BDT 2,021 a month afterward. Scaling acquisition now would deepen the monthly loss and shorten the runway in exchange for revenue arriving after the runway ends. The correct sequence is to reduce churn first, since lifetime value is the term most sensitive to it, then spend on acquisition once the company is closer to break-even. Cutting churn from 5.8% to 4% alone would lift expected lifetime from about 17 months to 25 and lifetime value to roughly BDT 50,500 without spending a taka on marketing.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m2b" style="border-top:none;padding-top:0;">
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Apply the principles of lean architecture to LedgerLite's engineering situation. Identify which principles are being violated and set out a four-step lean intervention.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>7 Core Principles</b> and the <b>four-step lean solution</b> from the food delivery case (Lean Architecture, Sections 2 and 3). Name the principles in the lecture's own words, tie each to a fact in the case, then give the four steps in order. Do not list all seven principles; list the ones being broken.
+        </div>
+        <p><b>Principles being violated</b></p>
+        <p><b>Eliminate waste.</b> The lecture defines waste as any task, process or line of code that does not deliver measurable value to the end user, with pruning bloated unused features given as the technical example. Nineteen features used by fewer than 2% of paying accounts are that example made literal, and they carry ongoing maintenance and testing cost long after the build cost is sunk.</p>
+        <p><b>Build quality in.</b> The principle requires preventing defects during development rather than resolving them after release, through automated unit and integration tests written as the code is written. LedgerLite has no automated test suite at all, so every defect is found by a customer, which is precisely the expensive production hotfix the lecture warns about. Three incidents a month at 4.2 hours each is the visible cost; the invisible cost is the fear of changing anything.</p>
+        <p><b>Defer commitment.</b> Irreversible or expensive choices should be made at the last responsible moment on concrete data. Building 47 features before knowing which six mattered is the opposite: speculative construction ahead of evidence, with the evidence arriving 18 months late in the analytics.</p>
+        <p><b>Optimise the whole.</b> The team optimised features shipped, a single component of performance, while the end-to-end system, revenue, retention, engineering morale and reliability, deteriorated. Two senior engineers resigning is the clearest signal that local optimisation broke something global.</p>
+        <p><b>The four-step lean intervention</b></p>
+        <ol>
+          <li><b>Value stream mapping.</b> Map the customer's actual accounting workflow end to end, from recording a transaction to filing a VAT return, and identify where value is created and where it stalls. The case has already handed over the answer: 340 tickets asking how to produce a VAT report means the highest-value step in the whole journey is broken or hidden, and 190 tickets about month-end slowness means the most important moment in the calendar is the least reliable. Prioritisation should follow this map rather than the roadmap.</li>
+          <li><b>Just-in-time design and decoupling.</b> Following the lecture's separation of checkout from payment logic, isolate the six high-usage features into well-bounded modules so they can be improved and deployed independently of the rest. Retire or archive the 19 near-unused features rather than carrying them, which shrinks the test surface and the incident surface at the same time.</li>
+          <li><b>Automated quality and feedback.</b> Put continuous test pipelines on the core paths first, transaction entry, month-end reporting and VAT, and automate the deployment that currently takes six hours. This is build-quality-in applied where it pays most, and it is also the precondition for the e-invoicing project, since a compliance module cannot be shipped safely on a manual six-hour deploy.</li>
+          <li><b>Evolutionary design.</b> Build new capability only when usage or explicit demand validates it, exactly as the lecture builds review features only when user volume justifies them. The e-invoicing module qualifies under this test, since a regulatory mandate is about as strong a demand signal as exists; another 19 speculative features do not.</li>
+        </ol>
+        <p><b>The connection back to the business.</b> The Agile-versus-Lean table predicts the outcome of this shift: minimal rework, high-value features first, technical debt contained by quality gates, and satisfaction driven by frictionless core journeys. For LedgerLite the immediate effect is that engineering capacity currently absorbed by firefighting is released to the compliance work, which is the only initiative on the table with a guaranteed customer need behind it.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">&middot; 5 marks &middot; numerical</span></span></div>
+      <div class="qbody"><p>Calculate the total Expected Monetary Value of the e-invoicing project from the risk register. Interpret the result and recommend two mitigation actions.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{EMV} = \sum (P_i \times I_i) \)</p>
+              <p class="why"><b>State the formula.</b> It carries its own mark and commits you to the method before any arithmetic.</p></li>
+          <li><p class="math-line">\( I_1 = -1{,}200{,}000,\; I_2 = -2{,}500{,}000,\; I_3 = +4{,}000{,}000,\; I_4 = -900{,}000 \)</p>
+              <p class="why"><b>Apply signs first.</b> The lecture defines threats as negative impacts and opportunities as positive, so only the mass-signup event is positive. Doing this as its own step is what prevents the single most common error in this topic.</p></li>
+          <li><p class="math-line">\( 0.45 \times (-1{,}200{,}000) = -540{,}000 \)</p>
+              <p class="why">Risk score for the specification delay: probability times signed impact.</p></li>
+          <li><p class="math-line">\( 0.30 \times (-2{,}500{,}000) = -750{,}000 \)</p>
+              <p class="why">Risk score for the competitor shipping first. Note this is the largest single threat contribution despite not being the most likely event, because its impact is the biggest of the three threats.</p></li>
+          <li><p class="math-line">\( 0.55 \times (+4{,}000{,}000) = +2{,}200{,}000 \)</p>
+              <p class="why">Risk score for the opportunity. Both high probability and high impact, so it dominates the sum.</p></li>
+          <li><p class="math-line">\( 0.20 \times (-900{,}000) = -180{,}000 \)</p>
+              <p class="why">Risk score for the security audit failure: the smallest contribution, low on both factors.</p></li>
+          <li><p class="math-line">\( \text{EMV} = -540{,}000 - 750{,}000 + 2{,}200{,}000 - 180{,}000 \)</p>
+              <p class="why"><b>Sum the risk score column</b>, which is what the summation in the formula instructs.</p></li>
+          <li><p class="math-line">\( \text{EMV} = +730{,}000 \text{ BDT} \)</p>
+              <p class="why">The three threats total &minus;1,470,000; adding the +2,200,000 opportunity leaves a positive net exposure.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+          <p><b>Total EMV = +BDT 730,000.</b></p>
+          <p><b>Sanity check:</b> the single opportunity (+2,200,000) exceeds the sum of all three threats (&minus;1,470,000), so a positive total is expected. If your answer came out negative, a sign has been lost, almost certainly on the opportunity.</p>
+        </div>
+        <p><b>Interpretation.</b> Unlike the fitness-app example in lecture, which returned &minus;$52,000, this project carries a <i>positive</i> net expected value of BDT 730,000, meaning the identified risks are on balance favourable and the project is worth pursuing on risk grounds. That conclusion should be stated carefully, though. The positive total rests almost entirely on one opportunity, and EMV is an average across many repetitions while this decision is made once. If the mass-signup event does not occur, and at P = 0.55 it is close to a coin toss, the project's realised value is &minus;BDT 1,470,000 in risk terms. So the correct reading is that the project is worth doing <i>and</i> that its upside is concentrated in a single uncertain event, which is an argument for mitigation rather than complacency.</p>
+        <p><b>Two mitigation actions.</b></p>
+        <p><b>1. Attack the competitor-first threat, which carries the largest negative contribution at &minus;BDT 750,000.</b> The mitigation is speed and commitment: begin building against the draft specification now rather than waiting for the final publication, and announce publicly that LedgerLite is building an approved e-invoicing module so that SMEs delay switching. This also partially hedges the specification-delay risk, since work started early absorbs a delay better than work started late.</p>
+        <p><b>2. Reduce the specification-delay impact, at P = 0.45 the most likely threat.</b> Rather than trying to lower a probability the company does not control, lower the impact by designing the module with the tax-authority interface behind an abstraction layer, so a change in the published specification alters one adapter rather than the whole module. This is the lecture's <i>defer commitment</i> principle used as a risk control: keep the irreversible part of the design as small and as late as possible.</p>
+        <p><b>A note on the security audit risk.</b> At &minus;BDT 180,000 it is the smallest exposure, so it does not warrant heavy mitigation spending on EMV grounds alone. It is worth flagging that EMV measures money and not consequences: a security failure on invoice data could carry regulatory and reputational costs the impact figure does not capture, which is a known limitation of using EMV as a sole decision rule.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Using the Big Five framework, explain how Tanvir Alam's personality profile has shaped LedgerLite's current position.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>founder trait slot</b> (Entrepreneurship lecture, Section 4). This profile is deliberately the inverse of both the Fall 2025 founder and the TiffinTrail founder, high openness with <i>low</i> conscientiousness, so a memorised answer will not transfer. Watch for the extraversion trap.
+        </div>
+        <p><b>Very high openness (93) with low conscientiousness (54): the feature sprawl explained.</b> The lecture describes openness as intellectual curiosity, novelty-seeking and unconventional thinking, and identifies it as an initial catalyst that attracts early funding through visionary narratives while showing <i>zero correlation</i> with long-term scaling or exit success. That is this company's history in one line. The upside is genuine and should be credited: openness at 93 is plausibly why LedgerLite raised BDT 12,000,000 at seed as a first venture, and why it produced ideas quickly. The downside is that openness generates options and conscientiousness is what selects among them, and at 54 the selecting function is weak. The result is 47 features in 18 months with no discipline about which deserved to exist, and 19 of them used by almost nobody.</p>
+        <p><b>Low conscientiousness (54) and the engineering consequences.</b> The lecture's account of early-stage conscientiousness is that high discipline produces structured execution and lean resource allocation. The absence of it produces the opposite, and the case lists the symptoms: no automated test suite, six-hour manual deployments, and three unresolved-by-design production incidents a month. These are not technical accidents, they are what happens when nothing enforces the unglamorous work. It also explains why the company is losing BDT 520,000 a month with 14 months of runway and no evident cost discipline.</p>
+        <p><b>Very high extraversion (86): the trait that explains the least.</b> This deserves an explicit line, because it is where the marks separate. Intuition says a charismatic founder with three podcasts and two conference stages is an asset, but the lecture states directly that extraversion has <b>no statistical predictive power</b> over startup performance, funding scale or exit viability, and calls this a contradiction of common intuition. The case bears it out: 41,000 podcast downloads sit alongside 1,400 paying accounts and a monthly loss. The visibility is real and it has not converted.</p>
+        <p><b>Low neuroticism (45): a genuine asset here.</b> The lecture identifies neuroticism as the single most reliable negative predictor across all phases, so a low score removes the failure mode that afflicted both the SkillBridge and TiffinTrail founders. Tanvir is unlikely to freeze over the four-month decision the investor has demanded, and can be expected to pitch confidently under pressure. The risk attached to it is the mirror image: combined with openness at 93 and weak conscientiousness, low anxiety may mean the seriousness of a 14-month runway is not being felt sharply enough.</p>
+        <p><b>Agreeableness (70): moderate-high, largely neutral.</b> The lecture finds it assists early stakeholder rapport and initial fundraising but confers no advantage for scaling or exits, which matches a company that raised comfortably and is now struggling to execute.</p>
+        <div class="callout key"><span class="tag">Answer in one line</span><p>LedgerLite has a founder optimised for the first six months of a startup and not for the next thirty: openness of 93 and extraversion of 86 raised the money and generated the ideas, conscientiousness of 54 failed to convert them into a disciplined product, and low neuroticism means the resulting position is being faced calmly rather than urgently.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Classify each of the three strategic options using the growth strategy framework, and recommend one with justification. Include the structural change you would make alongside it.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          Combines the <b>four growth strategies</b> and the <b>organic-versus-strategic sequencing</b> argument (Business Growth lecture, Sections 2 and 4) with the <b>structural recommendation</b> pattern from the Fall 2025 Q5. Classify, then choose, then say what organisational change makes the choice work.
+        </div>
+        <p><b>Classification.</b></p>
+        <ul>
+          <li><b>Option 1, the e-invoicing module: product development.</b> A new capability offered to the existing customer base of SMEs, which is the lecture's definition, introducing new products to existing customers to meet changing expectations. The Apple annual-iteration example is the same shape. It is the lowest-risk of the three because both the market and the customer relationship are already known.</li>
+          <li><b>Option 2, the enterprise pivot: market expansion, or market development.</b> The core product is broadly the same accounting software taken to a different customer segment, mid-market rather than small business. Note it is arguably closer to diversification in practice, since 30 clients at BDT 90,000 with custom onboarding is a materially different business model with services attached, and saying so earns credit.</li>
+          <li><b>Option 3, the acquisition: not a growth strategy at all.</b> It is an exit, and classifying it correctly rather than forcing it into the framework is itself worth a mark.</li>
+        </ul>
+        <p><b>Recommendation: Option 1, build the e-invoicing module.</b> Four reasons, in order of weight.</p>
+        <p><b>Demand is the strongest available.</b> Every other initiative in this company's history was built on a guess, and 19 of them turned out to be wrong. A regulatory mandate covering every VAT-registered business is as close to validated demand as a software company ever gets, so this is the one project where the lecture's <i>defer commitment</i> test is genuinely satisfied: there is concrete evidence, not speculation.</p>
+        <p><b>The economics fit the runway.</b> The EMV of +BDT 730,000 is favourable, and more importantly the project uses the existing customer base rather than requiring acquisition spend the company cannot afford at BDT 9,400 per customer with 14 months of cash. It is closer to organic growth in the lecture's sense, funded from and delivered into the existing business, whereas the enterprise pivot is strategic growth requiring resources LedgerLite does not have.</p>
+        <p><b>It also fixes the retention problem.</b> Compliance software is the stickiest kind: a customer filing statutory returns through your system does not switch casually. At 5.8% monthly churn this is the most credible route to the churn reduction Question 2 identified as the priority.</p>
+        <p><b>Why not the alternatives.</b> The enterprise pivot demands custom onboarding and enterprise-grade reliability from a team with no automated tests and six-hour manual deploys, so it asks the company to compete where it is weakest, and abandoning 1,400 paying SMEs to chase 30 unsigned clients with 14 months of runway is a bet the balance sheet cannot cover. The acquisition at BDT 90,000,000 is a defensible answer if argued honestly, roughly 2.6 times annualised revenue, offering certainty for investors and an exit before the runway closes, but it forgoes the regulatory window that is the single best opportunity the company has had.</p>
+        <p><b>The structural change to make it work.</b> Appoint a <b>Head of Engineering or VP of Product with genuine roadmap authority</b>, and institute a formal product prioritisation process in which any new feature must show evidence of demand before it is built. This addresses the case's actual bottleneck: the founder's openness at 93 generates more ideas than the company can absorb and his conscientiousness at 54 does not filter them, so the filter has to be structural rather than personal. As in the Fall 2025 recommendation, the aim is to shield the business from the founder's weaker dimension while leaving him doing what he is demonstrably good at, which here is external visibility, fundraising and the regulator relationship the e-invoicing approval will require. A standing quarterly review with the lead investor would add the decision-forcing mechanism, and would also make the 14-month runway a shared and explicit constraint rather than a background fact.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m3">
+    <span class="topic-num">Mock Paper 03</span>
+    <h2>RepairKori &mdash; an appliance repair marketplace</h2>
+    <p class="subtitle">30 marks &middot; 90 minutes. Mixed format: a shorter case with two standalone calculation questions attached.</p>
+
+    <div class="formula">
+      <div class="label">Case study</div>
+      <p><b>Founder and background.</b> Shirin Akter, 41, Dhaka. Twelve years as operations manager for an electronics retail chain, where she ran the warranty service desk. Founded RepairKori in 2022 after watching customers struggle to find trustworthy technicians for out-of-warranty repairs. Self-funded with BDT 4,500,000 from savings and family, no outside equity.</p>
+      <p><b>Leadership profile (Big Five assessment).</b> Openness 65 &middot; Conscientiousness 82 &middot; Extraversion 74 &middot; Agreeableness 88 &middot; Neuroticism 52.</p>
+      <p><b>Business model.</b> A marketplace connecting customers to 240 vetted technicians for appliance repair. RepairKori verifies technicians, handles booking and payment, and guarantees the work for 30 days. It takes an 18% commission on each completed job.</p>
+      <p><b>Year 3 performance.</b> 4,800 jobs per month at an average job value of BDT 1,650, giving gross merchandise value of BDT 7,920,000 and RepairKori revenue of BDT 1,425,600 per month. Monthly operating cost BDT 1,290,000, net profit BDT 135,600.</p>
+      <p><b>The problem.</b> Technician churn is running at 31% per year. In exit interviews technicians say the 18% commission is unsustainable on small jobs, and several admit that after a first booking they exchange phone numbers with the customer and handle repeat visits directly. Customer repeat-booking rate through the platform is 22%, while an internal survey suggests roughly 55% of customers have had a second repair in the last year.</p>
+    </div>
+
+    <p><b>Planned project.</b> RepairKori intends to build a parts-inventory and warranty-tracking system, so that technicians can source genuine parts through the platform and customers can see warranty status. The work breakdown structure and estimates are:</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;">
+        <th style="padding:8px 6px;">Work package</th><th style="padding:8px 6px;">Estimate (BDT)</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Requirements and parts-vendor mapping</td><td style="padding:8px 6px;">120,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Parts catalogue data build</td><td style="padding:8px 6px;">260,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Inventory module development</td><td style="padding:8px 6px;">540,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Warranty module development</td><td style="padding:8px 6px;">380,000</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">Integration and testing</td><td style="padding:8px 6px;">210,000</td></tr>
+      <tr><td style="padding:8px 6px;">Rollout and technician training</td><td style="padding:8px 6px;">190,000</td></tr>
+    </table>
+
+    <p>A contingency reserve of 12% of total work cost is to be added for identified risks, and management will hold a separate reserve of BDT 150,000.</p>
+
+    <p><b>Historical reference project.</b> RepairKori's original booking platform cost BDT 1,200,000 to build, comprised 18,000 lines of code, was rated medium complexity (factor 1.0) and was built by a moderately experienced team (factor 1.0). The new inventory and warranty system is estimated at 27,000 lines of code, high complexity (factor 1.25), to be built by a high-experience team (factor 0.85).</p>
+
+    <p><b>Environmental factors identified by the management team.</b></p>
+    <ol style="font-size:.95rem;">
+      <li>The founder personally knows most of the 240 technicians and vets each one.</li>
+      <li>RepairKori has no formal contracts binding technicians to the platform.</li>
+      <li>Two well-funded ride-hailing apps have announced plans to add home services.</li>
+      <li>Rising middle-class appliance ownership is expanding the repair market.</li>
+      <li>The company has no automated dispatch system; bookings are assigned manually.</li>
+      <li>An appliance manufacturer has approached RepairKori about becoming its authorised service partner.</li>
+    </ol>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 1 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Identify the core business model failure threatening RepairKori and explain the mechanism by which it erodes the company's economics.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>diagnosis slot</b> applied to a marketplace rather than a product or service. It draws on the value proposition reasoning behind Q1 of the Fall 2025 paper and on the prototype-versus-product distinction, where product-stage evaluation metrics are retention and lifetime value (Prototypes &amp; MVP, Section 1).
+        </div>
+        <p><b>The core failure: the platform's value is consumed on the first transaction, so it cannot capture the repeat business it creates.</b> RepairKori's value proposition is trust and discovery, verifying an unknown technician and guaranteeing the work. Both are delivered in full the first time a customer books. Once the customer has met a technician they trust, the platform has nothing left to offer either side, so both parties have every incentive to transact directly on the second job. This is disintermediation, and the numbers confirm it is happening: 22% of customers rebook through the platform while about 55% have had a second repair, meaning roughly three in five repeat jobs are leaving the platform entirely.</p>
+        <p><b>The mechanism, and why the commission makes it worse.</b> The 18% commission is charged on every job, but the platform's cost of serving a repeat job is much lower than a first job, since discovery and vetting have already happened. Technicians experience this directly: they pay the same 18% for a booking they effectively brought themselves, which is why exit interviews describe it as unsustainable on small jobs. On an average job of BDT 1,650 the commission is about BDT 297, a meaningful share of a small technician's earnings. So the pricing model actively rewards defection, and technician churn of 31% a year is partly technicians leaving for a book of business they have already rebuilt off-platform.</p>
+        <p><b>The economic consequence.</b> The company earns BDT 1,425,600 a month against BDT 1,290,000 of cost, a net margin of roughly 9.5%, and it is losing the cheapest revenue it has, since repeat jobs cost far less to service than first jobs. Every acquisition taka therefore buys a first booking and then subsidises a relationship that migrates away, which is a structurally deteriorating position even while headline volume looks stable. The 31% technician churn compounds it, because each departure takes supply, local coverage and their customer relationships at once.</p>
+        <p><b>The strategic vulnerability.</b> Two well-funded ride-hailing apps entering home services makes this urgent rather than chronic. A competitor with an existing user base and deeper capital can absorb thin first-job margins in a way RepairKori cannot, so the window to fix retention economics closes when they launch.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m3b" style="border-top:none;padding-top:0;">
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 2 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Construct a SWOT analysis for RepairKori using the six environmental factors listed, classifying each and stating why it belongs in that quadrant. Then identify which single factor most urgently requires action.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>SWOT Analysis Framework</b> table (Risk Management lecture, Section 1). The examiner has deliberately mixed internal and external factors and included two negatives of different types, which is where classification errors happen. The final clause asks you to prioritise, which requires connecting SWOT back to the case diagnosis.
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:0 0 16px;">
+          <tr style="border-bottom:2px solid var(--ink);text-align:left;"><th style="padding:8px 6px;">Factor</th><th style="padding:8px 6px;">Quadrant</th><th style="padding:8px 6px;">Why</th></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">1. Founder personally knows and vets all 240 technicians</td><td style="padding:8px 6px;"><b>Strength</b> (internal)</td><td style="padding:8px 6px;">A capability the company owns, comparable to the lecture's veteran team example. Trust in a repair marketplace is the product.</td></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">2. No formal contracts binding technicians</td><td style="padding:8px 6px;"><b>Weakness</b> (internal)</td><td style="padding:8px 6px;">A deficiency in the company's own arrangements that hinders execution. Tempting to call it a threat because technicians are outside the firm, but the missing contract is RepairKori's own gap.</td></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">3. Ride-hailing apps entering home services</td><td style="padding:8px 6px;"><b>Threat</b> (external)</td><td style="padding:8px 6px;">Well-funded new competitors, one of the lecture's named threat examples, and outside the company's control.</td></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">4. Rising middle-class appliance ownership</td><td style="padding:8px 6px;"><b>Opportunity</b> (external)</td><td style="padding:8px 6px;">Growing market demand, the lecture's first opportunity example. A favourable trend the company did not create.</td></tr>
+          <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;">5. No automated dispatch; manual booking assignment</td><td style="padding:8px 6px;"><b>Weakness</b> (internal)</td><td style="padding:8px 6px;">An internal capability gap and a hard constraint on scale, in the same family as the lecture's legacy technical debt example.</td></tr>
+          <tr><td style="padding:8px 6px;">6. Manufacturer offering an authorised service partnership</td><td style="padding:8px 6px;"><b>Opportunity</b> (external)</td><td style="padding:8px 6px;">A strategic opening arriving from outside, closest to the lecture's "tech integrations" example among the opportunity cases it lists.</td></tr>
+        </table>
+        <p><b>Note on the internal-versus-external axis.</b> Factors 2 and 5 are both negatives and both concern things at the edge of the organisation, so the temptation is to file them under threats. The lecture's axis is not about whether a factor is good or bad, only about where it lives: strengths and weaknesses are internal, opportunities and threats are external. Both are properties of RepairKori's own arrangements, so both are weaknesses.</p>
+        <p><b>Which factor most urgently requires action: factor 2, the absence of binding technician contracts.</b> It is the weakness that converts every other item on the list into a larger problem. It is the enabling condition for the disintermediation identified in Question 1, since technicians can take repeat business off-platform with no consequence, and it is what turns factor 3 from a competitive threat into an existential one: when a well-funded ride-hailing app launches home services, nothing stops all 240 technicians from listing there simultaneously, taking their customer relationships with them. It also undermines factor 1, because the founder's personal vetting builds trust in individuals rather than loyalty to the platform, so the strength currently benefits the technicians as much as the company.</p>
+        <p><b>What acting on it would look like.</b> Not simply imposing contracts, which would accelerate the 31% churn. The realistic route is to make staying worth more than leaving: a tiered commission that falls on repeat jobs, so the technician's economics improve on exactly the jobs they currently take off-platform, combined with parts sourcing and warranty tracking, the very project in Questions 3 and 4, which gives technicians an operational reason to keep transacting through the platform. Contracts then formalise a relationship both sides want rather than trying to hold together one they do not.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 3 <span class="diff">&middot; 5 marks &middot; numerical</span></span></div>
+      <div class="qbody"><p>From the work breakdown structure, calculate the cost baseline and the project budget for the parts-inventory and warranty-tracking system. Explain why the two figures differ and which one should be used to monitor cost performance.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( 120{,}000 + 260{,}000 + 540{,}000 + 380{,}000 + 210{,}000 + 190{,}000 \)</p>
+              <p class="why"><b>Cost aggregation</b>, step 3 of the five-step baseline procedure: sum the work package estimates produced by the WBS.</p></li>
+          <li><p class="math-line">\( = 1{,}700{,}000 \text{ BDT} \)</p>
+              <p class="why">Arithmetic. Add in pairs to reduce slips: \(120+260=380\), \(540+380=920\), \(210+190=400\), then \(380+920+400=1{,}700\) thousand.</p></li>
+          <li><p class="math-line">\( \text{Contingency} = 0.12 \times 1{,}700{,}000 \)</p>
+              <p class="why"><b>Step 4, add contingency reserves.</b> The 12% is applied to the aggregated work cost, because contingency covers identified risks within that work. Contingency exists for <i>known unknowns</i>, so it belongs inside the baseline.</p></li>
+          <li><p class="math-line">\( = 204{,}000 \text{ BDT} \)</p>
+              <p class="why">\(1{,}700{,}000 \times 0.12\): take 10% (170,000) plus 2% (34,000).</p></li>
+          <li><p class="math-line">\( \text{Cost Baseline} = 1{,}700{,}000 + 204{,}000 = 1{,}904{,}000 \text{ BDT} \)</p>
+              <p class="why"><b>Definition of the cost baseline:</b> project work estimates plus contingency reserves, excluding management reserves. Time-phasing this across milestones produces the S-curve used for control.</p></li>
+          <li><p class="math-line">\( \text{Project Budget} = \text{Cost Baseline} + \text{Management Reserves} \)</p>
+              <p class="why">The lecture's stated relationship between the two figures.</p></li>
+          <li><p class="math-line">\( = 1{,}904{,}000 + 150{,}000 = 2{,}054{,}000 \text{ BDT} \)</p>
+              <p class="why">Substitute both values. Management reserves sit outside the baseline because they cover unknown unknowns and require management authorisation to release.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+          <p><b>Cost baseline = BDT 1,904,000. Project budget = BDT 2,054,000.</b></p>
+          <p><b>Sanity check:</b> the ordering 1,700,000 &lt; 1,904,000 &lt; 2,054,000 is correct. A baseline above the project budget would mean the reserves had been added in the wrong place.</p>
+        </div>
+        <p><b>Why the two differ.</b> They cover different classes of uncertainty. The contingency reserve of BDT 204,000 sits inside the baseline because it covers <i>known unknowns</i>: risks the team identified and priced during planning, such as a parts vendor failing to supply catalogue data or the warranty module needing rework. The management reserve of BDT 150,000 sits outside because it covers <i>unknown unknowns</i>, events nobody anticipated, and it is released only by management decision rather than by the project manager.</p>
+        <p><b>Which figure monitors cost performance: the cost baseline, BDT 1,904,000.</b> The lecture defines the baseline specifically as the approved, time-phased budget version used to monitor and control cost performance, and describes it as fixed, requiring formal change control to alter. It is also the figure that becomes BAC in any earned value calculation on this project. Monitoring against the project budget instead would allow BDT 150,000 of overrun to be absorbed invisibly, so the project would appear on budget while consuming money set aside for events that never happened, and every earned value measure derived from it, CV, CPI, EAC, would be flattered by the same amount.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 4 <span class="diff">&middot; 5 marks &middot; numerical</span></span></div>
+      <div class="qbody"><p>Using the multi-factor ratio model and the historical reference project, produce an independent estimate for the new system. Compare it with the WBS-based cost baseline from Question 3 and comment on the difference.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( C_{\text{new}} = C_{\text{old}} \times F_{\text{size}} \times F_{\text{complexity}} \times F_{\text{team}} \)</p>
+              <p class="why"><b>Multi-factor ratio model</b> from the lecture. Write the formula first; it earns its own mark.</p></li>
+          <li><p class="math-line">\( F_{\text{size}} = \dfrac{27{,}000}{18{,}000} = 1.5 \)</p>
+              <p class="why"><b>Size factor</b> is the ratio of new to historical size, both in lines of code, so the units cancel. Above 1.0, correctly reflecting a larger system.</p></li>
+          <li><p class="math-line">\( F_{\text{complexity}} = 1.25 \)</p>
+              <p class="why">Read from the problem. High complexity exceeds the medium baseline of 1.0, so it raises cost.</p></li>
+          <li><p class="math-line">\( F_{\text{team}} = 0.85 \)</p>
+              <p class="why"><b>The sign trap.</b> A high-experience team scores <i>below</i> 1.0, exactly as in the lecture's own worked example, because experienced developers work faster and rework less. Writing 1.15 here would invert the whole answer.</p></li>
+          <li><p class="math-line">\( C_{\text{new}} = 1{,}200{,}000 \times 1.5 \times 1.25 \times 0.85 \)</p>
+              <p class="why"><b>Substitute</b> all four values into the model.</p></li>
+          <li><p class="math-line">\( 1{,}200{,}000 \times 1.5 = 1{,}800{,}000 \)</p>
+              <p class="why">Apply the size factor first: the cost of the larger system at the old complexity and team profile.</p></li>
+          <li><p class="math-line">\( 1{,}800{,}000 \times 1.25 = 2{,}250{,}000 \)</p>
+              <p class="why">Apply complexity to the running total. The model is multiplicative because each factor scales the whole estimate rather than adding to it.</p></li>
+          <li><p class="math-line">\( 2{,}250{,}000 \times 0.85 = 1{,}912{,}500 \)</p>
+              <p class="why">Apply the team factor last, reducing the estimate by 15% to reflect the stronger team.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span>
+          <p><b>\( C_{\text{new}} = \text{BDT } 1{,}912{,}500 \)</b></p>
+          <p><b>Sanity check:</b> the combined multiplier is \(1.5 \times 1.25 \times 0.85 = 1.59375\), and \(1{,}200{,}000 \times 1.59375 = 1{,}912{,}500\). The direction is right: a system 50% larger and harder, built by a better team, should cost somewhat more than 1.5 times the original.</p>
+        </div>
+        <p><b>Comparison with the WBS estimate: compare like with like.</b> This is where most students go wrong, so do it deliberately. The multi-factor ratio model estimates the <i>work</i> cost, because the historical BDT 1,200,000 it scales from was the cost of building the original platform, not that cost plus a reserve. The comparable figure from Question 3 is therefore the aggregated work cost of <b>BDT 1,700,000</b>, not the cost baseline of BDT 1,904,000. Setting the ratio estimate against the baseline would be comparing an estimate that contains no contingency with one that does, and it would produce a flattering agreement that is not real.</p>
+        <p><b>The actual gap.</b> \( 1{,}912{,}500 - 1{,}700{,}000 = 212{,}500 \), which is about <b>12.5% above the bottom-up work estimate</b>. That is a meaningful divergence and it is the useful output of running two methods: the top-down view says the team's package-by-package figures may be optimistic by roughly an eighth.</p>
+        <p><b>Which to believe.</b> Neither automatically. The ratio model inherits whatever was true of the original booking platform, including any underestimation baked into it, and it assumes cost scales linearly with size, which understates integration and testing effort on a larger system. The WBS is decomposed and time-phased, so it can actually be used for control, which the ratio estimate cannot. The two are also not fully independent, since the people who built the WBS had the earlier project in mind.</p>
+        <p><b>Practical recommendation.</b> Adopt the WBS-based baseline of BDT 1,904,000, because only a decomposed, time-phased estimate can serve as a control baseline, but treat the 12.5% divergence as a warning rather than noise. Note that the contingency of BDT 204,000 happens to cover most of the BDT 212,500 gap, so the baseline as a whole is defensible even if the underlying work estimate is light. The specific package to interrogate is integration and testing at BDT 210,000 out of BDT 1,700,000, roughly 12% of the work cost, which is where a linear size assumption most often breaks down.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 5 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>Analyse how Shirin Akter's Big Five profile has shaped RepairKori's strengths and its current vulnerabilities.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>founder trait slot</b> (Entrepreneurship lecture, Section 4). This profile is the closest of the three mocks to the Fall 2025 founder, high agreeableness with solid conscientiousness, so it is the best rehearsal for that exact question. Give one upside and one downside per pairing.
+        </div>
+        <p><b>Very high agreeableness (88) with high extraversion (74): the technician network, and why it is not owned.</b> The lecture describes agreeableness as empathy, trustworthiness, cooperativeness and warmth, and credits it with early stakeholder rapport. The upside here is the whole business: personally knowing and vetting 240 technicians is a trust asset that no competitor can buy quickly, and it is why customers accept a stranger into their home. The downside is the pattern the Fall 2025 answer identifies, an inability to impose terms. RepairKori has <i>no formal contracts</i> binding any technician, which is precisely the sort of arrangement a highly agreeable founder avoids because it feels like distrusting people she knows personally. That single omission is the enabling condition for the disintermediation destroying the company's repeat revenue. The lecture also notes that agreeableness confers no statistical advantage for scaling, which fits: the relationships that built the network do not, by themselves, hold it.</p>
+        <p><b>High conscientiousness (82): quality control that has not become systems.</b> The lecture treats conscientiousness as an early-stage asset that turns into a constraint at scale. The upside is visible in the vetting discipline and the 30-day work guarantee, which are what make the marketplace credible. The constraint appears in the case's fifth environmental factor: bookings are still assigned <i>manually</i>, with no automated dispatch, at 4,800 jobs a month. A conscientious founder tends to keep doing the careful thing personally rather than encoding it into a system, so the very diligence that produced quality is now the ceiling on volume.</p>
+        <p><b>Moderate openness (65) and low-moderate neuroticism (52): neither the problem nor the solution.</b> Openness at 65 is enough to have seen the original opportunity but the lecture finds it uncorrelated with scaling success, so it explains little about the present. Neuroticism at 52 is genuinely the healthiest score across the three founders in this book, and since the lecture identifies neuroticism as the most reliable negative predictor, its absence means RepairKori does not have the decision paralysis that afflicts the other two cases. That matters for the recommendation: this founder can be expected to act once she sees the problem, so the intervention needed is analytical rather than structural coercion.</p>
+        <div class="callout key"><span class="tag">Answer in one line</span><p>Agreeableness of 88 built a 240-technician trust network and simultaneously left it uncontracted, and conscientiousness of 82 produced reliable service delivered by hand rather than by system, so the two traits that created the business are the two now capping and leaking it.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Question 6 <span class="diff">&middot; 5 marks</span></span></div>
+      <div class="qbody"><p>The manufacturer's authorised service partnership would classify as which growth strategy? Recommend whether RepairKori should pursue it, and state one structural change the company needs regardless of that decision.</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests &amp; where it comes from</span>
+          The <b>growth strategy framework</b> and the <b>diversification quadrants</b> (Business Growth lecture, Sections 4 and 5), combined with the structural recommendation pattern. The classification here is genuinely arguable, so the marks are in the justification rather than the label.
+        </div>
+        <p><b>Classification.</b> The partnership is best read as <b>market expansion, or market development</b>: RepairKori's existing service, vetted repair delivered through its platform, is taken to a new customer segment, the manufacturer's in-warranty customers, whom it does not currently reach. A defensible alternative reading is <b>vertical diversification, forward integration</b>, on the grounds that becoming an authorised service arm moves the company along the manufacturer's value chain toward the end customer under the manufacturer's brand. Either classification earns credit if the reasoning names the change in product and market, which is what the framework actually turns on: the service is essentially unchanged, and the market is new, which is what makes market expansion the cleaner fit.</p>
+        <p><b>Recommendation: pursue it, but sequence it after the retention fix, and negotiate on volume rather than on rate.</b></p>
+        <p><b>Why pursue it.</b> It attacks the exact weakness identified in Question 1. In-warranty work comes with a manufacturer relationship, standardised parts, defined procedures and a payer who is not the householder, so it is far harder to take off-platform: a technician cannot privately fulfil an authorised warranty repair. It converts a slice of revenue from the leaky repeat-business model into contracted volume. It also raises the switching cost against the ride-hailing entrants in factor 3, since an authorised partnership is a credential a well-funded newcomer cannot simply buy with subsidy.</p>
+        <p><b>Why sequence it carefully.</b> Two constraints in the case argue against rushing. First, dispatch is still manual at 4,800 jobs a month, so absorbing a manufacturer's volume with no automation risks failing on service levels in front of the one partner whose standards are contractual. Second, technician churn at 31% means the supply side is unstable, and an authorised partnership commits RepairKori to coverage it may not be able to staff. The lecture's argument that organic capability should precede strategic growth applies directly: build the dispatch automation and stabilise technician retention, then take the partnership at a volume the company can actually serve.</p>
+        <p><b>Why negotiate on volume, not rate.</b> Authorised service work typically pays less per job than open-market repair, so accepting it at a low rate to win the relationship would compress an already thin 9.5% net margin. The value here is retention and defensibility, not price, and the negotiation should be framed that way.</p>
+        <p><b>The structural change needed regardless: formalise the technician relationship and re-price repeat work.</b> Introduce written agreements with a tiered commission that falls on repeat jobs, so a technician's economics improve on exactly the bookings they currently take off-platform, and appoint a <b>Head of Supply or Technician Operations</b> to own recruitment, retention and the contract framework. This addresses the founder's demonstrated blind spot, since the case shows agreeableness at 88 has produced a network held together entirely by personal goodwill, and it moves the company from relationships owned by a person to relationships owned by the company. Automating dispatch belongs in the same package, because it removes the founder from the daily operational path and lifts the volume ceiling that manual assignment imposes.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m4">
+    <span class="topic-num">Drill set 01</span>
+    <h2>Numerical drills: earned value</h2>
+    <p class="subtitle">Four problems, rising in difficulty. Do them with a calculator and nothing else.</p>
+
+    <p>These are the fastest marks on any version of this paper. Aim to complete a full nine-measure calculation in under eight minutes. Before you start, write the formula block at the top of your page from memory: PV, EV, CV, SV, CPI, SPI, EAC, ETC, VAC. If you cannot, go back to Book 1 Topic 09 first.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 1 <span class="diff">&middot; standard, over budget</span></span></div>
+      <div class="qbody"><p>BAC = BDT 2,000,000. Planned complete 75%. Actually complete 60%. Actual cost BDT 1,400,000. Calculate all nine measures and interpret.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( PV = 2{,}000{,}000 \times 0.75 = 1{,}500{,}000 \)</p><p class="why"><b>Planned value:</b> BAC times planned percentage complete.</p></li>
+          <li><p class="math-line">\( EV = 2{,}000{,}000 \times 0.60 = 1{,}200{,}000 \)</p><p class="why"><b>Earned value:</b> BAC times <i>actual</i> percentage, valued at the budgeted rate.</p></li>
+          <li><p class="math-line">\( CV = 1{,}200{,}000 - 1{,}400{,}000 = -200{,}000 \)</p><p class="why"><b>CV = EV &minus; AC.</b> Negative: over budget by BDT 200,000.</p></li>
+          <li><p class="math-line">\( SV = 1{,}200{,}000 - 1{,}500{,}000 = -300{,}000 \)</p><p class="why"><b>SV = EV &minus; PV.</b> Negative: behind schedule by BDT 300,000 of work.</p></li>
+          <li><p class="math-line">\( CPI = \dfrac{1{,}200{,}000}{1{,}400{,}000} = \dfrac{6}{7} \approx 0.857 \)</p><p class="why"><b>CPI = EV / AC.</b> Cancel 200,000 from both to get 6/7 and keep the fraction for the EAC step.</p></li>
+          <li><p class="math-line">\( SPI = \dfrac{1{,}200{,}000}{1{,}500{,}000} = 0.80 \)</p><p class="why"><b>SPI = EV / PV.</b> Progressing at 80% of planned rate, agreeing in sign with the negative SV.</p></li>
+          <li><p class="math-line">\( EAC = 2{,}000{,}000 \times \dfrac{7}{6} \approx 2{,}333{,}333 \)</p><p class="why"><b>EAC = BAC / CPI.</b> Dividing by 6/7 is multiplying by 7/6, which keeps it exact.</p></li>
+          <li><p class="math-line">\( ETC = 2{,}333{,}333 - 1{,}400{,}000 \approx 933{,}333 \)</p><p class="why"><b>ETC = EAC &minus; AC:</b> remaining forecast spend.</p></li>
+          <li><p class="math-line">\( VAC = 2{,}000{,}000 - 2{,}333{,}333 \approx -333{,}333 \)</p><p class="why"><b>VAC = BAC &minus; EAC.</b> Forecast overrun of about BDT 333,000.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p>PV 1,500,000 &middot; EV 1,200,000 &middot; CV &minus;200,000 &middot; SV &minus;300,000 &middot; CPI &asymp; 0.86 &middot; SPI 0.80 &middot; EAC &asymp; 2,333,333 &middot; ETC &asymp; 933,333 &middot; VAC &asymp; &minus;333,333.<br><b>Interpretation:</b> over budget and behind schedule; roughly 0.86 BDT of value earned per taka spent, at 80% of planned pace, forecast to finish about BDT 333,000 above a BDT 2,000,000 budget. Note the schedule problem is proportionally worse than the cost problem here, so investigate delivery pace first.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 2 <span class="diff">&middot; standard, under budget</span></span></div>
+      <div class="qbody"><p>BAC = BDT 800,000. Planned complete 30%. Actually complete 35%. Actual cost BDT 260,000. Calculate all nine measures.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( PV = 800{,}000 \times 0.30 = 240{,}000 \)</p><p class="why">BAC times planned percentage.</p></li>
+          <li><p class="math-line">\( EV = 800{,}000 \times 0.35 = 280{,}000 \)</p><p class="why">BAC times actual percentage. EV exceeding PV is the first sign the project is ahead.</p></li>
+          <li><p class="math-line">\( CV = 280{,}000 - 260{,}000 = +20{,}000 \)</p><p class="why"><b>CV = EV &minus; AC.</b> Positive: under budget.</p></li>
+          <li><p class="math-line">\( SV = 280{,}000 - 240{,}000 = +40{,}000 \)</p><p class="why"><b>SV = EV &minus; PV.</b> Positive: ahead of schedule.</p></li>
+          <li><p class="math-line">\( CPI = \dfrac{280{,}000}{260{,}000} = \dfrac{14}{13} \approx 1.077 \)</p><p class="why"><b>CPI = EV / AC.</b> Above 1.0, cost efficient.</p></li>
+          <li><p class="math-line">\( SPI = \dfrac{280{,}000}{240{,}000} = \dfrac{7}{6} \approx 1.167 \)</p><p class="why"><b>SPI = EV / PV.</b> Running at about 117% of planned pace.</p></li>
+          <li><p class="math-line">\( EAC = 800{,}000 \times \dfrac{13}{14} \approx 742{,}857 \)</p><p class="why"><b>EAC = BAC / CPI.</b> Dividing by a CPI above 1 <i>reduces</i> the forecast, which is the check that the formula is the right way up.</p></li>
+          <li><p class="math-line">\( ETC = 742{,}857 - 260{,}000 \approx 482{,}857 \)</p><p class="why"><b>ETC = EAC &minus; AC.</b></p></li>
+          <li><p class="math-line">\( VAC = 800{,}000 - 742{,}857 \approx +57{,}143 \)</p><p class="why"><b>VAC = BAC &minus; EAC.</b> Positive, forecasting an underrun.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer &amp; check</span><p>PV 240,000 &middot; EV 280,000 &middot; CV +20,000 &middot; SV +40,000 &middot; CPI &asymp; 1.08 &middot; SPI &asymp; 1.17 &middot; EAC &asymp; 742,857 &middot; ETC &asymp; 482,857 &middot; VAC &asymp; +57,143.<br>Both variances positive, both indices above 1, EAC below BAC, VAC positive. All four agree, which is what a healthy project looks like. <b>Caution worth writing:</b> only 35% is complete, so this favourable picture rests on early performance that may not hold.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 3 <span class="diff">&middot; hard &middot; reverse</span></span></div>
+      <div class="qbody"><p>A project reports SPI = 0.75 with planned value of BDT 600,000 at the review point. BAC is BDT 1,500,000 and BDT 520,000 has been spent. Find EV, the planned and actual completion percentages, CPI, EAC and VAC.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( SPI = \dfrac{EV}{PV} \implies EV = SPI \times PV \)</p><p class="why"><b>Rearrange the SPI definition</b> by multiplying both sides by PV. SPI and PV are the two given values, so this is the only door into the problem.</p></li>
+          <li><p class="math-line">\( EV = 0.75 \times 600{,}000 = 450{,}000 \text{ BDT} \)</p><p class="why">Substitute. EV below PV is consistent with an SPI under 1.</p></li>
+          <li><p class="math-line">\( \%\text{planned} = \dfrac{PV}{BAC} = \dfrac{600{,}000}{1{,}500{,}000} = 40\% \)</p><p class="why"><b>Rearrange the PV definition</b> to isolate the planned percentage.</p></li>
+          <li><p class="math-line">\( \%\text{actual} = \dfrac{EV}{BAC} = \dfrac{450{,}000}{1{,}500{,}000} = 30\% \)</p><p class="why"><b>Rearrange the EV definition.</b> The project should be 40% done and is 30% done, which is what SPI = 0.75 means in plain terms.</p></li>
+          <li><p class="math-line">\( CPI = \dfrac{EV}{AC} = \dfrac{450{,}000}{520{,}000} = \dfrac{45}{52} \approx 0.865 \)</p><p class="why"><b>CPI = EV / AC</b>, now computable because EV was recovered in step 2.</p></li>
+          <li><p class="math-line">\( EAC = 1{,}500{,}000 \times \dfrac{52}{45} \approx 1{,}733{,}333 \text{ BDT} \)</p><p class="why"><b>EAC = BAC / CPI</b>, using the fraction to stay exact: \(1{,}500{,}000 \div 45 = 33{,}333.33\), then \(\times 52\).</p></li>
+          <li><p class="math-line">\( VAC = 1{,}500{,}000 - 1{,}733{,}333 \approx -233{,}333 \text{ BDT} \)</p><p class="why"><b>VAC = BAC &minus; EAC.</b> Forecast overrun of roughly BDT 233,000.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p>EV 450,000 &middot; planned 40% &middot; actual 30% &middot; CPI &asymp; 0.87 &middot; EAC &asymp; 1,733,333 &middot; VAC &asymp; &minus;233,333 (all BDT).<br><b>Worth adding:</b> at only 30% complete, ETC is about BDT 1,213,333, more than twice what has been spent so far, so almost the entire exposure lies ahead. This is the point in Book 1 Topic 09, Question 9.3 about early-project CPI carrying more remaining risk than the same CPI late on.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 4 <span class="diff">&middot; interpretation only</span></span></div>
+      <div class="qbody"><p>A project reports CPI = 1.05 and SPI = 0.85. Without any further figures, describe what is happening and what a project manager should investigate. Would you expect EAC to be above or below BAC?</p></div>
+      <details class="solution"><summary>Show model answer</summary><div class="soln-body">
+        <div class="link-map">
+          <span class="tag">What this tests</span>
+          Whether you can read the indices as a <i>pattern</i> rather than compute them. Mixed signals like this one are the most common real-world case and a favourite short-answer question, because the two indices point in opposite directions and the naive reading of each cancels out.
+        </div>
+        <p><b>What is happening.</b> The project is <b>cost efficient but slow</b>. A CPI of 1.05 means 1.05 BDT of budgeted value is being earned for every 1.00 BDT spent, so the work completed cost less than it was budgeted to cost. An SPI of 0.85 means work is progressing at only 85% of the planned rate, so less has been completed than should have been by now.</p>
+        <p><b>The most likely explanation, and it is not good news.</b> The commonest cause of this exact pattern is <b>under-resourcing</b>. If the project is running with fewer people than planned, or people are shared with other work, spending falls below plan, which flatters CPI, while output falls behind plan, which depresses SPI. The apparent cost efficiency is then an artefact of not doing the work rather than of doing it cheaply, and it will disappear the moment the team is brought up to strength to recover the schedule.</p>
+        <p><b>What to investigate, in order.</b> First, staffing against plan: are the budgeted people actually assigned and working full time on this project? Second, whether the delay sits in one work package or is spread across all of them, since a single blocked dependency has a different remedy from a general pace problem. Third, whether the reported completion percentage is honest, because an understated percentage would depress SPI and CPI together, and here CPI is high, so that is unlikely but worth confirming. Fourth, whether quality has been traded for cost, since skipped testing lowers AC now and raises it later.</p>
+        <p><b>EAC relative to BAC.</b> Using the lecture's formula \(EAC = BAC / CPI\), with CPI at 1.05 the EAC comes out <i>below</i> BAC, forecasting an underrun of roughly 4.8%. That is the answer the formula gives, and you should say so. But it is worth adding the caveat, because it earns the mark that separates a mechanical answer from an understanding one: the formula uses cost performance only and ignores schedule entirely, so it does not capture the cost of recovering the delay. If the team is expanded or overtime is authorised to bring SPI back toward 1.0, CPI will fall and the forecast underrun will evaporate. A schedule problem usually becomes a cost problem the moment someone tries to fix it.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m5">
+    <span class="topic-num">Drill set 02</span>
+    <h2>Numerical drills: EMV and cost estimation</h2>
+    <p class="subtitle">Six shorter problems. These take three to five minutes each.</p>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 5 <span class="diff">&middot; EMV, standard</span></span></div>
+      <div class="qbody"><p>Calculate the total EMV. Vendor hardware delay: threat, P 0.40, impact BDT 250,000. Client scope change: threat, P 0.55, impact BDT 600,000. Early beta adoption bonus: opportunity, P 0.30, impact BDT 900,000. Key staff illness: threat, P 0.15, impact BDT 200,000.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{EMV} = \sum (P_i \times I_i) \)</p><p class="why">State the formula before touching the numbers.</p></li>
+          <li><p class="math-line">\( I: -250{,}000,\; -600{,}000,\; +900{,}000,\; -200{,}000 \)</p><p class="why"><b>Apply signs first.</b> Threats negative, opportunities positive, per the lecture's definition. Only the beta bonus is positive.</p></li>
+          <li><p class="math-line">\( 0.40 \times (-250{,}000) = -100{,}000 \)</p><p class="why">Hardware delay risk score.</p></li>
+          <li><p class="math-line">\( 0.55 \times (-600{,}000) = -330{,}000 \)</p><p class="why">Scope change risk score, the largest threat contribution on both probability and impact.</p></li>
+          <li><p class="math-line">\( 0.30 \times (+900{,}000) = +270{,}000 \)</p><p class="why">Opportunity risk score.</p></li>
+          <li><p class="math-line">\( 0.15 \times (-200{,}000) = -30{,}000 \)</p><p class="why">Staff illness risk score, smallest on both factors.</p></li>
+          <li><p class="math-line">\( \text{EMV} = -100{,}000 - 330{,}000 + 270{,}000 - 30{,}000 = -190{,}000 \)</p><p class="why">Sum the column. Threats total &minus;460,000, offset by +270,000.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>EMV = &minus;BDT 190,000.</b> Net expected loss, so a contingency reserve of at least that order should be built into the baseline. The scope change risk alone accounts for BDT 330,000 of exposure, so mitigation effort belongs there first, most practically through a written change control procedure agreed with the client at contract stage.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 6 <span class="diff">&middot; EMV, decision</span></span></div>
+      <div class="qbody"><p>A company must choose between building a component in-house or buying it. <b>Build:</b> 60% chance of success saving BDT 1,200,000; 40% chance of failure costing BDT 800,000. <b>Buy:</b> 85% chance of success saving BDT 700,000; 15% chance of failure costing BDT 300,000. Calculate both EMVs and recommend.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( \text{EMV}_{\text{build}} = (0.60 \times 1{,}200{,}000) + (0.40 \times -800{,}000) \)</p><p class="why">Apply the formula to the two branches. The probabilities sum to 1.0, confirming the outcomes are exhaustive.</p></li>
+          <li><p class="math-line">\( = 720{,}000 - 320{,}000 = +400{,}000 \text{ BDT} \)</p><p class="why">Multiply each branch and sum.</p></li>
+          <li><p class="math-line">\( \text{EMV}_{\text{buy}} = (0.85 \times 700{,}000) + (0.15 \times -300{,}000) \)</p><p class="why">Same method for the second option.</p></li>
+          <li><p class="math-line">\( = 595{,}000 - 45{,}000 = +550{,}000 \text{ BDT} \)</p><p class="why">Multiply and sum.</p></li>
+          <li><p class="math-line">\( 550{,}000 - 400{,}000 = 150{,}000 \text{ BDT} \)</p><p class="why">Quantify the gap so the recommendation has a magnitude attached to it.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>Build = +BDT 400,000, Buy = +BDT 550,000. Recommend buying</b>, better by BDT 150,000 on expected value and also lower variance, since it fails only 15% of the time against 40%. Here EMV and risk appetite point the same way, which is unusual and worth noting; where they conflict, a single unsurvivable downside outweighs a higher average.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 7 <span class="diff">&middot; EMV into cost baseline</span></span></div>
+      <div class="qbody"><p>A project has aggregated work package costs of BDT 5,000,000. Its risk register lists: data centre migration failure (P 0.20, impact BDT 1,500,000), third-party API deprecation (P 0.35, impact BDT 400,000), regulatory fine (P 0.10, impact BDT 2,000,000). All are threats. Calculate the EMV and use it to set the contingency reserve and cost baseline.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( 0.20 \times (-1{,}500{,}000) = -300{,}000 \)</p><p class="why">Migration failure risk score. All three impacts are negative because all three are threats.</p></li>
+          <li><p class="math-line">\( 0.35 \times (-400{,}000) = -140{,}000 \)</p><p class="why">API deprecation risk score: most likely event, but modest impact.</p></li>
+          <li><p class="math-line">\( 0.10 \times (-2{,}000{,}000) = -200{,}000 \)</p><p class="why">Regulatory fine risk score: largest impact, lowest probability.</p></li>
+          <li><p class="math-line">\( \text{EMV} = -300{,}000 - 140{,}000 - 200{,}000 = -640{,}000 \text{ BDT} \)</p><p class="why">Sum. With threats only, the total must be negative.</p></li>
+          <li><p class="math-line">\( \text{Contingency reserve} = 640{,}000 \text{ BDT} \)</p><p class="why"><b>Sizing the reserve from the expected exposure.</b> Contingency covers known unknowns, and these three risks are exactly that: identified and quantified, so the total EMV is the natural size for the reserve. Note the honest caveat: neither lecture states this link explicitly, the cost lecture is silent on how the reserve is sized and the risk lecture only says to allocate contingency funds to protect ROI, so this is standard practice joining the two topics rather than a formula the faculty gave.</p></li>
+          <li><p class="math-line">\( \text{Cost Baseline} = 5{,}000{,}000 + 640{,}000 = 5{,}640{,}000 \text{ BDT} \)</p><p class="why"><b>Step 4 of the baseline procedure:</b> aggregated work cost plus contingency reserves, still excluding management reserves.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>EMV = &minus;BDT 640,000. Contingency reserve = BDT 640,000. Cost baseline = BDT 5,640,000</b> (before time-phasing).</p>
+        <p><b>The point of this drill</b> is that the two lectures connect: EMV need not be an isolated calculation, it is the usual way a contingency reserve in the cost baseline gets its number. A management reserve would then be added on top to give the project budget, covering the unknown unknowns that no register can list.</p>
+        <p><b>One caveat worth a mark.</b> A reserve set at exactly the EMV covers the <i>average</i> outcome. If the regulatory fine actually occurs, it alone costs BDT 2,000,000, more than three times the whole reserve, so an organisation that cannot absorb that should either buy insurance against it, treat it separately outside the reserve, or fund at a higher confidence level than the mean.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 8 <span class="diff">&middot; single-factor ratio</span></span></div>
+      <div class="qbody"><p>A similar past project cost BDT 750,000. The new project's scope is assessed as 20% smaller. Estimate the new cost, and state one condition under which this estimate would be unsafe.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( E_{\text{new}} = E_{\text{old}} \times F \)</p><p class="why"><b>Single-factor ratio model</b> from the lecture.</p></li>
+          <li><p class="math-line">\( F = 1 - 0.20 = 0.80 \)</p><p class="why"><b>Convert the percentage to a factor.</b> 20% smaller means 80% of the original, so F is below 1.0 and will reduce the estimate. Compare the lecture's example, where 25% larger gave F = 1.25.</p></li>
+          <li><p class="math-line">\( E_{\text{new}} = 750{,}000 \times 0.80 = 600{,}000 \text{ BDT} \)</p><p class="why">Substitute and multiply.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>BDT 600,000.</b> Sanity check: it is smaller than the historical cost, which is the right direction for a reduced scope.</p></div>
+        <p><b>When this would be unsafe.</b> The model assumes cost scales proportionally with scope, which breaks down when a large share of the cost is fixed rather than variable. If BDT 300,000 of the original project went on environment setup, architecture and a licence that the new project also needs in full, then cutting scope by 20% cuts only the variable half, and the true estimate is closer to \(300{,}000 + (450{,}000 \times 0.8) = 660{,}000\). A second unsafe condition is that the two projects are not genuinely comparable, since the whole method rests on the historical project being a valid analogue.</p>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 9 <span class="diff">&middot; multi-factor ratio</span></span></div>
+      <div class="qbody"><p>Historical project: BDT 420,000, 12,000 lines of code, medium complexity (1.0), moderate team experience (1.0). New project: 15,000 lines of code, low complexity (0.90), low team experience (1.15). Estimate the new cost.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( C_{\text{new}} = C_{\text{old}} \times F_{\text{size}} \times F_{\text{complexity}} \times F_{\text{team}} \)</p><p class="why">State the model first.</p></li>
+          <li><p class="math-line">\( F_{\text{size}} = \dfrac{15{,}000}{12{,}000} = 1.25 \)</p><p class="why"><b>Size factor:</b> ratio of new to old size. Above 1.0, raising cost.</p></li>
+          <li><p class="math-line">\( F_{\text{complexity}} = 0.90 \)</p><p class="why">Given. <b>Below 1.0</b>, because low complexity is <i>easier</i> than the medium baseline and therefore cheaper. This is the reverse of the usual case, so read the wording carefully.</p></li>
+          <li><p class="math-line">\( F_{\text{team}} = 1.15 \)</p><p class="why">Given. <b>Above 1.0</b>, because a low-experience team is slower and produces more rework. Note this is the opposite direction from the lecture's example, where a high-experience team scored 0.85.</p></li>
+          <li><p class="math-line">\( 420{,}000 \times 1.25 = 525{,}000 \)</p><p class="why">Apply size.</p></li>
+          <li><p class="math-line">\( 525{,}000 \times 0.90 = 472{,}500 \)</p><p class="why">Apply complexity, which reduces the running total.</p></li>
+          <li><p class="math-line">\( 472{,}500 \times 1.15 = 543{,}375 \)</p><p class="why">Apply team experience, which raises it again.</p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>BDT 543,375.</b> Sanity check: combined multiplier \(1.25 \times 0.90 \times 1.15 = 1.29375\), and \(420{,}000 \times 1.29375 = 543{,}375\). The three factors partly cancel, so a project 25% larger ends up only about 29% more expensive, because the easier work offsets the weaker team.</p></div>
+      </div></details>
+    </div>
+
+    <div class="qcard">
+      <div class="qhead"><span class="qlabel">Drill 10 <span class="diff">&middot; cost baseline</span></span></div>
+      <div class="qbody"><p>Work packages: analysis BDT 85,000, design BDT 140,000, build BDT 320,000, testing BDT 95,000. Contingency reserve is 15% of total work cost; management reserve is BDT 64,000. Find the cost baseline and the project budget.</p></div>
+      <details class="solution"><summary>Show worked solution</summary><div class="soln-body">
+        <ol class="steps">
+          <li><p class="math-line">\( 85{,}000 + 140{,}000 + 320{,}000 + 95{,}000 = 640{,}000 \)</p><p class="why"><b>Cost aggregation:</b> sum the work packages. \(85+140=225\), \(320+95=415\), \(225+415=640\) thousand.</p></li>
+          <li><p class="math-line">\( \text{Contingency} = 0.15 \times 640{,}000 = 96{,}000 \)</p><p class="why"><b>Add contingency reserves</b> for identified risks, calculated on the aggregated work cost. Ten percent is 64,000, half of that is 32,000, so 15% is 96,000.</p></li>
+          <li><p class="math-line">\( \text{Cost Baseline} = 640{,}000 + 96{,}000 = 736{,}000 \text{ BDT} \)</p><p class="why"><b>Definition:</b> work estimates plus contingency, excluding management reserves.</p></li>
+          <li><p class="math-line">\( \text{Project Budget} = 736{,}000 + 64{,}000 = 800{,}000 \text{ BDT} \)</p><p class="why"><b>Project Budget = Cost Baseline + Management Reserves.</b></p></li>
+        </ol>
+        <div class="callout key"><span class="tag">Answer</span><p><b>Cost baseline = BDT 736,000. Project budget = BDT 800,000.</b> Ordering check: 640,000 &lt; 736,000 &lt; 800,000. If asked which figure judges cost performance, it is the baseline, since it becomes BAC in earned value analysis.</p></div>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="topic" id="m6">
+    <span class="topic-num">Revision</span>
+    <h2>Rapid-fire definition bank</h2>
+    <p class="subtitle">Cover the right column, work down the left. Anything you cannot answer in ten seconds goes on tonight's list.</p>
+
+    <p>These are the one-liners that appear <i>inside</i> longer answers. You will rarely be asked for a bare definition, but an answer that opens with the faculty's own phrasing signals immediately that you know the material, and it costs you eight seconds to produce.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;"><th style="padding:8px 6px;width:34%;">Prompt</th><th style="padding:8px 6px;">Answer</th></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Entrepreneurship</b></td><td style="padding:8px 6px;">Creation or extraction of economic value in ways entailing beyond the minimal risk of a traditional business, potentially involving values beyond economic returns.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>The entrepreneur</b></td><td style="padding:8px 6px;">One who creates or invests in businesses, bearing the majority of the risks and reaping the majority of the rewards.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Six types</b></td><td style="padding:8px 6px;">Small business, scalable startup, intrapreneurship, social, hustler, imitator.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Big Five, one line each</b></td><td style="padding:8px 6px;">Neuroticism always harmful. Conscientiousness helps early, hinders at scale. Openness attracts early money only. Agreeableness gives early rapport only. Extraversion predicts nothing.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Creativity vs innovation</b></td><td style="padding:8px 6px;">Innovation is doing different things. Creativity is doing things differently.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Three components of creativity</b></td><td style="padding:8px 6px;">Expertise, creative thinking skills, motivation (intrinsic beats extrinsic). Creativity lives at the intersection of all three.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Prototype vs product</b></td><td style="padding:8px 6px;">A prototype delivers validated information; a product delivers sustained value and profit.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Three fidelity levels</b></td><td style="padding:8px 6px;">Low (paper sketches, flows), mid (grey wireframes, interaction), high (realistic interactive, sign-off).</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Hypothesis</b></td><td style="padding:8px 6px;">An assumption critical to the business model which, if disproven, causes venture failure. "We believe [segment] will [behaviour] if we provide [value proposition]."</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>MVP</b></td><td style="padding:8px 6px;">The leanest functional version enabling maximal validated customer learning with minimal engineering effort.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Build-Measure-Learn</b></td><td style="padding:8px 6px;">Build the MVP, measure real user metrics, learn and decide, then build again.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>The MVP misconception</b></td><td style="padding:8px 6px;">An MVP is not a half-built product. Skateboard, scooter, bicycle, motorcycle, car; not wheel, axle, chassis, car.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Lean architecture</b></td><td style="padding:8px 6px;">Adapting lean manufacturing to software to eliminate waste, maximise customer value and optimise efficiency.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>The seven principles</b></td><td style="padding:8px 6px;">Eliminate waste, build quality in, create knowledge, defer commitment, deliver fast, respect people, optimise the whole.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Four-step lean solution</b></td><td style="padding:8px 6px;">Value stream mapping, just-in-time design, automated quality and feedback, evolutionary design.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Agile vs lean, in one line</b></td><td style="padding:8px 6px;">Agile optimises throughput; lean optimises selection. Same sprints, different question.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>KPI</b></td><td style="padding:8px 6px;">A quantifiable measurement of how effectively an organisation, team or individual achieves predefined strategic goals and milestones.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>KPI vs metric</b></td><td style="padding:8px 6px;">KPI measures strategic outcome and impact; metric measures process execution and operational status.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Effective KPI criteria</b></td><td style="padding:8px 6px;">Linked to strategic targets, quantifiable and actionable, realistic within constraints.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>S.M.A.R.T.</b></td><td style="padding:8px 6px;">Specific, Measurable, Achievable, Relevant, Time-bound.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Worst KPI risk</b></td><td style="padding:8px 6px;">Perverse incentives: gaming the system so the number improves while the outcome worsens.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Organic vs strategic growth</b></td><td style="padding:8px 6px;">Organic uses internal resources and efficiency; strategic uses deliberate long-term funded initiatives. Do organic first to fund strategic.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Why a growth plan</b></td><td style="padding:8px 6px;">Funding, insurance (a crisis buffer), credibility and creditability for loans.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Four growth strategies</b></td><td style="padding:8px 6px;">Market penetration, market expansion, product development, diversification.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Four diversification types</b></td><td style="padding:8px 6px;">Conglomerate (unrelated everything), concentric (related technology), horizontal (unrelated tech, same customers), vertical (up or down the value chain).</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>PureGlow verdict</b></td><td style="padding:8px 6px;">Horizontal diversification: candles are technologically distinct from skincare but sold at the same value-chain stage to the same customers through the same channels.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Four cost categories</b></td><td style="padding:8px 6px;">Direct, indirect, opportunity, risk-related.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Opportunity cost</b></td><td style="padding:8px 6px;">The forgone benefit of the <i>next best</i> alternative given up.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Cost baseline</b></td><td style="padding:8px 6px;">Approved, time-phased, fixed budget version used to monitor cost performance. Work estimates plus contingency, excluding management reserves.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Five baseline steps</b></td><td style="padding:8px 6px;">WBS, cost estimation, cost aggregation, add contingency reserves, develop the time-phased budget.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Contingency vs management reserve</b></td><td style="padding:8px 6px;">Contingency covers known unknowns and sits inside the baseline; management covers unknown unknowns and sits outside it.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Why the S-curve is S-shaped</b></td><td style="padding:8px 6px;">Slow start with few activities, steep middle at full execution, flat finish as work winds down.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Analogous estimating</b></td><td style="padding:8px 6px;">Top-down, using historical actuals from the most similar past project. Used early when requirements are thin.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Team experience factor</b></td><td style="padding:8px 6px;">A <i>more</i> experienced team gets a factor <i>below</i> 1.0 (lecture uses 0.85), because they cost less.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>CPI in plain English</b></td><td style="padding:8px 6px;">Taka of budgeted value earned per taka spent. 0.82 means 18 paisa lost on every taka.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Why EAC = BAC / CPI</b></td><td style="padding:8px 6px;">It assumes current cost efficiency continues, so buying the whole BAC of work at that efficiency costs BAC divided by CPI.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>Risk (lecture definition)</b></td><td style="padding:8px 6px;">Any uncertain event or condition that, if it occurs, has a positive (opportunity) or negative (threat) impact on scope, schedule, cost or quality.</td></tr>
+      <tr style="border-bottom:1px solid var(--rule);"><td style="padding:8px 6px;"><b>SWOT axis</b></td><td style="padding:8px 6px;">Strengths and weaknesses internal; opportunities and threats external.</td></tr>
+      <tr><td style="padding:8px 6px;"><b>What EMV is for</b></td><td style="padding:8px 6px;">Sizing contingency reserves and comparing options. It is an average, so it never predicts any single outcome.</td></tr>
+    </table>
+  </section>
+
+  <section class="topic" id="m7">
+    <span class="topic-num">Revision</span>
+    <h2>Twenty ways to lose marks</h2>
+    <p class="subtitle">Read this the night before. Most of these are worth one or two marks each.</p>
+
+    <h3>Method errors</h3>
+    <ol>
+      <li><b>Restating the case instead of interpreting it.</b> "In Year 1 they had 120 subscribers and by Year 3 they had 610" earns nothing. Every case fact must be attached to a claim.</li>
+      <li><b>Naming a concept without a mechanism.</b> "This is a value proposition failure" is a label. The marks are in <i>how</i> the failure produced the observed numbers.</li>
+      <li><b>Skipping the exclusions in a KPI question.</b> The faculty's own model answers always say what was rejected and why. Four selections with no exclusions is an incomplete answer.</li>
+      <li><b>Only criticising the founder in a Big Five question.</b> Give one upside and one downside per trait pairing. The traits built the business before they broke it.</li>
+      <li><b>Writing an essay when four labelled sentences would do.</b> Five marks is roughly 150 to 200 words. Length is not the currency; links are.</li>
+      <li><b>Leaving a question blank because time ran out.</b> A three-sentence skeleton scores two or three; a blank scores zero. Budget the clock and stop when the time is up.</li>
+    </ol>
+
+    <h3>Content errors</h3>
+    <ol start="7">
+      <li><b>Writing "entrepreneurs are risk takers".</b> The lecture argues the opposite: founders are motivated by risk <i>mitigation</i>, and overconfident risk-tolerant founders perform worse.</li>
+      <li><b>Praising a charismatic founder's extraversion.</b> The lecture states extraversion has no statistical predictive power. Saying so is the mark.</li>
+      <li><b>Calling high conscientiousness simply good.</b> It is two-sided: an early asset, a scaling brake.</li>
+      <li><b>Describing an MVP as a cut-down or half-finished product.</b> It is the simplest <i>complete</i> solution delivering real utility at every stage.</li>
+      <li><b>Proposing "build a simple version of the app" as a prototype.</b> The lecture's exemplary MVP wrote no software at all.</li>
+      <li><b>Filing an internal weakness under threats in SWOT.</b> A small budget or a missing skill is internal, therefore a weakness.</li>
+      <li><b>Confusing concentric with horizontal diversification.</b> Concentric shares the technology; horizontal shares the customer but not the technology.</li>
+      <li><b>Treating "defer commitment" and "deliver fast" as contradictory.</b> One governs irreversible decisions, the other reversible increments.</li>
+      <li><b>Forgetting that opportunity cost is the <i>next best</i> alternative</b>, not the sum of everything foregone.</li>
+    </ol>
+
+    <h3>Calculation errors</h3>
+    <ol start="16">
+      <li><b>Losing the sign on an opportunity in EMV.</b> The single most common numerical error in the course. Write the signed impact column before multiplying anything.</li>
+      <li><b>Computing EV from actual cost rather than BAC.</b> EV always uses the budgeted rate: \(EV = BAC \times \%\text{actual}\).</li>
+      <li><b>Inverting the team experience factor.</b> A strong team is below 1.0. Writing 1.15 for high experience inverts the answer.</li>
+      <li><b>Putting management reserves inside the cost baseline.</b> Baseline holds contingency only; the budget holds both.</li>
+      <li><b>Giving a number with no interpretation.</b> Every calculated answer needs a sentence saying what it means for the project. In a five-mark question the interpretation is usually worth one or two of them on its own.</li>
+    </ol>
+
+    <div class="callout key">
+      <span class="tag">The two checks that catch most slips</span>
+      <p><b>Earned value:</b> CV and CPI must agree in direction, and so must SV and SPI. If CV is negative, CPI must be below 1. If they disagree, you have swapped a formula.<br>
+      <b>EMV:</b> count the threats and opportunities before you sum. Mostly threats should give a negative total; a dominant opportunity should give a positive one. If the sign surprises you, find the lost minus.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="m8">
+    <span class="topic-num">Revision</span>
+    <h2>The three-day revision plan</h2>
+    <p class="subtitle">Compressed for an exam two to three days out. Adjust the dates to your paper.</p>
+
+    <p>With this little time the temptation is to reread everything once. Do not. Rereading produces the feeling of familiarity without the ability to retrieve, and this exam tests retrieval under time pressure. The plan below is built around producing answers rather than consuming material, and it front-loads the topics that carry the most predictable marks.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:18px 0;">
+      <tr style="border-bottom:2px solid var(--ink);text-align:left;">
+        <th style="padding:8px 6px;width:16%;">Session</th><th style="padding:8px 6px;">Do this</th><th style="padding:8px 6px;width:24%;">Why now</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 3<br>morning</b></td>
+        <td style="padding:8px 6px;">Book 1, the Orientation section and Topic 11 (exam pattern and answer engine), then Topic 06 (KPIs) with all three questions attempted before opening solutions.</td>
+        <td style="padding:8px 6px;">Method first, then the single most predictable question slot.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 3<br>afternoon</b></td>
+        <td style="padding:8px 6px;">Book 1, Topics 08 and 09 (cost analysis and earned value). Then Book 2 Drills 1 to 4. Write the nine formulas from memory before starting each drill.</td>
+        <td style="padding:8px 6px;">Calculation marks are the most certain and the most perishable. They need repetition, not understanding alone.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 3<br>evening</b></td>
+        <td style="padding:8px 6px;">Book 1, Topic 10 (SWOT and EMV). Book 2 Drills 5 to 7. Then read the definition bank once, covering the right column.</td>
+        <td style="padding:8px 6px;">EMV is short and formulaic, so it consolidates fast late in the day.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 2<br>morning</b></td>
+        <td style="padding:8px 6px;"><b>Sit Mock Paper 1 (TiffinTrail) under full exam conditions.</b> 90 minutes, notes closed, timer on. Do not open a single solution until all six answers are written.</td>
+        <td style="padding:8px 6px;">The most valuable two hours in the whole plan. Everything after this is targeted at what it exposes.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 2<br>afternoon</b></td>
+        <td style="padding:8px 6px;">Mark Mock 1 honestly against the four moves. For every answer that scored badly, reread the matching Book 1 section, then rewrite that single answer properly.</td>
+        <td style="padding:8px 6px;">Rewriting a failed answer is where the learning happens. Reading the model answer alone is not enough.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 2<br>evening</b></td>
+        <td style="padding:8px 6px;">Book 1, Topics 01, 02 and 04 (entrepreneurship, Big Five, MVP). Attempt the hard question in each. Then Drills 8 to 10.</td>
+        <td style="padding:8px 6px;">These three carry the analytical questions and reward precision of phrasing.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 1<br>morning</b></td>
+        <td style="padding:8px 6px;">Sit <b>Mock Paper 2 (LedgerLite)</b>, or if time is short, answer only its Questions 1, 3 and 4 in 40 minutes. Then read the Mock 3 solutions rather than sitting it.</td>
+        <td style="padding:8px 6px;">Mock 2 covers lean architecture and EMV, the topics Fall 2025 skipped and the likeliest new material.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 1<br>afternoon</b></td>
+        <td style="padding:8px 6px;">Book 1, Topics 05 and 07 (lean architecture and business growth), skimming the explanations and attempting only the questions. Redo any drill you got wrong earlier.</td>
+        <td style="padding:8px 6px;">Coverage of the remaining topics plus repair of known weak spots.</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--rule);">
+        <td style="padding:8px 6px;"><b>Day 1<br>evening</b></td>
+        <td style="padding:8px 6px;">Definition bank, covered. "Twenty ways to lose marks". Write the full formula sheet from memory on blank paper. Then stop and sleep.</td>
+        <td style="padding:8px 6px;">Light retrieval only. Learning new material the night before mostly displaces what you already have.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 6px;"><b>Exam<br>morning</b></td>
+        <td style="padding:8px 6px;">Twenty minutes: write the formula sheet from memory once more, reread the four moves and the five question openers, glance at the cheat sheet below. Nothing new.</td>
+        <td style="padding:8px 6px;">Prime retrieval, and walk in with the formulas already in your hand.</td>
+      </tr>
+    </table>
+
+    <div class="callout watch">
+      <span class="tag">If you only have one evening</span>
+      <p>In priority order: (1) Book 1 Topic 11, the answer engine, twenty minutes. (2) Book 1 Topic 09, earned value, plus Drills 1 and 2, forty minutes. (3) Book 1 Topic 06, KPIs, and the KPI question from Mock 1, thirty minutes. (4) The Big Five summary and one Big Five question, twenty minutes. (5) The definition bank and the cheat sheet, fifteen minutes. That is a little over two hours and it covers the four highest-probability question slots plus the method for writing any of them.</p>
+    </div>
+
+    <h3>The first ninety seconds of the exam</h3>
+    <p>Before you read the case, write these on the corner of your answer script. It takes ninety seconds, it survives any panic, and it means the calculation question is half-answered before you have read it.</p>
+    <div class="formula">
+      <div class="label">Write this down first</div>
+      <p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.86rem;line-height:1.9;">
+      PV = BAC x %plan &nbsp;|&nbsp; EV = BAC x %actual<br>
+      CV = EV - AC &nbsp;|&nbsp; SV = EV - PV<br>
+      CPI = EV/AC &nbsp;|&nbsp; SPI = EV/PV<br>
+      EAC = BAC/CPI &nbsp;|&nbsp; ETC = EAC - AC &nbsp;|&nbsp; VAC = BAC - EAC<br>
+      EMV = sum(P x I) &nbsp; threats negative<br>
+      Budget = Baseline + Mgmt Reserve<br>
+      MOVES: Name / Anchor / Mechanism / Consequence</p>
+    </div>
+  </section>
+
+  <div class="cheat">
+    <h2>Last-minute cheat sheet</h2>
+    <div class="grid">
+      <div class="item"><h4>Earned value, all nine</h4><p>\( PV = BAC \times \%p \), \( EV = BAC \times \%a \)<br>\( CV = EV-AC \), \( SV = EV-PV \)<br>\( CPI = EV/AC \), \( SPI = EV/PV \)<br>\( EAC = BAC/CPI \), \( ETC = EAC-AC \), \( VAC = BAC-EAC \)</p></div>
+      <div class="item"><h4>Reading the indices</h4><p>Below 1 is bad. CPI 0.82 = 82 paisa of value per taka. Negative VAC = forecast overrun. CV must agree in sign with CPI.</p></div>
+      <div class="item"><h4>EMV</h4><p>\( \text{EMV} = \sum (P_i \times I_i) \). Signs before multiplying. Sets the contingency reserve. It is an average, never a prediction.</p></div>
+      <div class="item"><h4>Cost estimation</h4><p>\( E_{new}=E_{old} \times F \)<br>\( C_{new}=C_{old} \times F_{size} \times F_{cx} \times F_{team} \)<br>Strong team = 0.85, weak team &gt; 1.0</p></div>
+      <div class="item"><h4>Budget structure</h4><p>Work packages + contingency = <b>cost baseline</b>. Baseline + management reserve = <b>project budget</b>. Judge performance against the baseline.</p></div>
+      <div class="item"><h4>Reserves</h4><p>Contingency = known unknowns, inside the baseline. Management = unknown unknowns, outside it.</p></div>
+      <div class="item"><h4>Big Five verdicts</h4><p>Neuroticism: always harmful, most reliable negative predictor. Conscientiousness: helps early, hinders at scale. Openness: early cheques only. Agreeableness: early rapport only. Extraversion: nothing.</p></div>
+      <div class="item"><h4>Big Five answer chain</h4><p>Trait + score &rarr; behaviour it produces &rarr; named consequence in the case. One upside and one downside per pairing.</p></div>
+      <div class="item"><h4>MVP</h4><p>Leanest functional version giving maximal validated learning at minimal engineering effort. Skateboard, not a wheel. More content is not more value.</p></div>
+      <div class="item"><h4>Lean seven</h4><p>Eliminate waste &middot; build quality in &middot; create knowledge &middot; defer commitment &middot; deliver fast &middot; respect people &middot; optimise the whole.</p></div>
+      <div class="item"><h4>Lean four steps</h4><p>Value stream mapping &rarr; just-in-time design &rarr; automated quality and feedback &rarr; evolutionary design.</p></div>
+      <div class="item"><h4>KPI selection recipe</h4><p>Pick four. Justify each by the strategic question it answers. Exclude the rest with reasons: volume without quality, internal input, no link to outcome, input not output.</p></div>
+      <div class="item"><h4>KPI test</h4><p>Can this number rise while the business gets worse? If yes, it is a metric, not a KPI.</p></div>
+      <div class="item"><h4>Growth strategies</h4><p>Existing product + existing market = penetration. Existing + new market = expansion. New product + existing market = product development. New + new = diversification.</p></div>
+      <div class="item"><h4>Diversification quadrants</h4><p>Concentric = related tech. Horizontal = unrelated tech, same customers. Vertical = up or down the chain. Conglomerate = unrelated everything.</p></div>
+      <div class="item"><h4>SWOT</h4><p>Strengths and weaknesses internal. Opportunities and threats external. Small budget = weakness. Rival entering = threat.</p></div>
+      <div class="item"><h4>Cost categories</h4><p>Direct, indirect, opportunity (next best alternative only), risk-related (reserves and insurance).</p></div>
+      <div class="item"><h4>The four moves</h4><p>Name the concept &rarr; anchor it in a case fact &rarr; explain the mechanism &rarr; state the consequence. About 150 words.</p></div>
+      <div class="item"><h4>Timing</h4><p>10 min reading, 5 min skim questions, 11 min per answer, 10 min to finish. Do the numerical question first.</p></div>
+      <div class="item"><h4>Structural answer</h4><p>Name a role, name a governance body, say what each fixes. Remove the founder from the bottleneck, force the stalled decision, keep them on their strength.</p></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Book 2 of 2. Mock cases are original constructions written in the pattern of the Fall 2025 CSE495 final paper set by Proma Chowdhury, East West University; they are practice material, not past papers. All numerical answers have been independently verified. Equations and web fonts load from the internet on first open; offline, the page still reads normally but formulas appear as raw TeX. Verify content against your own notes and the official syllabus before the exam.
+  </footer>
+  </main>
+</div>
+</div>
+
+
+<script>
+  // Reveal / hide every solution at once.
+  function toggleAll(open) {
+    document.querySelectorAll('details.solution').forEach(function (d) { d.open = open; });
+  }
+  // Highlight the current section in the table of contents while scrolling.
+  var links = Array.prototype.slice.call(document.querySelectorAll('aside.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var id = '#' + e.target.id;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(function (s) { if (s) obs.observe(s); });
+
+  // Open all solutions before printing so nothing is hidden in the PDF, then
+  // restore the reader's previous state afterward.
+  var _restore = [];
+  window.addEventListener('beforeprint', function () {
+    _restore = [];
+    document.querySelectorAll('details.solution').forEach(function (d) {
+      _restore.push(d.open); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('details.solution').forEach(function (d, i) { d.open = _restore[i]; });
+  });
+</script>
+</body>
+</html>
